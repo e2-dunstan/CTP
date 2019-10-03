@@ -1,9 +1,9 @@
 #include <Windows.h>
-#include <GL\glew.h>
-#include <GL\freeglut.h>
-#include <iostream>
 
-using namespace std;
+#include "Engine.h"
+
+Engine* engine = new Engine();
+
 
 void changeViewPort(int w, int h)
 {
@@ -13,10 +13,11 @@ void changeViewPort(int w, int h)
 void render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+	engine->Render();
+
 	glutSwapBuffers();
 }
-
-
 
 int main(int argc, char* argv[]) {
 
@@ -40,6 +41,7 @@ int main(int argc, char* argv[]) {
 		return 1;
 	}
 
+	engine->Update();
 
 	glutMainLoop();
 	return 0;

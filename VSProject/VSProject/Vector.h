@@ -3,7 +3,6 @@
 class Vector3
 {
 public:
-
 	//Defaults to (0,0,0)
 	Vector3() : x(0), y(0), z(0) {}
 	Vector3(double _x, double _y, double _z)
@@ -16,13 +15,34 @@ public:
 	double z;
 
 
-	double Magnitude();
-	Vector3 Normalised();
-	Vector3 Inverse();
+	double Magnitude()
+	{
+		return sqrt((x * x) + (y * y) + (z * z));
+	}
+	Vector3 Normalise()
+	{
+		float mag = Magnitude();
+		return Vector3(x / mag, y / mag, z / mag);
+	}
+	Vector3 Inverse()
+	{
+		return Vector3(-x, -y, -z);
+	}
 
-	Vector3 ComponentProduct(const Vector3& vec) const;
-	double ScalarProduct(const Vector3& vec) const;
-	Vector3 VectorProduct(const Vector3& vec) const;
+	Vector3 ComponentProduct(const Vector3& vec) const
+	{
+		return Vector3(x * vec.x, y * vec.y, z * vec.z);
+	}
+	double ScalarProduct(const Vector3& vec) const
+	{
+		return (x * vec.x) + (y * vec.y) + (z * vec.z);
+	}
+	Vector3 VectorProduct(const Vector3& vec) const
+	{
+		return Vector3((y * vec.z) - (z * vec.y),
+			(z * vec.x) - (x * vec.z),
+			(x * vec.y) - (y * vec.x));
+	}
 
 	// -- SCALAR -- //
 	void operator*=(const float value)

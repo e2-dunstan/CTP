@@ -16,16 +16,16 @@
     <Filter Include="Header Files\Mathe">
       <UniqueIdentifier>{c64f53a5-f17c-422d-879b-2861620d03b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Mathe">
-      <UniqueIdentifier>{dd0cf753-2097-431b-a4ea-26d0945387ec}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Vector.cpp">
-      <Filter>Source Files\Mathe</Filter>
+    <ClCompile Include="Engine.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Shape.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -37,6 +37,15 @@
     </ClInclude>
     <ClInclude Include="Vector.h">
       <Filter>Header Files\Mathe</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Shape.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

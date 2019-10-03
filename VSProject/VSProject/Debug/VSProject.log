@@ -1,5 +1,3 @@
-﻿  main.cpp
-  Vector.cpp
-  Generating Code...
-D:\CTP-master\VSProject\VSProject\Vector.cpp(13,13): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+﻿  Engine.cpp
+D:\CTP-master\VSProject\VSProject\Vector.h(24,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   VSProject.vcxproj -> D:\CTP-master\VSProject\Debug\VSProject.exe
