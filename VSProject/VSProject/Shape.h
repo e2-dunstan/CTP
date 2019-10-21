@@ -11,7 +11,7 @@ struct Vertex
 };
 struct Object
 {
-	//Shape::Type type;
+	//Objects::Type type;
 
 	std::vector<Vertex> vertices;
 
@@ -21,13 +21,14 @@ struct Object
 };
 
 
-class Shape
+class Objects
 {
 public:
-	Shape() = default;
-	~Shape() = default;
-
 	enum Type{ TRIANGLE, CUBE };
+
+	Objects();
+	~Objects() = default;
+
 
 	Object CreateObject(Type _type, std::vector<Vertex> _vertices);
 

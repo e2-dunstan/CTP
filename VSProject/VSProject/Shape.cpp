@@ -1,7 +1,7 @@
 #include "Shape.h"
 
 
-void Shape::Draw(std::vector<Vertex> _vertices)
+void Objects::Draw(std::vector<Vertex> _vertices)
 {
 	glBegin(GL_TRIANGLES);
 

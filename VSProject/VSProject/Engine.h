@@ -14,7 +14,7 @@ public:
 
 private:
 
-	Shape* shape = new Shape();
+	Objects* shape = new Objects();
 
 	std::vector<Vertex> triangle;
 
