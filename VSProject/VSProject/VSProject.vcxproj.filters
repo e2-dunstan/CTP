@@ -24,14 +24,17 @@
     <ClCompile Include="Engine.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Shape.cpp">
+    <ClCompile Include="Objects.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Matrix.cpp">
+      <Filter>Header Files\Mathe</Filter>
+    </ClCompile>
+    <ClCompile Include="mathe.cpp">
+      <Filter>Header Files\Mathe</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="mathe.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Matrix.h">
       <Filter>Header Files\Mathe</Filter>
     </ClInclude>
@@ -44,8 +47,11 @@
     <ClInclude Include="Utilities.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Shape.h">
+    <ClInclude Include="Objects.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="mathe.h">
+      <Filter>Header Files\Mathe</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -1,4 +1,6 @@
 #pragma once
+#include <iostream>
+#include <string>
 
 class Vector3
 {
@@ -92,4 +94,6 @@ public:
 	{
 		return VectorProduct(vec);
 	}
+
+	void DebugOutput() { std::cout << "( " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + " )" << std::endl; }
 };

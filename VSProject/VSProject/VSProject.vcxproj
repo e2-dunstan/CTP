@@ -126,12 +126,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="mathe.cpp" />
+    <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Shape.h" />
+    <ClInclude Include="Objects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />

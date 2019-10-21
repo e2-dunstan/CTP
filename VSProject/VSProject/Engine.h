@@ -1,7 +1,7 @@
 #pragma once
 #include "Utilities.h"
 
-#include "Shape.h"
+#include "Objects.h"
 
 class Engine
 {
@@ -11,14 +11,16 @@ public:
 
 	void Update();
 	void Render();
+	void Animate();
 
 private:
 
-	Objects* shape = new Objects();
+	Objects* obj = new Objects();
 
 	std::vector<Vertex> triangle;
+	std::vector<Vertex> cube;
 
-	bool triInitialised = false;
+	bool objectsInitialised = false;
 
 protected:
 
