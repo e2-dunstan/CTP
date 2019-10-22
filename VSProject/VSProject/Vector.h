@@ -23,7 +23,7 @@ public:
 	}
 	Vector3 Normalise()
 	{
-		float mag = Magnitude();
+		double mag = Magnitude();
 		return Vector3(x / mag, y / mag, z / mag);
 	}
 	Vector3 Inverse()

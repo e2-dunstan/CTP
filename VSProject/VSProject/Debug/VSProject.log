@@ -1,3 +1,2 @@
-﻿  main.cpp
-D:\CTP-master\VSProject\VSProject\Vector.h(26,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  Shapes.cpp
   VSProject.vcxproj -> D:\CTP-master\VSProject\Debug\VSProject.exe

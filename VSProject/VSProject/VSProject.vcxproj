@@ -127,7 +127,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Objects.cpp" />
@@ -137,7 +136,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />

@@ -2,14 +2,15 @@
 #include "Utilities.h"
 #include "Shapes.h"
 
-enum ObjectType
-{
-	CUBE
-};
+
 
 struct Object
 {
-	ObjectType type = CUBE;
+	enum class Type
+	{
+		CUBE
+	};
+	Type type = Type::CUBE;
 
 	std::vector<Vertex> vertices;
 
@@ -30,7 +31,7 @@ public:
 	Objects() = default;
 	~Objects() = default;
 
-	void Create(ObjectType type, Vector3 scale, Vector3 translation, Vector3 rotation);
+	void Create(Object::Type type, Vector3 scale, Vector3 translation, Vector3 rotation);
 	void Animate();
 	void Draw();
 
@@ -41,6 +42,8 @@ private:
 	Mathe* mathe = new Mathe();
 
 	std::vector<Object> objects;
+
+	GLenum GetDrawType(Object::Type objectType);
 
 protected:
 

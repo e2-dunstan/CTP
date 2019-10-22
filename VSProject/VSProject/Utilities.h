@@ -20,10 +20,11 @@ struct Colour
 struct Vertex
 {
 	Vector3 position = Vector3();
+	Vector3 normal = Vector3();
 	Colour colour;
 
-	Vertex(double _x, double _y, double _z, Colour _c)
-		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b) {}
+	Vertex(double _x, double _y, double _z, Colour _c, Vector3 _n)
+		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b), normal(_n) {}
 };
 
 class ColourPresets

@@ -1,17 +1,21 @@
 #include <Windows.h>
 
 #include "Engine.h"
-#include "InputManager.h"
+#include "Camera.h"
 
 float rotationSpeed = 0.005f;
 float translationSpeed = 0.01f;	
 int windowWidth = 1280;
 int windowHeight = 720;
 
+GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
+GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
+GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
+
 bool mouseHeld = false;
 
 Engine* engine = new Engine();
-InputManager* inputManager = new InputManager();
 Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 1, 1, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
 
@@ -25,7 +29,7 @@ void ReleaseKey(unsigned char key, int x, int y)
 }
 void MouseMove(int x, int y)
 {
-	if (inputManager->mouseHeld)
+	if (mouseHeld)
 	{
 		camera->rotation(x, y);
 	}
@@ -34,14 +38,14 @@ void MouseButton(int button, int state, int x, int y)
 {
 	if (button == GLUT_RIGHT_BUTTON)
 	{
-		if (state == GLUT_DOWN && inputManager->mouseHeld == false)
+		if (state == GLUT_DOWN && mouseHeld == false)
 		{
 			camera->setMouse(x, y);
-			inputManager->mouseHeld = true;
+			mouseHeld = true;
 		}
-		else if (state == GLUT_UP && inputManager->mouseHeld == true)
+		else if (state == GLUT_UP && mouseHeld == true)
 		{
-			inputManager->mouseHeld = false;
+			mouseHeld = false;
 		}
 	}
 }
@@ -51,7 +55,26 @@ void Init()
 	std::cout << "Calling Init functions... ";
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 50);
+
+	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);
+	glShadeModel(GL_SMOOTH);
+
+	glEnable(GL_CULL_FACE);
 	glEnable(GL_DEPTH_TEST);
+
+	glColorMaterial(GL_FRONT, GL_AMBIENT_AND_DIFFUSE);
+	glEnable(GL_COLOR_MATERIAL);
+
+	glMatrixMode(GL_MODELVIEW);
 
 	engine->Init();
 
@@ -63,7 +86,7 @@ void changeViewPort(int w, int h)
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(60, (double)w / (double)h, 1, 50);
+	gluPerspective(80, (double)w / (double)h, 1, 50);
 	glMatrixMode(GL_MODELVIEW);
 }
 
@@ -107,9 +130,9 @@ int main(int argc, char* argv[]) {
 	// Set the window size
 	glutInitWindowSize(windowWidth, windowHeight);
 
-	// Create the window with the title "Hello,GL"
+	// Create the window
 	glutCreateWindow("Rigidbody Dynamics Engine with an Integrated Path Tracer ");
-	// Bind the two functions (above) to respond when necessary
+
 	glutReshapeFunc(changeViewPort);
 	glutDisplayFunc(render);
 
