@@ -9,6 +9,7 @@ public:
 	Engine();
 	~Engine() = default;
 
+	void Init();
 	void Update();
 	void Render();
 	void Animate();
@@ -21,7 +22,5 @@ private:
 	std::vector<Vertex> cube;
 
 	bool objectsInitialised = false;
-
-protected:
 
 };

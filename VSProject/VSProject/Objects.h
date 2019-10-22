@@ -1,8 +1,16 @@
 #pragma once
 #include "Utilities.h"
+#include "Shapes.h"
+
+enum ObjectType
+{
+	CUBE
+};
 
 struct Object
 {
+	ObjectType type = CUBE;
+
 	std::vector<Vertex> vertices;
 
 	Vector3 translation = Vector3();
@@ -22,17 +30,15 @@ public:
 	Objects() = default;
 	~Objects() = default;
 
-	void CreateObject(std::vector<Vertex> _vertices);
+	void Create(ObjectType type, Vector3 scale, Vector3 translation, Vector3 rotation);
 	void Animate();
 	void Draw();
 
-	Colour red = Colour(1, 0, 0);
-	Colour green = Colour(0, 1, 0);
-	Colour blue = Colour(0, 0, 1);
-
-	Mathe* mathe = new Mathe();
+	Shapes* shapes = new Shapes();
 
 private:
+
+	Mathe* mathe = new Mathe();
 
 	std::vector<Object> objects;
 

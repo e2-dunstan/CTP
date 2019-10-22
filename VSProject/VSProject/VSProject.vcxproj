@@ -126,17 +126,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="InputManager.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Objects.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Shapes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Camera.h" />
+    <ClInclude Include="InputManager.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Shapes.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>

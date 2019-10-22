@@ -1,12 +1,24 @@
 #include "Objects.h"
 
 
-void Objects::CreateObject(std::vector<Vertex> _vertices)
+void Objects::Create(ObjectType type, Vector3 scale, Vector3 translation, Vector3 rotation)
 {
-	Object newObj = Object(_vertices);
-	newObj.scale = Vector3(2, 2, 2);
-	newObj.translation = Vector3(0, 0, -10);
-	newObj.rotation = Vector3(1, 1, 1);
+	//default shape
+	Object newObj = Object(shapes->GetCubeVertices());
+
+	switch (type)
+	{
+	case CUBE:
+		newObj = Object(shapes->GetCubeVertices());
+		break;
+	default:
+		break;
+	}
+
+	newObj.scale = scale;
+	newObj.translation = translation;
+	newObj.rotation = rotation;
+
 	//Custom transformations
 	/*newObj.transform = mathe->Translate(newObj.transform, 0, 0, -2);
 	newObj.transform = mathe->Scale(newObj.transform, 0.5, 0.5, 0.5);
@@ -33,8 +45,7 @@ void Objects::Draw()
 {
 	if (objects.size() <= 0) return;
 
-	//Resets the origin every frame
-	glLoadIdentity();
+	//std::cout << "drawing" << std::endl;
 
 	for (int i = 0; i < objects.size(); i++)
 	{
@@ -42,7 +53,7 @@ void Objects::Draw()
 		glRotated(100, objects[i].rotation.x, objects[i].rotation.y, objects[i].rotation.z);
 		glScaled(objects[i].scale.x, objects[i].scale.y, objects[i].scale.z);
 
-		glBegin(GL_POLYGON);
+		glBegin(GL_QUADS);
 
 		for (int v = 0; v < objects[i].vertices.size(); v++)
 		{

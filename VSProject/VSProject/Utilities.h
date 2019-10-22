@@ -9,12 +9,12 @@
 
 struct Colour
 {
-	float r = 0.0f;
-	float g = 0.0f;
-	float b = 0.0f;
-	float a = 1.0f;
+	GLfloat r = 0.0f;
+	GLfloat g = 0.0f;
+	GLfloat b = 0.0f;
+	GLfloat a = 1.0f;
 
-	Colour(float _r, float _g, float _b, float _a = 1.0f)
+	Colour(GLfloat _r, GLfloat _g, GLfloat _b, GLfloat _a = 1.0f)
 		: r(_r), g(_g), b(_b), a(_a) {}
 };
 struct Vertex
@@ -24,4 +24,18 @@ struct Vertex
 
 	Vertex(double _x, double _y, double _z, Colour _c)
 		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b) {}
+};
+
+class ColourPresets
+{
+public:
+	ColourPresets() = default;
+	~ColourPresets() = default;
+
+	Colour red = Colour(1.0, 0.0, 0.0);
+	Colour green = Colour(0.0, 1.0, 0.0);
+	Colour blue = Colour(0.0, 0.0, 1.0);
+	Colour yellow = Colour(1.0, 1.0, 0.0);
+	Colour cyan = Colour(0.0, 1.0, 1.0);
+	Colour magenta = Colour(1.0, 0.0, 1.0);
 };
