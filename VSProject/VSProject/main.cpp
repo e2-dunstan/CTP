@@ -3,6 +3,13 @@
 #include "Engine.h"
 #include "Camera.h"
 
+
+// More cubes
+// Shaders
+// Read book on separating axis theorem, arbitrary aligned cubes
+// Dont do axis align for now
+
+
 float rotationSpeed = 0.005f;
 float translationSpeed = 0.01f;	
 int windowWidth = 1280;
