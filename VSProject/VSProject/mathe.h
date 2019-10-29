@@ -9,10 +9,9 @@ public:
 	Mathe() = default;
 	~Mathe() = default;
 
-	// Redundant with OpenGL functions
-	/*Vector3 Transform(Vector3& vector, Matrix& matrix);
+	void Transform(Vector3& vector, Matrix& matrix);
 
-	Matrix Translate(Matrix& m, double x, double y, double z);
-	Matrix Rotate(double x, double y, double z);
-	Matrix Scale (Matrix& m, double x, double y, double z);*/
+	void Translate(Matrix& m, double x, double y, double z);
+	void Rotate(Matrix& m, double x, double y, double z);
+	void Scale (Matrix& m, double x, double y, double z);
 };

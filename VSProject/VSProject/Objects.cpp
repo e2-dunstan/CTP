@@ -1,15 +1,15 @@
 #include "Objects.h"
 
 
-void Objects::Create(Object::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
+void Objects::Create(RigidBody::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
 {
 	//default shape
-	Object newObj = Object(shapes->GetCubeVertices());
+	RigidBody newObj = RigidBody(shapes->GetCubeVertices());
 
 	switch (type)
 	{
-	case Object::Type::CUBE:
-		newObj = Object(shapes->GetCubeVertices());
+	case RigidBody::Type::CUBE:
+		//newObj = RigidBody(shapes->GetCubeVertices());
 		break;
 	default:
 		break;
@@ -19,17 +19,40 @@ void Objects::Create(Object::Type type, Vector3 scale, Vector3 translation, Vect
 	newObj.translation = translation;
 	newObj.rotation = rotation;
 
-	//Custom transformations
-	/*newObj.transform = mathe->Translate(newObj.transform, 0, 0, -2);
-	newObj.transform = mathe->Scale(newObj.transform, 0.5, 0.5, 0.5);
+	newObj.boundingVolume->Create(newObj.translation, 0, newObj.scale);
+	UpdateTransforms(newObj);
 
-	for (unsigned v = 0; v < _vertices.size(); v++)
+	rbs.push_back(newObj);
+}
+
+void Objects::UpdateTransforms(RigidBody& rb)
+{
+	rb.transform.Identity();
+
+	mathe->Translate(rb.transform, rb.translation.x, rb.translation.y, rb.translation.z);
+	mathe->Rotate(rb.transform, rb.rotation.x, rb.rotation.y, rb.rotation.z);
+	mathe->Scale(rb.transform, rb.scale.x, rb.scale.y, rb.scale.z);
+
+	rb.transform.DebugOutput();
+
+	for (int v = 0; v < rb.vertices.size(); v++)
 	{
-		newObj.vertices[v].position = mathe->Transform(newObj.vertices[v].position, newObj.transform);
-		newObj.vertices[v].position.DebugOutput();
-	}*/
+		mathe->Transform(rb.vertices[v].position, rb.transform);
+		//transform normals
+	}
 
-	objects.push_back(newObj);
+	//SPHERE STUFF HERE IF NOT CUBE
+	rb.boundingVolume->Update(rb.translation, 0, rb.scale);
+	
+	rb.updateTransforms = false;
+}
+
+void Objects::CreateBoundingVolume(RigidBody& rb)
+{
+	if (rb.type == RigidBody::Type::CUBE)
+	{
+		rb.boundingVolume->Create(rb.translation, 0, rb.scale);
+	}
 }
 
 void Objects::Animate()
@@ -38,40 +61,49 @@ void Objects::Animate()
 
 void Objects::Draw()
 {
-	if (objects.size() <= 0) return;
+	if (rbs.size() <= 0) return;
 
 	//std::cout << "drawing" << std::endl;
 
-	for (int i = 0; i < objects.size(); i++)
-	{		
-		glTranslated(objects[i].translation.x, objects[i].translation.y, objects[i].translation.z);
-		glRotated(100, objects[i].rotation.x, objects[i].rotation.y, objects[i].rotation.z);
-		glScaled(objects[i].scale.x, objects[i].scale.y, objects[i].scale.z);	
-		
-		glMaterialf(GL_FRONT, GL_SHININESS, 0.2);
+	for (int i = 0; i < rbs.size(); i++)
+	{	
+		if (rbs[i].updateTransforms) UpdateTransforms(rbs[i]);
+		/*PRE CUSTOM MATRIX MATH
+		glPushMatrix();
 
-		glBegin(GetDrawType(objects[i].type));
+		glTranslated(rigidBodies[i].translation.x, rigidBodies[i].translation.y, rigidBodies[i].translation.z);
+		if (rigidBodies[i].rotation.x != 0 || rigidBodies[i].rotation.y != 0 || rigidBodies[i].rotation.z != 0)
+			glRotated(100, rigidBodies[i].rotation.x, rigidBodies[i].rotation.y, rigidBodies[i].rotation.z);
 
-		for (int v = 0; v < objects[i].vertices.size(); v++)
+		glScaled(rigidBodies[i].scale.x, rigidBodies[i].scale.y, rigidBodies[i].scale.z);	
+		*/
+		//glMaterialf(GL_FRONT, GL_SHININESS, 0.2);
+
+		glBegin(GetDrawType(rbs[i].type));
+
+		for (int v = 0; v < rbs[i].vertices.size(); v++)
 		{
-			glNormal3f(objects[i].vertices[v].normal.x, objects[i].vertices[v].normal.y, objects[i].vertices[v].normal.z);
+			glNormal3f(rbs[i].vertices[v].normal.x, rbs[i].vertices[v].normal.y, rbs[i].vertices[v].normal.z);
 
-			GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
-			glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
+			//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
+			//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 
-			//glColor3f(objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b);
-			glVertex3f(objects[i].vertices[v].position.x, objects[i].vertices[v].position.y, objects[i].vertices[v].position.z);
+			glColor3f(rbs[i].vertices[v].colour.r, rbs[i].vertices[v].colour.g, rbs[i].vertices[v].colour.b);
+			glVertex3f(rbs[i].vertices[v].position.x, rbs[i].vertices[v].position.y, rbs[i].vertices[v].position.z);
 		}
 
 		glEnd();
+		glPopMatrix();
+		
+		if (drawBoundingVolumes) rbs[i].boundingVolume->Draw();
 	}
 }
 
-GLenum Objects::GetDrawType(Object::Type objectType)
+GLenum Objects::GetDrawType(RigidBody::Type objectType)
 {
 	switch (objectType)
 	{
-	case Object::Type::CUBE:
+	case RigidBody::Type::CUBE:
 		return GL_QUADS;
 	default:
 		return GL_QUADS;

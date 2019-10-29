@@ -57,6 +57,10 @@ public:
 	{
 		return Vector3(x * value, y * value, z * value);
 	}
+	Vector3 operator/(const float value) const
+	{
+		return Vector3(x / value, y / value, z / value);
+	}
 
 	
 	// -- ADDITION -- //
@@ -93,6 +97,22 @@ public:
 	Vector3 operator%(const Vector3& vec) const
 	{
 		return VectorProduct(vec);
+	}
+
+	// -- COMPARISON -- //
+	bool operator==(const Vector3& vec)
+	{
+		if (x == vec.x && y == vec.y && z == vec.z)
+			return true;
+		else
+			return false;
+	}
+	bool operator!=(const Vector3& vec)
+	{
+		if (x != vec.x || y != vec.y || z != vec.z)
+			return true;
+		else
+			return false;
 	}
 
 	void DebugOutput() { std::cout << "( " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + " )" << std::endl; }

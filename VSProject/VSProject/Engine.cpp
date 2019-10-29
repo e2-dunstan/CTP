@@ -7,16 +7,13 @@ Engine::Engine()
 
 void Engine::Init()
 {
-	obj->Create(Object::Type::CUBE, Vector3(1, 1, 1), Vector3(0, 0, -10), Vector3(30, 30, 30));
+	obj->Create(RigidBody::Type::CUBE, Vector3(1.5, 1.5, 1.5), Vector3(5, 0, 5), Vector3(0, 45, 45));
+	obj->Create(RigidBody::Type::CUBE, Vector3(1, 1, 1), Vector3(0, 1, 10), Vector3(0, 0, 0));
+	obj->Create(RigidBody::Type::CUBE, Vector3(1, 1, 1), Vector3(10, 1, 0), Vector3(0, 0, 0));
 }
 
 void Engine::Update()
 {
-	if (objectsInitialised) return;
-
-	//obj->Create(CUBE, Vector3(1, 1, 1), Vector3(0, 0, -10), Vector3(30, 30, 30));
-
-	objectsInitialised = true;
 }
 
 void Engine::Render()
@@ -27,10 +24,10 @@ void Engine::Render()
 	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.2);
 	glColor3f(0.8f, 0.8f, 0.8f);
 	glBegin(GL_QUADS);
-		glVertex3f(-100.0f, -10.0f, -100.0f);
-		glVertex3f(-100.0f, -10.0f, 100.0f);
-		glVertex3f(100.0f, -10.0f, 100.0f);
-		glVertex3f(100.0f, -10.0f, -100.0f);
+		glVertex3f(-100.0f, 0.0f, -100.0f);
+		glVertex3f(-100.0f, 0.0f, 100.0f);
+		glVertex3f(100.0f, 0.0f, 100.0f);
+		glVertex3f(100.0f, 0.0f, -100.0f);
 	glEnd();
 
 	obj->Draw();

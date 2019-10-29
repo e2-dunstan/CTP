@@ -23,7 +23,7 @@ GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
 bool mouseHeld = false;
 
 Engine* engine = new Engine();
-Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 1, 1, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 60, 60, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
 
 void PressKey(unsigned char key, int xx, int yy)

@@ -1,1 +1,61 @@
-﻿  VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe
+﻿  Objects.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(38,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(68,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(84,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(86,98): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(86,69): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(86,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(92,104): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(92,73): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(92,42): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\xmemory(758,1): error C2280: 'RigidBody::RigidBody(const RigidBody &)': attempting to reference a deleted function
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25): message : compiler has generated 'RigidBody::RigidBody' here
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25,1): message : 'RigidBody::RigidBody(const RigidBody &)': function was implicitly deleted because a data member invokes a deleted or inaccessible function 'std::unique_ptr<BoundingVolume,std::default_delete<_Ty>>::unique_ptr(const std::unique_ptr<_Ty,std::default_delete<_Ty>> &)'
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25,1): message :         with
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25,1): message :         [
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25,1): message :             _Ty=BoundingVolume
+D:\Ellie\CTP\VSProject\VSProject\RigidBody.h(25,1): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(1914,5): message : 'std::unique_ptr<BoundingVolume,std::default_delete<_Ty>>::unique_ptr(const std::unique_ptr<_Ty,std::default_delete<_Ty>> &)': function was explicitly deleted
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(1914,5): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(1914,5): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(1914,5): message :             _Ty=BoundingVolume
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(1914,5): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message : see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,const _Ty&>(_Alloc &,_Objty *const ,const _Ty &)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :             _Alloc=std::allocator<RigidBody>,
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :             _Ty=RigidBody,
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :             _Objty=RigidBody
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(633): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message : see reference to function template instantiation 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,const _Ty&>(_Alloc &,_Objty *const ,const _Ty &)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :             _Alloc=std::allocator<RigidBody>,
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :             _Ty=RigidBody,
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :             _Objty=RigidBody
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(638): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(651): message : see reference to function template instantiation 'void std::vector<RigidBody,std::allocator<_Ty>>::_Emplace_back_with_unused_capacity<const _Ty&>(const _Ty &)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(651): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(651): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(651): message :             _Ty=RigidBody
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(651): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(668): message : see reference to function template instantiation 'void std::vector<RigidBody,std::allocator<_Ty>>::emplace_back<const _Ty&>(const _Ty &)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(668): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(668): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(668): message :             _Ty=RigidBody
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(668): message :         ]
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(667): message : while compiling class template member function 'void std::vector<RigidBody,std::allocator<_Ty>>::push_back(const _Ty &)'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(667): message :         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(667): message :         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(667): message :             _Ty=RigidBody
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\vector(667): message :         ]
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(25): message : see reference to function template instantiation 'void std::vector<RigidBody,std::allocator<_Ty>>::push_back(const _Ty &)' being compiled
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(25): message :         with
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(25): message :         [
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(25): message :             _Ty=RigidBody
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(25): message :         ]
+D:\Ellie\CTP\VSProject\VSProject\Objects.h(24): message : see reference to class template instantiation 'std::vector<RigidBody,std::allocator<_Ty>>' being compiled
+D:\Ellie\CTP\VSProject\VSProject\Objects.h(24): message :         with
+D:\Ellie\CTP\VSProject\VSProject\Objects.h(24): message :         [
+D:\Ellie\CTP\VSProject\VSProject\Objects.h(24): message :             _Ty=RigidBody
+D:\Ellie\CTP\VSProject\VSProject\Objects.h(24): message :         ]

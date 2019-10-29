@@ -178,7 +178,7 @@ unsigned Matrix::GetColumns() const
 
 void Matrix::DebugOutput()
 {
-	std::string str = "[ ";
+	std::string str = "\n[ ";
 
 	for (unsigned r = 0; r < rowSize; r++)
 	{

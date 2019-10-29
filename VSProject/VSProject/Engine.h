@@ -1,6 +1,5 @@
 #pragma once
 #include "Utilities.h"
-
 #include "Objects.h"
 
 class Engine
@@ -16,7 +15,7 @@ public:
 
 private:
 
-	Objects* obj = new Objects();
+	std::unique_ptr<Objects> obj = std::make_unique<Objects>();
 
 	std::vector<Vertex> triangle;
 	std::vector<Vertex> cube;

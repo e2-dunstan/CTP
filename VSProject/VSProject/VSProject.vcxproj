@@ -129,6 +129,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -138,11 +139,14 @@
     <ClCompile Include="Shapes.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="OctTree.h" />
+    <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />

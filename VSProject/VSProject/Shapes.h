@@ -9,7 +9,7 @@ public:
 
 	std::vector<Vertex> GetCubeVertices(Colour* _colour = NULL);
 
-	ColourPresets* colourPresets = new ColourPresets();
+	std::unique_ptr<ColourPresets> colourPresets = std::make_unique<ColourPresets>();
 
 private:
 
