@@ -23,7 +23,7 @@ GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
 bool mouseHeld = false;
 
 Engine* engine = new Engine();
-Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 60, 60, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -59,7 +59,7 @@ void MouseButton(int button, int state, int x, int y)
 
 void Init()
 {
-	std::cout << "Calling Init functions... ";
+	std::cout << "Calling Init functions... " << std::endl;
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glMatrixMode(GL_PROJECTION);

@@ -17,6 +17,7 @@ struct RigidBody
 	Matrix transform = Matrix(4, 4);
 
 	bool updateTransforms = false;
+	bool enableCollision = true;
 
 	std::unique_ptr<BoundingVolume> boundingVolume = std::make_unique<BoundingVolume>();
 

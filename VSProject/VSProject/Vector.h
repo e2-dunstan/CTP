@@ -16,104 +16,38 @@ public:
 	double y;
 	double z;
 
+	double Magnitude();
+	Vector3 Normalise();
+	Vector3 Inverse();
 
-	double Magnitude()
-	{
-		return sqrt((x * x) + (y * y) + (z * z));
-	}
-	Vector3 Normalise()
-	{
-		double mag = Magnitude();
-		return Vector3(x / mag, y / mag, z / mag);
-	}
-	Vector3 Inverse()
-	{
-		return Vector3(-x, -y, -z);
-	}
-
-	Vector3 ComponentProduct(const Vector3& vec) const
-	{
-		return Vector3(x * vec.x, y * vec.y, z * vec.z);
-	}
-	double ScalarProduct(const Vector3& vec) const
-	{
-		return (x * vec.x) + (y * vec.y) + (z * vec.z);
-	}
-	Vector3 VectorProduct(const Vector3& vec) const
-	{
-		return Vector3((y * vec.z) - (z * vec.y),
-			(z * vec.x) - (x * vec.z),
-			(x * vec.y) - (y * vec.x));
-	}
+	Vector3 ComponentProduct(const Vector3& vec) const;
+	double ScalarProduct(const Vector3& vec) const;
+	Vector3 VectorProduct(const Vector3& vec) const;
 
 	// -- SCALAR -- //
-	void operator*=(const float value)
-	{
-		x *= value;
-		y *= value;
-		z *= value;
-	}
-	Vector3 operator*(const float value) const
-	{
-		return Vector3(x * value, y * value, z * value);
-	}
-	Vector3 operator/(const float value) const
-	{
-		return Vector3(x / value, y / value, z / value);
-	}
+	void operator*=(const float value);
+	Vector3 operator*(const float value) const;
+	void operator/=(const float value);
+	Vector3 operator/(const float value) const;
 
 	
 	// -- ADDITION -- //
-	void operator+=(const Vector3& vec)
-	{
-		x += vec.x;
-		y += vec.y;
-		z += vec.z;
-	}
-	Vector3 operator+(const Vector3& vec) const
-	{
-		return Vector3(x + vec.x, y + vec.y, z + vec.z);
-	}
+	void operator+=(const Vector3& vec);
+	Vector3 operator+(const Vector3& vec) const;
 
 
 	// -- SUBTRACTION -- //
-	void operator-=(const Vector3& vec)
-	{
-		x -= vec.x;
-		y -= vec.y;
-		z -= vec.z;
-	}
-	Vector3 operator-(const Vector3& vec) const
-	{
-		return Vector3(x - vec.x, y - vec.y, z - vec.z);
-	}
+	void operator-=(const Vector3& vec);
+	Vector3 operator-(const Vector3& vec) const;
 
 
 	// -- VECTOR PRODUCT -- //
-	void operator%=(const Vector3& vec)
-	{
-		*this = VectorProduct(vec);
-	}
-	Vector3 operator%(const Vector3& vec) const
-	{
-		return VectorProduct(vec);
-	}
+	void operator%=(const Vector3& vec);
+	Vector3 operator%(const Vector3& vec) const;
 
 	// -- COMPARISON -- //
-	bool operator==(const Vector3& vec)
-	{
-		if (x == vec.x && y == vec.y && z == vec.z)
-			return true;
-		else
-			return false;
-	}
-	bool operator!=(const Vector3& vec)
-	{
-		if (x != vec.x || y != vec.y || z != vec.z)
-			return true;
-		else
-			return false;
-	}
+	bool operator==(const Vector3& vec);
+	bool operator!=(const Vector3& vec);
 
-	void DebugOutput() { std::cout << "( " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + " )" << std::endl; }
+	void DebugOutput();
 };
