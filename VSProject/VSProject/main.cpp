@@ -64,7 +64,7 @@ void Init()
 	glClearColor(0.0, 0.0, 0.0, 1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 50);
+	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 1000);
 
 	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);

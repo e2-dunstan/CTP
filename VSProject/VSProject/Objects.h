@@ -1,4 +1,5 @@
 #pragma once
+#include "Primitive.h"
 #include "Collisions.h"
 #include "OctTree.h"
 
@@ -9,27 +10,27 @@ public:
 	Objects() = default;
 	~Objects() = default;
 
-	void Create(RigidBody::Type type, Vector3 scale, Vector3 translation, Vector3 rotation);
+	void Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation);
 	void Animate();
 	void Draw();
 	void Update();
 
-	std::unique_ptr<Shapes> shapes = std::make_unique<Shapes>();
+	std::unique_ptr<ShapeVertices> shapes = std::make_unique<ShapeVertices>();
 
 private:
 
-	void UpdateTransforms(RigidBody& rb);
-	void CreateBoundingVolume(RigidBody& obj);
+	void UpdateTransforms(Primitive* prim);
+	void CreateBoundingVolume(Primitive* prim);
 
 	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 
-	std::vector<RigidBody*> rbs;
+	std::vector<Primitive*> primitives;
 
 	//OctTree* octTree;
 
-	GLenum GetDrawType(RigidBody::Type objectType);
+	GLenum GetDrawType(Primitive::Type objectType);
 
 	bool drawBoundingVolumes = true;
 

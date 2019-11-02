@@ -1,16 +1,23 @@
 #include "Objects.h"
 
 
-void Objects::Create(RigidBody::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
+void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
 {
 	//default shape
-	RigidBody* newObj = new RigidBody(shapes->GetCubeVertices());
+	Primitive* newObj = new Primitive(shapes->GetCubeVertices());
 
 	switch (type)
 	{
-	case RigidBody::Type::CUBE:
-		//newObj = RigidBody(shapes->GetCubeVertices());
-		newObj->boundingVolume->Create(newObj->vertices, BoundingVolume::Type::CUBE);
+	case Primitive::Type::BOX:
+		newObj->boundingVolume->Create(translation, scale);
+		break;
+	case Primitive::Type::PLANE:
+		newObj = new Primitive(shapes->GetPlaneVertices());
+		newObj->boundingVolume->Create(translation, scale);
+		break;
+	case Primitive::Type::SPHERE:
+		break;
+	case Primitive::Type::COMPLEX:
 		break;
 	default:
 		break;
@@ -20,37 +27,37 @@ void Objects::Create(RigidBody::Type type, Vector3 scale, Vector3 translation, V
 	newObj->translation = translation;
 	newObj->rotation = rotation;
 
-	UpdateTransforms(*newObj);
+	UpdateTransforms(newObj);
 
-	rbs.push_back(newObj);
+	primitives.push_back(newObj);
 }
 
-void Objects::UpdateTransforms(RigidBody& rb)
+void Objects::UpdateTransforms(Primitive* prim)
 {
-	rb.transform.Identity();
+	prim->transform.Identity();
 
-	mathe->Translate(rb.transform, rb.translation.x, rb.translation.y, rb.translation.z);
-	mathe->Rotate(rb.transform, rb.rotation.x, rb.rotation.y, rb.rotation.z);
-	mathe->Scale(rb.transform, rb.scale.x, rb.scale.y, rb.scale.z);
+	mathe->Translate(prim->transform, prim->translation.x, prim->translation.y, prim->translation.z);
+	mathe->Rotate(prim->transform, prim->rotation.x, prim->rotation.y, prim->rotation.z);
+	mathe->Scale(prim->transform, prim->scale.x, prim->scale.y, prim->scale.z);
 
-	for (int v = 0; v < rb.vertices.size(); v++)
+	for (int v = 0; v < prim->vertices.size(); v++)
 	{
-		mathe->Transform(rb.vertices[v].position, rb.transform);
+		mathe->Transform(prim->vertices[v].position, prim->transform);
 		//transform normals
 	}
 
 	//SPHERE STUFF HERE IF NOT CUBE
-	rb.boundingVolume->SetCentreAndSizeFromVertices(rb.vertices);
-	rb.boundingVolume->Update(rb.translation, 0, rb.scale, rb.rotation);
+	prim->boundingVolume->SetVertices(prim->vertices);
+	prim->boundingVolume->Update(prim->translation, prim->scale, prim->rotation);
 	
-	rb.updateTransforms = false;
+	prim->rigidbody->updateTransforms = false;
 }
 
-void Objects::CreateBoundingVolume(RigidBody& rb)
+void Objects::CreateBoundingVolume(Primitive* prim)
 {
-	if (rb.type == RigidBody::Type::CUBE)
+	if (prim->type == Primitive::Type::BOX)
 	{
-		rb.boundingVolume->Create(rb.translation, 0, rb.scale);
+		prim->boundingVolume->Create(prim->translation, prim->scale);
 	}
 }
 
@@ -60,8 +67,7 @@ void Objects::Animate()
 
 void Objects::Draw()
 {
-
-	if (rbs.size() <= 0) return;
+	if (primitives.size() <= 0) return;
 	/*if (!octTreeCreated)
 	{
 		octTree = new OctTree(rbs);
@@ -69,39 +75,26 @@ void Objects::Draw()
 		octTreeCreated = true;
 	}*/
 
-	//std::cout << "drawing" << std::endl;
-
-	for (int i = 0; i < rbs.size(); i++)
+	for (int i = 0; i < primitives.size(); i++)
 	{	
-		if (rbs[i]->updateTransforms) UpdateTransforms(*rbs[i]);
-		/*PRE CUSTOM MATRIX MATH
-		glPushMatrix();
+		if (primitives[i]->rigidbody->updateTransforms) UpdateTransforms(primitives[i]);
 
-		glTranslated(rigidBodies[i].translation.x, rigidBodies[i].translation.y, rigidBodies[i].translation.z);
-		if (rigidBodies[i].rotation.x != 0 || rigidBodies[i].rotation.y != 0 || rigidBodies[i].rotation.z != 0)
-			glRotated(100, rigidBodies[i].rotation.x, rigidBodies[i].rotation.y, rigidBodies[i].rotation.z);
+		glBegin(GetDrawType(primitives[i]->type));
 
-		glScaled(rigidBodies[i].scale.x, rigidBodies[i].scale.y, rigidBodies[i].scale.z);	
-		*/
-		//glMaterialf(GL_FRONT, GL_SHININESS, 0.2);
-
-		glBegin(GetDrawType(rbs[i]->type));
-
-		for (int v = 0; v < rbs[i]->vertices.size(); v++)
+		for (int v = 0; v < primitives[i]->vertices.size(); v++)
 		{
-			glNormal3f(rbs[i]->vertices[v].normal.x, rbs[i]->vertices[v].normal.y, rbs[i]->vertices[v].normal.z);
+			glNormal3f(primitives[i]->vertices[v].normal.x, primitives[i]->vertices[v].normal.y, primitives[i]->vertices[v].normal.z);
 
 			//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 
-			glColor3f(rbs[i]->vertices[v].colour.r, rbs[i]->vertices[v].colour.g, rbs[i]->vertices[v].colour.b);
-			glVertex3f(rbs[i]->vertices[v].position.x, rbs[i]->vertices[v].position.y, rbs[i]->vertices[v].position.z);
+			glColor3f(primitives[i]->vertices[v].colour.r, primitives[i]->vertices[v].colour.g, primitives[i]->vertices[v].colour.b);
+			glVertex3f(primitives[i]->vertices[v].position.x, primitives[i]->vertices[v].position.y, primitives[i]->vertices[v].position.z);
 		}
 
 		glEnd();
-		//glPopMatrix();
 		
-		if (drawBoundingVolumes) rbs[i]->boundingVolume->Draw();
+		if (drawBoundingVolumes) primitives[i]->boundingVolume->Draw();
 	}
 }
 
@@ -109,18 +102,18 @@ void Objects::Update()
 {
 	//use oct tree here
 
-	for (int i = 0; i < rbs.size(); i++)
-	{
-		if (rbs[i]->enableCollision)
-			collisions->DetectCoarse(rbs[i]);
-	}
+	//for (int i = 0; i < rbs.size(); i++)
+	//{
+	//	if (rbs[i]->enableCollision)
+	//		collisions->DetectCoarse(rbs[i]);
+	//}
 }
 
-GLenum Objects::GetDrawType(RigidBody::Type objectType)
+GLenum Objects::GetDrawType(Primitive::Type objectType)
 {
 	switch (objectType)
 	{
-	case RigidBody::Type::CUBE:
+	case Primitive::Type::BOX:
 		return GL_QUADS;
 	default:
 		return GL_QUADS;

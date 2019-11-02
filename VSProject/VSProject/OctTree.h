@@ -59,7 +59,7 @@ private:
 	bool treeComplete = false;
 	bool preexistingTree = false;
 
-	std::unique_ptr<Shapes> shapes = std::make_unique<Shapes>();
+	std::unique_ptr<ShapeVertices> shapes = std::make_unique<ShapeVertices>();
 	std::vector<std::vector<Vertex>> debugVertices;
 };
 

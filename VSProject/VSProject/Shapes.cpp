@@ -1,6 +1,6 @@
 #include "Shapes.h"
 
-std::vector<Vertex> Shapes::GetCubeVertices(Colour* _colour)
+std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 {
 	std::vector<Vertex> vertices;
 	vertices.clear();
@@ -57,7 +57,21 @@ std::vector<Vertex> Shapes::GetCubeVertices(Colour* _colour)
 	vertices.clear();
 }
 
-Colour Shapes::GetColour(Colour _rainbow, Colour* _colour)
+std::vector<Vertex> ShapeVertices::GetPlaneVertices(Colour* _colour)
+{
+	std::vector<Vertex> vertices;
+	vertices.clear();
+
+	vertices.push_back(Vertex(-1.0f, 0.0f, -1.0f, Colour(0.8f, 0.8f, 0.8f), Vector3(0, 1, 0)));
+	vertices.push_back(Vertex(-1.0f, 0.0f, 1.0f, Colour(0.8f, 0.8f, 0.8f), Vector3(0, 1, 0)));
+	vertices.push_back(Vertex(1.0f, 0.0f, 1.0f, Colour(0.8f, 0.8f, 0.8f), Vector3(0, 1, 0)));
+	vertices.push_back(Vertex(1.0f, 0.0f, -1.0f, Colour(0.8f, 0.8f, 0.8f), Vector3(0, 1, 0)));
+
+	return vertices;
+	vertices.clear();
+}
+
+Colour ShapeVertices::GetColour(Colour _rainbow, Colour* _colour)
 {
 	if (_colour != NULL)
 	{

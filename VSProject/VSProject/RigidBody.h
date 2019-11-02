@@ -1,26 +1,16 @@
 #pragma once
-#include "BoundingVolume.h"
+#include "CollisionVolume.h"
 
-struct RigidBody
+class RigidBody
 {
-	enum class Type
-	{
-		CUBE, SPHERE, COMPLEX
-	};
-	Type type = Type::CUBE;
-
-	std::vector<Vertex> vertices;
-
-	Vector3 translation = Vector3();
-	Vector3 rotation = Vector3();
-	Vector3 scale = Vector3();
-	Matrix transform = Matrix(4, 4);
+public:
+	RigidBody() = default;
+	~RigidBody() = default;
 
 	bool updateTransforms = false;
-	bool enableCollision = true;
 
-	std::unique_ptr<BoundingVolume> boundingVolume = std::make_unique<BoundingVolume>();
+	float mass = 0;
+	float drag = 0;
+	float friction = 0;
 
-	RigidBody(std::vector<Vertex> _v)
-		: vertices(_v) {}
 };

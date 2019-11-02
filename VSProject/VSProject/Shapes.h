@@ -1,13 +1,14 @@
 #pragma once
 #include "Utilities.h"
 
-class Shapes
+class ShapeVertices
 {
 public:
-	Shapes() = default;
-	~Shapes() = default;
+	ShapeVertices() = default;
+	~ShapeVertices() = default;
 
 	std::vector<Vertex> GetCubeVertices(Colour* _colour = NULL);
+	std::vector<Vertex> GetPlaneVertices(Colour* _colour = NULL);
 
 	std::unique_ptr<ColourPresets> colourPresets = std::make_unique<ColourPresets>();
 

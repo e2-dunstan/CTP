@@ -129,9 +129,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="BoundingBox.cpp" />
+    <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="Collisions.cpp" />
+    <ClCompile Include="CollisionVolume.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Objects.cpp" />
@@ -141,17 +144,26 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="BoundingBox.h" />
+    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="Collisions.h" />
+    <ClInclude Include="CollisionVolume.h" />
+    <ClInclude Include="Contact.h" />
     <ClInclude Include="Objects.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />
+    <ClInclude Include="Primitive.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="PrimitiveShapes.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

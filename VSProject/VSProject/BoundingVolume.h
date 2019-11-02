@@ -1,22 +1,6 @@
 #pragma once
 #include "Shapes.h"
 
-struct BoundingSphere
-{
-	bool active = false;
-	Vector3 centre;
-	float radius = 0;
-};
-struct BoundingBox
-{
-	bool active = false;
-	Vector3 centre;
-	Vector3 size;
-
-	BoundingBox() = default;
-	BoundingBox(Vector3 _s, Vector3 _c)
-		: size(_s), centre(_c) {}
-};
 
 class BoundingVolume
 {
@@ -27,28 +11,25 @@ public:
 
 	enum class Type
 	{
-		CUBE, SPHERE
+		BOX, SPHERE
 	};
 	
-	void Create(Vector3 _centre, float _radius = 0, Vector3 _size = Vector3());
-	void Create(std::vector<Vertex> rbVerts, Type type);
-	
-	void SetCentreAndSizeFromVertices(std::vector<Vertex> verts);
+	//void Create(Vector3 _centre, float _radius = 0, Vector3 _size = Vector3());
+	//void Create(std::vector<Vertex> rbVerts, Type type);
+	virtual void Create(Vector3 _centre, float _radius) = 0;
+	virtual void Create(Vector3 _centre, Vector3 _size) = 0;
+	virtual void Update(Vector3 _centre, float _radius, Vector3 _rotation = Vector3()) = 0;
+	virtual void Update(Vector3 _centre, Vector3 _size = Vector3(), Vector3 _rotation = Vector3()) = 0;
+	virtual void SetVertices(std::vector<Vertex> verts) {};
 
-	void Update(Vector3 _centre, float _radius = 0, Vector3 _size = Vector3(), Vector3 _rotation = Vector3());
+	//void SetCentreAndSizeFromVertices(std::vector<Vertex> verts);
 	void Draw();
 
-	BoundingBox cube;
-	BoundingSphere sphere;
-
-private:
-
+	//Public variables
+	Vector3 centre;
 	GLenum drawMode = GL_QUADS;
-
-	std::unique_ptr<Shapes> shapes = std::make_unique<Shapes>();
-
-	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
-
 	std::vector<Vertex> vertices;
+	std::unique_ptr<ShapeVertices> shapes = std::make_unique<ShapeVertices>();
+	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 
 };
