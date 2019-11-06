@@ -6,15 +6,15 @@
 class Primitive
 {
 public:
-	Primitive() = default;
 	Primitive(std::vector<Vertex> v) : vertices(v) {}
+	Primitive() = default;
 	~Primitive() = default;
 
-	enum Type
+	enum class Type
 	{
 		BOX, SPHERE, PLANE, COMPLEX
 	};
-	Type type = BOX;
+	Type type = Type::BOX;
 
 	std::unique_ptr<RigidBody> rigidbody = std::make_unique<RigidBody>();
 	
@@ -29,6 +29,4 @@ public:
 
 	std::unique_ptr<BoundingVolume> boundingVolume = std::make_unique<BoundingVolume>();
 	std::unique_ptr<CollisionVolume> collisionVolume = std::make_unique<CollisionVolume>();
-
-
 };

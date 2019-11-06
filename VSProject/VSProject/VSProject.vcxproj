@@ -133,8 +133,10 @@
     <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionFine.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
+    <ClCompile Include="Contact.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="Objects.cpp" />
@@ -148,6 +150,7 @@
     <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionFine.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="Contact.h" />

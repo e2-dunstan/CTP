@@ -9,11 +9,13 @@ void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, V
 	switch (type)
 	{
 	case Primitive::Type::BOX:
-		newObj->boundingVolume->Create(translation, scale);
+		newObj->boundingVolume->Create(BoundingVolume::Type::BOX, translation, 0, scale);
+		newObj->collisionVolume->Create(CollisionVolume::Type::BOX, translation, 0, scale / 2, rotation, Vector3());
 		break;
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(shapes->GetPlaneVertices());
-		newObj->boundingVolume->Create(translation, scale);
+		//newObj->boundingVolume->Create(BoundingVolume::Type::BOX, translation, 0, scale);
+		newObj->collisionVolume->Create(CollisionVolume::Type::PLANE, translation, 0, scale / 2, rotation, Vector3(0,1,0));
 		break;
 	case Primitive::Type::SPHERE:
 		break;
@@ -48,17 +50,10 @@ void Objects::UpdateTransforms(Primitive* prim)
 
 	//SPHERE STUFF HERE IF NOT CUBE
 	prim->boundingVolume->SetVertices(prim->vertices);
-	prim->boundingVolume->Update(prim->translation, prim->scale, prim->rotation);
+	prim->boundingVolume->Update(prim->translation, 0, prim->scale);
+	prim->collisionVolume->Update(prim->translation, 0, prim->scale / 2, prim->rotation);
 	
 	prim->rigidbody->updateTransforms = false;
-}
-
-void Objects::CreateBoundingVolume(Primitive* prim)
-{
-	if (prim->type == Primitive::Type::BOX)
-	{
-		prim->boundingVolume->Create(prim->translation, prim->scale);
-	}
 }
 
 void Objects::Animate()
@@ -100,6 +95,10 @@ void Objects::Draw()
 
 void Objects::Update()
 {
+	for (int i = 1; i < primitives.size(); i++)
+	{
+		collisions->DetectFine(primitives[0], primitives[i]);
+	}
 	//use oct tree here
 
 	//for (int i = 0; i < rbs.size(); i++)

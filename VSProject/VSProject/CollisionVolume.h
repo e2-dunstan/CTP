@@ -7,11 +7,35 @@ public:
 	CollisionVolume() = default;
 	~CollisionVolume() = default;
 
-	//void Create(RigidBody rb, RigidBody::Type type);
+	enum class Type
+	{
+		BOX, SPHERE, PLANE, COMPLEX
+	};
+	Type type = Type::BOX;
 
+	void Create(Type _type, Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation, Vector3 _normal);
+	void Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation);
+
+	//Shared
+	Vector3 centre;
+
+	//Sphere
+	float radius = 0;
+
+	//Box
+	Vector3 halfSize;
+	std::vector<Vector3> vertices;
+	Vector3 rotation;
+
+	//Plane
+	Vector3 normal = Vector3(0, 1, 0);
 
 private:
 
-	void Cube();
-	void Sphere();
+	void Box();
+	//void Sphere();
+	//void Plane();
+	//void Complex();
+
+	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 };

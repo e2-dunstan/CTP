@@ -1,7 +1,6 @@
 #pragma once
-#include "Primitive.h"
 #include "Collisions.h"
-#include "OctTree.h"
+//#include "OctTree.h"
 
 class Objects
 {
@@ -20,7 +19,6 @@ public:
 private:
 
 	void UpdateTransforms(Primitive* prim);
-	void CreateBoundingVolume(Primitive* prim);
 
 	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 
