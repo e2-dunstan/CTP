@@ -4,6 +4,19 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 {
 	data->contacts.clear();
 
+	//std::string str1 = "???";
+	//std::string str2 = "???";
+	//if (prim1->type == Primitive::Type::PLANE)
+	//{
+	//	str1 = "plane";
+	//}
+	//if (prim2->type == Primitive::Type::BOX)
+	//{
+	//	str2 = "box";
+	//}
+
+	//std::cout << "detecting contacts " << str1 << ", " << str2 << std::endl;
+
 	if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::SPHERE)
 	{
 		SphereAndSphere(prim1, prim2,
@@ -75,7 +88,13 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planeP
 {
 	for (int v = 0; v < 8; v++)
 	{
-		float distance = (box->collisionVolume->vertices[v] % normal).Magnitude();
+		Vector3 vertNormal = box->collisionVolume->vertices[v] % normal;
+		float vertexPos = 0;
+		if (vertNormal.x != 0) vertexPos = vertNormal.x;
+		else if (vertNormal.y != 0) vertexPos = vertNormal.y;
+		else if (vertNormal.z != 0) vertexPos = vertNormal.z;
+
+		float distance = vertexPos;//(box->collisionVolume->vertices[v] % normal).Magnitude();
 
 		if (distance <= (planePosition % normal).Magnitude()) //* data->tolerance
 		{
@@ -88,7 +107,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planeP
 
 			data->contacts.push_back(contact);
 
-			std::cout << "Collision detected" << std::endl;
+			std::cout << "Collision detected " << distance << std::endl;
 		}
 	}
 }

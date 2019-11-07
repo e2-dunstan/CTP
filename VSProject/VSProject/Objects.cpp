@@ -4,11 +4,12 @@
 void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
 {
 	//default shape
-	Primitive* newObj = new Primitive(shapes->GetCubeVertices());
+	Primitive* newObj = nullptr;
 
 	switch (type)
 	{
 	case Primitive::Type::BOX:
+		newObj = new Primitive(shapes->GetCubeVertices());
 		newObj->boundingVolume->Create(BoundingVolume::Type::BOX, translation, 0, scale);
 		newObj->collisionVolume->Create(CollisionVolume::Type::BOX, translation, 0, scale / 2, rotation, Vector3());
 		break;
@@ -22,8 +23,10 @@ void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, V
 	case Primitive::Type::COMPLEX:
 		break;
 	default:
+		newObj = new Primitive(shapes->GetCubeVertices());
 		break;
 	}
+	newObj->type = type;
 
 	newObj->scale = scale;
 	newObj->translation = translation;
@@ -97,6 +100,7 @@ void Objects::Update()
 {
 	for (int i = 1; i < primitives.size(); i++)
 	{
+		std::cout << "primitive " << i << std::endl;
 		collisions->DetectFine(primitives[0], primitives[i]);
 	}
 	//use oct tree here

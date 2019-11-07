@@ -103,6 +103,7 @@ bool Vector3::operator!=(const Vector3& vec)
 		return false;
 }
 
+
 void Vector3::DebugOutput() 
 { 
 	std::cout << "( " + std::to_string(x) + ", " + std::to_string(y) + ", " + std::to_string(z) + " )" << std::endl; 

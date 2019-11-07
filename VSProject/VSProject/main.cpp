@@ -120,6 +120,9 @@ void timer(int)
 
 	engine->Animate();
 
+	//Be careful with this
+	engine->Update();
+
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);
 }
@@ -165,6 +168,7 @@ int main(int argc, char* argv[]) {
 	glutMotionFunc(MouseMove);
 	glutMouseFunc(MouseButton);
 
+	//this is not called every frame
 	engine->Update();
 
 	glutMainLoop();
