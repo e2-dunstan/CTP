@@ -1,2 +1,18 @@
 ﻿  Engine.cpp
+  Objects.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(48,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(76,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(82,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(84,122): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(84,85): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(84,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(90,128): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(90,89): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(90,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(101,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(18,48): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(19,48): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+  Generating Code...
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(20,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe
