@@ -96,11 +96,10 @@ void Objects::Draw()
 	}
 }
 
-void Objects::Update()
+void Objects::Update(int deltaTime)
 {
 	for (int i = 1; i < primitives.size(); i++)
 	{
-		std::cout << "primitive " << i << std::endl;
 		collisions->DetectFine(primitives[0], primitives[i]);
 	}
 	//use oct tree here

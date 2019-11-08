@@ -1,9 +1,2 @@
-﻿  CollisionFine.cpp
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(53,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(74,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(93,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(94,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(95,53): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(103,31): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(106,69): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  Engine.cpp
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

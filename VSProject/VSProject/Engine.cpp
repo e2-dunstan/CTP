@@ -8,30 +8,18 @@ Engine::Engine()
 void Engine::Init()
 {
 	obj->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(), Vector3());
-	obj->Create(Primitive::Type::BOX, Vector3(1.5, 1.5, 1.5), Vector3(5, 10, 5), Vector3(0, 45, 45));
-	obj->Create(Primitive::Type::BOX, Vector3(3, 1, 1), Vector3(0, 2, 10), Vector3(0, 30, 0));
-	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(10, 2, 0), Vector3(0, 0, 0));
+	//obj->Create(Primitive::Type::BOX, Vector3(1.5, 1.5, 1.5), Vector3(5, 10, 5), Vector3(0, 45, 45));
+	//obj->Create(Primitive::Type::BOX, Vector3(3, 1, 1), Vector3(0, 2, 10), Vector3(0, 30, 0));
+	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(10, 0.2, 0), Vector3(0, 0, 30));
 }
 
-void Engine::Update()
+void Engine::Update(int deltaTime)
 {
-	obj->Update();
+	obj->Update(deltaTime);
 }
 
 void Engine::Render()
 {
-	//glLoadIdentity();
-
-	//Floor
-	//glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 0.2);
-	//glColor3f(0.8f, 0.8f, 0.8f);
-	//glBegin(GL_QUADS);
-	//	glVertex3f(-64.0f, 0.0f, -64.0f);
-	//	glVertex3f(-64.0f, 0.0f, 64.0f);
-	//	glVertex3f(64.0f, 0.0f, 64.0f);
-	//	glVertex3f(64.0f, 0.0f, -64.0f);
-	//glEnd();
-
 	obj->Draw();
 }
 

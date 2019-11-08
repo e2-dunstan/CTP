@@ -9,7 +9,7 @@ public:
 	~Engine() = default;
 
 	void Init();
-	void Update();
+	void Update(int deltaTime);
 	void Render();
 	void Animate();
 

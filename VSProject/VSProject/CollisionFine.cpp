@@ -71,7 +71,7 @@ void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, Vector3 
 {
 	if (data->contactsLeft <= 0) return;
 
-	float distance = (normal % spherePosition).Magnitude() - radius - (normal % planePosition).Magnitude();
+	float distance = (normal * spherePosition).Magnitude() - radius - (normal * planePosition).Magnitude();
 	std::cout << "Distance between sphere and plane: " << distance << std::endl;
 
 	if (distance >= 0) return;
@@ -86,28 +86,31 @@ void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, Vector3 
 
 void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planePosition, Vector3 normal)
 {
+	//Intersection test - DONT THINK IT WORKS???
+	Vector3 boxCentre = box->collisionVolume->centre;
+	int projectedRadius = (boxCentre.x * normal.x + boxCentre.y * normal.y + boxCentre.z * normal.z) * 10;
+	// Work out how far the box is from the origin
+	int boxDistance = ((normal * boxCentre).Magnitude() * 10) - projectedRadius;
+	float planeOffset = planePosition.x * normal.x + planePosition.y * normal.y + planePosition.z * normal.z;
+
+	if (((float)boxDistance / 10) > planeOffset) return;
+
+
 	for (int v = 0; v < 8; v++)
 	{
-		Vector3 vertNormal = box->collisionVolume->vertices[v] % normal;
-		float vertexPos = 0;
-		if (vertNormal.x != 0) vertexPos = vertNormal.x;
-		else if (vertNormal.y != 0) vertexPos = vertNormal.y;
-		else if (vertNormal.z != 0) vertexPos = vertNormal.z;
+		//distance from vertex to plane
+		float distance = (box->collisionVolume->vertices[v] * normal).Magnitude();
 
-		float distance = vertexPos;//(box->collisionVolume->vertices[v] % normal).Magnitude();
-
-		if (distance <= (planePosition % normal).Magnitude()) //* data->tolerance
+		if (distance <= planeOffset + data->tolerance)//(planePosition % normal).Magnitude()) //* data->tolerance
 		{
 			Contact* contact = new Contact(box, plane);
 			contact->point = normal;
-			contact->point *= distance - (planePosition % normal).Magnitude();
+			contact->point *= distance - (planePosition * normal).Magnitude();
 			contact->point += box->collisionVolume->vertices[v];
 			contact->normal = normal;
-			contact->penetrationDepth = (planePosition % normal).Magnitude() - distance;
+			contact->penetrationDepth = (planePosition * normal).Magnitude() - distance + data->tolerance;
 
 			data->contacts.push_back(contact);
-
-			std::cout << "Collision detected " << distance << std::endl;
 		}
 	}
 }

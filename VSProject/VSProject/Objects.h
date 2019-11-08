@@ -12,7 +12,7 @@ public:
 	void Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation);
 	void Animate();
 	void Draw();
-	void Update();
+	void Update(int deltaTime);
 
 	std::unique_ptr<ShapeVertices> shapes = std::make_unique<ShapeVertices>();
 

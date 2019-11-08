@@ -25,6 +25,11 @@ bool mouseHeld = false;
 Engine* engine = new Engine();
 Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
+//in miliseconds
+unsigned int timeSinceStart = 0;
+unsigned int oldTimeSinceStart = 0;
+int deltaTime = 0;
+
 
 void PressKey(unsigned char key, int xx, int yy)
 {
@@ -99,6 +104,10 @@ void changeViewPort(int w, int h)
 
 void render()
 {
+	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+	deltaTime = timeSinceStart - oldTimeSinceStart;
+	oldTimeSinceStart = timeSinceStart;
+
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -121,7 +130,7 @@ void timer(int)
 	engine->Animate();
 
 	//Be careful with this
-	engine->Update();
+	engine->Update(deltaTime);
 
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);
@@ -169,7 +178,7 @@ int main(int argc, char* argv[]) {
 	glutMouseFunc(MouseButton);
 
 	//this is not called every frame
-	engine->Update();
+	engine->Update(deltaTime);
 
 	glutMainLoop();
 	return 0;

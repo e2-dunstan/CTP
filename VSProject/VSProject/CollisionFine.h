@@ -7,6 +7,7 @@ struct CollisionData
 {
 	std::vector<Contact*> contacts;
 	int contactsLeft = 1;
+	float tolerance = 0.5f;
 };
 
 class CollisionFine
