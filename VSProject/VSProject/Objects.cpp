@@ -98,10 +98,13 @@ void Objects::Draw()
 
 void Objects::Update(int deltaTime)
 {
-	for (int i = 1; i < primitives.size(); i++)
-	{
-		collisions->DetectFine(primitives[0], primitives[i]);
-	}
+	//for (int i = 2; i < primitives.size(); i++)
+	//{
+	//	collisions->DetectFine(primitives[1], primitives[i]);
+	//}
+	
+	collisions->DetectFine(primitives[1], primitives[2]);
+
 	//use oct tree here
 
 	//for (int i = 0; i < rbs.size(); i++)

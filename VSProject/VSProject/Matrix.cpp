@@ -35,6 +35,11 @@ void Matrix::Identity()
 	}
 }
 
+double Matrix::Get(unsigned _row, unsigned _col)
+{
+	return matrix[_row][_col];
+}
+
 Matrix Matrix::operator+(Matrix& m)
 {
 	Matrix sum(rowSize, colSize);

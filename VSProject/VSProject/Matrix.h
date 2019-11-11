@@ -9,6 +9,8 @@ public:
 
 	void Identity();
 
+	double Get(unsigned _row, unsigned _col);
+
 	Matrix operator+(Matrix& m);
 	Matrix operator+(double scalar);
 	Matrix operator-(Matrix& m);

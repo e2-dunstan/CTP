@@ -14,4 +14,6 @@ public:
 	void Translate(Matrix& m, double x, double y, double z);
 	void Rotate(Matrix& m, double x, double y, double z);
 	void Scale (Matrix& m, double x, double y, double z);
+
+	Vector3 GetColumnVectorFromMatrix(unsigned col, Matrix mat);
 };

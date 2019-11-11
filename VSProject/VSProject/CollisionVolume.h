@@ -26,6 +26,7 @@ public:
 	Vector3 halfSize;
 	std::vector<Vector3> vertices;
 	Vector3 rotation;
+	std::vector<Vector3> normals;
 
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);
