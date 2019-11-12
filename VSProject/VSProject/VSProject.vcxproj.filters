@@ -78,10 +78,10 @@
     <ClCompile Include="BoundingVolume.cpp">
       <Filter>Source Files\Collision\BoundingVolume</Filter>
     </ClCompile>
-    <ClCompile Include="Contact.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionFine.cpp">
+      <Filter>Source Files\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="Contact.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
   </ItemGroup>

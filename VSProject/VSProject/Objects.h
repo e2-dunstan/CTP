@@ -9,8 +9,8 @@ public:
 	Objects() = default;
 	~Objects() = default;
 
-	void Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation);
-	void Animate();
+	void Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation, float radius = 0);
+	void CreateSphere(float radius, Vector3 translation);
 	void Draw();
 	void Update(int deltaTime);
 
@@ -21,7 +21,6 @@ private:
 	void UpdateTransforms(Primitive* prim);
 
 	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
-
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 
 	std::vector<Primitive*> primitives;
@@ -30,7 +29,8 @@ private:
 
 	GLenum GetDrawType(Primitive::Type objectType);
 
-	bool drawBoundingVolumes = false;
+	bool drawBoundingVolumes = true;
+	bool drawCollisionVolumes = false;
 
 	//bool octTreeCreated = false;
 };

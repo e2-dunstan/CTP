@@ -8,9 +8,10 @@ Engine::Engine()
 void Engine::Init()
 {
 	obj->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(), Vector3());
-	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 7, 10), Vector3(40, 40, 0));
-	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 5, 10), Vector3(0, 0, 0));
-	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(10, 0.2, 0), Vector3(0, 0, 30));
+	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 1, 10), Vector3(40, 40, 0));
+	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(1, 6, 5), Vector3(40, 0, 0));
+	obj->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 5, 0), Vector3(0, 0, 0));
+	obj->CreateSphere(2, Vector3(5, 5, -5));
 }
 
 void Engine::Update(int deltaTime)
@@ -21,9 +22,4 @@ void Engine::Update(int deltaTime)
 void Engine::Render()
 {
 	obj->Draw();
-}
-
-void Engine::Animate()
-{
-	obj->Animate();
 }

@@ -1,7 +1,7 @@
 #include "Objects.h"
 
 
-void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation)
+void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation, float radius)
 {
 	//default shape
 	Primitive* newObj = nullptr;
@@ -11,14 +11,17 @@ void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, V
 	case Primitive::Type::BOX:
 		newObj = new Primitive(shapes->GetCubeVertices());
 		newObj->boundingVolume->Create(BoundingVolume::Type::BOX, translation, 0, scale);
-		newObj->collisionVolume->Create(CollisionVolume::Type::BOX, translation, 0, scale / 2, rotation, Vector3());
+		newObj->collisionVolume->Create(CollisionVolume::Type::BOX, translation, 0, scale, rotation, Vector3());
 		break;
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(shapes->GetPlaneVertices());
 		//newObj->boundingVolume->Create(BoundingVolume::Type::BOX, translation, 0, scale);
-		newObj->collisionVolume->Create(CollisionVolume::Type::PLANE, translation, 0, scale / 2, rotation, Vector3(0,1,0));
+		newObj->collisionVolume->Create(CollisionVolume::Type::PLANE, translation, 0, scale, rotation, Vector3(0,1,0));
 		break;
 	case Primitive::Type::SPHERE:
+		newObj = new Primitive(shapes->GetSphereVertices(radius, &shapes->colourPresets->red, 12, 12));
+		newObj->boundingVolume->Create(BoundingVolume::Type::SPHERE, translation, radius, scale);
+		newObj->collisionVolume->Create(CollisionVolume::Type::SPHERE, translation, radius, scale, rotation, Vector3());
 		break;
 	case Primitive::Type::COMPLEX:
 		break;
@@ -37,12 +40,19 @@ void Objects::Create(Primitive::Type type, Vector3 scale, Vector3 translation, V
 	primitives.push_back(newObj);
 }
 
+void Objects::CreateSphere(float radius, Vector3 translation)
+{
+	Create(Primitive::Type::SPHERE, Vector3(1, 1, 1), translation, Vector3(), radius);
+}
+
 void Objects::UpdateTransforms(Primitive* prim)
 {
+	if (prim->type == Primitive::Type::BOX) prim->vertices = shapes->GetCubeVertices();
 	prim->transform.Identity();
 
 	mathe->Translate(prim->transform, prim->translation.x, prim->translation.y, prim->translation.z);
 	mathe->Rotate(prim->transform, prim->rotation.x, prim->rotation.y, prim->rotation.z);
+	prim->collisionVolume->axisMat = prim->transform;
 	mathe->Scale(prim->transform, prim->scale.x, prim->scale.y, prim->scale.z);
 
 	for (int v = 0; v < prim->vertices.size(); v++)
@@ -59,10 +69,6 @@ void Objects::UpdateTransforms(Primitive* prim)
 	prim->rigidbody->updateTransforms = false;
 }
 
-void Objects::Animate()
-{	
-}
-
 void Objects::Draw()
 {
 	if (primitives.size() <= 0) return;
@@ -75,8 +81,6 @@ void Objects::Draw()
 
 	for (int i = 0; i < primitives.size(); i++)
 	{	
-		if (primitives[i]->rigidbody->updateTransforms) UpdateTransforms(primitives[i]);
-
 		glBegin(GetDrawType(primitives[i]->type));
 
 		for (int v = 0; v < primitives[i]->vertices.size(); v++)
@@ -93,17 +97,26 @@ void Objects::Draw()
 		glEnd();
 		
 		if (drawBoundingVolumes) primitives[i]->boundingVolume->Draw();
+		if (drawCollisionVolumes) primitives[i]->collisionVolume->Draw();
 	}
 }
 
 void Objects::Update(int deltaTime)
 {
-	//for (int i = 2; i < primitives.size(); i++)
-	//{
-	//	collisions->DetectFine(primitives[1], primitives[i]);
-	//}
-	
-	collisions->DetectFine(primitives[1], primitives[2]);
+	double trueDeltaTime = (double)deltaTime / 1000.0;
+
+	//Move an object along the z axis
+	//primitives[2]->translation.z -= trueDeltaTime;
+	//primitives[2]->rigidbody->updateTransforms = true;
+
+	//Update all transforms
+	for (int i = 0; i < primitives.size(); i++)
+	{
+		if (primitives[i]->rigidbody->updateTransforms) UpdateTransforms(primitives[i]);
+	}
+
+
+	collisions->DetectFine(primitives[2], primitives[3]);
 
 	//use oct tree here
 
@@ -118,8 +131,9 @@ GLenum Objects::GetDrawType(Primitive::Type objectType)
 {
 	switch (objectType)
 	{
+	case Primitive::Type::SPHERE:
+		return GL_TRIANGLES;
 	case Primitive::Type::BOX:
-		return GL_QUADS;
 	default:
 		return GL_QUADS;
 	}

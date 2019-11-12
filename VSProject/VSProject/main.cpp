@@ -127,8 +127,6 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	engine->Animate();
-
 	//Be careful with this
 	engine->Update(deltaTime);
 

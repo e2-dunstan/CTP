@@ -28,9 +28,11 @@ double Vector3::ScalarProduct(const Vector3& vec) const
 
 Vector3 Vector3::VectorProduct(const Vector3& vec) const
 {
-	return Vector3((y * vec.z) - (z * vec.y),
-		(z * vec.x) - (x * vec.z),
-		(x * vec.y) - (y * vec.x));
+	double _x = (y * vec.z) - (z * vec.y);
+	double _y = (z * vec.x) - (x * vec.z);
+	double _z = (x * vec.y) - (y * vec.x);
+
+	return Vector3(_x, _y, _z);
 }
 
 void Vector3::operator*=(const float value)

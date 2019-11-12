@@ -1,24 +1,12 @@
-﻿  CollisionFine.cpp
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(52,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(73,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(99,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(100,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(101,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(104,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(105,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(106,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(109,27): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(110,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(111,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(114,54): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(130,3): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(138,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(195,20): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(207,20): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(219,22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(221,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(222,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(230,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(236,31): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(239,80): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  Objects.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(58,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(86,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,122): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,85): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,128): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,89): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(113,20): warning C4018: '<': signed/unsigned mismatch
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

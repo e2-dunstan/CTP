@@ -30,11 +30,13 @@ private:
 	void BoxAndBox(Primitive* box1, Primitive* box2);
 	//
 
-	std::vector<Vector3> GetBoxAxes(Primitive* box1);
+	std::vector<Vector3> GetBoxAxes(Primitive* box);
 
 	//Tested and working
 	void BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planePosition, Vector3 normal);
 
 	std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
 	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
+
+	bool collidingInPrevFrame = false;
 };

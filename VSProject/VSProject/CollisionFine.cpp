@@ -125,9 +125,9 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3 sphe
 float CollisionFine::PositionOnAxis(Primitive* box, Vector3 axis)
 {
 	return
-		box->collisionVolume->halfSize.x * abs(axis.ScalarProduct(mathe->GetColumnVectorFromMatrix(0, box->transform)))
-		+ box->collisionVolume->halfSize.y * abs(axis.ScalarProduct(mathe->GetColumnVectorFromMatrix(1, box->transform)))
-		+ box->collisionVolume->halfSize.z * abs(axis.ScalarProduct(mathe->GetColumnVectorFromMatrix(2, box->transform)));
+		box->collisionVolume->halfSize.x * abs(axis.ScalarProduct(mathe->GetAxis(0, box->collisionVolume->axisMat)))
+		+ box->collisionVolume->halfSize.y * abs(axis.ScalarProduct(mathe->GetAxis(1, box->collisionVolume->axisMat)))
+		+ box->collisionVolume->halfSize.z * abs(axis.ScalarProduct(mathe->GetAxis(2, box->collisionVolume->axisMat)));
 }
 
 bool CollisionFine::BoxesOverlapOnAxis(Primitive* box1, Primitive* box2, Vector3 toCentre, Vector3 axis)
@@ -136,10 +136,11 @@ bool CollisionFine::BoxesOverlapOnAxis(Primitive* box1, Primitive* box2, Vector3
 	float box2AxisPos = PositionOnAxis(box2, axis);
 
 	float distance = abs(toCentre.ScalarProduct(axis));// -data->tolerance;
+
+	if (distance <= box1AxisPos + box2AxisPos) return true;
+	else return false;
 	
-	//std::cout << "box1: " << box1AxisPos << ", box2: " << box2AxisPos << std::endl;
-	
-	return (distance < box1AxisPos + box2AxisPos);
+	//return (distance < box1AxisPos + box2AxisPos);
 }
 
 //Separating axis theorem
@@ -148,14 +149,12 @@ void CollisionFine::BoxAndBox(Primitive* box1, Primitive* box2)
 	Vector3 toCentre = box2->collisionVolume->centre - box1->collisionVolume->centre;
 	//std::vector<Vector3> axes1 = GetBoxAxes(box1);
 	//std::vector<Vector3> axes2 = GetBoxAxes(box2);
-
-	//check all axes on both shapes
+	////check all axes on both shapes
 	//for (int n1 = 0; n1 < 3; n1++)
 	//{
 	//	if (!BoxesOverlapOnAxis(box1, box2, toCentre, axes1[n1])
 	//		|| !BoxesOverlapOnAxis(box1, box2, toCentre, axes2[n1]))
 	//	{
-	//		std::cout << "no overlap" << std::endl;
 	//		return;
 	//	}
 	//	for (int n2 = 0; n2 < 3; n2++)
@@ -163,50 +162,61 @@ void CollisionFine::BoxAndBox(Primitive* box1, Primitive* box2)
 	//		Vector3 vecProd = axes1[n1] % axes2[n2];
 	//		if (!BoxesOverlapOnAxis(box1, box2, toCentre, vecProd))
 	//		{
-	//			std::cout << "no overlap on cross product" << std::endl;
 	//			return;
 	//		}
 	//	}
 	//}
 	for (int n1 = 0; n1 < 3; n1++)
 	{
-		if (!BoxesOverlapOnAxis(box1, box2, toCentre, mathe->GetColumnVectorFromMatrix(n1, box1->transform))
-			|| !BoxesOverlapOnAxis(box1, box2, toCentre, mathe->GetColumnVectorFromMatrix(n1, box2->transform)))
+		if (!BoxesOverlapOnAxis(box1, box2, toCentre, mathe->GetAxis(n1, box1->collisionVolume->axisMat))
+			|| !BoxesOverlapOnAxis(box1, box2, toCentre, mathe->GetAxis(n1, box2->collisionVolume->axisMat)))
 		{
-			std::cout << "no overlap" << std::endl;
+			if (collidingInPrevFrame)
+			{
+				std::cout << "no overlap" << std::endl;
+				collidingInPrevFrame = false;
+			}
 			return;
 		}
 		for (int n2 = 0; n2 < 3; n2++)
 		{
-			Vector3 vecProd = mathe->GetColumnVectorFromMatrix(n1, box1->transform) % mathe->GetColumnVectorFromMatrix(n2, box2->transform);
+			Vector3 vecProd = mathe->GetAxis(n1, box1->collisionVolume->axisMat) % mathe->GetAxis(n2, box2->collisionVolume->axisMat);
 			if (!BoxesOverlapOnAxis(box1, box2, toCentre, vecProd))
 			{
-				std::cout << "no overlap on cross product" << std::endl;
+				if (collidingInPrevFrame)
+				{
+					std::cout << "no overlap" << std::endl;
+					collidingInPrevFrame = false;
+				}
 				return;
 			}
 		}
 	}
-	std::cout << "boxes colliding" << std::endl;
+	if (!collidingInPrevFrame)
+	{
+		std::cout << "boxes colliding" << std::endl;
+		collidingInPrevFrame = true;
+	}
 }
 
-std::vector<Vector3> CollisionFine::GetBoxAxes(Primitive* box1)
+std::vector<Vector3> CollisionFine::GetBoxAxes(Primitive* box)
 {
 	std::vector<Vector3> axes;
-	for (int i = 0; i < box1->vertices.size(); i++)
+	for (int i = 0; i < box->vertices.size(); i++)
 	{
-		Vector3 normal = box1->vertices[i].normal;
+		Vector3 normal = box->vertices[i].normal;
 		if (axes.size() <= 0 || std::find(axes.begin(), axes.end(), normal) == axes.end())
 		{
-			//if (normal.x < 0 || normal.y < 0 || normal.z < 0) continue;
-			//else
-			//{
+			if (normal.x < 0 || normal.y < 0 || normal.z < 0) continue;
+			else
+			{
 				axes.push_back(normal);
-			//}
+			}
 		}
 	}
 	for (int n = 0; n < axes.size(); n++)
 	{
-		mathe->Transform(axes[n], box1->transform);
+		mathe->Transform(axes[n], box->collisionVolume->axisMat);
 	}
 
 	return axes;
@@ -237,7 +247,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planeP
 			contact->point += box->collisionVolume->vertices[v];
 			contact->normal = normal;
 			contact->penetrationDepth = (planePosition * normal).Magnitude() - distance + data->tolerance;
-
+			std::cout << "Box and plane" << std::endl;
 			data->contacts.push_back(contact);
 		}
 	}

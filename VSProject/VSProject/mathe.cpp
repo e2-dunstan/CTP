@@ -61,7 +61,7 @@ void Mathe::Scale(Matrix& m, double x, double y, double z)
 	m = m * scale;
 }
 
-Vector3 Mathe::GetColumnVectorFromMatrix(unsigned col, Matrix mat)
+Vector3 Mathe::GetAxis(unsigned i, Matrix mat)
 {
-	return Vector3(mat.Get(0, col), mat.Get(1, col), mat.Get(2, col));
+	return Vector3(mat.Get(i, 0), mat.Get(i, 1), mat.Get(i, 2));
 }

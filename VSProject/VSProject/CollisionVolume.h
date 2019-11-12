@@ -16,6 +16,8 @@ public:
 	void Create(Type _type, Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation, Vector3 _normal);
 	void Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation);
 
+	void Draw();
+
 	//Shared
 	Vector3 centre;
 
@@ -30,6 +32,8 @@ public:
 
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);
+
+	Matrix axisMat = Matrix(4,4);
 
 private:
 

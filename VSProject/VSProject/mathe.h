@@ -15,5 +15,5 @@ public:
 	void Rotate(Matrix& m, double x, double y, double z);
 	void Scale (Matrix& m, double x, double y, double z);
 
-	Vector3 GetColumnVectorFromMatrix(unsigned col, Matrix mat);
+	Vector3 GetAxis(unsigned col, Matrix mat);
 };

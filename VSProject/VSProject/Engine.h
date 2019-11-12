@@ -11,7 +11,6 @@ public:
 	void Init();
 	void Update(int deltaTime);
 	void Render();
-	void Animate();
 
 private:
 
