@@ -29,4 +29,6 @@ public:
 
 	std::unique_ptr<BoundingVolume> boundingVolume = std::make_unique<BoundingVolume>();
 	std::unique_ptr<CollisionVolume> collisionVolume = std::make_unique<CollisionVolume>();
+
+	float radius = 0;
 };

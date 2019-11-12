@@ -30,7 +30,7 @@ private:
 	GLenum GetDrawType(Primitive::Type objectType);
 
 	bool drawBoundingVolumes = true;
-	bool drawCollisionVolumes = false;
+	bool drawCollisionVolumes = true;
 
 	//bool octTreeCreated = false;
 };

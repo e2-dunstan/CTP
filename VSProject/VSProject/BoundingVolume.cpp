@@ -62,8 +62,8 @@ void BoundingVolume::Draw()
 
 void BoundingVolume::UpdateBox(Vector3 _centre, Vector3 _size)
 {
-	vertices.clear();
-	vertices = shapes->GetCubeVertices();
+	//vertices.clear();
+	vertices = shapes->baseBox;
 
 	//cube.centre = _centre;
 	//cube.size = _size;

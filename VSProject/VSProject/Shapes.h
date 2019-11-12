@@ -4,7 +4,9 @@
 class ShapeVertices
 {
 public:
-	ShapeVertices() = default;
+	ShapeVertices() {
+		baseBox = GetCubeVertices(&Colour(0, 0, 0));
+	};
 	~ShapeVertices() = default;
 
 	std::vector<Vertex> GetCubeVertices(Colour* _colour = NULL);
@@ -13,8 +15,9 @@ public:
 
 	std::unique_ptr<ColourPresets> colourPresets = std::make_unique<ColourPresets>();
 
-private:
+	std::vector<Vertex> baseBox;
 
+private:
 
 	Colour GetColour(Colour _rainbow, Colour* _colour = NULL);
 };

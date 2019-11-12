@@ -1,12 +1,2 @@
-﻿  Objects.cpp
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(58,20): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(82,20): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(86,21): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,122): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,85): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(88,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,128): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,89): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(94,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(113,20): warning C4018: '<': signed/unsigned mismatch
+﻿  Engine.cpp
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

@@ -16,6 +16,21 @@ void Mathe::Transform(Vector3& vector, Matrix& matrix)
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
 
+Vector3 Mathe::matrixInverse(Matrix& m, Vector3& v)
+{
+	Vector3 vec = v;
+	vec.x -= m.Get(0, 3);
+	vec.y -= m.Get(1, 3);
+	vec.z -= m.Get(2, 3);
+
+	Vector3 ret = Vector3(
+		vec.x * m.Get(0, 0) + vec.y * m.Get(1, 0) + vec.z * m.Get(2, 0),
+		vec.x * m.Get(0, 1) + vec.y * m.Get(1, 1) + vec.z * m.Get(2, 1),
+		vec.x * m.Get(0, 2) + vec.y * m.Get(1, 2) + vec.z * m.Get(2, 2)
+	);
+	return ret;
+}
+
 void Mathe::Translate(Matrix& m, double x, double y, double z)
 {
 	Matrix translation = Matrix(4, 4);

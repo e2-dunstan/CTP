@@ -47,7 +47,6 @@ void Objects::CreateSphere(float radius, Vector3 translation)
 
 void Objects::UpdateTransforms(Primitive* prim)
 {
-	if (prim->type == Primitive::Type::BOX) prim->vertices = shapes->GetCubeVertices();
 	prim->transform.Identity();
 
 	mathe->Translate(prim->transform, prim->translation.x, prim->translation.y, prim->translation.z);
@@ -55,16 +54,16 @@ void Objects::UpdateTransforms(Primitive* prim)
 	prim->collisionVolume->axisMat = prim->transform;
 	mathe->Scale(prim->transform, prim->scale.x, prim->scale.y, prim->scale.z);
 
-	for (int v = 0; v < prim->vertices.size(); v++)
-	{
-		mathe->Transform(prim->vertices[v].position, prim->transform);
-		//transform normals
-	}
+	//for (int v = 0; v < prim->vertices.size(); v++)
+	//{
+	//	mathe->Transform(prim->vertices[v].position, prim->transform);
+	//	//transform normals
+	//}
 
 	//SPHERE STUFF HERE IF NOT CUBE
-	prim->boundingVolume->SetVertices(prim->vertices);
+	//prim->boundingVolume->SetVertices(prim->vertices);
 	prim->boundingVolume->Update(prim->translation, 0, prim->scale);
-	prim->collisionVolume->Update(prim->translation, 0, prim->scale / 2, prim->rotation);
+	prim->collisionVolume->Update(prim->translation, prim->radius, prim->scale / 2, prim->rotation);
 	
 	prim->rigidbody->updateTransforms = false;
 }
@@ -83,15 +82,17 @@ void Objects::Draw()
 	{	
 		glBegin(GetDrawType(primitives[i]->type));
 
-		for (int v = 0; v < primitives[i]->vertices.size(); v++)
+		std::vector<Vertex> verts = primitives[i]->vertices;
+		for (int v = 0; v < verts.size(); v++)
 		{
-			glNormal3f(primitives[i]->vertices[v].normal.x, primitives[i]->vertices[v].normal.y, primitives[i]->vertices[v].normal.z);
+			mathe->Transform(verts[v].position, primitives[i]->transform);
+			glNormal3f(verts[v].normal.x, verts[v].normal.y, verts[v].normal.z);
 
 			//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 
-			glColor3f(primitives[i]->vertices[v].colour.r, primitives[i]->vertices[v].colour.g, primitives[i]->vertices[v].colour.b);
-			glVertex3f(primitives[i]->vertices[v].position.x, primitives[i]->vertices[v].position.y, primitives[i]->vertices[v].position.z);
+			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			glVertex3f(verts[v].position.x, verts[v].position.y, verts[v].position.z);
 		}
 
 		glEnd();
@@ -104,10 +105,11 @@ void Objects::Draw()
 void Objects::Update(int deltaTime)
 {
 	double trueDeltaTime = (double)deltaTime / 1000.0;
+	//std::cout << deltaTime << std::endl;
 
-	//Move an object along the z axis
-	//primitives[2]->translation.z -= trueDeltaTime;
-	//primitives[2]->rigidbody->updateTransforms = true;
+	//SPHERES TANK PERFORMANCE
+	//primitives[4]->translation.y -= trueDeltaTime;
+	//primitives[4]->rigidbody->updateTransforms = true;
 
 	//Update all transforms
 	for (int i = 0; i < primitives.size(); i++)
@@ -115,8 +117,7 @@ void Objects::Update(int deltaTime)
 		if (primitives[i]->rigidbody->updateTransforms) UpdateTransforms(primitives[i]);
 	}
 
-
-	collisions->DetectFine(primitives[2], primitives[3]);
+	collisions->DetectFine(primitives[2], primitives[4]);
 
 	//use oct tree here
 

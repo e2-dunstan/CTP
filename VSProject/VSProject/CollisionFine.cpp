@@ -70,8 +70,7 @@ void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, Vector3 
 {
 	if (data->contactsLeft <= 0) return;
 
-	float distance = (normal * spherePosition).Magnitude() - radius - (normal * planePosition).Magnitude();
-	std::cout << "Distance between sphere and plane: " << distance << std::endl;
+	float distance = normal.ScalarProduct(spherePosition) - radius - normal.ScalarProduct(planePosition);
 
 	if (distance >= 0) return;
 
@@ -83,36 +82,39 @@ void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, Vector3 
 	data->contacts.push_back(contact);
 }
 
-//Separating axis theorem
+
 void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3 spherePosition, float radius)
 {
 	Vector3 halfSize = box->collisionVolume->halfSize;
+	Vector3 relCentre = mathe->matrixInverse(box->transform, spherePosition);
 
-	if (abs(spherePosition.x) - radius > halfSize.x
-		|| abs(spherePosition.y) - radius > halfSize.y
-		|| abs(spherePosition.z) - radius > halfSize.z)
+	if (abs(relCentre.x) - radius > halfSize.x
+		|| abs(relCentre.y) - radius > halfSize.y
+		|| abs(relCentre.z) - radius > halfSize.z)
 		return; //not in contact
 
 	Vector3 closestPoint;
 	float distance;
 
-	distance = spherePosition.x;
+	distance = relCentre.x;
 	if (distance > halfSize.x) distance = halfSize.x;
 	if (distance < -halfSize.x) distance = -halfSize.x;
 	closestPoint.x = distance;
 
-	distance = spherePosition.y;
+	distance = relCentre.y;
 	if (distance > halfSize.y) distance = halfSize.y;
 	if (distance < -halfSize.y) distance = -halfSize.y;
 	closestPoint.y = distance;
 
-	distance = spherePosition.z;
+	distance = relCentre.z;
 	if (distance > halfSize.z) distance = halfSize.z;
 	if (distance < -halfSize.z) distance = -halfSize.z;
 	closestPoint.z = distance;
 
-	distance = (closestPoint - spherePosition).Magnitude();
+	distance = (closestPoint - relCentre).Magnitude();
 	if (distance > radius * radius) return;	//not in contact
+
+	std::cout << "sphere and box" << std::endl;
 
 	Contact* contact = new Contact(sphere, box);
 	contact->normal = (spherePosition - closestPoint).Normalise();
@@ -199,28 +201,28 @@ void CollisionFine::BoxAndBox(Primitive* box1, Primitive* box2)
 	}
 }
 
-std::vector<Vector3> CollisionFine::GetBoxAxes(Primitive* box)
-{
-	std::vector<Vector3> axes;
-	for (int i = 0; i < box->vertices.size(); i++)
-	{
-		Vector3 normal = box->vertices[i].normal;
-		if (axes.size() <= 0 || std::find(axes.begin(), axes.end(), normal) == axes.end())
-		{
-			if (normal.x < 0 || normal.y < 0 || normal.z < 0) continue;
-			else
-			{
-				axes.push_back(normal);
-			}
-		}
-	}
-	for (int n = 0; n < axes.size(); n++)
-	{
-		mathe->Transform(axes[n], box->collisionVolume->axisMat);
-	}
-
-	return axes;
-}
+//std::vector<Vector3> CollisionFine::GetBoxAxes(Primitive* box)
+//{
+//	std::vector<Vector3> axes;
+//	for (int i = 0; i < box->vertices.size(); i++)
+//	{
+//		Vector3 normal = box->vertices[i].normal;
+//		if (axes.size() <= 0 || std::find(axes.begin(), axes.end(), normal) == axes.end())
+//		{
+//			if (normal.x < 0 || normal.y < 0 || normal.z < 0) continue;
+//			else
+//			{
+//				axes.push_back(normal);
+//			}
+//		}
+//	}
+//	for (int n = 0; n < axes.size(); n++)
+//	{
+//		mathe->Transform(axes[n], box->collisionVolume->axisMat);
+//	}
+//
+//	return axes;
+//}
 
 void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planePosition, Vector3 normal)
 {

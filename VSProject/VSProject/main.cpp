@@ -129,7 +129,6 @@ void timer(int)
 
 	//Be careful with this
 	engine->Update(deltaTime);
-
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);
 }

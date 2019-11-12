@@ -11,7 +11,7 @@ void CollisionVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3
 void CollisionVolume::Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation)
 {
 	centre = _centre;
-	radius = _radius;
+	if (_radius != 0 && radius == 0) radius = _radius;
 	halfSize = _size * 2;
 	rotation = _rotation;
 
