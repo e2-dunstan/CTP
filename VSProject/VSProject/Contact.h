@@ -12,5 +12,7 @@ public:
 	Vector3 normal;
 	float penetrationDepth = 0;
 
-	Primitive* bodies[2];
+	Primitive* body1;
+	Primitive* body2;
+
 };

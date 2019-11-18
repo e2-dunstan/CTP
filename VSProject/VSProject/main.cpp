@@ -3,21 +3,15 @@
 #include "Engine.h"
 #include "Camera.h"
 
-
-// More cubes
-// Shaders
-// Read book on separating axis theorem, arbitrary aligned cubes
-// Dont do axis align for now
-
-
+//Camera variables.
 float rotationSpeed = 0.005f;
 float translationSpeed = 0.01f;	
 int windowWidth = 1280;
 int windowHeight = 720;
 
-GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+//GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
+//GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
 GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
 
 bool mouseHeld = false;
@@ -66,7 +60,9 @@ void Init()
 {
 	std::cout << "Calling Init functions... " << std::endl;
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);
+	//Initialise OpenGL
+
+	glClearColor(0.0, 0.0, 0.0, 1.0);	//Black window.
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 1000);
@@ -74,6 +70,7 @@ void Init()
 	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	//glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
+	//Lighting will be fully implemented later.
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, light_ambient);
@@ -88,6 +85,7 @@ void Init()
 
 	glMatrixMode(GL_MODELVIEW);
 
+	//Init physics engine.
 	engine->Init();
 
 	std::cout << "Done!" << std::endl;
@@ -104,10 +102,12 @@ void changeViewPort(int w, int h)
 
 void render()
 {
+	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
 	deltaTime = timeSinceStart - oldTimeSinceStart;
 	oldTimeSinceStart = timeSinceStart;
 
+	//Clear the buffers.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glLoadIdentity();
@@ -127,7 +127,6 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	//Be careful with this
 	engine->Update(deltaTime);
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);
@@ -146,7 +145,6 @@ int main(int argc, char* argv[]) {
 	// Set the window size
 	glutInitWindowSize(windowWidth, windowHeight);
 
-	// Create the window
 	glutCreateWindow("Rigidbody Dynamics Engine with an Integrated Path Tracer ");
 
 	glutReshapeFunc(changeViewPort);
@@ -174,7 +172,6 @@ int main(int argc, char* argv[]) {
 	glutMotionFunc(MouseMove);
 	glutMouseFunc(MouseButton);
 
-	//this is not called every frame
 	engine->Update(deltaTime);
 
 	glutMainLoop();

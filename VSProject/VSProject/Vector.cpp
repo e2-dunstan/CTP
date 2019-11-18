@@ -1,5 +1,11 @@
 #include "Vector.h"
 
+double Vector3::Distance(const Vector3& vec) const
+{
+	Vector3 dir = Vector3(vec.x - x, vec.y - y, vec.z - z);
+	return dir.Magnitude();
+}
+
 double Vector3::Magnitude()
 {
 	return sqrt((x * x) + (y * y) + (z * z));

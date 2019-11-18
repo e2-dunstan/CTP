@@ -1,2 +1,67 @@
-﻿  Engine.cpp
+﻿  BoundingBox.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingBox.cpp(31,20): warning C4018: '<': signed/unsigned mismatch
+  BoundingSphere.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingBox.cpp(44,20): warning C4018: '<': signed/unsigned mismatch
+  BoundingVolume.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingSphere.cpp(21,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(53,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,82): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,58): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,34): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(73,20): warning C4018: '<': signed/unsigned mismatch
+  Camera.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(90,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Camera.cpp(51,38): warning C4305: '=': truncation from 'double' to 'float'
+  CollisionFine.cpp
+D:\Ellie\CTP\VSProject\VSProject\Camera.cpp(52,42): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(62,13): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(82,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(113,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(114,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(115,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(118,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(119,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(120,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(123,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(124,48): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(125,41): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(128,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(146,3): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(154,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(191,22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(193,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(194,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(201,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(207,31): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  Collisions.cpp
+  CollisionVolume.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(210,80): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(45,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(47,55): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(47,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Contact.cpp
+  mathe.cpp
+  Matrix.cpp
+  Objects.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(47,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(85,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(93,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(100,68): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(100,49): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(100,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(107,74): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(107,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(107,32): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Engine.cpp
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(131,20): warning C4018: '<': signed/unsigned mismatch
+  Primitive.cpp
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(13,48): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(13,41): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  Shapes.cpp
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(13,54): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(91,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Vector.cpp
+  Generating Code...
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(142,22): warning C4018: '<': signed/unsigned mismatch
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

@@ -3,11 +3,14 @@
 #include "Vector.h"
 #include "Matrix.h"
 
+//Custom maths library by Ellie Dunstan
 class Mathe
 {
 public:
 	Mathe() = default;
 	~Mathe() = default;
+
+	//Functions for matrix and vector math, mostly transformations.
 
 	void Transform(Vector3& vector, Matrix& matrix);
 

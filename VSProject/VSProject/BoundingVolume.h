@@ -7,6 +7,7 @@ class BoundingVolume
 public:
 	//BoundingVolume(Vector3 _centre, float _radius = 0, Vector3 _size = Vector3());
 	BoundingVolume() = default;
+	BoundingVolume(BoundingVolume&) = default;
 	~BoundingVolume() = default;
 
 	enum class Type
@@ -21,9 +22,9 @@ public:
 	void Draw();
 
 	//Public variables
-	Vector3 centre;
+	Vector3 centre = Vector3();
 	float radius = 0;
-	Vector3 size;
+	Vector3 size = Vector3();
 
 	GLenum drawMode = GL_QUADS;
 	std::vector<Vertex> vertices;

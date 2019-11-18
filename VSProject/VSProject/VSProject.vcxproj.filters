@@ -84,6 +84,9 @@
     <ClCompile Include="Contact.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Primitive.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">

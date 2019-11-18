@@ -16,6 +16,8 @@ public:
 	double y;
 	double z;
 
+	double Distance(const Vector3& vec) const;
+
 	double Magnitude();
 	Vector3 Normalise();
 	Vector3 Inverse();

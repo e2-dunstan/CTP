@@ -12,13 +12,13 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 	{
 		matrix[i].resize(colSize, 0);
 	}
-
+	
+	//Init as identity
 	Identity();
 }
 
 void Matrix::Identity()
 {
-	//Init as identity
 	for (unsigned r = 0; r < rowSize; r++)
 	{
 		for (unsigned c = 0; c < colSize; c++)

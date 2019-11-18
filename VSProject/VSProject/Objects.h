@@ -7,7 +7,7 @@ class Objects
 public:
 
 	Objects() = default;
-	~Objects() = default;
+	~Objects();
 
 	void Create(Primitive::Type type, Vector3 scale, Vector3 translation, Vector3 rotation, float radius = 0);
 	void CreateSphere(float radius, Vector3 translation);
@@ -31,6 +31,8 @@ private:
 
 	bool drawBoundingVolumes = true;
 	bool drawCollisionVolumes = true;
+
+	double timeSinceCollisionDebug = 0;
 
 	//bool octTreeCreated = false;
 };

@@ -10,22 +10,15 @@
   <Class Name="Objects" Collapsed="true">
     <Position X="9.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQCACAAAQAAAhAMACAAAAQAAAAAgEEAAAAAAAAABAA=</HashCode>
+      <HashCode>AAQCAAAAQQAAAhAIACQAAAAAAAAAgEEAAAAAAAAgBAA=</HashCode>
       <FileName>Objects.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Engine" Collapsed="true">
     <Position X="0.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACQAAAAAAAQAIAAAAACAAQQAAAAAAAAABBACAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAAAAQAIAAAAACAAAAAAAAAAAAABBACAAAAAAA=</HashCode>
       <FileName>Engine.h</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="Shapes" Collapsed="true">
-    <Position X="11.25" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAEAAAAAAAAAAAAAAAAAAIAAQAAAAIAAAAAAAAAAAI=</HashCode>
-      <FileName>Shapes.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ColourPresets" Collapsed="true">
@@ -38,14 +31,14 @@
   <Class Name="Mathe" Collapsed="true">
     <Position X="13" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAgAAAAAAAAIACAQAEAAAAAAAAAAEAAAAAAA=</HashCode>
+      <HashCode>AAAAAQAAAgAAAQAAAAIACAQAEAAAAAAAAAAEAAAAAAA=</HashCode>
       <FileName>mathe.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Matrix" Collapsed="true">
     <Position X="7.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AEAAAgAAAAAAAAAAEAAAACAAAAAgAAAAAMIgAAoAAQA=</HashCode>
+      <HashCode>AEAAAgAAAAAAAABAEAAAACAAAAAgAAAAAMIgAAoAAQA=</HashCode>
       <FileName>Matrix.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -59,21 +52,21 @@
   <Class Name="BoundingVolume" Collapsed="true">
     <Position X="7.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>ACQAAAAAAAAoBgAIAAAAAAAAAAAQIEABAAAAAAAABAA=</HashCode>
+      <HashCode>AAQAAAAQCAAoIgAIAIBAAAIAEAARIEACAAAAAAAABAA=</HashCode>
       <FileName>BoundingVolume.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="Collisions" Collapsed="true">
     <Position X="11.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAAAAgAAAAAAAAQAAAAAAAAABAACAAQAAAAAAA=</HashCode>
+      <HashCode>AAAABgAAAAAAAAAAAAAQAAAAAACAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Collisions.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="CollisionVolume" Collapsed="true">
     <Position X="13" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAgAAAAAAAACAQAAEAAAAAAAEAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAQCAAAAjgICACAAEgAAAIRAEAAAAAAAAAAAAA=</HashCode>
       <FileName>CollisionVolume.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -98,25 +91,11 @@
       <FileName>Utilities.h</FileName>
     </TypeIdentifier>
   </Struct>
-  <Struct Name="BoundingSphere" Collapsed="true">
-    <Position X="2.25" Y="3.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAQCAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAA=</HashCode>
-      <FileName>BoundingVolume.h</FileName>
-    </TypeIdentifier>
-  </Struct>
-  <Struct Name="BoundingBox" Collapsed="true">
-    <Position X="0.5" Y="3.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAQAAAAAAAAAIAAAAAAACAAAAAAAAAAIAAAAAA=</HashCode>
-      <FileName>BoundingVolume.h</FileName>
-    </TypeIdentifier>
-  </Struct>
   <Struct Name="CollisionData" Collapsed="true">
     <Position X="4" Y="3.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
-      <FileName>Collisions.h</FileName>
+      <HashCode>AAAAAAYAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAI=</HashCode>
+      <FileName>CollisionFine.h</FileName>
     </TypeIdentifier>
   </Struct>
   <Font Name="Segoe UI" Size="9" />

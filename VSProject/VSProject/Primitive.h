@@ -6,8 +6,8 @@
 class Primitive
 {
 public:
-	Primitive(std::vector<Vertex> v) : vertices(v) {}
 	Primitive() = default;
+	Primitive(std::vector<Vertex> v) : vertices(v) { initialised = true; }
 	~Primitive() = default;
 
 	enum class Type
@@ -16,19 +16,33 @@ public:
 	};
 	Type type = Type::BOX;
 
-	std::unique_ptr<RigidBody> rigidbody = std::make_unique<RigidBody>();
+	//Physics data.
+	RigidBody rigidbody = RigidBody();// = std::make_unique<RigidBody>();
 	
+	//Transform data.
 	Vector3 translation = Vector3();
 	Vector3 rotation = Vector3();
 	Vector3 scale = Vector3();
 	Matrix transform = Matrix(4, 4);
+	bool updateTransforms = false;
 
 	std::vector<Vertex> vertices;
 
 	bool enableCollision = true;
 
-	std::unique_ptr<BoundingVolume> boundingVolume = std::make_unique<BoundingVolume>();
-	std::unique_ptr<CollisionVolume> collisionVolume = std::make_unique<CollisionVolume>();
+	BoundingVolume boundingVolume;// = std::make_unique<BoundingVolume>();
+	CollisionVolume collisionVolume;// = std::make_unique<CollisionVolume>();
 
-	float radius = 0;
+	float radius = 0; //if sphere
+
+	void Tween(double deltaTime, float speed, Vector3 direction, float distance);
+	void SetTweenOrigin();
+
+private:
+	Vector3 tweenOrigin;
+	Vector3 tweenMax;
+	bool tweenMaxSet = false;
+	bool moveTowards = true;
+
+	bool initialised = false;
 };

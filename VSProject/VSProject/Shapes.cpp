@@ -88,7 +88,7 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, Colour* _colo
 	float lengthInverse = 1.0f / radius;
 	Vector3 normal = Vector3(lengthInverse, lengthInverse, lengthInverse);
 
-	double PI = 3.141592653589793115997963468544185161590576171;
+	float PI = 3.141592653589;
 	float sectorStep = 2 * PI / sectorCount;
 	float stackStep = PI / stackCount;
 	float sectorAngle;
@@ -146,8 +146,6 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, Colour* _colo
 		Vector3 indexNor = normals[index];
 		vertices.push_back(Vertex(indexPos.x, indexPos.y, indexPos.z, sphereColour, indexNor));
 	}
-
-	std::cout << "Sphere vertex count: " << vertices.size() << std::endl;
 	return vertices;
 }
 

@@ -14,6 +14,7 @@ struct Colour
 	GLfloat b = 0.0f;
 	GLfloat a = 1.0f;
 
+	//Colour constructor.
 	Colour(GLfloat _r, GLfloat _g, GLfloat _b, GLfloat _a = 1.0f)
 		: r(_r), g(_g), b(_b), a(_a) {}
 };
@@ -23,6 +24,7 @@ struct Vertex
 	Vector3 normal = Vector3();
 	Colour colour;
 
+	//Vertex constructor.
 	Vertex(double _x, double _y, double _z, Colour _c, Vector3 _n)
 		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b), normal(_n) {}
 };

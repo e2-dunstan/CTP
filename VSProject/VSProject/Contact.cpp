@@ -3,13 +3,12 @@
 
 Contact::Contact(Primitive* prim1, Primitive* prim2)
 {
-	bodies[0] = prim1;
-	bodies[1] = prim2;
+	body1 = prim1;
+	body2 = prim2;
 }
 
 Contact::~Contact()
 {
-	if (bodies)
-		delete[] bodies;
-
+	delete body1;
+	delete body2;
 }

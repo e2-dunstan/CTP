@@ -18,15 +18,24 @@ void Mathe::Transform(Vector3& vector, Matrix& matrix)
 
 Vector3 Mathe::matrixInverse(Matrix& m, Vector3& v)
 {
+	Matrix transp = m;
 	Vector3 vec = v;
-	vec.x -= m.Get(0, 3);
-	vec.y -= m.Get(1, 3);
-	vec.z -= m.Get(2, 3);
+	vec.x -= transp.Get(0, 3);
+	vec.y -= transp.Get(1, 3);
+	vec.z -= transp.Get(2, 3);
 
 	Vector3 ret = Vector3(
-		vec.x * m.Get(0, 0) + vec.y * m.Get(1, 0) + vec.z * m.Get(2, 0),
-		vec.x * m.Get(0, 1) + vec.y * m.Get(1, 1) + vec.z * m.Get(2, 1),
-		vec.x * m.Get(0, 2) + vec.y * m.Get(1, 2) + vec.z * m.Get(2, 2)
+		(vec.x * transp.Get(0, 0)) + 
+		(vec.y * transp.Get(1, 0)) + 
+		(vec.z * transp.Get(2, 0)),
+				
+		(vec.x * transp.Get(0, 1)) + 
+		(vec.y * transp.Get(1, 1)) + 
+		(vec.z * transp.Get(2, 1)),
+				
+		(vec.x * transp.Get(0, 2)) + 
+		(vec.y * transp.Get(1, 2)) +
+		(vec.z * transp.Get(2, 2))
 	);
 	return ret;
 }

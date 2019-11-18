@@ -8,6 +8,7 @@ void CollisionVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3
 	Update(_centre, _radius, _size, _rotation);
 }
 
+
 void CollisionVolume::Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation)
 {
 	centre = _centre;
@@ -32,6 +33,7 @@ void CollisionVolume::Update(Vector3 _centre, float _radius, Vector3 _size, Vect
 	}
 }
 
+
 void CollisionVolume::Draw()
 {
 	if (type != Type::BOX) return;
@@ -48,17 +50,31 @@ void CollisionVolume::Draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
+
 void CollisionVolume::Box()
 {
-	vertices.clear();
-	vertices.push_back(Vector3(-halfSize.x, -halfSize.y, -halfSize.z));
-	vertices.push_back(Vector3(-halfSize.x, -halfSize.y, halfSize.z));
-	vertices.push_back(Vector3(-halfSize.x, halfSize.y, -halfSize.z));
-	vertices.push_back(Vector3(-halfSize.x, halfSize.y, halfSize.z));
-	vertices.push_back(Vector3(halfSize.x, -halfSize.y, -halfSize.z));
-	vertices.push_back(Vector3(halfSize.x, -halfSize.y, halfSize.z));
-	vertices.push_back(Vector3(halfSize.x, halfSize.y, -halfSize.z));
-	vertices.push_back(Vector3(halfSize.x, halfSize.y, halfSize.z));
+	if (vertices.size() <= 0)
+	{
+		vertices.push_back(Vector3(-halfSize.x, -halfSize.y, -halfSize.z));
+		vertices.push_back(Vector3(-halfSize.x, -halfSize.y, halfSize.z));
+		vertices.push_back(Vector3(-halfSize.x, halfSize.y, -halfSize.z));
+		vertices.push_back(Vector3(-halfSize.x, halfSize.y, halfSize.z));
+		vertices.push_back(Vector3(halfSize.x, -halfSize.y, -halfSize.z));
+		vertices.push_back(Vector3(halfSize.x, -halfSize.y, halfSize.z));
+		vertices.push_back(Vector3(halfSize.x, halfSize.y, -halfSize.z));
+		vertices.push_back(Vector3(halfSize.x, halfSize.y, halfSize.z));
+	}
+	else
+	{
+		vertices[0] = Vector3(-halfSize.x, -halfSize.y, -halfSize.z);
+		vertices[1] = Vector3(-halfSize.x, -halfSize.y, halfSize.z);
+		vertices[2] = Vector3(-halfSize.x, halfSize.y, -halfSize.z);
+		vertices[3] = Vector3(-halfSize.x, halfSize.y, halfSize.z);
+		vertices[4] = Vector3(halfSize.x, -halfSize.y, -halfSize.z);
+		vertices[5] = Vector3(halfSize.x, -halfSize.y, halfSize.z);
+		vertices[6] = Vector3(halfSize.x, halfSize.y, -halfSize.z);
+		vertices[7] = Vector3(halfSize.x, halfSize.y, halfSize.z);
+	}
 
 	Matrix transform = Matrix(4, 4);
 	mathe->Translate(transform, centre.x, centre.y, centre.z);

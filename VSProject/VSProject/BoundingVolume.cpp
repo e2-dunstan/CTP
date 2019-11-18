@@ -62,19 +62,11 @@ void BoundingVolume::Draw()
 
 void BoundingVolume::UpdateBox(Vector3 _centre, Vector3 _size)
 {
-	//vertices.clear();
 	vertices = shapes->baseBox;
-
-	//cube.centre = _centre;
-	//cube.size = _size;
-
-	//if (_rotation != Vector3())
-	//{
-	//	cube.size *= 1.5f;
-	//}
 
 	Matrix transform = Matrix(4, 4);
 
+	//No rotation for bounding volumes.
 	mathe->Translate(transform, centre.x, centre.y, centre.z);
 	mathe->Scale(transform, size.x, size.y, size.z);
 
@@ -87,7 +79,6 @@ void BoundingVolume::UpdateBox(Vector3 _centre, Vector3 _size)
 
 void BoundingVolume::UpdateSphere(Vector3 _centre, float _radius)
 {
-	vertices.clear();
 }
 
 void BoundingVolume::SetVerticesBox(std::vector<Vertex> verts)
@@ -95,6 +86,7 @@ void BoundingVolume::SetVerticesBox(std::vector<Vertex> verts)
 	Vector3 min = Vector3(10000, 10000, 10000);
 	Vector3 max = Vector3();
 
+	//Get the bounding volume based on the min and max vertices.
 	for (int v = 0; v < verts.size(); v++)
 	{
 		if (verts[v].position.x > max.x) max.x = verts[v].position.x;
