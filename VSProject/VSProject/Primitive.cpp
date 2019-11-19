@@ -1,6 +1,6 @@
 #include "Primitive.h"
 
-void Primitive::Tween(double deltaTime, float speed, Vector3 direction, float approxDistance)
+void Primitive::Tween(double deltaTime, float speed, const Vector3& direction, float approxDistance)
 {
 	if (!initialised) return;
 

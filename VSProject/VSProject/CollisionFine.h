@@ -6,7 +6,7 @@
 struct CollisionData
 {
 	//Collision response will reference contacts.
-	std::vector<Contact*> contacts;
+	std::vector<Contact> contacts;
 	int contactsLeft = 5;
 	float tolerance = 0.5f;
 };
@@ -15,7 +15,7 @@ class CollisionFine
 {
 public:
 	CollisionFine() = default;
-	~CollisionFine();
+	~CollisionFine() = default;
 
 	void DetectContacts(Primitive* prim1, Primitive* prim2);
 
@@ -23,16 +23,15 @@ public:
 
 private:
 	//Separating axis theorem
-	float PositionOnAxis(Primitive* box, Vector3 axis);
-	bool BoxesOverlapOnAxis(Primitive* box1, Primitive* box2, Vector3 toCentre, Vector3 axis);
-	void BoxAndBox(Primitive* box1, Primitive* box2);
-	//std::vector<Vector3> GetBoxAxes(Primitive* box);
+	float PositionOnAxis(const Primitive* box, const Vector3& axis);
+	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis);
+	void BoxAndBox(const Primitive* box1, const Primitive* box2);
+	//std::vector<const Vector3&> GetBoxAxes(const Primitive* box);
 
-	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3 spherePosition, float radius);
-	void SphereAndSphere(Primitive* prim1, Primitive* prim2, Vector3 position1, float radius1, Vector3 position2, float radius2);
-	void SphereAndPlane(Primitive* sphere, Primitive* plane, Vector3 spherePosition, float radius, Vector3 planePosition, Vector3 normal);
-	void BoxAndPlane(Primitive* box, Primitive* plane, Vector3 planePosition, Vector3 normal);
+	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3& spherePosition, float radius);
+	void SphereAndSphere(Primitive* prim1, Primitive* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);
+	void SphereAndPlane(Primitive* sphere, Primitive* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal);
+	void BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal);
 
 	std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
-	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 };

@@ -1,4 +1,5 @@
 #include "CollisionVolume.h"
+#include "Utilities.h"
 
 
 void CollisionVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation, Vector3 _normal)
@@ -77,12 +78,12 @@ void CollisionVolume::Box()
 	}
 
 	Matrix transform = Matrix(4, 4);
-	mathe->Translate(transform, centre.x, centre.y, centre.z);
-	mathe->Rotate(transform, rotation.x, rotation.y, rotation.z);
+	Mathe::Translate(transform, centre.x, centre.y, centre.z);
+	Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
 	//mathe->Scale(transform, halfSize.x, halfSize.y, halfSize.z);
 
 	for (int v = 0; v < 8; v++)
 	{
-		mathe->Transform(vertices[v], transform);
+		Mathe::Transform(vertices[v], transform);
 	}
 }

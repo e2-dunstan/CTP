@@ -1,9 +1,10 @@
 #pragma once
 #include "Primitive.h"
 
-class Contact
+//this class is placeholder
+
+struct Contact
 {
-public:
 	Contact() = default;
 	Contact(Primitive* prim1, Primitive* prim2);
 	~Contact();

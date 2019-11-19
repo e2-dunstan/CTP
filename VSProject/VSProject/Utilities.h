@@ -6,6 +6,7 @@
 #include <vector>
 
 #include "mathe.h"
+using namespace Mathe;
 
 struct Colour
 {
@@ -17,6 +18,11 @@ struct Colour
 	//Colour constructor.
 	Colour(GLfloat _r, GLfloat _g, GLfloat _b, GLfloat _a = 1.0f)
 		: r(_r), g(_g), b(_b), a(_a) {}
+	
+	bool operator==(const Colour& _c) const { return (r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
+	bool operator!=(const Colour& _c) const { return !(r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
+	bool operator==(const Colour& _c) { return (r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
+	bool operator!=(const Colour& _c) { return !(r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
 };
 struct Vertex
 {
@@ -29,16 +35,14 @@ struct Vertex
 		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b), normal(_n) {}
 };
 
-class ColourPresets
+namespace Colours
 {
-public:
-	ColourPresets() = default;
-	~ColourPresets() = default;
-
-	Colour red = Colour(1.0, 0.0, 0.0);
-	Colour green = Colour(0.0, 1.0, 0.0);
-	Colour blue = Colour(0.0, 0.0, 1.0);
-	Colour yellow = Colour(1.0, 1.0, 0.0);
-	Colour cyan = Colour(0.0, 1.0, 1.0);
-	Colour magenta = Colour(1.0, 0.0, 1.0);
+	const Colour white = Colour(1.0, 1.0, 1.0);
+	const Colour black = Colour(0.0, 0.0, 0.0);
+	const Colour red = Colour(1.0, 0.0, 0.0);
+	const Colour green = Colour(0.0, 1.0, 0.0);
+	const Colour blue = Colour(0.0, 0.0, 1.0);
+	const Colour yellow = Colour(1.0, 1.0, 0.0);
+	const Colour cyan = Colour(0.0, 1.0, 1.0);
+	const Colour magenta = Colour(1.0, 0.0, 1.0);
 };

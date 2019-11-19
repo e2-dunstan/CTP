@@ -1,8 +1,11 @@
 #include "BoundingVolume.h"
 
+using namespace Shapes;
 
-void BoundingVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3 _size)
+void BoundingVolume::Create(Type _type, const Vector3& _centre, float _radius, const Vector3& _size)
 {
+	baseBox = ShapeVertices::GetCubeVertices(); //this isn't ideal, and will be moved elsewhere
+
 	type = _type;
 	centre = _centre;
 	radius = _radius;
@@ -11,7 +14,7 @@ void BoundingVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3 
 	drawMode = GL_QUADS;
 }
 
-void BoundingVolume::Update(Vector3 _centre, float _radius, Vector3 _size)
+void BoundingVolume::Update(const Vector3& _centre, float _radius, const Vector3& _size)
 {
 	switch (type)
 	{
@@ -60,24 +63,24 @@ void BoundingVolume::Draw()
 	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
-void BoundingVolume::UpdateBox(Vector3 _centre, Vector3 _size)
+void BoundingVolume::UpdateBox(const Vector3& _centre, const Vector3& _size)
 {
-	vertices = shapes->baseBox;
+	vertices = baseBox;
 
 	Matrix transform = Matrix(4, 4);
 
 	//No rotation for bounding volumes.
-	mathe->Translate(transform, centre.x, centre.y, centre.z);
-	mathe->Scale(transform, size.x, size.y, size.z);
+	Mathe::Translate(transform, centre.x, centre.y, centre.z);
+	Mathe::Scale(transform, size.x, size.y, size.z);
 
 	for (int v = 0; v < vertices.size(); v++)
 	{
-		mathe->Transform(vertices[v].position, transform);
+		Mathe::Transform(vertices[v].position, transform);
 		//transform normals
 	}
 }
 
-void BoundingVolume::UpdateSphere(Vector3 _centre, float _radius)
+void BoundingVolume::UpdateSphere(const Vector3& _centre, float _radius)
 {
 }
 

@@ -1,23 +1,19 @@
 #pragma once
 #include "Utilities.h"
 
-class ShapeVertices
+namespace Shapes
 {
-public:
-	ShapeVertices() {
-		baseBox = GetCubeVertices(&Colour(0, 0, 0));
+	class ShapeVertices
+	{
+	public:
+		ShapeVertices() = default;
+		~ShapeVertices() = default;
+
+		static std::vector<Vertex> GetCubeVertices(const Colour& _colour = Colours::white);
+		static std::vector<Vertex> GetPlaneVertices(const Colour& _colour = Colours::white);
+		static std::vector<Vertex> GetSphereVertices(float radius, const Colour& _colour = Colours::white, int sectorCount = 10, int stackCount = 10);
+
+	private:
+		static Colour GetColour(const Colour& _rainbow, const Colour& _colour);
 	};
-	~ShapeVertices() = default;
-
-	std::vector<Vertex> GetCubeVertices(Colour* _colour = NULL);
-	std::vector<Vertex> GetPlaneVertices(Colour* _colour = NULL);
-	std::vector<Vertex> GetSphereVertices(float radius, Colour* _colour = NULL, int sectorCount = 10, int stackCount = 10);
-
-	std::unique_ptr<ColourPresets> colourPresets = std::make_unique<ColourPresets>();
-
-	std::vector<Vertex> baseBox;
-
-private:
-
-	Colour GetColour(Colour _rainbow, Colour* _colour = NULL);
 };

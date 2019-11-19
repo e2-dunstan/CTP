@@ -1,12 +1,14 @@
 #include "Shapes.h"
 
-std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
+using namespace Shapes;
+
+std::vector<Vertex> ShapeVertices::GetCubeVertices(const Colour& _colour)
 {
 	std::vector<Vertex> vertices;
 	vertices.clear();
 
 	//front
-	Colour faceColour = GetColour(colourPresets->red, _colour);
+	Colour faceColour = GetColour(Colours::red, _colour);
 	Vector3 normal = Vector3(0, 0, 1);
 	vertices.push_back(Vertex(-1.0, 1.0, 1.0,	faceColour, normal));
 	vertices.push_back(Vertex(-1.0, -1.0, 1.0,	faceColour, normal));
@@ -14,7 +16,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.push_back(Vertex(1.0, 1.0, 1.0,	faceColour, normal));
 	
 	//back
-	faceColour = GetColour(colourPresets->green, _colour);
+	faceColour = GetColour(Colours::green, _colour);
 	normal = Vector3(0, 0, -1);
 	vertices.push_back(Vertex(1.0, 1.0, -1.0,	faceColour, normal));
 	vertices.push_back(Vertex(1.0, -1.0, -1.0,	faceColour, normal));
@@ -22,7 +24,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.push_back(Vertex(-1.0, 1.0, -1.0,	faceColour, normal));
 
 	//right
-	faceColour = GetColour(colourPresets->blue, _colour);
+	faceColour = GetColour(Colours::blue, _colour);
 	normal = Vector3(1, 0, 0);
 	vertices.push_back(Vertex(1.0, 1.0, 1.0,	faceColour, normal));
 	vertices.push_back(Vertex(1.0, -1.0, 1.0,	faceColour, normal));
@@ -30,7 +32,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.push_back(Vertex(1.0, 1.0, -1.0,	faceColour, normal));
 
 	//left
-	faceColour = GetColour(colourPresets->yellow, _colour);
+	faceColour = GetColour(Colours::yellow, _colour);
 	normal = Vector3(-1, 0, 0);
 	vertices.push_back(Vertex(-1.0, 1.0, -1.0,	faceColour, normal));
 	vertices.push_back(Vertex(-1.0, -1.0, -1.0, faceColour, normal));
@@ -38,7 +40,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.push_back(Vertex(-1.0, 1.0, 1.0,	faceColour, normal));
 
 	//top
-	faceColour = GetColour(colourPresets->cyan, _colour);
+	faceColour = GetColour(Colours::cyan, _colour);
 	normal = Vector3(0, 1, 0);
 	vertices.push_back(Vertex(-1.0, 1.0, -1.0,	faceColour, normal));
 	vertices.push_back(Vertex(-1.0, 1.0, 1.0,	faceColour, normal));
@@ -46,7 +48,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.push_back(Vertex(1.0, 1.0, -1.0,	faceColour, normal));
 
 	//bottom
-	faceColour = GetColour(colourPresets->magenta, _colour);
+	faceColour = GetColour(Colours::magenta, _colour);
 	normal = Vector3(0, -1, 0);
 	vertices.push_back(Vertex(-1.0, -1.0, 1.0,	faceColour, normal));
 	vertices.push_back(Vertex(-1.0, -1.0, -1.0, faceColour, normal));
@@ -57,7 +59,7 @@ std::vector<Vertex> ShapeVertices::GetCubeVertices(Colour* _colour)
 	vertices.clear();
 }
 
-std::vector<Vertex> ShapeVertices::GetPlaneVertices(Colour* _colour)
+std::vector<Vertex> ShapeVertices::GetPlaneVertices(const Colour& _colour)
 {
 	std::vector<Vertex> vertices;
 	vertices.clear();
@@ -71,10 +73,10 @@ std::vector<Vertex> ShapeVertices::GetPlaneVertices(Colour* _colour)
 	vertices.clear();
 }
 
-std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, Colour* _colour, int sectorCount, int stackCount)
+std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, const Colour& _colour, int sectorCount, int stackCount)
 {
 	Colour sphereColour = Colour(1, 1, 1);
-	if (_colour != NULL) sphereColour = *_colour;
+	if (_colour != Colours::white) sphereColour = _colour;
 
 	std::vector<Vertex> vertices;
 	vertices.clear();
@@ -98,14 +100,14 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, Colour* _colo
 	{
 		stackAngle = PI / 2 - (i * stackStep);
 		xy = radius * cosf(stackAngle);
-		pos.z = radius * sin(stackAngle);
+		pos.z = (double)radius * (double)sin(stackAngle);
 
 		for (int j = 0; j <= sectorCount; ++j)
 		{
 			sectorAngle = j * sectorStep;
 
-			pos.x = xy * cos(sectorAngle);
-			pos.y = xy * sin(sectorAngle);
+			pos.x = (double)xy * (double)cos(sectorAngle);
+			pos.y = (double)xy * (double)sin(sectorAngle);
 
 			normal = pos * lengthInverse;
 
@@ -149,14 +151,8 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, Colour* _colo
 	return vertices;
 }
 
-Colour ShapeVertices::GetColour(Colour _rainbow, Colour* _colour)
+Colour ShapeVertices::GetColour(const Colour& _rainbow, const Colour& _colour)
 {
-	if (_colour != NULL)
-	{
-		return *_colour;
-	}
-	else
-	{
-		return _rainbow;
-	}
+	if (_rainbow != Colours::white) return _rainbow;
+	else return _colour;
 }

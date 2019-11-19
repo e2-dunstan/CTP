@@ -1,5 +1,7 @@
 #include "BoundingBox.h"
 
+using namespace Shapes;
+
 void BoundingBox::Create(Vector3 _centre, Vector3 _size)
 {
 	centre = _centre;
@@ -13,7 +15,7 @@ void BoundingBox::Create(Vector3 _centre, Vector3 _size)
 void BoundingBox::Update(Vector3 _centre, Vector3 _size, Vector3 _rotation)
 {
 	vertices.clear();
-	vertices = shapes->GetCubeVertices();
+	vertices = ShapeVertices::GetCubeVertices();
 
 	//cube.centre = _centre;
 	//cube.size = _size;
@@ -25,12 +27,12 @@ void BoundingBox::Update(Vector3 _centre, Vector3 _size, Vector3 _rotation)
 
 	Matrix transform = Matrix(4, 4);
 
-	mathe->Translate(transform, centre.x, centre.y, centre.z);
-	mathe->Scale(transform, size.x, size.y, size.z);
+	Mathe::Translate(transform, centre.x, centre.y, centre.z);
+	Mathe::Scale(transform, size.x, size.y, size.z);
 
 	for (int v = 0; v < vertices.size(); v++)
 	{
-		mathe->Transform(vertices[v].position, transform);
+		Mathe::Transform(vertices[v].position, transform);
 		//transform normals
 	}
 	std::cout << "Bounding box override function update" << std::endl;

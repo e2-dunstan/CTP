@@ -2,9 +2,8 @@
 #include <iostream>
 #include <string>
 
-class Vector3
+struct Vector3
 {
-public:
 	//Defaults to (0,0,0)
 	Vector3() : x(0), y(0), z(0) {}
 	Vector3(double _x, double _y, double _z)

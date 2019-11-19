@@ -1,6 +1,8 @@
 #pragma once
 #include "CollisionFine.h"
 
+struct Primitive;
+
 //Base class for all collision related behaviours.
 class Collisions
 {

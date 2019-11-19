@@ -14,7 +14,7 @@ public:
 
 private:
 
-	std::unique_ptr<Objects> obj = std::make_unique<Objects>();
+	std::unique_ptr<PrimitiveManager> obj = std::make_unique<PrimitiveManager>();
 
 	bool objectsInitialised = false;
 

@@ -1,10 +1,8 @@
 #pragma once
-#include "CollisionVolume.h"
 
 //Will be used for collision response.
-class RigidBody
+struct RigidBody
 {
-public:
 	RigidBody() = default;
 	~RigidBody() = default;
 

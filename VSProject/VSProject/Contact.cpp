@@ -9,6 +9,6 @@ Contact::Contact(Primitive* prim1, Primitive* prim2)
 
 Contact::~Contact()
 {
-	delete body1;
-	delete body2;
+	//delete body1;
+	//delete body2;
 }

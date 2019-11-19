@@ -1,11 +1,10 @@
 #pragma once
-#include "Utilities.h"
 #include "RigidBody.h"
 #include "BoundingVolume.h"
+#include "CollisionVolume.h"
 
-class Primitive
+struct Primitive
 {
-public:
 	Primitive() = default;
 	Primitive(std::vector<Vertex> v) : vertices(v) { initialised = true; }
 	~Primitive() = default;
@@ -17,7 +16,7 @@ public:
 	Type type = Type::BOX;
 
 	//Physics data.
-	RigidBody rigidbody = RigidBody();// = std::make_unique<RigidBody>();
+	RigidBody rigidbody = RigidBody();
 	
 	//Transform data.
 	Vector3 translation = Vector3();
@@ -30,15 +29,14 @@ public:
 
 	bool enableCollision = true;
 
-	BoundingVolume boundingVolume;// = std::make_unique<BoundingVolume>();
-	CollisionVolume collisionVolume;// = std::make_unique<CollisionVolume>();
+	BoundingVolume boundingVolume;
+	CollisionVolume collisionVolume;
 
 	float radius = 0; //if sphere
 
-	void Tween(double deltaTime, float speed, Vector3 direction, float distance);
+	void Tween(double deltaTime, float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
 
-private:
 	Vector3 tweenOrigin;
 	Vector3 tweenMax;
 	bool tweenMaxSet = false;

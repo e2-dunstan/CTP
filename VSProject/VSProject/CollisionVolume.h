@@ -1,7 +1,7 @@
 #pragma once
-#include "Shapes.h"
+#include "Utilities.h"
 
-class CollisionVolume
+struct CollisionVolume
 {
 public:
 	CollisionVolume() = default;
@@ -41,6 +41,4 @@ private:
 	//void Sphere();
 	//void Plane();
 	//void Complex();
-
-	std::unique_ptr<Mathe> mathe = std::make_unique<Mathe>();
 };

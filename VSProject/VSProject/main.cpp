@@ -3,27 +3,29 @@
 #include "Engine.h"
 #include "Camera.h"
 
-//Camera variables.
-float rotationSpeed = 0.005f;
-float translationSpeed = 0.01f;	
-int windowWidth = 1280;
-int windowHeight = 720;
+namespace
+{
+	//Camera variables.
+	float rotationSpeed = 0.005f;
+	float translationSpeed = 0.01f;
+	int windowWidth = 1280;
+	int windowHeight = 720;
 
-//GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
-//GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
-GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
+	//GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
+	//GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
+	GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
 
-bool mouseHeld = false;
+	bool mouseHeld = false;
 
-Engine* engine = new Engine();
-Camera* camera = new Camera(Camera::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
-//in miliseconds
-unsigned int timeSinceStart = 0;
-unsigned int oldTimeSinceStart = 0;
-int deltaTime = 0;
-
+	//in miliseconds
+	unsigned int timeSinceStart = 0;
+	unsigned int oldTimeSinceStart = 0;
+	int deltaTime = 0;
+}
 
 void PressKey(unsigned char key, int xx, int yy)
 {

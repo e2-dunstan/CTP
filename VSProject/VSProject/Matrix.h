@@ -1,9 +1,8 @@
 #pragma once
 #include <vector>
 
-class Matrix
+struct Matrix
 {
-public:
 	Matrix(unsigned _row, unsigned _col);
 	~Matrix() = default;
 
@@ -29,7 +28,6 @@ public:
 
 	void DebugOutput();
 
-private:
 	unsigned rowSize;
 	unsigned colSize;
 
