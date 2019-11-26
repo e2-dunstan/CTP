@@ -24,7 +24,7 @@ namespace
 	//in miliseconds
 	unsigned int timeSinceStart = 0;
 	unsigned int oldTimeSinceStart = 0;
-	int deltaTime = 0;
+	double deltaTime = 0;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -106,7 +106,7 @@ void render()
 {
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	deltaTime = timeSinceStart - oldTimeSinceStart;
+	deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
 	//Clear the buffers.

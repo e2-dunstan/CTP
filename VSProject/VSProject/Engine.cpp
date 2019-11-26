@@ -17,7 +17,7 @@ void Engine::Init()
 	//obj->CreateSphere(2, Vector3(5, 0, -5));
 }
 
-void Engine::Update(int deltaTime)
+void Engine::Update(double deltaTime)
 {
 	obj->Update(deltaTime);
 }

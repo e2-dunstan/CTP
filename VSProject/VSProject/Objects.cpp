@@ -43,7 +43,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 	newObj->translation = translation;
 	newObj->rotation = rotation;
 
-	UpdateTransforms(*newObj);
+	newObj->UpdateTransform();// UpdateTransform(*newObj);
 
 	newObj->SetTweenOrigin();
 
@@ -54,26 +54,6 @@ void PrimitiveManager::Create(Primitive::Type type,
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
 	Create(Primitive::Type::SPHERE, Vector3(1, 1, 1), translation, Vector3(), radius);
-}
-
-void PrimitiveManager::UpdateTransforms(Primitive& prim)
-{
-	prim.transform.Identity();
-
-	//Update the transform matrix with the new transform vectors.
-	Mathe::Translate(prim.transform, prim.translation.x, prim.translation.y, prim.translation.z);
-	Mathe::Rotate(prim.transform, prim.rotation.x, prim.rotation.y, prim.rotation.z);
-	prim.collisionVolume.axisMat = prim.transform;
-	Mathe::Scale(prim.transform, prim.scale.x, prim.scale.y, prim.scale.z);
-
-	//Define bounding volume based on the primitive's vertices.
-	//Gets the min and max values.
-	//prim.boundingVolume->SetVertices(prim.vertices);
-
-	prim.boundingVolume.Update(prim.translation, 0, prim.scale);
-	prim.collisionVolume.Update(prim.translation, prim.radius, prim.scale / 2, prim.rotation);
-	
-	prim.updateTransforms = false;
 }
 
 void PrimitiveManager::Draw()
@@ -115,21 +95,19 @@ void PrimitiveManager::Draw()
 	}
 }
 
-void PrimitiveManager::Update(int deltaTime)
+void PrimitiveManager::Update(double deltaTime)
 {
-	//Convert DT to seconds
-	double trueDeltaTime = (double)deltaTime / 1000.0;
-
 	//Moves objects to illustrate collision detection.
-	primitives[1].Tween(trueDeltaTime, 1, Vector3(-0.5, 0, -1), 6);
-	primitives[2].Tween(trueDeltaTime, 1, Vector3(-0.2, 1, 0), 10);
-	primitives[3].Tween(trueDeltaTime, 1, Vector3(-1, 0, 0), 8);
-	primitives[4].Tween(trueDeltaTime, 0.5, Vector3(0, -1, 0), 5);
+	primitives[1].Tween(deltaTime, 1, Vector3(-0.5, 0, -1), 6);
+	primitives[2].Tween(deltaTime, 1, Vector3(-0.2, 1, 0), 10);
+	primitives[3].Tween(deltaTime, 1, Vector3(-1, 0, 0), 8);
+	primitives[4].Tween(deltaTime, 0.5, Vector3(0, -1, 0), 5);
 
-	//Update transforms if they have changed.
+
 	for (int i = 0; i < primitives.size(); i++)
 	{
-		if (primitives[i].updateTransforms) UpdateTransforms(primitives[i]);
+		primitives[i].Update(deltaTime);
+		//if (primitives[i].updateTransform) UpdateTransform(primitives[i]);
 	}
 
 	//Custom define which objects to detect collisions between.
@@ -151,12 +129,15 @@ void PrimitiveManager::Update(int deltaTime)
 	//Box3																			 
 	collisions->DetectFine(&primitives[3], &primitives[4], timeSinceCollisionDebug > 0.25);
 		
+	
 	if (timeSinceCollisionDebug > 0.25)
 	{
 		timeSinceCollisionDebug = 0;
-		std::cout << std::endl;
+		//std::cout << std::endl;
 	}
-	timeSinceCollisionDebug += trueDeltaTime;
+	timeSinceCollisionDebug += deltaTime;
+
+	collisions->Resolution();
 }
 
 GLenum PrimitiveManager::GetDrawType(Primitive::Type objectType)

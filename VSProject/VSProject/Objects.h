@@ -14,11 +14,11 @@ public:
 	void Create(Primitive::Type type, const Vector3& scale, const Vector3& translation, const Vector3& rotation, float radius = 0);
 	void CreateSphere(float radius, const Vector3& translation);
 	void Draw();
-	void Update(int deltaTime);
+	void Update(double deltaTime);
 
 private:
 
-	void UpdateTransforms(Primitive& prim);
+	//void UpdateTransform(Primitive& prim);
 
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 

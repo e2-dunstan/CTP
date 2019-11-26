@@ -28,14 +28,14 @@
     <Filter Include="Header Files\Primitives">
       <UniqueIdentifier>{58f4b9f6-f3bd-4b38-ac6f-77ce8f4ecfd2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Collision\BoundingVolume">
-      <UniqueIdentifier>{05e57d14-3d2b-414a-ae7a-a9b8f60a2f89}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Collision\BoundingVolume">
-      <UniqueIdentifier>{c10bb77e-68aa-4d82-a6f8-e36edef1d578}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{7a7bb220-c2ea-4a5b-bcdd-9527ecd3b40e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Primitives\BoundingVolume">
+      <UniqueIdentifier>{c10bb77e-68aa-4d82-a6f8-e36edef1d578}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Primitives\BoundingVolume">
+      <UniqueIdentifier>{05e57d14-3d2b-414a-ae7a-a9b8f60a2f89}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -66,17 +66,14 @@
     <ClCompile Include="Collisions.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionVolume.cpp">
-      <Filter>Source Files\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="BoundingBox.cpp">
-      <Filter>Source Files\Collision\BoundingVolume</Filter>
+      <Filter>Source Files\Primitives\BoundingVolume</Filter>
     </ClCompile>
     <ClCompile Include="BoundingSphere.cpp">
-      <Filter>Source Files\Collision\BoundingVolume</Filter>
+      <Filter>Source Files\Primitives\BoundingVolume</Filter>
     </ClCompile>
     <ClCompile Include="BoundingVolume.cpp">
-      <Filter>Source Files\Collision\BoundingVolume</Filter>
+      <Filter>Source Files\Primitives\BoundingVolume</Filter>
     </ClCompile>
     <ClCompile Include="CollisionFine.cpp">
       <Filter>Source Files\Collision</Filter>
@@ -86,6 +83,15 @@
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="RigidBody.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionVolume.cpp">
+      <Filter>Source Files\Primitives</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionResolution.cpp">
+      <Filter>Source Files\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -116,9 +122,6 @@
     <ClInclude Include="Collisions.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionVolume.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Contact.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
@@ -129,18 +132,27 @@
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="BoundingVolume.h">
-      <Filter>Header Files\Collision\BoundingVolume</Filter>
+      <Filter>Header Files\Primitives\BoundingVolume</Filter>
     </ClInclude>
     <ClInclude Include="BoundingBox.h">
-      <Filter>Header Files\Collision\BoundingVolume</Filter>
+      <Filter>Header Files\Primitives\BoundingVolume</Filter>
     </ClInclude>
     <ClInclude Include="BoundingSphere.h">
-      <Filter>Header Files\Collision\BoundingVolume</Filter>
+      <Filter>Header Files\Primitives\BoundingVolume</Filter>
     </ClInclude>
     <ClInclude Include="RigidBody.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="CollisionFine.h">
+      <Filter>Header Files\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionResolution.h">
+      <Filter>Header Files\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionVolume.h">
+      <Filter>Header Files\Primitives</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionData.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
   </ItemGroup>

@@ -134,6 +134,7 @@
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
+    <ClCompile Include="CollisionResolution.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
     <ClCompile Include="Contact.cpp" />
@@ -143,6 +144,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
@@ -151,7 +153,9 @@
     <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionData.h" />
     <ClInclude Include="CollisionFine.h" />
+    <ClInclude Include="CollisionResolution.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="Contact.h" />

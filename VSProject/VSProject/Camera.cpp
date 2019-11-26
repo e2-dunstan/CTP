@@ -49,7 +49,7 @@ void Camera::rotation(int x, int y) {
 	theta -= static_cast<float>(x - mouse_x)* rotation_speed;
 	psi += static_cast<float>(y - mouse_y)* rotation_speed;
 	if (psi <= 0.1)            psi = 0.1;
-	else if (psi >= 0.95 * M_PI) psi = 0.95 * M_PI;
+	else if (psi >= 0.95f * M_PI) psi = 0.95f * M_PI;
 	mouse_x = x;
 	mouse_y = y;
 }

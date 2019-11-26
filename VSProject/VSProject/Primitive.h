@@ -1,7 +1,7 @@
 #pragma once
 #include "RigidBody.h"
 #include "BoundingVolume.h"
-#include "CollisionVolume.h"
+//#include "CollisionVolume.h"
 
 struct Primitive
 {
@@ -15,6 +15,8 @@ struct Primitive
 	};
 	Type type = Type::BOX;
 
+	void Update(double deltaTime);
+
 	//Physics data.
 	RigidBody rigidbody = RigidBody();
 	
@@ -23,7 +25,8 @@ struct Primitive
 	Vector3 rotation = Vector3();
 	Vector3 scale = Vector3();
 	Matrix transform = Matrix(4, 4);
-	bool updateTransforms = false;
+	void UpdateTransform();
+	bool updateTransform = false;
 
 	std::vector<Vertex> vertices;
 
@@ -43,4 +46,6 @@ struct Primitive
 	bool moveTowards = true;
 
 	bool initialised = false;
+
+private:
 };

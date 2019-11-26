@@ -7,14 +7,23 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 	rowSize = _row;
 	colSize = _col;
 
-	matrix.resize(rowSize);
-	for (unsigned i = 0; i < matrix.size(); i++)
-	{
-		matrix[i].resize(colSize, 0);
-	}
-	
+	//matrix4x4.resize(rowSize);
+	//for (unsigned i = 0; i < matrix4x4.size(); i++)
+	//{
+	//	matrix4x4[i].resize(colSize, 0);
+	//}
+	//
 	//Init as identity
 	Identity();
+}
+
+Matrix::~Matrix()
+{
+	//if (matrix4x4 != NULL)
+	//{
+	//	delete[] matrix4x4;
+	//	matrix4x4 = NULL;
+	//}
 }
 
 void Matrix::Identity()
@@ -25,19 +34,16 @@ void Matrix::Identity()
 		{
 			if (r == c)
 			{
-				matrix[r][c] = 1;
+				//matrix4x4[r][c] = 1;
+				matrix4x4[(r * colSize) + c] = 1;
 			}
 			else
 			{
-				matrix[r][c] = 0;
+				//matrix4x4[r][c] = 0;
+				matrix4x4[(r * colSize) + c] = 0;
 			}
 		}
 	}
-}
-
-double Matrix::Get(unsigned _row, unsigned _col)
-{
-	return matrix[_row][_col];
 }
 
 Matrix Matrix::operator+(Matrix& m)
@@ -48,7 +54,8 @@ Matrix Matrix::operator+(Matrix& m)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			sum(r, c) = this->matrix[r][c] + m(r, c);
+			//sum(r, c) = this->matrix4x4[r][c] + m(r, c);
+			sum(r, c) = this->matrix4x4[(r * colSize) + c] + m(r, c);
 		}
 	}
 	return sum;
@@ -62,7 +69,8 @@ Matrix Matrix::operator+(double scalar)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			result(r, c) = this->matrix[r][c] + scalar;
+			//result(r, c) = this->matrix4x4[r][c] + scalar;
+			result(r, c) = this->matrix4x4[(r * colSize) + c] + scalar;
 		}
 	}
 	return result;
@@ -75,7 +83,8 @@ Matrix Matrix::operator-(Matrix& m)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			sub(r, c) = this->matrix[r][c] - m(r, c);
+			//sub(r, c) = this->matrix4x4[r][c] - m(r, c);
+			sub(r, c) = this->matrix4x4[(r * colSize) + c] - m(r, c);
 		}
 	}
 	return sub;
@@ -89,7 +98,8 @@ Matrix Matrix::operator-(double scalar)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			result(r, c) = this->matrix[r][c] - scalar;
+			//result(r, c) = this->matrix4x4[r][c] - scalar;
+			result(r, c) = this->matrix4x4[(r * colSize) + c] - scalar;
 		}
 	}
 	return result;
@@ -110,7 +120,8 @@ Matrix Matrix::operator*(Matrix& m)
 				temp = 0.0;
 				for (unsigned k = 0; k < this->colSize; k++)
 				{
-					temp += matrix[r][k] * m(k, c);
+					//temp += matrix4x4[r][k] * m(k, c);
+					temp += matrix4x4[(r * colSize) + k] * m(k, c);
 				}
 				multiplied(r, c) = temp;
 			}
@@ -132,7 +143,7 @@ Matrix Matrix::operator*(double scalar)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			result(r, c) = this->matrix[r][c] * scalar;
+			result(r, c) = this->matrix4x4[(r * colSize) + c] * scalar;
 		}
 	}
 	return result;
@@ -146,7 +157,7 @@ Matrix Matrix::operator/(double scalar)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			result(r, c) = this->matrix[r][c] / scalar;
+			result(r, c) = this->matrix4x4[(r * colSize) + c] / scalar;
 		}
 	}
 	return result;
@@ -160,7 +171,7 @@ Matrix Matrix::Transpose()
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			transposed(r, c) = this->matrix[c][r];
+			transposed(r, c) = this->matrix4x4[(r * colSize) + c];
 		}
 	}
 	return transposed;
@@ -168,7 +179,7 @@ Matrix Matrix::Transpose()
 
 double& Matrix::operator()(const unsigned& _row, const unsigned& _col)
 {
-	return this->matrix[_row][_col];
+	return this->matrix4x4[(_row * colSize) + _col];
 }
 
 unsigned Matrix::GetRows() const
@@ -189,7 +200,7 @@ void Matrix::DebugOutput()
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			str += std::to_string(matrix[r][c]);
+			str += std::to_string(matrix4x4[(r * colSize) + c]);
 			if (c < colSize - 1)
 			{
 				str += " , ";

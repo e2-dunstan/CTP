@@ -9,7 +9,7 @@ public:
 	~Engine() = default;
 
 	void Init();
-	void Update(int deltaTime);
+	void Update(double deltaTime);
 	void Render();
 
 private:

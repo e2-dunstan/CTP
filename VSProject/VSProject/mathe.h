@@ -6,9 +6,9 @@
 //Custom maths library by Ellie Dunstan
 namespace Mathe
 {
-	//Functions for matrix and vector math, mostly transformations.
+	//Functions for matrix4x4 and vector math, mostly transformations.
 
-	void Transform(Vector3& vector, Matrix& matrix);
+	void Transform(Vector3& vector, Matrix& matrix4x4);
 
 	Vector3 matrixInverse(Matrix& m, Vector3& v);
 

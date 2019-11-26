@@ -3,7 +3,7 @@
 
 void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 {
-	data->contacts.clear();
+	//contacts = _contacts;
 
 	if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::SPHERE)
 	{
@@ -47,7 +47,7 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 
 void CollisionFine::SphereAndSphere(Primitive* prim1, Primitive* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2)
 {
-	if (data->contactsLeft <= 0) return;
+	//if (data->contactsLeft <= 0) return;
 
 	Vector3 midline = position1 - position2;
 	float size = (float)midline.Magnitude();
@@ -61,14 +61,14 @@ void CollisionFine::SphereAndSphere(Primitive* prim1, Primitive* prim2, const Ve
 	contact.point = position1 + midline * 0.5f;
 	contact.penetrationDepth = radius1 + radius2 - size;
 
-	data->contacts.push_back(contact);
+	/*data->*/contacts.push_back(contact);
 
 	outputStr += "SPHERE and SPHERE \t";
 }
 
 void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal)
 {
-	if (data->contactsLeft <= 0) return;
+	//if (data->contactsLeft <= 0) return;
 	
 	float distance = normal.ScalarProduct(spherePosition) - radius - normal.ScalarProduct(planePosition);
 
@@ -79,7 +79,7 @@ void CollisionFine::SphereAndPlane(Primitive* sphere, Primitive* plane, const Ve
 	contact.penetrationDepth = -distance;
 	contact.point = spherePosition - normal * (distance + radius);
 
-	data->contacts.push_back(contact);
+	/*data->*/contacts.push_back(contact);
 
 	outputStr += "SPHERE and PLANE \t";
 }
@@ -124,7 +124,7 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3& sph
 	contact.point = closestPoint;
 	contact.penetrationDepth = radius - sqrt(distance);
 
-	data->contacts.push_back(contact);
+	/*data->*/contacts.push_back(contact);
 
 	outputStr += "SPHERE and BOX \t";
 }
@@ -191,16 +191,16 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 		//distance from vertex to plane
 		float distance = (box->collisionVolume.vertices[v] * normal).Magnitude();
 
-		if (distance <= planeOffset + data->tolerance)
+		if (distance <= planeOffset + /*data->*/tolerance)
 		{
 			Contact contact(box, plane);
 			contact.point = normal;
 			contact.point *= distance - (planePosition * normal).Magnitude();
 			contact.point += box->collisionVolume.vertices[v];
 			contact.normal = normal;
-			contact.penetrationDepth = (planePosition * normal).Magnitude() - distance + data->tolerance;
+			contact.penetrationDepth = (planePosition * normal).Magnitude() - distance + /*data->*/tolerance;
 
-			data->contacts.push_back(contact);
+			/*data->*/contacts.push_back(contact);
 
 			outputStr += "BOX and PLANE \t";
 		}

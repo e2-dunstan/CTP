@@ -1,20 +1,13 @@
 #pragma once
 #include "CollisionVolume.h"
-#include "Contact.h"
+#include "CollisionData.h"
 
-
-struct CollisionData
-{
-	//Collision response will reference contacts.
-	std::vector<Contact> contacts;
-	int contactsLeft = 5;
-	float tolerance = 0.5f;
-};
 
 class CollisionFine
 {
 public:
 	CollisionFine() = default;
+	CollisionFine(std::vector<Contact>& _contacts) : contacts(_contacts) {};
 	~CollisionFine() = default;
 
 	void DetectContacts(Primitive* prim1, Primitive* prim2);
@@ -33,5 +26,8 @@ private:
 	void SphereAndPlane(Primitive* sphere, Primitive* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal);
 	void BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal);
 
-	std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
+	//std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
+	std::vector<Contact>& contacts;
+
+	float tolerance = 0.5f;
 };

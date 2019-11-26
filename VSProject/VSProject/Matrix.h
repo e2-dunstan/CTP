@@ -4,11 +4,9 @@
 struct Matrix
 {
 	Matrix(unsigned _row, unsigned _col);
-	~Matrix() = default;
+	~Matrix();
 
 	void Identity();
-
-	double Get(unsigned _row, unsigned _col);
 
 	Matrix operator+(Matrix& m);
 	Matrix operator+(double scalar);
@@ -31,5 +29,7 @@ struct Matrix
 	unsigned rowSize;
 	unsigned colSize;
 
-	std::vector<std::vector<double>> matrix;
+	//std::vector<std::vector<double>> matrix4x4;
+	
+	double matrix4x4[16] = { 0 };
 };

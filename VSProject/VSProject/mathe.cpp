@@ -4,14 +4,14 @@
 
 //https://www.slideshare.net/DelwarHossain8/3d-transformation-computer-graphics
 
-void Mathe::Transform(Vector3& vector, Matrix& matrix)
+void Mathe::Transform(Vector3& vector, Matrix& matrix4x4)
 {
 	Matrix vectorToMatrix = Matrix(4, 1);
 	vectorToMatrix(0, 0) = vector.x;
 	vectorToMatrix(1, 0) = vector.y;
 	vectorToMatrix(2, 0) = vector.z;
 	vectorToMatrix(3, 0) = 1;
-	Matrix multiplied = matrix * vectorToMatrix;
+	Matrix multiplied = matrix4x4 * vectorToMatrix;
 
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
@@ -20,22 +20,22 @@ Vector3 Mathe::matrixInverse(Matrix& m, Vector3& v)
 {
 	Matrix transp = m;
 	Vector3 vec = v;
-	vec.x -= transp.Get(0, 3);
-	vec.y -= transp.Get(1, 3);
-	vec.z -= transp.Get(2, 3);
+	vec.x -= transp(0, 3);
+	vec.y -= transp(1, 3);
+	vec.z -= transp(2, 3);
 
 	Vector3 ret = Vector3(
-		(vec.x * transp.Get(0, 0)) + 
-		(vec.y * transp.Get(1, 0)) + 
-		(vec.z * transp.Get(2, 0)),
+		(vec.x * transp(0, 0)) + 
+		(vec.y * transp(1, 0)) + 
+		(vec.z * transp(2, 0)),
 				
-		(vec.x * transp.Get(0, 1)) + 
-		(vec.y * transp.Get(1, 1)) + 
-		(vec.z * transp.Get(2, 1)),
+		(vec.x * transp(0, 1)) + 
+		(vec.y * transp(1, 1)) + 
+		(vec.z * transp(2, 1)),
 				
-		(vec.x * transp.Get(0, 2)) + 
-		(vec.y * transp.Get(1, 2)) +
-		(vec.z * transp.Get(2, 2))
+		(vec.x * transp(0, 2)) + 
+		(vec.y * transp(1, 2)) +
+		(vec.z * transp(2, 2))
 	);
 	return ret;
 }
@@ -87,5 +87,5 @@ void Mathe::Scale(Matrix& m, double x, double y, double z)
 
 Vector3 Mathe::GetAxis(unsigned i, Matrix mat)
 {
-	return Vector3(mat.Get(i, 0), mat.Get(i, 1), mat.Get(i, 2));
+	return Vector3(mat(i, 0), mat(i, 1), mat(i, 2));
 }
