@@ -1,6 +1,6 @@
 #pragma once
 #include "Utilities.h"
-#include "Objects.h"
+#include "PrimitiveManager.h"
 
 class Engine
 {
@@ -14,7 +14,7 @@ public:
 
 private:
 
-	std::unique_ptr<PrimitiveManager> obj = std::make_unique<PrimitiveManager>();
+	std::unique_ptr<PrimitiveManager> primitiveManager = std::make_unique<PrimitiveManager>();
 
 	bool objectsInitialised = false;
 

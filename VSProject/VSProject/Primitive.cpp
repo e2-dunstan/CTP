@@ -52,7 +52,7 @@ void Primitive::UpdateTransform()
 	//Gets the min and max values.
 	//boundingVolume->SetVertices(vertices);
 
-	boundingVolume.Update(translation, 0, scale);
+	boundingVolume.Generate(vertices, transform);
 	collisionVolume.Update(translation, radius, scale / 2, rotation);
 
 	updateTransform = false;

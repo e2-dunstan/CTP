@@ -129,19 +129,17 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="BoundingBox.cpp" />
-    <ClCompile Include="BoundingSphere.cpp" />
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="CollisionCoarse.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
     <ClCompile Include="CollisionResolution.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
-    <ClCompile Include="Contact.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="Objects.cpp" />
+    <ClCompile Include="PrimitiveManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Primitive.cpp" />
@@ -150,19 +148,17 @@
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BoundingBox.h" />
-    <ClInclude Include="BoundingSphere.h" />
     <ClInclude Include="BoundingVolume.h" />
     <ClInclude Include="BVH.h" />
     <ClInclude Include="BVHNode.h" />
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="CollisionCoarse.h" />
     <ClInclude Include="CollisionData.h" />
     <ClInclude Include="CollisionFine.h" />
     <ClInclude Include="CollisionResolution.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
-    <ClInclude Include="Contact.h" />
-    <ClInclude Include="Objects.h" />
+    <ClInclude Include="PrimitiveManager.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />

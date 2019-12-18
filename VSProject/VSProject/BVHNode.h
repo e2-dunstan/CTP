@@ -8,7 +8,7 @@ public:
 	BVHNode() = default;
 	~BVHNode() = default;
 
-	std::unique_ptr<BVHNode> children[2] = std::make_unique<BVHNode>()[2];
+	//std::unique_ptr<BVHNode> children[2] = std::make_unique<BVHNode>()[2];
 
 	BoundingVolume volume; //encompases this node
 

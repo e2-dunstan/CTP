@@ -1,14 +1,18 @@
 #include "Collisions.h"
 
-void Collisions::DetectFine(Primitive* prim1, Primitive* prim2, bool output)
+void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2, bool output)
 {
-	collisionFine->outputStr = "Collision detected: ";
-
-	collisionFine->DetectContacts(prim1, prim2);
-
-	if (output && outputCollisionData && collisionFine->outputStr != "Collision detected: ")
+	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
 	{
-		std::cout << collisionFine->outputStr << std::endl;
+		potentialContacts.push_back(PotentialContact(prim1, prim2));
+	}
+}
+
+void Collisions::DetectFine(bool output)
+{
+	for (auto potentialContact : potentialContacts)
+	{
+		fine->DetectContacts(potentialContact.prim1, potentialContact.prim2);
 	}
 }
 
@@ -18,7 +22,7 @@ void Collisions::Resolution()
 
 	for (auto contact : data->contacts)
 	{
-		collisionResolution->Resolve(contact);
+		resolution->Resolve(contact);
 	}
 
 	data->contacts.clear();
