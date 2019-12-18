@@ -4,6 +4,7 @@
 struct Matrix
 {
 	Matrix(unsigned _row, unsigned _col);
+	Matrix(double m4x4[16]);
 	~Matrix();
 
 	void Identity();

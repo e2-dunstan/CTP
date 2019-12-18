@@ -1,2 +1,27 @@
-﻿  Collisions.cpp
+﻿  CollisionResolution.cpp
+  Collisions.cpp
+  Engine.cpp
+  Objects.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(65,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(73,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(80,68): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(80,49): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(80,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(87,74): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(87,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(87,32): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\Objects.cpp(108,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(15,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:             _Ty=int
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         ]
+  Generating Code...
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(22): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<_Ty>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(22): message :         with
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(22): message :         [
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(22): message :             _Ty=Camera
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(22): message :         ]
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

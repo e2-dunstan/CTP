@@ -37,6 +37,12 @@
     <Filter Include="Header Files\Primitives\BoundingVolume">
       <UniqueIdentifier>{05e57d14-3d2b-414a-ae7a-a9b8f60a2f89}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Primitives\BoundingVolumeHierarchy">
+      <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Primitives\BoundingVolumeHierarchy">
+      <UniqueIdentifier>{af9262b0-1480-4a4a-9569-fbe564bdcf18}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -92,6 +98,9 @@
     </ClCompile>
     <ClCompile Include="CollisionResolution.cpp">
       <Filter>Source Files\Collision</Filter>
+    </ClCompile>
+    <ClCompile Include="BVHNode.cpp">
+      <Filter>Source Files\Primitives\BoundingVolumeHierarchy</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -155,8 +164,20 @@
     <ClInclude Include="CollisionData.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="BVH.h">
+      <Filter>Header Files\Primitives\BoundingVolumeHierarchy</Filter>
+    </ClInclude>
+    <ClInclude Include="BVHNode.h">
+      <Filter>Header Files\Primitives\BoundingVolumeHierarchy</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="ClassDiagram.cd" />
+    <None Include="VertexShader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="FragmentShader.glsl">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

@@ -15,7 +15,7 @@ struct Primitive
 	};
 	Type type = Type::BOX;
 
-	void Update(double deltaTime);
+	void Update(const double& deltaTime);
 
 	//Physics data.
 	RigidBody rigidbody = RigidBody();
@@ -37,7 +37,7 @@ struct Primitive
 
 	float radius = 0; //if sphere
 
-	void Tween(double deltaTime, float speed, const Vector3& direction, float distance);
+	void Tween(const double& deltaTime, float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
 
 	Vector3 tweenOrigin;
@@ -48,4 +48,6 @@ struct Primitive
 	bool initialised = false;
 
 private:
+
+
 };

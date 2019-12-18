@@ -3,6 +3,17 @@
 #include "Engine.h"
 #include "Camera.h"
 
+// -- Over christmas (in that order) --
+// [ ] AABB before full collision check
+// [ ] collision detection visualisation with colour
+// [ ] capsules collision detection
+// [ ] cylinders collision detection
+// [ ] convex hulls collision detection
+// [ ] impulse based response - boxes
+
+//other marker is probably James
+
+
 namespace
 {
 	//Camera variables.
@@ -177,5 +188,10 @@ int main(int argc, char* argv[]) {
 	engine->Update(deltaTime);
 
 	glutMainLoop();
+
+
+	//https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
+
+
 	return 0;
 }

@@ -17,7 +17,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 	switch (type)
 	{
 	case Primitive::Type::BOX:
-		newObj = new Primitive(ShapeVertices::GetCubeVertices());//ShapeVertices::GetCubeVertices());
+		newObj = new Primitive(ShapeVertices::GetCubeVertices());
 		newObj->boundingVolume.Create(BoundingVolume::Type::BOX, translation, 0, scale);
 		newObj->collisionVolume.Create(CollisionVolume::Type::BOX, translation, 0, scale, rotation, Vector3());
 		break;
@@ -43,9 +43,10 @@ void PrimitiveManager::Create(Primitive::Type type,
 	newObj->translation = translation;
 	newObj->rotation = rotation;
 
-	newObj->UpdateTransform();// UpdateTransform(*newObj);
+	newObj->UpdateTransform();
 
 	newObj->SetTweenOrigin();
+	//newObj->rigidbody.AddImpulse(Vector3(0, 1, 0));
 
 	primitives.push_back(*newObj);
 	//delete newObj;
@@ -107,7 +108,6 @@ void PrimitiveManager::Update(double deltaTime)
 	for (int i = 0; i < primitives.size(); i++)
 	{
 		primitives[i].Update(deltaTime);
-		//if (primitives[i].updateTransform) UpdateTransform(primitives[i]);
 	}
 
 	//Custom define which objects to detect collisions between.

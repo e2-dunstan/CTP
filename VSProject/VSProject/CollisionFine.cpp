@@ -159,18 +159,20 @@ void CollisionFine::BoxAndBox(const Primitive* box1, const Primitive* box2)
 		if (!BoxesOverlapOnAxis(box1, box2, toCentre, Mathe::GetAxis(n1, box1->collisionVolume.axisMat))
 			|| !BoxesOverlapOnAxis(box1, box2, toCentre, Mathe::GetAxis(n1, box2->collisionVolume.axisMat)))
 		{
-			return;
+			return; //Early-out
 		}
 		for (int n2 = 0; n2 < 3; n2++)
 		{
-			//Test cross products of primitives axes.
+			//Test cross products of primitive's axes.
 			Vector3 vecProd = Mathe::GetAxis(n1, box1->collisionVolume.axisMat) % Mathe::GetAxis(n2, box2->collisionVolume.axisMat);
 			if (!BoxesOverlapOnAxis(box1, box2, toCentre, vecProd))
 			{
-				return;
+				return; //Early-out
 			}
 		}
 	}
+	//OVERLAP DETECTED
+
 	//Debug
 	outputStr += "BOX and BOX \t";
 }

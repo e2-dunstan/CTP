@@ -17,6 +17,26 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 	Identity();
 }
 
+Matrix::Matrix(double m4x4[16])
+{
+	matrix4x4[0] = m4x4[0];
+	matrix4x4[1] = m4x4[1];
+	matrix4x4[2] = m4x4[2];
+	matrix4x4[3] = m4x4[3];
+	matrix4x4[4] = m4x4[4];
+	matrix4x4[5] = m4x4[5];
+	matrix4x4[6] = m4x4[6];
+	matrix4x4[7] = m4x4[7];
+	matrix4x4[8] = m4x4[8];
+	matrix4x4[9] = m4x4[9];
+	matrix4x4[10] = m4x4[10];
+	matrix4x4[11] = m4x4[11];
+	matrix4x4[12] = m4x4[12];
+	matrix4x4[13] = m4x4[13];
+	matrix4x4[14] = m4x4[14];
+	matrix4x4[15] = m4x4[15];
+}
+
 Matrix::~Matrix()
 {
 	//if (matrix4x4 != NULL)

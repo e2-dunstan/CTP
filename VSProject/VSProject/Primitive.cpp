@@ -1,15 +1,17 @@
 #include "Primitive.h"
 
 
-void Primitive::Update(double deltaTime)
+void Primitive::Update(const double& deltaTime)
 {	
+	//rigidbody.UpdatePhysics(deltaTime);
+
 	//Update transforms if they have changed.
 	if (updateTransform) UpdateTransform();
 
 	rigidbody.CalculateVelocity(translation);
 }
 
-void Primitive::Tween(double deltaTime, float speed, const Vector3& direction, float approxDistance)
+void Primitive::Tween(const double& deltaTime, float speed, const Vector3& direction, float approxDistance)
 {
 	if (!initialised) return;
 

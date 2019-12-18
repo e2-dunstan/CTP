@@ -44,7 +44,7 @@ struct Vector3
 	Vector3 operator-(const Vector3& vec) const;
 
 
-	// -- VECTOR PRODUCT -- //
+	// -- VECTOR/CROSS PRODUCT -- //
 	void operator%=(const Vector3& vec);
 	Vector3 operator%(const Vector3& vec) const;
 
