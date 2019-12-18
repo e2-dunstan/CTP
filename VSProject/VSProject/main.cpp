@@ -4,7 +4,7 @@
 #include "Camera.h"
 
 // -- Over christmas (in that order) --
-// [ ] AABB before full collision check
+// [X] AABB before full collision check
 // [ ] collision detection visualisation with colour
 // [ ] capsules collision detection
 // [ ] cylinders collision detection

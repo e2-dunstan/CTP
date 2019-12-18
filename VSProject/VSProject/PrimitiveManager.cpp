@@ -79,8 +79,14 @@ void PrimitiveManager::Draw()
 			//For future shader use.
 			//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
 			//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
-
-			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			if (primitives[i].colliding)
+			{
+				glColor3f(1, 0, 0);
+			}
+			else
+			{
+				glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			}
 			glVertex3f(verts[v].position.x, verts[v].position.y, verts[v].position.z);
 		}
 
@@ -137,7 +143,11 @@ void PrimitiveManager::Update(double deltaTime)
 	timeSinceCollisionDebug += deltaTime;
 
 	collisions->DetectFine();
-	//collisions->Resolution();
+	for (int i = 0; i < primitives.size(); i++)
+	{
+		primitives[i].colliding = false;
+	}
+	collisions->Resolution();
 }
 
 GLenum PrimitiveManager::GetDrawType(Primitive::Type objectType)

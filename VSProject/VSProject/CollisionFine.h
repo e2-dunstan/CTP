@@ -17,9 +17,9 @@ public:
 private:
 	//Separating axis theorem
 	float PositionOnAxis(const Primitive* box, const Vector3& axis);
-	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis);
-	void BoxAndBox(const Primitive* box1, const Primitive* box2);
-	//std::vector<const Vector3&> GetBoxAxes(const Primitive* box);
+	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis, 
+		int index, float& smallestPenetration, int& smallestIndex);
+	void BoxAndBox(Primitive* box1, Primitive* box2);
 
 	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3& spherePosition, float radius);
 	void SphereAndSphere(Primitive* prim1, Primitive* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);

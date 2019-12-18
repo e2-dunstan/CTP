@@ -31,6 +31,7 @@ struct Primitive
 	std::vector<Vertex> vertices;
 
 	bool enableCollision = true;
+	bool colliding = false;
 
 	BoundingVolume boundingVolume;
 	CollisionVolume collisionVolume;

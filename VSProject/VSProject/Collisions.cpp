@@ -14,6 +14,7 @@ void Collisions::DetectFine(bool output)
 	{
 		fine->DetectContacts(potentialContact.prim1, potentialContact.prim2);
 	}
+	potentialContacts.clear();
 }
 
 void Collisions::Resolution()

@@ -2,9 +2,10 @@
 
 void CollisionResolution::Resolve(Contact& contact)
 {
-	Matrix contactToWorld = CalculateContactBasis(contact.normal);
-	Matrix worldToContact = contactToWorld.Transpose();
-
+	//Matrix contactToWorld = CalculateContactBasis(contact.normal);
+	//Matrix worldToContact = contactToWorld.Transpose();
+	if (contact.body1->type != Primitive::Type::PLANE) contact.body1->colliding = true;
+	if (contact.body2->type != Primitive::Type::PLANE) contact.body2->colliding = true;
 
 }
 
