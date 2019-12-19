@@ -20,6 +20,8 @@ private:
 	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis, 
 		int index, float& smallestPenetration, int& smallestIndex);
 	void BoxAndBox(Primitive* box1, Primitive* box2);
+	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
+	Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, const Vector3& axisOne, const Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
 	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3& spherePosition, float radius);
 	void SphereAndSphere(Primitive* prim1, Primitive* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);

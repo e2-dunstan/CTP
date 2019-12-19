@@ -25,6 +25,11 @@ struct Vector3
 	double ScalarProduct(const Vector3& vec) const;
 	Vector3 VectorProduct(const Vector3& vec) const;
 
+	// -- INDEX GETTER/SETTER -- //
+	double& operator[](const int i);
+	const double& operator[](const int i) const;
+	//double& operator[](const int i);
+
 	// -- SCALAR -- //
 	void operator*=(const float value);
 	void operator*=(const Vector3& vec);
@@ -33,16 +38,13 @@ struct Vector3
 	void operator/=(const float value);
 	Vector3 operator/(const float value) const;
 
-	
 	// -- ADDITION -- //
 	void operator+=(const Vector3& vec);
 	Vector3 operator+(const Vector3& vec) const;
 
-
 	// -- SUBTRACTION -- //
 	void operator-=(const Vector3& vec);
 	Vector3 operator-(const Vector3& vec) const;
-
 
 	// -- VECTOR/CROSS PRODUCT -- //
 	void operator%=(const Vector3& vec);

@@ -1,17 +1,142 @@
-﻿  CollisionFine.cpp
+﻿  BVHNode.cpp
+  BoundingVolume.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(44,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(44,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(44,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(45,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(45,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(45,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(46,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(46,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(46,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(47,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(47,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(47,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(49,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(49,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(49,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(50,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(50,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(50,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(51,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(51,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(51,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(52,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(52,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(52,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(54,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(54,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(54,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(55,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(56,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(56,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(56,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(57,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(57,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(57,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(59,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(59,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(59,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(60,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(60,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(60,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(61,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(61,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(61,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(62,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(62,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(62,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(64,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(64,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(64,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(65,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(65,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(65,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(66,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(66,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(66,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(67,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(67,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(67,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(69,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(69,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(69,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(70,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(70,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(70,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(71,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(71,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(71,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(72,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(72,23): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Camera.cpp
+D:\Ellie\CTP\VSProject\VSProject\BoundingVolume.cpp(72,16): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  CollisionCoarse.cpp
+  CollisionFine.cpp
+D:\Ellie\CTP\VSProject\VSProject\Camera.cpp(51,38): warning C4305: '=': truncation from 'double' to 'float'
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(70,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(100,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(105,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(110,22): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(115,49): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(132,3): warning C4244: 'return': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(140,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(178,22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(180,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(181,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(188,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(194,30): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(142,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(242,95): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(242,48): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(286,35): warning C4101: 'sm2': unreferenced local variable
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(286,24): warning C4101: 'dp12': unreferenced local variable
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(286,8): warning C4101: 'dpSta1': unreferenced local variable
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(286,16): warning C4101: 'dpSta2': unreferenced local variable
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(286,30): warning C4101: 'sm1': unreferenced local variable
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(296,22): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(298,18): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(299,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(306,18): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(312,30): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
   CollisionResolution.cpp
+  CollisionVolume.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(315,79): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(46,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(48,55): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(48,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Collisions.cpp
+  Engine.cpp
+  Primitive.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionVolume.cpp(48,25): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(24,41): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+  PrimitiveManager.cpp
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(24,54): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(62,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(70,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(77,68): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(77,49): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(77,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(90,74): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(90,53): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(90,32): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(113,20): warning C4018: '<': signed/unsigned mismatch
+  RigidBody.cpp
+  Shapes.cpp
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(146,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(93,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+  Vector.cpp
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(144,22): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(26,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:             _Ty=int
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         ]
+  mathe.cpp
   Generating Code...
-D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(197,79): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(33): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<_Ty>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(33): message :         with
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(33): message :         [
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(33): message :             _Ty=Camera
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(33): message :         ]
+D:\Ellie\CTP\VSProject\VSProject\Vector.cpp(60): warning C4715: 'Vector3::operator[]': not all control paths return a value
+D:\Ellie\CTP\VSProject\VSProject\Vector.cpp(51): warning C4715: 'Vector3::operator[]': not all control paths return a value
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

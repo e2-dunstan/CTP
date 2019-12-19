@@ -41,6 +41,24 @@ Vector3 Vector3::VectorProduct(const Vector3& vec) const
 	return Vector3(_x, _y, _z);
 }
 
+double& Vector3::operator[](const int i)
+{
+	if (i < 0 || i > 3) std::cout << "ERROR: index " << i << " does not exist in Vector3" << std::endl;
+
+	if (i == 0) return x;
+	if (i == 1) return y;
+	if (i == 2) return z;
+}
+
+const double& Vector3::operator[](const int i) const
+{
+	if (i < 0 || i > 3) std::cout << "ERROR: index " << i << " does not exist in Vector3" << std::endl;
+
+	if (i == 0) return x;
+	if (i == 1) return y;
+	if (i == 2) return z;
+}
+
 void Vector3::operator*=(const float value)
 {
 	x *= value;

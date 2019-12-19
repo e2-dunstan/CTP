@@ -5,7 +5,7 @@
 
 // -- Over christmas (in that order) --
 // [X] AABB before full collision check
-// [ ] collision detection visualisation with colour
+// [X] collision detection visualisation with colour
 // [ ] capsules collision detection
 // [ ] cylinders collision detection
 // [ ] convex hulls collision detection
