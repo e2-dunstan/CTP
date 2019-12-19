@@ -38,6 +38,7 @@ struct Primitive
 	CollisionVolume collisionVolume;
 
 	float radius = 0; //if sphere
+	Vector3 upDir = Vector3(0, 1, 0); //if capsule or cylinder
 
 	void Tween(const double& deltaTime, float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();

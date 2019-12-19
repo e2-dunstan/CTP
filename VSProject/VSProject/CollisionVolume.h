@@ -9,20 +9,26 @@ public:
 
 	enum class Type
 	{
-		BOX, SPHERE, PLANE, COMPLEX
+		BOX, SPHERE, PLANE, CAPSULE, CYLINDER, COMPLEX
 	};
 	Type type = Type::BOX;
 
-	void Create(Type _type, Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation, Vector3 _normal);
-	void Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation);
+	void Create(Type _type, const Vector3& _centre, float _radius, 
+		const Vector3& _size, const Vector3& _rotation, 
+		const Vector3& _normal = Vector3(), float _length = 0);
+	void Update(const Vector3& _centre, float _radius, 
+		const Vector3& _size, const Vector3& _rotation);
 
 	void Draw();
 
 	//Shared
 	Vector3 centre;
 
-	//Sphere
+	//Sphere, cylinder and capsule
 	float radius = 0;
+
+	//Cylinder and capsule
+	float length = 0;
 
 	//Box
 	Vector3 halfSize;

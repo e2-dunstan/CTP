@@ -9,37 +9,65 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
 			prim2->collisionVolume.centre, prim2->collisionVolume.radius);
 	}
-	if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::PLANE)
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::PLANE)
 	{
 		SphereAndPlane(prim1, prim2,
 			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
 			prim2->collisionVolume.centre, prim2->collisionVolume.normal);
 	}
-	if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::SPHERE)
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::SPHERE)
 	{
 		SphereAndPlane(prim2, prim1,
 			prim2->collisionVolume.centre, prim2->collisionVolume.radius,
 			prim1->collisionVolume.centre, prim1->collisionVolume.normal);
 	}
-	if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::PLANE)
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::PLANE)
 	{
 		BoxAndPlane(prim1, prim2, prim2->collisionVolume.centre, prim2->collisionVolume.normal);
 	}
-	if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::BOX)
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::BOX)
 	{
 		BoxAndPlane(prim2, prim1, prim1->collisionVolume.centre, prim1->collisionVolume.normal);
 	}
-	if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::BOX)
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::BOX)
 	{
 		SphereAndBox(prim1, prim2, prim1->collisionVolume.centre, prim1->collisionVolume.radius);
 	}
-	if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::SPHERE)
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::SPHERE)
 	{
 		SphereAndBox(prim2, prim1, prim2->collisionVolume.centre, prim2->collisionVolume.radius);
 	}
-	if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::BOX)
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::BOX)
 	{
 		BoxAndBox(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::CYLINDER)
+	{
+		//CylinderAndCylinder(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::PLANE) 
+	{
+		CylinderAndPlane(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::CYLINDER)
+	{
+		CylinderAndPlane(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::SPHERE)
+	{
+		//CylinderAndSphere(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::CYLINDER)
+	{
+		//CylinderAndSphere(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::BOX)
+	{
+		//CylinderAndBox(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::CYLINDER)
+	{
+		//CylinderAndBox(prim2, prim1);
 	}
 }
 
@@ -317,5 +345,69 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 			/*data->*/contacts.push_back(contact);
 			outputStr += "BOX and PLANE \t";
 		}
+	}
+}
+
+void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)
+{
+	//Top and bottom centre points
+	Vector3 cylEndT = cyl->collisionVolume.centre + (cyl->upDir * cyl->collisionVolume.length);
+	Vector3 cylEndB = cyl->collisionVolume.centre - (cyl->upDir * cyl->collisionVolume.length);
+
+	float planePosition = plane->collisionVolume.centre.ScalarProduct(plane->collisionVolume.normal);
+
+	Vector3 cylToPlane = (plane->collisionVolume.normal * cyl->upDir) * cyl->upDir;
+
+	Vector3 points[] = {
+		cylEndT + (cylToPlane * cyl->radius),
+		cylEndT - (cylToPlane * cyl->radius),
+		cylEndB + (cylToPlane * cyl->radius),
+		cylEndB - (cylToPlane * cyl->radius)
+	};
+	float scalarProducts[] ={
+		points[0].ScalarProduct(plane->collisionVolume.normal),
+		points[1].ScalarProduct(plane->collisionVolume.normal),
+		points[2].ScalarProduct(plane->collisionVolume.normal),
+		points[3].ScalarProduct(plane->collisionVolume.normal)
+	};
+
+	if (scalarProducts[0] < planePosition 
+		|| scalarProducts[1] < planePosition 
+		|| scalarProducts[2] < planePosition 
+		|| scalarProducts[3] < planePosition)
+	{
+		//COLLIDING
+		float dirScalarProduct = plane->collisionVolume.normal.ScalarProduct(cyl->upDir);
+		
+		if (dirScalarProduct == 1) //PARALLEL (rolling)
+		{
+
+		}
+		else if (dirScalarProduct == 0) //PERPENDICULAR (stood like column)
+		{
+
+		}
+		else //on edge, single contact - WORKING
+		{
+			float smallestDistance = 1000;
+			int closestIndex = 0;
+			for (int i = 0; i < 4; i++)
+			{
+				if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance)
+				{
+					smallestDistance = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
+					closestIndex = i;
+				}
+			}
+			Contact contact(cyl, plane);
+			contact.point = points[closestIndex];
+			contact.penetrationDepth = smallestDistance;
+			contact.normal = plane->collisionVolume.normal;
+			contacts.push_back(contact);
+		}
+	}
+	else
+	{
+		return;
 	}
 }

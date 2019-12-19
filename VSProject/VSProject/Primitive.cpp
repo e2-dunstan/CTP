@@ -86,11 +86,12 @@ void Primitive::UpdateTransform()
 	collisionVolume.axisMat = transform;
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	//Define bounding volume based on the primitive's vertices.
-	//Gets the min and max values.
-	//boundingVolume->SetVertices(vertices);
+	if (type == Type::CAPSULE || type == Type::CYLINDER)
+	{
+		Mathe::Transform(upDir, transform);
+	}
 
-	boundingVolume.Generate(vertices, transform);
+	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
 	collisionVolume.Update(translation, radius, scale / 2, rotation);
 
 	updateTransform = false;

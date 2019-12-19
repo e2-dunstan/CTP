@@ -19,14 +19,35 @@ private:
 	float PositionOnAxis(const Primitive* box, const Vector3& axis);
 	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis, 
 		int index, float& smallestPenetration, int& smallestIndex);
-	void BoxAndBox(Primitive* box1, Primitive* box2);
 	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
 	Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, const Vector3& axisOne, const Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
-	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3& spherePosition, float radius);
+	//Type checks
+	/* TYPE CHECKS: (total of 24 if statements)
+	//Plane and sphere x2
+	//Plane and box x2
+	//Plane and cylinder x2
+	//Plane and capsule x2
+	//Box and box
+	//Box and sphere x2
+	//Box and cylinder x2
+	//Box and capsule x2
+	//Sphere and sphere
+	//Sphere and cylinder x2
+	//Sphere and capsule x2
+	//Cylinder and cylinder
+	//Cylinder and capsule x2
+	//Capsule and capsule
+	*/
 	void SphereAndSphere(Primitive* prim1, Primitive* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);
 	void SphereAndPlane(Primitive* sphere, Primitive* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal);
+	void SphereAndBox(Primitive* sphere, Primitive* box, Vector3& spherePosition, float radius);
+	void BoxAndBox(Primitive* box1, Primitive* box2);
 	void BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal);
+	void CylinderAndCylinder(Primitive* prim1, Primitive* prim2);
+	void CylinderAndBox(Primitive* cyl, Primitive* box);
+	void CylinderAndPlane(Primitive* cyl, Primitive* plane);
+	void CylinderAndSphere(Primitive* cyl, Primitive* sphere);
 
 	//std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
 	std::vector<Contact>& contacts;

@@ -2,15 +2,19 @@
 #include "Utilities.h"
 
 
-void CollisionVolume::Create(Type _type, Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation, Vector3 _normal)
+void CollisionVolume::Create(Type _type, const Vector3& _centre, float _radius, 
+	const Vector3& _size, const Vector3& _rotation, 
+	const Vector3& _normal, float _length)
 {
 	type = _type;
 	normal = _normal;
+	length = _length;
 	Update(_centre, _radius, _size, _rotation);
 }
 
 
-void CollisionVolume::Update(Vector3 _centre, float _radius, Vector3 _size, Vector3 _rotation)
+void CollisionVolume::Update(const Vector3& _centre, float _radius, 
+	const Vector3& _size, const Vector3& _rotation)
 {
 	centre = _centre;
 	if (_radius != 0 && radius == 0) radius = _radius;
@@ -28,8 +32,14 @@ void CollisionVolume::Update(Vector3 _centre, float _radius, Vector3 _size, Vect
 	case Type::PLANE:
 		//Plane();
 		break;
+	case Type::CAPSULE:
+		break;
+	case Type::CYLINDER:
+		break;
 	case Type::COMPLEX:
 		//Complex();
+		break;
+	default:
 		break;
 	}
 }

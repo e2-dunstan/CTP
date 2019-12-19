@@ -1,7 +1,11 @@
-﻿  Shapes.cpp
-D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(93,27): warning C4305: 'initializing': truncation from 'double' to 'float'
-D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(144,22): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(177,27): warning C4305: 'initializing': truncation from 'double' to 'float'
-D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(233,22): warning C4018: '<': signed/unsigned mismatch
-D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(250,27): warning C4305: 'initializing': truncation from 'double' to 'float'
+﻿  Primitive.cpp
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(22,20): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(26,67): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(26,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(26,29): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(39,73): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(39,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(39,31): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(62,41): warning C4244: 'argument': conversion from 'double' to 'const float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(62,54): warning C4244: 'argument': conversion from 'int' to 'const float', possible loss of data
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe
