@@ -9,7 +9,8 @@ void PrimitiveManager::Create(Primitive::Type type,
 	const Vector3& scale, 
 	const Vector3& translation, 
 	const Vector3& rotation, 
-	float radius)
+	float radius,
+	float straight)
 {
 	//default shape
 	Primitive* newObj = nullptr;
@@ -25,7 +26,15 @@ void PrimitiveManager::Create(Primitive::Type type,
 		newObj->collisionVolume.Create(CollisionVolume::Type::PLANE, translation, 0, scale, rotation, Vector3(0,1,0));
 		break;
 	case Primitive::Type::SPHERE:
-		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::red, 12, 8));
+		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8));
+		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, rotation, Vector3());
+		break;
+	case Primitive::Type::CAPSULE:
+		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9));
+		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, rotation, Vector3());
+		break;
+	case Primitive::Type::CYLINDER:
+		newObj = new Primitive(ShapeVertices::GetCylinderVertices(radius, straight, Colours::magenta, 12));
 		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, rotation, Vector3());
 		break;
 	case Primitive::Type::COMPLEX:
@@ -54,6 +63,16 @@ void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 	Create(Primitive::Type::SPHERE, Vector3(1, 1, 1), translation, Vector3(), radius);
 }
 
+void PrimitiveManager::CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation)
+{
+	Create(Primitive::Type::CAPSULE, Vector3(1, 1, 1), translation, rotation, radius, straight);
+}
+
+void PrimitiveManager::CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation)
+{
+	Create(Primitive::Type::CYLINDER, Vector3(1, 1, 1), translation, rotation, radius, length);
+}
+
 void PrimitiveManager::Draw()
 {
 	if (primitives.size() <= 0) return;
@@ -61,53 +80,17 @@ void PrimitiveManager::Draw()
 	//For each object.
 	for (int i = 0; i < primitives.size(); i++)
 	{	
-		glBegin(GetDrawType(primitives[i].type));
-		
-		//Only locally transform the vertices. This makes it so that each draw call
-		//the vertices do not have to be cleared and redefined if their transforms have
-		//changed. Performance boost.
-		std::vector<Vertex> verts = primitives[i].vertices;
-		for (int v = 0; v < verts.size(); v++)
-		{
-			//Transform the vertices.
-			Mathe::Transform(verts[v].position, primitives[i].transform);
-
-			//Set normals, colour and positions.
-
-			glNormal3f(verts[v].normal.x, verts[v].normal.y, verts[v].normal.z);
-
-			//For future shader use.
-			//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
-			//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
-			if (primitives[i].colliding)
-			{
-				glColor3f(1, 0, 0);
-			}
-			else
-			{
-				glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
-			}
-			glVertex3f(verts[v].position.x, verts[v].position.y, verts[v].position.z);
-		}
-
-		glEnd();
-
-		primitives[i].boundingVolume.Draw();
-		
-		//Debug display for bounding and collision volumes.
-		//Bounding volumes have been put on hold until spatial data structures have been implemented.
-		//if (drawBoundingVolumes) primitives[i]->boundingVolume->Draw();
-		//if (drawCollisionVolumes) primitives[i]->collisionVolume.Draw();
+		primitives[i].Draw();
 	}
 }
 
 void PrimitiveManager::Update(double deltaTime)
 {
 	//Moves objects to illustrate collision detection.
-	primitives[1].Tween(deltaTime, 1, Vector3(-0.5, 0, -1), 6);
-	primitives[2].Tween(deltaTime, 1, Vector3(-0.2, 1, 0), 10);
-	primitives[3].Tween(deltaTime, 1, Vector3(-1, 0, 0), 8);
-	primitives[4].Tween(deltaTime, 0.5, Vector3(0, -1, 0), 5);
+	//primitives[1].Tween(deltaTime, 1, Vector3(-0.5, 0, -1), 6);
+	//primitives[2].Tween(deltaTime, 1, Vector3(-0.2, 1, 0), 10);
+	//primitives[3].Tween(deltaTime, 1, Vector3(-1, 0, 0), 8);
+	//primitives[4].Tween(deltaTime, 0.5, Vector3(0, -1, 0), 5);
 
 
 	for (int i = 0; i < primitives.size(); i++)

@@ -12,6 +12,8 @@ namespace Shapes
 		static std::vector<Vertex> GetCubeVertices(const Colour& _colour = Colours::white);
 		static std::vector<Vertex> GetPlaneVertices(const Colour& _colour = Colours::white);
 		static std::vector<Vertex> GetSphereVertices(float radius, const Colour& _colour = Colours::white, int sectorCount = 10, int stackCount = 10);
+		static std::vector<Vertex> GetCapsuleVertices(float radius, float straight, const Colour& _colour = Colours::white, int sectorCount = 10, int stackCount = 9);
+		static std::vector<Vertex> GetCylinderVertices(float radius, float straight, const Colour& _colour = Colours::white, int sectorCount = 10);
 
 	private:
 		static Colour GetColour(const Colour& _rainbow, const Colour& _colour);

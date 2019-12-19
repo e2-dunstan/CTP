@@ -11,11 +11,12 @@ struct Primitive
 
 	enum class Type
 	{
-		BOX, SPHERE, PLANE, COMPLEX
+		BOX, SPHERE, PLANE, CAPSULE, CYLINDER, COMPLEX
 	};
 	Type type = Type::BOX;
 
 	void Update(const double& deltaTime);
+	void Draw();
 
 	//Physics data.
 	RigidBody rigidbody = RigidBody();
@@ -50,5 +51,6 @@ struct Primitive
 
 private:
 
+	GLenum GetDrawType(Primitive::Type objectType);
 
 };

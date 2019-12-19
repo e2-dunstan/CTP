@@ -11,6 +11,44 @@ void Primitive::Update(const double& deltaTime)
 	rigidbody.CalculateVelocity(translation);
 }
 
+void Primitive::Draw()
+{
+	glBegin(GetDrawType(type));
+
+	//Only locally transform the vertices. This makes it so that each draw call
+	//the vertices do not have to be cleared and redefined if their transforms have
+	//changed. Performance boost.
+	std::vector<Vertex> verts = vertices;
+	for (int v = 0; v < verts.size(); v++)
+	{
+		Mathe::Transform(verts[v].position, transform);
+
+		glNormal3f(verts[v].normal.x, verts[v].normal.y, verts[v].normal.z);
+
+		//For future shader use.
+		//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
+		//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
+		if (colliding)
+		{
+			glColor3f(1, 0, 0);
+		}
+		else
+		{
+			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+		}
+		glVertex3f(verts[v].position.x, verts[v].position.y, verts[v].position.z);
+	}
+
+	glEnd();
+
+	boundingVolume.Draw();
+
+	//Debug display for bounding and collision volumes.
+	//Bounding volumes have been put on hold until spatial data structures have been implemented.
+	//if (drawBoundingVolumes) primitives[i]->boundingVolume->Draw();
+	//if (drawCollisionVolumes) primitives[i]->collisionVolume.Draw();
+}
+
 void Primitive::Tween(const double& deltaTime, float speed, const Vector3& direction, float approxDistance)
 {
 	if (!initialised) return;
@@ -56,4 +94,25 @@ void Primitive::UpdateTransform()
 	collisionVolume.Update(translation, radius, scale / 2, rotation);
 
 	updateTransform = false;
+}
+
+GLenum Primitive::GetDrawType(Type objectType)
+{
+	switch (objectType)
+	{
+	case Type::CYLINDER:
+	{
+		return GL_TRIANGLE_STRIP;
+	}
+	case Type::CAPSULE:
+	case Type::SPHERE:
+	{
+		return GL_TRIANGLES;
+	}
+	case Type::BOX:
+	default:
+	{
+		return GL_QUADS;
+	}
+	}
 }

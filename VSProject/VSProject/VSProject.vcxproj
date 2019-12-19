@@ -165,7 +165,6 @@
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Shapes.h" />
-    <ClInclude Include="PrimitiveShapes.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>
