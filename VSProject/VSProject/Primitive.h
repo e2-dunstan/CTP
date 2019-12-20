@@ -6,7 +6,7 @@
 struct Primitive
 {
 	Primitive() = default;
-	Primitive(std::vector<Vertex> v) : vertices(v) { initialised = true; }
+	Primitive(std::vector<Vertex> v, float r = 0) : vertices(v), radius(r) { initialised = true; }
 	~Primitive() = default;
 
 	enum class Type
@@ -37,8 +37,9 @@ struct Primitive
 	BoundingVolume boundingVolume;
 	CollisionVolume collisionVolume;
 
-	float radius = 0; //if sphere
+	float radius = 0; //if sphere, capsule or cylinder
 	Vector3 upDir = Vector3(0, 1, 0); //if capsule or cylinder
+	Matrix upDirMat = Matrix(4, 4); //if cylinder
 
 	void Tween(const double& deltaTime, float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();

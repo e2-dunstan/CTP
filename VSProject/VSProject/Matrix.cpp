@@ -191,7 +191,7 @@ Matrix Matrix::Transpose()
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			transposed(r, c) = this->matrix4x4[(r * colSize) + c];
+			transposed(r, c) = this->matrix4x4[(c * rowSize) + r];
 		}
 	}
 	return transposed;

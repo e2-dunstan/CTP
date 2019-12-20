@@ -88,7 +88,11 @@ void Primitive::UpdateTransform()
 
 	if (type == Type::CAPSULE || type == Type::CYLINDER)
 	{
-		Mathe::Transform(upDir, transform);
+		upDirMat.Identity();
+		Mathe::Rotate(upDirMat, rotation.x, rotation.y, rotation.z);
+		upDir = Vector3(0, 1, 0);
+		Mathe::Transform(upDir, upDirMat);
+		upDir = upDir.Normalise();
 	}
 
 	boundingVolume.Generate(vertices, transform); //Gets min and max vertices

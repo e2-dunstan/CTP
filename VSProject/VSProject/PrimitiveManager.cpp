@@ -26,15 +26,15 @@ void PrimitiveManager::Create(Primitive::Type type,
 		newObj->collisionVolume.Create(CollisionVolume::Type::PLANE, translation, 0, scale, rotation, Vector3(0,1,0));
 		break;
 	case Primitive::Type::SPHERE:
-		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8));
+		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
 		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, rotation, Vector3());
 		break;
 	case Primitive::Type::CAPSULE:
-		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9));
+		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9), radius);
 		newObj->collisionVolume.Create(CollisionVolume::Type::CAPSULE, translation, radius, scale, rotation, Vector3(), straight);
 		break;
 	case Primitive::Type::CYLINDER:
-		newObj = new Primitive(ShapeVertices::GetCylinderVertices(radius, straight, Colours::magenta, 12));
+		newObj = new Primitive(ShapeVertices::GetCylinderVertices(radius, straight, Colours::magenta, 12), radius);
 		newObj->collisionVolume.Create(CollisionVolume::Type::CYLINDER, translation, radius, scale, rotation, Vector3(), straight);
 		break;
 	case Primitive::Type::COMPLEX:
@@ -92,7 +92,7 @@ void PrimitiveManager::Update(double deltaTime)
 	//primitives[3].Tween(deltaTime, 1, Vector3(-1, 0, 0), 8);
 	//primitives[4].Tween(deltaTime, 0.5, Vector3(0, -1, 0), 5);
 
-	primitives[6].Tween(deltaTime, 1, Vector3(0, -1, 0), 10);
+	primitives[6].Tween(deltaTime, 2, Vector3(0, 1, 0), 15);
 
 	for (int i = 0; i < primitives.size(); i++)
 	{

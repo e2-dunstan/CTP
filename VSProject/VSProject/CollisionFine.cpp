@@ -55,11 +55,11 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::SPHERE)
 	{
-		//CylinderAndSphere(prim1, prim2);
+		CylinderAndSphere(prim1, prim2);
 	}
 	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::CYLINDER)
 	{
-		//CylinderAndSphere(prim2, prim1);
+		CylinderAndSphere(prim2, prim1);
 	}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::BOX)
 	{
@@ -356,7 +356,7 @@ void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)
 
 	float planePosition = plane->collisionVolume.centre.ScalarProduct(plane->collisionVolume.normal);
 
-	Vector3 cylToPlane = (plane->collisionVolume.normal * cyl->upDir) * cyl->upDir;
+	Vector3 cylToPlane = (plane->collisionVolume.normal.VectorProduct(cyl->upDir)).VectorProduct(cyl->upDir);
 
 	Vector3 points[] = {
 		cylEndT + (cylToPlane * cyl->radius),
@@ -371,41 +371,168 @@ void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)
 		points[3].ScalarProduct(plane->collisionVolume.normal)
 	};
 
-	if (scalarProducts[0] < planePosition 
-		|| scalarProducts[1] < planePosition 
-		|| scalarProducts[2] < planePosition 
+	if (scalarProducts[0] < planePosition
+		|| scalarProducts[1] < planePosition
+		|| scalarProducts[2] < planePosition
 		|| scalarProducts[3] < planePosition)
 	{
 		//COLLIDING
+
 		float dirScalarProduct = plane->collisionVolume.normal.ScalarProduct(cyl->upDir);
-		
-		if (dirScalarProduct == 1) //PARALLEL (rolling)
-		{
 
-		}
-		else if (dirScalarProduct == 0) //PERPENDICULAR (stood like column)
+		//STANDING LIKE A COLUMN
+		if (abs(dirScalarProduct) < 1.01f && abs(dirScalarProduct) > 0.99f)	
 		{
+			//Three contacts required, each 120 degrees away from eachother about the centre
+			//Arbritrary points calculated
+			//THIS WILL INTRODUCE PROBLEMS IF THE PLANE'S NORMAL IS EVER NOT 0,1,0
+			Vector3 centre(cyl->collisionVolume.centre.x, planePosition, cyl->collisionVolume.centre.z);
+			float PI = 3.14159265359f;
 
+			Contact contact(cyl, plane);
+			contact.penetrationDepth = 0.00000001f;
+			contact.normal = plane->collisionVolume.normal;
+
+			contact.point = centre + Vector3((double)cyl->radius * (double)cos(0), 0, (double)cyl->radius * (double)sin(0));
+			contacts.push_back(contact);
+
+			contact.point = centre + Vector3((double)cyl->radius * (double)cos((2.0f * PI) / 3.0f), 0, (double)cyl->radius * (double)sin((2.0f * PI) / 3.0f));
+			contacts.push_back(contact);
+
+			contact.point = centre + Vector3((double)cyl->radius * (double)cos(-(2.0f * PI) / 3.0f), 0, (double)cyl->radius * (double)sin(-(2.0f * PI) / 3.0f));
+			contacts.push_back(contact);
+
+			return;
 		}
-		else //on edge, single contact - WORKING
+		else
 		{
-			float smallestDistance = 1000;
-			int closestIndex = 0;
+			//FIRST CONTACT
+			float smallestDistance1 = 1000;
+			int closestIndex1 = 0;
+
 			for (int i = 0; i < 4; i++)
 			{
-				if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance)
+				if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance1)
 				{
-					smallestDistance = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
-					closestIndex = i;
+					smallestDistance1 = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
+					closestIndex1 = i;
 				}
 			}
 			Contact contact(cyl, plane);
-			contact.point = points[closestIndex];
-			contact.penetrationDepth = smallestDistance;
+			contact.point = points[closestIndex1];
+			contact.penetrationDepth = smallestDistance1;
 			contact.normal = plane->collisionVolume.normal;
 			contacts.push_back(contact);
+
+
+			//PARALLEL (rolling)
+			if (abs(dirScalarProduct) < 0.01f)
+			{
+				float smallestDistance2 = 1000;
+				int closestIndex2 = 0;
+
+				for (int i = 0; i < 4; i++)
+				{
+					if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance2
+						&& i != closestIndex1)
+					{
+						smallestDistance2 = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
+						closestIndex2 = i;
+					}
+				}
+				Contact contact(cyl, plane);
+				contact.point = points[closestIndex2];
+				contact.penetrationDepth = smallestDistance2;
+				contact.normal = plane->collisionVolume.normal;
+				contacts.push_back(contact);
+				std::cout << "rolling" << std::endl;
+			}
+
 		}
 	}
+	else
+	{
+		return;	//No contact
+	}
+}
+
+void CollisionFine::CylinderAndSphere(Primitive* cyl, Primitive* sphere)
+{
+	//Convert to cylinder basis
+	Vector3 relativeSpherePos = (sphere->collisionVolume.centre - cyl->collisionVolume.centre);// .Normalise();
+	Matrix cylTranspose = cyl->collisionVolume.axisMat.Transpose();
+	Mathe::Transform(relativeSpherePos, cylTranspose);
+
+	//NOT COLLIDING
+	if ((relativeSpherePos.y - sphere->collisionVolume.radius) > (cyl->collisionVolume.length / 2)
+		|| (relativeSpherePos.y + sphere->collisionVolume.radius) < -(cyl->collisionVolume.length / 2))
+	{
+		return;
+	}
+
+	//Y is along the centre line of the cyl
+	float pow1 = pow(relativeSpherePos.x, 2);
+	float pow2 = pow(relativeSpherePos.z, 2);
+	float distanceToCentreLine = pow1 + pow2;
+
+	//Could be colliding
+	if (distanceToCentreLine < pow(cyl->collisionVolume.radius + sphere->collisionVolume.radius, 2))
+	{
+		//COLLIDING ON CURVED EDGE, therefore treat cylinder as a sphere
+		if (relativeSpherePos.y < (cyl->collisionVolume.length / 2)
+			&& relativeSpherePos.y > -(cyl->collisionVolume.length / 2))
+		{
+			Vector3 cylSphereRepresentation(0, relativeSpherePos.y, 0);
+			Mathe::Transform(cylSphereRepresentation, cyl->collisionVolume.axisMat);
+			SphereAndSphere(cyl, sphere, cylSphereRepresentation, cyl->collisionVolume.radius, sphere->collisionVolume.centre, sphere->collisionVolume.radius);
+			return;
+		}
+		//COLLIDING ON FLAT PLANES
+		else if ((relativeSpherePos.y - sphere->collisionVolume.radius) < (cyl->collisionVolume.length / 2)
+			&& (relativeSpherePos.y + sphere->collisionVolume.radius) > -(cyl->collisionVolume.length / 2))
+		{
+			double closestEndpoint = (abs(relativeSpherePos.y - cyl->collisionVolume.length) >
+				abs(relativeSpherePos.y + cyl->collisionVolume.length))
+				? cyl->collisionVolume.length
+				: -cyl->collisionVolume.length;
+
+			//if sphere x and z magnitude is greater than cyl radius,
+			//it is a edge collision, else it's colliding with the face
+
+			Vector3 contactPoint = Vector3(relativeSpherePos.x, closestEndpoint, relativeSpherePos.z);
+
+			if (distanceToCentreLine > pow(cyl->collisionVolume.radius, 2))
+			{
+				contactPoint = contactPoint.Normalise() * cyl->collisionVolume.radius;
+				Mathe::Transform(contactPoint, cyl->collisionVolume.axisMat); //back to world space
+				Vector3 normal = (sphere->collisionVolume.centre - contactPoint).Normalise();
+
+				Contact contact(cyl, sphere);
+				contact.point = contactPoint;
+				contact.normal = normal;
+				contact.penetrationDepth = 0;
+				contacts.push_back(contact);
+				return;
+			}
+			else
+			{
+				Mathe::Transform(contactPoint, cyl->collisionVolume.axisMat); //back to world space
+
+				Contact contact(cyl, sphere);
+				contact.point = contactPoint;
+				contact.normal = cyl->upDir;
+				contact.penetrationDepth = 0;
+				contacts.push_back(contact);
+				return;
+			}
+		}
+		//NOT COLLIDING
+		else
+		{
+			return;
+		}
+	}
+	//NOT COLLIDING
 	else
 	{
 		return;
