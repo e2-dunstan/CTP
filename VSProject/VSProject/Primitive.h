@@ -15,7 +15,7 @@ struct Primitive
 	};
 	Type type = Type::BOX;
 
-	void Update(const double& deltaTime);
+	void Update();
 	void Draw();
 
 	//Physics data.
@@ -41,7 +41,7 @@ struct Primitive
 	Vector3 upDir = Vector3(0, 1, 0); //if capsule or cylinder
 	Matrix upDirMat = Matrix(4, 4); //if cylinder
 
-	void Tween(const double& deltaTime, float speed, const Vector3& direction, float distance);
+	void Tween(float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
 
 	Vector3 tweenOrigin;

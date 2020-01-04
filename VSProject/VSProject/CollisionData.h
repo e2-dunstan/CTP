@@ -28,6 +28,8 @@ struct Contact
 
 	Primitive* body1;
 	Primitive* body2;
+
+	float restitution = 0.8;
 };
 
 struct CollisionData

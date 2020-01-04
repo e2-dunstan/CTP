@@ -137,6 +137,7 @@
     <ClCompile Include="CollisionResolution.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
+    <ClCompile Include="Global.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
     <ClCompile Include="PrimitiveManager.cpp" />
@@ -158,6 +159,7 @@
     <ClInclude Include="CollisionResolution.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
+    <ClInclude Include="Global.h" />
     <ClInclude Include="PrimitiveManager.h" />
     <ClInclude Include="Engine.h" />
     <ClInclude Include="mathe.h" />

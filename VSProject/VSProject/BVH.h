@@ -18,5 +18,5 @@ private:
 
 struct QueryContact
 {
-	std::unique_ptr<Primitive> primitives[2] = std::make_unique<Primitive>()[];
+	//std::unique_ptr<Primitive> primitives[2] = std::make_unique<Primitive>()[];
 };

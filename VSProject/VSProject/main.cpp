@@ -6,12 +6,10 @@
 // -- Over christmas (in that order) --
 // [X] AABB before full collision check
 // [X] collision detection visualisation with colour
-// [ ] capsules collision detection
-// [ ] cylinders collision detection
+// [~] capsules collision detection
+// [~] cylinders collision detection
 // [ ] convex hulls collision detection
 // [ ] impulse based response - boxes
-
-//other marker is probably James
 
 
 namespace
@@ -35,7 +33,6 @@ namespace
 	//in miliseconds
 	unsigned int timeSinceStart = 0;
 	unsigned int oldTimeSinceStart = 0;
-	double deltaTime = 0;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -117,7 +114,7 @@ void render()
 {
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
+	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
 	//Clear the buffers.
@@ -140,7 +137,7 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	engine->Update(deltaTime);
+	engine->Update();
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);
 }
@@ -185,7 +182,7 @@ int main(int argc, char* argv[]) {
 	glutMotionFunc(MouseMove);
 	glutMouseFunc(MouseButton);
 
-	engine->Update(deltaTime);
+	engine->Update();
 
 	glutMainLoop();
 

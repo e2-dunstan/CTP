@@ -17,7 +17,7 @@ public:
 	void CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation = Vector3());
 
 	void Draw();
-	void Update(double deltaTime);
+	void Update();
 
 private:
 
@@ -37,4 +37,5 @@ private:
 
 	double timeSinceCollisionDebug = 0;
 
+	int numUpdates = 0;
 };

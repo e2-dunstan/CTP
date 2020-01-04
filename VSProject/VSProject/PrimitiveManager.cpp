@@ -24,6 +24,8 @@ void PrimitiveManager::Create(Primitive::Type type,
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
 		newObj->collisionVolume.Create(CollisionVolume::Type::PLANE, translation, 0, scale, rotation, Vector3(0,1,0));
+		newObj->rigidbody.useGravity = false;
+		newObj->rigidbody.isKinematic = true;
 		break;
 	case Primitive::Type::SPHERE:
 		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
@@ -52,7 +54,6 @@ void PrimitiveManager::Create(Primitive::Type type,
 	newObj->UpdateTransform();
 
 	newObj->SetTweenOrigin();
-	//newObj->rigidbody.AddImpulse(Vector3(0, 1, 0));
 
 	primitives.push_back(*newObj);
 	//delete newObj;
@@ -84,61 +85,56 @@ void PrimitiveManager::Draw()
 	}
 }
 
-void PrimitiveManager::Update(double deltaTime)
+void PrimitiveManager::Update()
 {
 	//Moves objects to illustrate collision detection.
-	//primitives[1].Tween(deltaTime, 1, Vector3(-0.5, 0, -1), 6);
-	//primitives[2].Tween(deltaTime, 1, Vector3(-0.2, 1, 0), 10);
-	//primitives[3].Tween(deltaTime, 1, Vector3(-1, 0, 0), 8);
-	//primitives[4].Tween(deltaTime, 0.5, Vector3(0, -1, 0), 5);
-
-	primitives[6].Tween(deltaTime, 2, Vector3(0, 1, 0), 15);
+	//primitives[1].Tween(1, Vector3(0, -1, 0), 3.5);
 
 	for (int i = 0; i < primitives.size(); i++)
 	{
-		primitives[i].Update(deltaTime);
+		if (numUpdates == 10)
+		{
+			primitives[i].rigidbody.Start();
+		}
+		primitives[i].Update();
+	}
+
+	if (numUpdates <= 10)
+	{
+		numUpdates++;
 	}
 
 	//Custom define which objects to detect collisions between.
 	//Will convert to a spatial data structure in the future.
-	//Console output is every quarter of a second for readability.
 
 	//Plane
-	collisions->DetectCoarse(&primitives[0], &primitives[1], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[0], &primitives[2], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[0], &primitives[3], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[0], &primitives[4], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[0], &primitives[5], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[0], &primitives[6], timeSinceCollisionDebug > 0.25);
-	//Box1																			 
-	collisions->DetectCoarse(&primitives[1], &primitives[2], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[1], &primitives[3], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[1], &primitives[4], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[1], &primitives[5], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[1], &primitives[6], timeSinceCollisionDebug > 0.25);
-	//Box2																			 
-	collisions->DetectCoarse(&primitives[2], &primitives[3], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[2], &primitives[4], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[2], &primitives[5], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[2], &primitives[6], timeSinceCollisionDebug > 0.25);
-	//Box3																			 
-	collisions->DetectCoarse(&primitives[3], &primitives[4], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[3], &primitives[5], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[3], &primitives[6], timeSinceCollisionDebug > 0.25);
-	//Sphere
-	collisions->DetectCoarse(&primitives[4], &primitives[5], timeSinceCollisionDebug > 0.25);
-	collisions->DetectCoarse(&primitives[4], &primitives[6], timeSinceCollisionDebug > 0.25);
-	//Capsule
-	collisions->DetectCoarse(&primitives[5], &primitives[6], timeSinceCollisionDebug > 0.25);
+	collisions->DetectCoarse(&primitives[0], &primitives[1]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
+	//Box1													
+	//collisions->DetectCoarse(&primitives[1], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[6]);
+	//Box2													
+	//collisions->DetectCoarse(&primitives[2], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[2], &primitives[4]);
+	//collisions->DetectCoarse(&primitives[2], &primitives[5]);
+	//collisions->DetectCoarse(&primitives[2], &primitives[6]);
+	////Box3												
+	//collisions->DetectCoarse(&primitives[3], &primitives[4]);
+	//collisions->DetectCoarse(&primitives[3], &primitives[5]);
+	//collisions->DetectCoarse(&primitives[3], &primitives[6]);
+	////Sphere
+	//collisions->DetectCoarse(&primitives[4], &primitives[5]);
+	//collisions->DetectCoarse(&primitives[4], &primitives[6]);
+	////Capsule
+	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
 		
-	
-	if (timeSinceCollisionDebug > 0.25)
-	{
-		timeSinceCollisionDebug = 0;
-		//std::cout << std::endl;
-	}
-	timeSinceCollisionDebug += deltaTime;
-
 	collisions->DetectFine();
 	for (int i = 0; i < primitives.size(); i++)
 	{

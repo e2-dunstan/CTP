@@ -3,7 +3,25 @@
 
 void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 {
-	if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::SPHERE)
+	if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::SPHERE)
+	{
+		SphereAndPlane(prim2, prim1,
+			prim2->collisionVolume.centre, prim2->collisionVolume.radius,
+			prim1->collisionVolume.centre, prim1->collisionVolume.normal);
+	}
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::BOX)
+	{
+		BoxAndPlane(prim2, prim1, prim1->collisionVolume.centre, prim1->collisionVolume.normal);
+	}
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::CYLINDER)
+	{
+		CylinderAndPlane(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::CAPSULE)
+	{
+		CapsuleAndPlane(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::SPHERE)
 	{
 		SphereAndSphere(prim1, prim2,
 			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
@@ -15,23 +33,21 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
 			prim2->collisionVolume.centre, prim2->collisionVolume.normal);
 	}
-	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::SPHERE)
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::BOX)
 	{
-		SphereAndPlane(prim2, prim1,
-			prim2->collisionVolume.centre, prim2->collisionVolume.radius,
-			prim1->collisionVolume.centre, prim1->collisionVolume.normal);
+		SphereAndBox(prim1, prim2, prim1->collisionVolume.centre, prim1->collisionVolume.radius);
+	}
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::CYLINDER)
+	{
+		CylinderAndSphere(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::CAPSULE)
+	{
+		CapsuleAndSphere(prim2, prim1);
 	}
 	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::PLANE)
 	{
 		BoxAndPlane(prim1, prim2, prim2->collisionVolume.centre, prim2->collisionVolume.normal);
-	}
-	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::BOX)
-	{
-		BoxAndPlane(prim2, prim1, prim1->collisionVolume.centre, prim1->collisionVolume.normal);
-	}
-	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::BOX)
-	{
-		SphereAndBox(prim1, prim2, prim1->collisionVolume.centre, prim1->collisionVolume.radius);
 	}
 	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::SPHERE)
 	{
@@ -41,6 +57,14 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		BoxAndBox(prim1, prim2);
 	}
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::CYLINDER)
+	{
+		//CylinderAndBox(prim2, prim1);
+	}
+	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::CAPSULE)
+	{
+
+	}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::CYLINDER)
 	{
 		//CylinderAndCylinder(prim1, prim2);
@@ -49,25 +73,37 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		CylinderAndPlane(prim1, prim2);
 	}
-	else if (prim1->type == Primitive::Type::PLANE && prim2->type == Primitive::Type::CYLINDER)
-	{
-		CylinderAndPlane(prim2, prim1);
-	}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::SPHERE)
 	{
 		CylinderAndSphere(prim1, prim2);
-	}
-	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::CYLINDER)
-	{
-		CylinderAndSphere(prim2, prim1);
 	}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::BOX)
 	{
 		//CylinderAndBox(prim1, prim2);
 	}
-	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::CYLINDER)
+	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::CAPSULE)
 	{
-		//CylinderAndBox(prim2, prim1);
+		
+	}
+	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::CAPSULE)
+	{
+
+	}
+	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::CYLINDER)
+	{
+		
+	}
+	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::PLANE)
+	{
+		CapsuleAndPlane(prim1, prim2);
+	}
+	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::BOX)
+	{
+
+	}
+	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::SPHERE)
+	{
+		CapsuleAndSphere(prim1, prim2);
 	}
 }
 
@@ -445,7 +481,6 @@ void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)
 				contact.penetrationDepth = smallestDistance2;
 				contact.normal = plane->collisionVolume.normal;
 				contacts.push_back(contact);
-				std::cout << "rolling" << std::endl;
 			}
 
 		}
@@ -458,19 +493,19 @@ void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)
 
 void CollisionFine::CylinderAndSphere(Primitive* cyl, Primitive* sphere)
 {
-	//Convert to cylinder basis
+	//Convert to cylinder basis (transform)
 	Vector3 relativeSpherePos = (sphere->collisionVolume.centre - cyl->collisionVolume.centre);// .Normalise();
 	Matrix cylTranspose = cyl->collisionVolume.axisMat.Transpose();
 	Mathe::Transform(relativeSpherePos, cylTranspose);
 
-	//NOT COLLIDING
+	//NOT COLLIDING - actually calculated in AABB stage so sort of unnecessary here
 	if ((relativeSpherePos.y - sphere->collisionVolume.radius) > (cyl->collisionVolume.length / 2)
 		|| (relativeSpherePos.y + sphere->collisionVolume.radius) < -(cyl->collisionVolume.length / 2))
 	{
 		return;
 	}
 
-	//Y is along the centre line of the cyl
+	//Y is along the centre line of the cyl therefore null
 	float pow1 = pow(relativeSpherePos.x, 2);
 	float pow2 = pow(relativeSpherePos.z, 2);
 	float distanceToCentreLine = pow1 + pow2;
@@ -478,7 +513,7 @@ void CollisionFine::CylinderAndSphere(Primitive* cyl, Primitive* sphere)
 	//Could be colliding
 	if (distanceToCentreLine < pow(cyl->collisionVolume.radius + sphere->collisionVolume.radius, 2))
 	{
-		//COLLIDING ON CURVED EDGE, therefore treat cylinder as a sphere
+		//COLLIDING ON CURVED FACE, therefore treat cylinder as a sphere
 		if (relativeSpherePos.y < (cyl->collisionVolume.length / 2)
 			&& relativeSpherePos.y > -(cyl->collisionVolume.length / 2))
 		{
@@ -526,15 +561,170 @@ void CollisionFine::CylinderAndSphere(Primitive* cyl, Primitive* sphere)
 				return;
 			}
 		}
-		//NOT COLLIDING
-		else
-		{
-			return;
-		}
 	}
 	//NOT COLLIDING
+	return;
+}
+
+void CollisionFine::CapsuleAndPlane(Primitive* cap, Primitive* plane)
+{
+	//VERY similar to cylinder plane, but checks for end points also necessary
+
+	//Top and bottom centre points
+	Vector3 capEndT = cap->collisionVolume.centre + (cap->upDir * cap->collisionVolume.length);
+	Vector3 capEndB = cap->collisionVolume.centre - (cap->upDir * cap->collisionVolume.length);
+
+	float planePosition = plane->collisionVolume.centre.ScalarProduct(plane->collisionVolume.normal);
+
+	Vector3 capToPlane = (plane->collisionVolume.normal.VectorProduct(cap->upDir)).VectorProduct(cap->upDir);
+
+	Vector3 points[] = {
+		capEndT + (capToPlane * cap->radius),
+		capEndT - (capToPlane * cap->radius),
+		capEndB + (capToPlane * cap->radius),
+		capEndB - (capToPlane * cap->radius),
+		capEndT + (cap->upDir * cap->radius), 
+		capEndB - (cap->upDir * cap->radius)
+	};
+	float scalarProducts[] = {
+		points[0].ScalarProduct(plane->collisionVolume.normal),
+		points[1].ScalarProduct(plane->collisionVolume.normal),
+		points[2].ScalarProduct(plane->collisionVolume.normal),
+		points[3].ScalarProduct(plane->collisionVolume.normal),
+		points[4].ScalarProduct(plane->collisionVolume.normal),
+		points[5].ScalarProduct(plane->collisionVolume.normal)
+	};
+
+	if (scalarProducts[0] < planePosition
+		|| scalarProducts[1] < planePosition
+		|| scalarProducts[2] < planePosition
+		|| scalarProducts[3] < planePosition
+		|| scalarProducts[4] < planePosition
+		|| scalarProducts[5] < planePosition)
+	{
+		//COLLIDING
+
+		float dirScalarProduct = plane->collisionVolume.normal.ScalarProduct(cap->upDir);
+
+		//STANDING LIKE A COLUMN
+		if (abs(dirScalarProduct) < 1.01f && abs(dirScalarProduct) > 0.99f)
+		{
+			//One contact point on a half-sphere
+			Vector3 centre(cap->collisionVolume.centre.x, planePosition, cap->collisionVolume.centre.z);
+
+			Contact contact(cap, plane);
+			contact.penetrationDepth = 0.00000001f;
+			contact.normal = plane->collisionVolume.normal;
+			contact.point = centre;
+			contacts.push_back(contact);
+
+			return;
+		}
+		//PARALLEL THEREFORE ROLLING
+		else if (abs(dirScalarProduct) < 0.01f)
+		{
+			float smallestDistance1 = 1000;
+			int closestIndex1 = 0;
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance1)
+				{
+					smallestDistance1 = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
+					closestIndex1 = i;
+				}
+			}
+			Contact contact(cap, plane);
+			contact.point = points[closestIndex1];
+			contact.penetrationDepth = smallestDistance1;
+			contact.normal = plane->collisionVolume.normal;
+			contacts.push_back(contact);
+
+			float smallestDistance2 = 1000;
+			int closestIndex2 = 0;
+
+			for (int i = 0; i < 4; i++)
+			{
+				if (abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude()) < smallestDistance2
+					&& i != closestIndex1)
+				{
+					smallestDistance2 = abs(scalarProducts[i] - plane->collisionVolume.normal.Magnitude());
+					closestIndex2 = i;
+				}
+			}
+			contact.point = points[closestIndex2];
+			contact.penetrationDepth = smallestDistance2;
+			contacts.push_back(contact);
+		}
+		else
+		{
+			Vector3 closestPoint = (abs(scalarProducts[5] - planePosition) > abs(scalarProducts[4] - planePosition))
+								 ? capEndT : capEndB;
+			closestPoint += capToPlane * cap->radius;
+			closestPoint.y = planePosition;
+			Contact contact(cap, plane);
+			contact.point = closestPoint;
+			contact.normal = plane->collisionVolume.normal;
+			contact.penetrationDepth = 0.000001;
+			contacts.push_back(contact);
+		}
+	}
 	else
 	{
+		return;	//No contact
+	}
+}
+
+void CollisionFine::CapsuleAndSphere(Primitive* cap, Primitive* sphere)
+{
+	//Convert to capsule basis (transform)
+	Vector3 relativeSpherePos = (sphere->collisionVolume.centre - cap->collisionVolume.centre);
+	Matrix capTranspose = cap->collisionVolume.axisMat.Transpose();
+	Mathe::Transform(relativeSpherePos, capTranspose);
+
+	//NOT COLLIDING - actually calculated in AABB stage so sort of unnecessary here
+	//if (((float)relativeSpherePos.y - sphere->collisionVolume.radius) > (cap->collisionVolume.length / 2.0f) + cap->radius
+	//	|| ((float)relativeSpherePos.y + sphere->collisionVolume.radius) < -(cap->collisionVolume.length / 2.0f) - cap->radius)
+	//{
+	//	return;
+	//}
+
+	//Y is along the centre line of the cap therefore null
+	float pow1 = pow(relativeSpherePos.x, 2);
+	float pow2 = pow(relativeSpherePos.z, 2);
+	float distanceToCentreLine = pow1 + pow2;
+
+	//Could be colliding
+	if (distanceToCentreLine < pow(cap->collisionVolume.radius + cap->collisionVolume.radius + sphere->collisionVolume.radius, 2))
+	{
+		//COLLIDING ON CURVED FACE, therefore treat cylinder as a sphere
+		if (relativeSpherePos.z < (cap->collisionVolume.length / 2)
+			&& relativeSpherePos.z > -(cap->collisionVolume.length / 2))
+		{
+			Vector3 capSphereRepresentation(0, relativeSpherePos.y, 0);
+			Mathe::Transform(capSphereRepresentation, cap->collisionVolume.axisMat);
+			SphereAndSphere(cap, sphere, 
+				capSphereRepresentation, cap->collisionVolume.radius, 
+				sphere->collisionVolume.centre, sphere->collisionVolume.radius);
+			return;
+		}
+		//COLLIDING ON DOME
+		else
+		{
+			double closestEndpoint = (abs(relativeSpherePos.y - cap->collisionVolume.length) >
+				abs(relativeSpherePos.y + cap->collisionVolume.length))
+				? cap->collisionVolume.length / 2
+				: -cap->collisionVolume.length / 2;
+
+			Vector3 capSphereOrigin = Vector3(relativeSpherePos.x, closestEndpoint, relativeSpherePos.z);
+			SphereAndSphere(cap, sphere, 
+				capSphereOrigin, cap->collisionVolume.radius, 
+				sphere->collisionVolume.centre, sphere->collisionVolume.radius);
+		}
+	}
+	else
+	{
+		//NOT COLLIDING
 		return;
 	}
 }

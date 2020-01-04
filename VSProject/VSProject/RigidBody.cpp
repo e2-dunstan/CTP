@@ -1,24 +1,42 @@
 #include "RigidBody.h"
 
-void RigidBody::UpdatePhysics(const double& deltaTime)
+void RigidBody::Start()
 {
-	//How does this work with calculate velocity?
-	//if (drag != 0)
-	//{
-	//	velocity *= drag * deltaTime;
-	//}
+	AddImpulse(Vector3(1, 0, 0), 0.5);
 }
 
-void RigidBody::CalculateVelocity(Vector3& newPosition)
+void RigidBody::UpdatePhysics()
 {
-	//highly unlikely in final simulation
-	if (previousPosition == Vector3(0, -500, 0)) previousPosition = newPosition;
+	if (isKinematic) return;
 
-	velocity = newPosition - previousPosition;
-	previousPosition = newPosition;
+	if (useGravity)
+	{
+		velocity += (Global::gravity * Global::deltaTime * 0.01);
+	}
+
+	velocity = velocity.Clamp(0, terminalSpeed);
 }
 
-void RigidBody::AddImpulse(Vector3 force)
+//void RigidBody::CalculateVelocity(Vector3& newPosition)
+//{
+//	//highly unlikely in final simulation
+//	if (previousPosition == Vector3(0, -500, 0)) previousPosition = newPosition;
+//
+//	velocity = newPosition - previousPosition;
+//	previousPosition = newPosition;
+//}
+
+void RigidBody::AddImpulse(Vector3 dir, double force)
 {
-	velocity += force;
+	//change in velocity = final - initial
+	//double changeInVel = (
+	//	- ((1 / inverseMass) * velocity.Magnitude() * -1);
+
+	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * 2 * force;
+}
+
+void RigidBody::SetTerminalSpeed()
+{
+	//Approximation assuming area = 1, which it is not.
+	terminalSpeed = sqrt((Global::gravityMag * 2) / (inverseMass * Global::airDensity * drag));
 }

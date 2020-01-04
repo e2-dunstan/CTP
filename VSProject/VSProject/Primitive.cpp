@@ -1,14 +1,19 @@
 #include "Primitive.h"
 
-
-void Primitive::Update(const double& deltaTime)
+void Primitive::Update()
 {	
-	//rigidbody.UpdatePhysics(deltaTime);
+	rigidbody.UpdatePhysics();
+	if (rigidbody.velocity != Vector3())
+	{
+		rigidbody.velocity.DebugOutput();
+		translation += rigidbody.velocity;
+		updateTransform = true;
+	}
 
 	//Update transforms if they have changed.
 	if (updateTransform) UpdateTransform();
 
-	rigidbody.CalculateVelocity(translation);
+	//rigidbody.CalculateVelocity(translation);
 }
 
 void Primitive::Draw()
@@ -41,7 +46,7 @@ void Primitive::Draw()
 
 	glEnd();
 
-	boundingVolume.Draw();
+	//boundingVolume.Draw();
 
 	//Debug display for bounding and collision volumes.
 	//Bounding volumes have been put on hold until spatial data structures have been implemented.
@@ -49,9 +54,9 @@ void Primitive::Draw()
 	//if (drawCollisionVolumes) primitives[i]->collisionVolume.Draw();
 }
 
-void Primitive::Tween(const double& deltaTime, float speed, const Vector3& direction, float approxDistance)
+void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
 {
-	if (!initialised) return;
+	if (!initialised || rigidbody.isKinematic) return;
 
 	if (!tweenMaxSet)
 	{
@@ -59,7 +64,7 @@ void Primitive::Tween(const double& deltaTime, float speed, const Vector3& direc
 		tweenMaxSet = true;
 	}
 
-	translation += (direction * (deltaTime * speed)) * (moveTowards ? 1 : -1);
+	translation += (direction * (Global::deltaTime * speed)) * (moveTowards ? 1 : -1);
 
 	//Reverse movement
 	if ((moveTowards && translation.Distance(tweenMax) < 0.2)

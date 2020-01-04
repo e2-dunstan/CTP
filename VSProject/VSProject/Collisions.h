@@ -12,8 +12,8 @@ public:
 	Collisions() = default;
 	~Collisions() = default;
 
-	void DetectCoarse(Primitive* prim1, Primitive* prim2, bool output = false);
-	void DetectFine(bool output = false);
+	void DetectCoarse(Primitive* prim1, Primitive* prim2);
+	void DetectFine();
 	void Resolution();
 	//void Response(RigidBody* rb);
 

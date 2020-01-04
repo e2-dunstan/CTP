@@ -1,6 +1,6 @@
 #include "Collisions.h"
 
-void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2, bool output)
+void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
 {
 	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
 	{
@@ -8,7 +8,7 @@ void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2, bool output)
 	}
 }
 
-void Collisions::DetectFine(bool output)
+void Collisions::DetectFine()
 {
 	for (auto potentialContact : potentialContacts)
 	{

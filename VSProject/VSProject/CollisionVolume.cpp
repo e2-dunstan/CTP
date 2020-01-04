@@ -27,39 +27,31 @@ void CollisionVolume::Update(const Vector3& _centre, float _radius,
 		Box();
 		break;
 	case Type::SPHERE:
-		//Sphere();
-		break;
 	case Type::PLANE:
-		//Plane();
-		break;
 	case Type::CAPSULE:
-		break;
 	case Type::CYLINDER:
-		break;
 	case Type::COMPLEX:
-		//Complex();
-		break;
 	default:
 		break;
 	}
 }
 
 
-void CollisionVolume::Draw()
-{
-	if (type != Type::BOX) return;
-
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	glBegin(GL_QUADS);
-	glColor3f(1, 0, 0);
-	for (int v = 0; v < vertices.size(); v++)
-	{
-		glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
-	}
-	glEnd();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-}
+//void CollisionVolume::Draw()
+//{
+//	if (type != Type::BOX) return;
+//
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+//
+//	glBegin(GL_QUADS);
+//	glColor3f(1, 0, 0);
+//	for (int v = 0; v < vertices.size(); v++)
+//	{
+//		glVertex3f(vertices[v].x, vertices[v].y, vertices[v].z);
+//	}
+//	glEnd();
+//	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+//}
 
 
 void CollisionVolume::Box()

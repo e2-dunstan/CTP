@@ -21,6 +21,8 @@ struct Vector3
 	Vector3 Normalise();
 	Vector3 Inverse();
 
+	Vector3 Clamp(double minMag, double maxMag);
+
 	Vector3 ComponentProduct(const Vector3& vec) const;
 	double ScalarProduct(const Vector3& vec) const;
 	Vector3 VectorProduct(const Vector3& vec) const;

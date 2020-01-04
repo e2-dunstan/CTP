@@ -22,6 +22,22 @@ Vector3 Vector3::Inverse()
 	return Vector3(-x, -y, -z);
 }
 
+Vector3 Vector3::Clamp(double minMag, double maxMag)
+{
+	if (this->Magnitude() > maxMag)
+	{
+		return this->Normalise() * maxMag;
+	}
+	else if (this->Magnitude() < minMag)
+	{
+		return this->Normalise() * minMag;
+	}
+	else
+	{
+		return *this;
+	}
+}
+
 Vector3 Vector3::ComponentProduct(const Vector3& vec) const
 {
 	return Vector3(x * vec.x, y * vec.y, z * vec.z);

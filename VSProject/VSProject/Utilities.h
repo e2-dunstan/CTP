@@ -5,7 +5,7 @@
 #include <stdio.h>
 #include <vector>
 
-#include "mathe.h"
+#include "Global.h"
 using namespace Mathe;
 
 struct Colour

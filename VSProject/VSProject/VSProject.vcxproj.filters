@@ -96,6 +96,9 @@
     <ClCompile Include="BoundingVolume.cpp">
       <Filter>Source Files\Primitives\Volumes</Filter>
     </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">
@@ -154,6 +157,9 @@
     </ClInclude>
     <ClInclude Include="CollisionVolume.h">
       <Filter>Header Files\Primitives\Volumes</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -4,6 +4,17 @@ void CollisionResolution::Resolve(Contact& contact)
 {
 	//Matrix contactToWorld = CalculateContactBasis(contact.normal);
 	//Matrix worldToContact = contactToWorld.Transpose();
+
+	if (contact.body1->type == Primitive::Type::SPHERE)
+	{
+		contact.body1->rigidbody.AddImpulse(contact.normal, contact.restitution);
+	}
+	if (contact.body2->type == Primitive::Type::SPHERE)
+	{
+		contact.body2->rigidbody.AddImpulse(contact.normal, contact.restitution);
+	}
+
+	//Debugging
 	if (contact.body1->type != Primitive::Type::PLANE) contact.body1->colliding = true;
 	if (contact.body2->type != Primitive::Type::PLANE) contact.body2->colliding = true;
 

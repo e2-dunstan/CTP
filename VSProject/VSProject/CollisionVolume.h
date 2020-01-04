@@ -19,23 +19,17 @@ public:
 	void Update(const Vector3& _centre, float _radius, 
 		const Vector3& _size, const Vector3& _rotation);
 
-	void Draw();
-
 	//Shared
 	Vector3 centre;
-
 	//Sphere, cylinder and capsule
 	float radius = 0;
-
 	//Cylinder and capsule
 	float length = 0;
-
 	//Box
 	Vector3 halfSize;
 	std::vector<Vector3> vertices;
 	Vector3 rotation;
 	std::vector<Vector3> normals;
-
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);
 
