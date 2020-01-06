@@ -197,22 +197,26 @@ float CollisionFine::PositionOnAxis(const Primitive* box, const Vector3& axis)
 }
 
 bool CollisionFine::BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, 
-	const Vector3& toCentre, const Vector3& axis, 
+	const Vector3& toCentre, Vector3 axis, 
 	int index, float& smallestPenetration, int& smallestIndex)
 {
-	float box1AxisPos = PositionOnAxis(box1, axis);
-	float box2AxisPos = PositionOnAxis(box2, axis);
+	if (axis.SquaredMagnitude() < 0.0001) return true;
+	axis = axis.Normalise();
+
+	float box1AxisPos = PositionOnAxis(box1, axis) / 2.0f;
+	float box2AxisPos = PositionOnAxis(box2, axis) / 2.0f;
 
 	float distance = abs(toCentre.ScalarProduct(axis));// -data->tolerance;
 
-	float penetration = box1AxisPos + box2AxisPos - distance;
+	float penetration = abs(box1AxisPos + box2AxisPos - distance);
+	if (penetration < 0) return false;
 	if (penetration < smallestPenetration)
 	{
 		smallestPenetration = penetration;
 		smallestIndex = index;
 	}
 
-	return (distance <= box1AxisPos + box2AxisPos);
+	return true;
 }
 
 //Separating axis theorem
@@ -268,11 +272,13 @@ void CollisionFine::BoxAndBox(Primitive* box1, Primitive* box2)
 	if (smallestIndex < 3)
 	{
 		PointFaceCollision(box1, box2, toCentre, smallestIndex, smallestPenetration);
+		//std::cout << "POINT-FACE" << std::endl;
 		return;
 	}
 	else if (smallestIndex < 6)
 	{
 		PointFaceCollision(box2, box1, toCentre * -1.0f, smallestIndex - 3, smallestPenetration);
+		//std::cout << "POINT-FACE" << std::endl;
 		return;
 	}
 	//Edge-edge collision
@@ -341,16 +347,41 @@ void CollisionFine::PointFaceCollision(Primitive* box1, Primitive* box2, const V
 	contacts.push_back(contact);
 }
 
-Vector3 CollisionFine::GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, const Vector3& axisOne, const Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint)
+Vector3 CollisionFine::GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint)
 {
 	//https://github.com/idmillington/cyclone-physics/issues/50
-	Vector3 toStart;
 	Vector3 contact1, contact2;
 
-	float dpSta1, dpSta2, dp12, sm1, sm2;
+	float squareMag1 = axisOne.SquaredMagnitude();
+	float squareMag2 = axisTwo.SquaredMagnitude();
+	float dotProdAxisOneTwo = axisTwo.ScalarProduct(axisOne);
 
+	Vector3 toStart = edgePoint1 - edgePoint2;
+	float dotProduct1 = axisOne.ScalarProduct(toStart);
+	float dotProduct2 = axisTwo.ScalarProduct(toStart);
 
-	return Vector3();
+	float denominator = (squareMag1 * squareMag2) - (dotProduct1 * dotProduct2);
+
+	//parallel edges
+	if (abs(denominator) < 0.0001f)
+	{
+		return useOneMidpoint ? edgePoint1 : edgePoint2;
+	}
+
+	float edgeNearestA = ((dotProdAxisOneTwo * dotProduct2) - (squareMag2 * dotProduct1)) / denominator;
+	float edgeNearestB = ((squareMag1 * dotProduct2) - (dotProdAxisOneTwo * dotProduct1)) / denominator;
+
+	if (edgeNearestA > halfSize1 || edgeNearestA < -halfSize1
+		|| edgeNearestB > halfSize2 || edgeNearestB < -halfSize2)
+	{
+		return useOneMidpoint ? edgePoint1 : edgePoint2;
+	}
+	else
+	{
+		contact1 = edgePoint1 + (axisOne * edgeNearestA);
+		contact2 = edgePoint2 + (axisTwo * edgeNearestB);
+		return (contact1 * 0.5) + (contact2 * 0.5);
+	}
 }
 
 void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal)

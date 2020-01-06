@@ -66,6 +66,34 @@ void Matrix::Identity()
 	}
 }
 
+void Matrix::Inverse3x3()
+{
+	double t4 = this->matrix4x4[0] * this->matrix4x4[5];
+	double t6 = this->matrix4x4[0] * this->matrix4x4[6];
+	double t8 = this->matrix4x4[1] * this->matrix4x4[4];
+	double t10 = this->matrix4x4[2] * this->matrix4x4[4];
+	double t12 = this->matrix4x4[1] * this->matrix4x4[8];
+	double t14 = this->matrix4x4[2] * this->matrix4x4[8];
+
+	//determinant
+	double t16 = (t4 * this->matrix4x4[10]) - (t6 * this->matrix4x4[9])
+		- (t8 * this->matrix4x4[10]) + (t10 * this->matrix4x4[9])
+		+ (t12 * this->matrix4x4[6]) - (t14 * this->matrix4x4[5]);
+
+	if (t16 == 0.0f) return;
+	float t17 = 1 / t16;
+
+	this->matrix4x4[0] = ((this->matrix4x4[5] * this->matrix4x4[10]) - (this->matrix4x4[6] * this->matrix4x4[9])) * t17;
+	this->matrix4x4[1] = -((this->matrix4x4[1] * this->matrix4x4[10]) - (this->matrix4x4[2] * this->matrix4x4[9])) * t17;
+	this->matrix4x4[2] = ((this->matrix4x4[1] * this->matrix4x4[6]) - (this->matrix4x4[2] * this->matrix4x4[5])) * t17;
+	this->matrix4x4[4] = -((this->matrix4x4[3] * this->matrix4x4[10]) - (this->matrix4x4[6] * this->matrix4x4[8])) * t17;
+	this->matrix4x4[5] = ((this->matrix4x4[0] * this->matrix4x4[10]) - t14) * t17;
+	this->matrix4x4[6] = -(t6 - t10) * t17;
+	this->matrix4x4[8] = ((this->matrix4x4[3] * this->matrix4x4[9]) - (this->matrix4x4[5] * this->matrix4x4[8])) * t17;
+	this->matrix4x4[9] = -((this->matrix4x4[0] * this->matrix4x4[9]) - t12) * t17;
+	this->matrix4x4[10] = (t4 - t8) * t17;
+}
+
 Matrix Matrix::operator+(Matrix& m)
 {
 	Matrix sum(rowSize, colSize);

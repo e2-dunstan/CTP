@@ -54,9 +54,49 @@ void Primitive::Draw()
 	//if (drawCollisionVolumes) primitives[i]->collisionVolume.Draw();
 }
 
+void Primitive::CalculateInertiaTensor()
+{
+	double matVals[16] = { 0 };
+	switch (type)
+	{
+	case Type::BOX:
+	{
+		matVals[0] = (1 / (12 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
+		matVals[5] = (1 / (12 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
+		matVals[10] = (1 / (12 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
+		break;
+	}
+	case Type::SPHERE:
+	{
+		matVals[0] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[5] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[10] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
+		break;
+	}
+	case Type::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
+	case Type::CYLINDER:
+	{
+		matVals[0] = ((1 / (12 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
+			+ ((1 / (4 * rigidbody.inverseMass)) * (radius * radius));
+		matVals[5] = ((1 / (12 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
+			+ ((1 / (4 * rigidbody.inverseMass)) * (radius * radius));
+		matVals[10] = (1 / (2 * rigidbody.inverseMass)) * (radius * radius);
+		break;
+	}
+	case Type::COMPLEX:
+	case Type::PLANE:
+	default:
+		return;
+	}
+
+	rigidbody.inverseInertiaTensor = Matrix(matVals);
+	rigidbody.inverseInertiaTensor.Inverse3x3();
+
+}
+
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
 {
-	if (!initialised || rigidbody.isKinematic) return;
+	if (/*!initialised || */!rigidbody.isKinematic) return;
 
 	if (!tweenMaxSet)
 	{

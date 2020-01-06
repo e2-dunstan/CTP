@@ -29,14 +29,14 @@ struct Contact
 	Primitive* body1;
 	Primitive* body2;
 
-	float restitution = 0.8;
+	float restitution = 0.9;
 };
 
 struct CollisionData
 {
 	CollisionData() = default;
 	~CollisionData() = default;
-
+	
 	//Collision response will reference contacts.
 	std::vector<Contact> contacts = std::vector<Contact>();
 	int contactsLeft = 5;

@@ -6,6 +6,11 @@ double Vector3::Distance(const Vector3& vec) const
 	return dir.Magnitude();
 }
 
+double Vector3::SquaredMagnitude()
+{
+	return (x * x) + (y * y) + (z * z);
+}
+
 double Vector3::Magnitude()
 {
 	return sqrt((x * x) + (y * y) + (z * z));

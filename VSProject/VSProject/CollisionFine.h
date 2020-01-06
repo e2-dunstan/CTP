@@ -17,10 +17,10 @@ public:
 private:
 	//Separating axis theorem
 	float PositionOnAxis(const Primitive* box, const Vector3& axis);
-	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, const Vector3& axis, 
+	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, Vector3 axis, 
 		int index, float& smallestPenetration, int& smallestIndex);
 	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
-	Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, const Vector3& axisOne, const Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
+	Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
 	//Type checks
 	/* TYPE CHECKS: (total of 24 if statements)

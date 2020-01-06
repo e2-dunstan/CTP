@@ -9,7 +9,7 @@ struct Primitive
 	Primitive(std::vector<Vertex> v, float r = 0) : vertices(v), radius(r) { initialised = true; }
 	~Primitive() = default;
 
-	enum class Type
+	enum Type
 	{
 		BOX, SPHERE, PLANE, CAPSULE, CYLINDER, COMPLEX
 	};
@@ -17,6 +17,8 @@ struct Primitive
 
 	void Update();
 	void Draw();
+
+	void CalculateInertiaTensor();
 
 	//Physics data.
 	RigidBody rigidbody = RigidBody();

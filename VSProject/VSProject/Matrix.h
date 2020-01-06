@@ -9,6 +9,8 @@ struct Matrix
 
 	void Identity();
 
+	void Inverse3x3();
+
 	Matrix operator+(Matrix& m);
 	Matrix operator+(double scalar);
 	Matrix operator-(Matrix& m);

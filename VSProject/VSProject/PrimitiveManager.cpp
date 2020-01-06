@@ -88,34 +88,34 @@ void PrimitiveManager::Draw()
 void PrimitiveManager::Update()
 {
 	//Moves objects to illustrate collision detection.
-	//primitives[1].Tween(1, Vector3(0, -1, 0), 3.5);
+	primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
 
 	for (int i = 0; i < primitives.size(); i++)
 	{
-		if (numUpdates == 10)
+		/*if (numUpdates == 10)
 		{
 			primitives[i].rigidbody.Start();
-		}
+		}*/
 		primitives[i].Update();
 	}
-
+	/*
 	if (numUpdates <= 10)
 	{
 		numUpdates++;
 	}
-
+	*/
 	//Custom define which objects to detect collisions between.
 	//Will convert to a spatial data structure in the future.
 
 	//Plane
 	collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
+	collisions->DetectCoarse(&primitives[0], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
 	//Box1													
-	//collisions->DetectCoarse(&primitives[1], &primitives[2]);
+	collisions->DetectCoarse(&primitives[1], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[5]);

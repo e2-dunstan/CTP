@@ -15,10 +15,13 @@ struct RigidBody
 	float drag = 0;
 	float friction = 0;
 
-	bool isKinematic = false;
-	bool useGravity = true;
+	bool isKinematic = true;
+	bool useGravity = false;
 
-	void Start();
+	Matrix inverseInertiaTensor;
+	Matrix inverseInertiaTensorWorld;
+
+	void Start(); //not called
 	void UpdatePhysics();
 	//void CalculateVelocity(Vector3& newPosition);
 	void AddImpulse(Vector3 dir, double force = 1);

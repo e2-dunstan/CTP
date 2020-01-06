@@ -17,6 +17,7 @@ struct Vector3
 
 	double Distance(const Vector3& vec) const;
 
+	double SquaredMagnitude();
 	double Magnitude();
 	Vector3 Normalise();
 	Vector3 Inverse();

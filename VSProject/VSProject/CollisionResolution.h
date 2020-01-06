@@ -11,6 +11,12 @@ public:
 	void Resolve(Contact& contact);
 
 private:
-	Matrix CalculateContactBasis(const Vector3& contactNormal);
+	Matrix CalculateContactBasis();
+	float CalculateChangeInVelocity();
+
+	Contact& contact;
+	//Transforms
+	Matrix contactToWorld;
+	Matrix worldToContact;
 
 };
