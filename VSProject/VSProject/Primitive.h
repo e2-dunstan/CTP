@@ -9,12 +9,13 @@ struct Primitive
 	Primitive(std::vector<Vertex> v, float r = 0) : vertices(v), radius(r) { initialised = true; }
 	~Primitive() = default;
 
-	enum Type
+	enum class Type
 	{
 		BOX, SPHERE, PLANE, CAPSULE, CYLINDER, COMPLEX
 	};
 	Type type = Type::BOX;
 
+	void Start();
 	void Update();
 	void Draw();
 

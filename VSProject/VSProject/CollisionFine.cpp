@@ -407,7 +407,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 			contact.point *= distance - (planePosition * normal).Magnitude();
 			contact.point += box->collisionVolume.vertices[v];
 			contact.normal = normal;
-			contact.penetrationDepth = (planePosition * normal).Magnitude() - distance + /*data->*/tolerance;
+			contact.penetrationDepth = abs((planePosition * normal).Magnitude() - distance) + /*data->*/tolerance;
 
 			/*data->*/contacts.push_back(contact);
 			outputStr += "BOX and PLANE \t";

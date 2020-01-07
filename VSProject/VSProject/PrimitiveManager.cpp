@@ -51,8 +51,8 @@ void PrimitiveManager::Create(Primitive::Type type,
 	newObj->translation = translation;
 	newObj->rotation = rotation;
 
+	newObj->Start();
 	newObj->UpdateTransform();
-
 	newObj->SetTweenOrigin();
 
 	primitives.push_back(*newObj);
@@ -88,7 +88,7 @@ void PrimitiveManager::Draw()
 void PrimitiveManager::Update()
 {
 	//Moves objects to illustrate collision detection.
-	primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
+	//primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
 
 	for (int i = 0; i < primitives.size(); i++)
 	{
@@ -110,18 +110,18 @@ void PrimitiveManager::Update()
 	//Plane
 	collisions->DetectCoarse(&primitives[0], &primitives[1]);
 	collisions->DetectCoarse(&primitives[0], &primitives[2]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
+	collisions->DetectCoarse(&primitives[0], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
 	//Box1													
 	collisions->DetectCoarse(&primitives[1], &primitives[2]);
-	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
+	collisions->DetectCoarse(&primitives[1], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[6]);
 	//Box2													
-	//collisions->DetectCoarse(&primitives[2], &primitives[3]);
+	collisions->DetectCoarse(&primitives[2], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[6]);

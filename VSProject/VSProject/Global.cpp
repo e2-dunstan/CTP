@@ -6,8 +6,8 @@ namespace Global
 	double deltaTime = 0;
 
 	//physics
-	const Vector3 gravity(0, -9.81, 0);
-	const double gravityMag = -9.81;
+	const Vector3 gravity(0, -0.0981, 0);
+	const double gravityMag = -0.0981;
 	const double airDensity = 1.225;
 }
 

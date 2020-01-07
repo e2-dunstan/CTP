@@ -29,7 +29,8 @@ struct Contact
 	Primitive* body1;
 	Primitive* body2;
 
-	float restitution = 0.9;
+	//default value for rubber ball as per book = 0.4
+	float restitution = 0.4;
 };
 
 struct CollisionData

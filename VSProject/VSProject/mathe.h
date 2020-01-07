@@ -17,4 +17,6 @@ namespace Mathe
 	void Scale (Matrix& m, double x, double y, double z);
 
 	Vector3 GetAxis(unsigned col, Matrix mat);
+
+	void TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot);
 };

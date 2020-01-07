@@ -24,6 +24,7 @@ struct Matrix
 	Matrix Transpose();
 
 	double& operator()(const unsigned& _row, const unsigned& _col);
+	double Get(int i) const;
 	unsigned GetRows() const;
 	unsigned GetColumns() const;
 

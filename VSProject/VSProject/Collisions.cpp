@@ -23,7 +23,7 @@ void Collisions::Resolution()
 
 	for (auto contact : data->contacts)
 	{
-		resolution->Resolve(contact);
+		resolution->ResolveCollision(contact);
 	}
 
 	data->contacts.clear();

@@ -1,9 +1,15 @@
 #include "Primitive.h"
 
+void Primitive::Start()
+{
+	CalculateInertiaTensor();
+	rigidbody.Start();
+}
+
 void Primitive::Update()
 {	
-	rigidbody.UpdatePhysics();
-	if (rigidbody.velocity != Vector3())
+	rigidbody.UpdatePhysics(colliding);
+	if (rigidbody.velocity.Magnitude() > 0)
 	{
 		rigidbody.velocity.DebugOutput();
 		translation += rigidbody.velocity;
@@ -91,7 +97,6 @@ void Primitive::CalculateInertiaTensor()
 
 	rigidbody.inverseInertiaTensor = Matrix(matVals);
 	rigidbody.inverseInertiaTensor.Inverse3x3();
-
 }
 
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
@@ -128,6 +133,9 @@ void Primitive::UpdateTransform()
 	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
 	Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
+
+	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, transform);
+
 	collisionVolume.axisMat = transform;
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 

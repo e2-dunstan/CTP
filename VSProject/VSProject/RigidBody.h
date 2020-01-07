@@ -12,19 +12,24 @@ struct RigidBody
 
 	//Inverse is used to avoid division by 0
 	float inverseMass = 1;
+	//Drag not yet implemented
 	float drag = 0;
+	float angularDrag = 0;
 	float friction = 0;
 
-	bool isKinematic = true;
-	bool useGravity = false;
+	bool isKinematic = false;
+	bool useGravity = true;
 
-	Matrix inverseInertiaTensor;
-	Matrix inverseInertiaTensorWorld;
+	Matrix inverseInertiaTensor = Matrix(4,4);
+	Matrix inverseInertiaTensorWorld = Matrix(4,4);
 
 	void Start(); //not called
-	void UpdatePhysics();
+	void UpdatePhysics(bool colliding);
 	//void CalculateVelocity(Vector3& newPosition);
 	void AddImpulse(Vector3 dir, double force = 1);
+
+	void AddVelocityChange(const Vector3& velChange);
+	void AddRotationChange(const Vector3& rotChange);
 
 	void SetTerminalSpeed();
 

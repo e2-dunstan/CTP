@@ -89,3 +89,81 @@ Vector3 Mathe::GetAxis(unsigned i, Matrix mat)
 {
 	return Vector3(mat(i, 0), mat(i, 1), mat(i, 2));
 }
+
+void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot)
+{
+	//treating rot as a Mat4 and tensor mats as Mat3
+
+	double t4 = rot.Get(0) * tensorLocal.Get(0)
+		+ rot.Get(1) * tensorLocal.Get(4)
+		+ rot.Get(2) * tensorLocal.Get(8);
+	double t9 = rot.Get(0) * tensorLocal.Get(1)
+		+ rot.Get(1) * tensorLocal.Get(5)
+		+ rot.Get(2) * tensorLocal.Get(9);
+	double t14 = rot.Get(0) * tensorLocal.Get(2)
+		+ rot.Get(1) * tensorLocal.Get(6)
+		+ rot.Get(2) * tensorLocal.Get(10);
+
+	double t28 = rot.Get(4) * tensorLocal.Get(0)
+		+ rot.Get(5) * tensorLocal.Get(4)
+		+ rot.Get(6) * tensorLocal.Get(8);
+	double t33 = rot.Get(4) * tensorLocal.Get(1)
+		+ rot.Get(5) * tensorLocal.Get(5)
+		+ rot.Get(6) * tensorLocal.Get(9);
+	double t38 = rot.Get(4) * tensorLocal.Get(2)
+		+ rot.Get(5) * tensorLocal.Get(6)
+		+ rot.Get(6) * tensorLocal.Get(10);
+
+	double t52 = rot.Get(8) * tensorLocal.Get(0)
+		+ rot.Get(9) * tensorLocal.Get(4)
+		+ rot.Get(10) * tensorLocal.Get(8);
+	double t57 = rot.Get(8) * tensorLocal.Get(1)
+		+ rot.Get(9) * tensorLocal.Get(5)
+		+ rot.Get(10) * tensorLocal.Get(9);
+	double t62 = rot.Get(8) * tensorLocal.Get(2)
+		+ rot.Get(9) * tensorLocal.Get(6)
+		+ rot.Get(10) * tensorLocal.Get(10);
+
+
+	tensorWorld.matrix4x4[0] =
+		t4 * rot.Get(0)
+		+ t9 * rot.Get(1)
+		+ t14 * rot.Get(2);
+	tensorWorld.matrix4x4[1] = 
+		t4 * rot.Get(4)
+		+ t9 * rot.Get(5)
+		+ t14 * rot.Get(6);
+	tensorWorld.matrix4x4[2] = 
+		t4 * rot.Get(8)
+		+ t9 * rot.Get(9)
+		+ t14 * rot.Get(10);
+	tensorWorld.matrix4x4[3] = 0;
+
+	tensorWorld.matrix4x4[4] = 
+		t28 * rot.Get(0)
+		+ t33 * rot.Get(1)
+		+ t38 * rot.Get(2);
+	tensorWorld.matrix4x4[5] =
+		t28 * rot.Get(4)
+		+ t33 * rot.Get(5)
+		+ t38 * rot.Get(6);
+	tensorWorld.matrix4x4[6] =
+		t28 * rot.Get(8)
+		+ t33 * rot.Get(9)
+		+ t38 * rot.Get(10);
+	tensorWorld.matrix4x4[7] = 0;
+
+	tensorWorld.matrix4x4[8] =
+		t52 * rot.Get(0)
+		+ t57 * rot.Get(1)
+		+ t62 * rot.Get(2);
+	tensorWorld.matrix4x4[9] =
+		t52 * rot.Get(4)
+		+ t57 * rot.Get(5)
+		+ t62 * rot.Get(6);
+	tensorWorld.matrix4x4[10] =
+		t52 * rot.Get(8)
+		+ t57 * rot.Get(9)
+		+ t62 * rot.Get(10);
+	tensorWorld.matrix4x4[11] = 0;
+}

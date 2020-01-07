@@ -19,6 +19,9 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 
 Matrix::Matrix(double m4x4[16])
 {
+	rowSize = 4;
+	colSize = 4;
+
 	matrix4x4[0] = m4x4[0];
 	matrix4x4[1] = m4x4[1];
 	matrix4x4[2] = m4x4[2];
@@ -228,6 +231,11 @@ Matrix Matrix::Transpose()
 double& Matrix::operator()(const unsigned& _row, const unsigned& _col)
 {
 	return this->matrix4x4[(_row * colSize) + _col];
+}
+
+double Matrix::Get(int i) const
+{
+	return this->matrix4x4[i];
 }
 
 unsigned Matrix::GetRows() const

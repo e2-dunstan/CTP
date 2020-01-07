@@ -2,29 +2,26 @@
 
 void RigidBody::Start()
 {
-	AddImpulse(Vector3(1, 0, 0), 0.5);
+	//AddImpulse(Vector3(1, 0, 0), 0.5);
 }
 
-void RigidBody::UpdatePhysics()
+void RigidBody::UpdatePhysics(bool colliding)
 {
 	if (isKinematic) return;
 
+	prevVelocity = velocity;
+
 	if (useGravity)
 	{
-		velocity += (Global::gravity * Global::deltaTime * 0.01);
+		velocity += Global::gravity * Global::deltaTime;
+	}
+	else
+	{
+		velocity = Vector3();
 	}
 
 	velocity = velocity.Clamp(0, terminalSpeed);
 }
-
-//void RigidBody::CalculateVelocity(Vector3& newPosition)
-//{
-//	//highly unlikely in final simulation
-//	if (previousPosition == Vector3(0, -500, 0)) previousPosition = newPosition;
-//
-//	velocity = newPosition - previousPosition;
-//	previousPosition = newPosition;
-//}
 
 void RigidBody::AddImpulse(Vector3 dir, double force)
 {
@@ -33,6 +30,18 @@ void RigidBody::AddImpulse(Vector3 dir, double force)
 	//	- ((1 / inverseMass) * velocity.Magnitude() * -1);
 
 	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * 2 * force;
+}
+
+void RigidBody::AddVelocityChange(const Vector3& velChange)
+{
+	//Vector3 change = velChange;
+	//change.DebugOutput();
+	velocity += velChange * Global::deltaTime;
+}
+
+void RigidBody::AddRotationChange(const Vector3& rotChange)
+{
+	angularVelocity += rotChange;
 }
 
 void RigidBody::SetTerminalSpeed()
