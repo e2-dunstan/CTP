@@ -206,9 +206,9 @@ bool CollisionFine::BoxesOverlapOnAxis(const Primitive* box1, const Primitive* b
 	float box1AxisPos = PositionOnAxis(box1, axis) / 2.0f;
 	float box2AxisPos = PositionOnAxis(box2, axis) / 2.0f;
 
-	float distance = abs(toCentre.ScalarProduct(axis));// -data->tolerance;
+	float distance = abs(toCentre.ScalarProduct(axis));// -tolerance;
 
-	float penetration = abs(box1AxisPos + box2AxisPos - distance);
+	float penetration = abs(box1AxisPos + box2AxisPos - distance);// +tolerance;
 	if (penetration < 0) return false;
 	if (penetration < smallestPenetration)
 	{
@@ -386,28 +386,31 @@ Vector3 CollisionFine::GetContactPoint(const Vector3& edgePoint1, const Vector3&
 
 void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal)
 {
+	float projectedRadius = PositionOnAxis(box, normal);
+	float boxDistance = (normal * box->collisionVolume.centre).Magnitude() - projectedRadius;
+
 	//Intersection test
-	Vector3 boxCentre = box->collisionVolume.centre;
-	int projectedRadius = (boxCentre.x * normal.x + boxCentre.y * normal.y + boxCentre.z * normal.z) * 10;
+	//Vector3 boxCentre = box->collisionVolume.centre;
+	//int projectedRadius = (boxCentre.x * normal.x + boxCentre.y * normal.y + boxCentre.z * normal.z) * 10;
 	//Work out how far the box is from the origin
-	int boxDistance = ((normal * boxCentre).Magnitude() * 10) - projectedRadius;
+	//int boxDistance = ((normal * boxCentre).Magnitude() * 10) - projectedRadius;
 	float planeOffset = planePosition.x * normal.x + planePosition.y * normal.y + planePosition.z * normal.z;
 
-	if (((float)boxDistance / 10) > planeOffset) return;
+	if (((float)boxDistance) > planeOffset) return;
 
 	for (int v = 0; v < 8; v++)
 	{
 		//distance from vertex to plane
 		float distance = (box->collisionVolume.vertices[v] * normal).Magnitude();
 
-		if (distance <= planeOffset + /*data->*/tolerance)
+		if (distance <= planeOffset + tolerance)
 		{
 			Contact contact(box, plane);
 			contact.point = normal;
 			contact.point *= distance - (planePosition * normal).Magnitude();
 			contact.point += box->collisionVolume.vertices[v];
 			contact.normal = normal;
-			contact.penetrationDepth = abs((planePosition * normal).Magnitude() - distance) + /*data->*/tolerance;
+			contact.penetrationDepth = abs((planePosition * normal).Magnitude() - distance);// +tolerance;
 
 			/*data->*/contacts.push_back(contact);
 			outputStr += "BOX and PLANE \t";

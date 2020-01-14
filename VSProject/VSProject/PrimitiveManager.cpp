@@ -109,19 +109,19 @@ void PrimitiveManager::Update()
 
 	//Plane
 	collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	collisions->DetectCoarse(&primitives[0], &primitives[2]);
-	collisions->DetectCoarse(&primitives[0], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
 	//Box1													
-	collisions->DetectCoarse(&primitives[1], &primitives[2]);
-	collisions->DetectCoarse(&primitives[1], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[6]);
 	//Box2													
-	collisions->DetectCoarse(&primitives[2], &primitives[3]);
+	//collisions->DetectCoarse(&primitives[2], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[2], &primitives[6]);

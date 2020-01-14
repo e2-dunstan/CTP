@@ -3,7 +3,6 @@
 #include "Engine.h"
 #include "Camera.h"
 
-// -- Over christmas (in that order) --
 // [X] AABB before full collision check
 // [X] collision detection visualisation with colour
 // [~] capsules collision detection

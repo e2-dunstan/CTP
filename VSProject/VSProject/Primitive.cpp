@@ -9,16 +9,20 @@ void Primitive::Start()
 void Primitive::Update()
 {	
 	rigidbody.UpdatePhysics(colliding);
-	if (rigidbody.velocity.Magnitude() > 0)
+
+	if (!rigidbody.IsAtRest())
 	{
-		rigidbody.velocity.DebugOutput();
+		//rigidbody.velocity.DebugOutput();
 		translation += rigidbody.velocity;
 		updateTransform = true;
 	}
+	rotation += rigidbody.angularVelocity;
+	updateTransform = true;
 
 	//Update transforms if they have changed.
 	if (updateTransform) UpdateTransform();
 
+	previousPosition = translation;
 	//rigidbody.CalculateVelocity(translation);
 }
 
@@ -67,26 +71,26 @@ void Primitive::CalculateInertiaTensor()
 	{
 	case Type::BOX:
 	{
-		matVals[0] = (1 / (12 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
-		matVals[5] = (1 / (12 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
-		matVals[10] = (1 / (12 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
+		matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
+		matVals[5] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
+		matVals[10] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
 		break;
 	}
 	case Type::SPHERE:
 	{
-		matVals[0] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
-		matVals[5] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
-		matVals[10] = (2 / (5 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[5] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[10] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
 		break;
 	}
 	case Type::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
 	case Type::CYLINDER:
 	{
-		matVals[0] = ((1 / (12 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
-			+ ((1 / (4 * rigidbody.inverseMass)) * (radius * radius));
-		matVals[5] = ((1 / (12 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
-			+ ((1 / (4 * rigidbody.inverseMass)) * (radius * radius));
-		matVals[10] = (1 / (2 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
+			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * (radius * radius));
+		matVals[5] = ((1.0 / (12.0 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
+			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * (radius * radius));
+		matVals[10] = (1.0 / (2.0 * rigidbody.inverseMass)) * (radius * radius);
 		break;
 	}
 	case Type::COMPLEX:

@@ -83,7 +83,7 @@ void Matrix::Inverse3x3()
 		- (t8 * this->matrix4x4[10]) + (t10 * this->matrix4x4[9])
 		+ (t12 * this->matrix4x4[6]) - (t14 * this->matrix4x4[5]);
 
-	if (t16 == 0.0f) return;
+	if (t16 < 0.01f) return;
 	float t17 = 1 / t16;
 
 	this->matrix4x4[0] = ((this->matrix4x4[5] * this->matrix4x4[10]) - (this->matrix4x4[6] * this->matrix4x4[9])) * t17;

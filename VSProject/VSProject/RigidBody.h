@@ -14,7 +14,7 @@ struct RigidBody
 	float inverseMass = 1;
 	//Drag not yet implemented
 	float drag = 0;
-	float angularDrag = 0;
+	float angularDrag = 0.05; //between 0-1
 	float friction = 0;
 
 	bool isKinematic = false;
@@ -33,7 +33,12 @@ struct RigidBody
 
 	void SetTerminalSpeed();
 
+	bool IsAtRest();
+
+	Vector3 GetPreviousVelocity();
+
 private:
 	Vector3 prevVelocity = Vector3(0, 0, 0);
 	double terminalSpeed = 10000;
+	bool atRest = false;
 };

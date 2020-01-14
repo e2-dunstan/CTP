@@ -21,10 +21,15 @@ void Collisions::Resolution()
 {
 	if (data->contacts.size() <= 0) return;
 
-	for (auto contact : data->contacts)
-	{
-		resolution->ResolveCollision(contact);
-	}
+	//for (auto contact : data->contacts)
+	//{
+	//	//if (contact.body1->rigidbody.IsAtRest()
+	//	//	&& contact.body2->rigidbody.IsAtRest())
+	//	//{
+	//	//	continue;
+	//	//}
+	//	resolution->ResolveCollision(contact);
+	//}
 
 	data->contacts.clear();
 }

@@ -55,7 +55,7 @@ struct Primitive
 	bool initialised = false;
 
 private:
-
+	Vector3 previousPosition;
 	GLenum GetDrawType(Primitive::Type objectType);
 
 };

@@ -1,8 +1,13 @@
 #pragma once
 #include "Primitive.h"
 
+class CollisionResolution2;
+
 struct Contact
 {
+	friend class CollisionResolution2;
+
+public:
 	Contact() = default;
 	Contact(Primitive* prim1, Primitive* prim2)
 		: body1(prim1), body2(prim2) {};
@@ -30,7 +35,26 @@ struct Contact
 	Primitive* body2;
 
 	//default value for rubber ball as per book = 0.4
-	float restitution = 0.4;
+	float restitution = 0.0f;
+	float friction = 0.0f;
+
+protected:
+	void CalculateContactBasisMatrices();
+	void CalculateResolutionValues();
+	void CalculateDesiredDeltaVelocity();
+	void CalculateClosingVelocities();
+
+	//func to make RBs awake here
+
+	Matrix contactToWorld = Matrix(4,4);
+	Matrix worldToContact = Matrix(4,4);
+
+	Vector3 closingVelocity = Vector3();
+
+	float desiredDeltaVelocty = 0;
+
+	Vector3 relContactPos1 = Vector3();
+	Vector3 relContactPos2 = Vector3();
 };
 
 struct CollisionData
