@@ -25,7 +25,7 @@ void RigidBody::UpdatePhysics(bool colliding)
 	if (angularVelocity.Magnitude() > 0)
 	{
 		angularVelocity *= 1 - angularDrag;
-		if (angularVelocity.Magnitude() < 0.01)
+		if (angularVelocity.Magnitude() < 0.001)
 		{
 			angularVelocity = Vector3();
 		}

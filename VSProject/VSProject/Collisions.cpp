@@ -21,6 +21,8 @@ void Collisions::Resolution()
 {
 	if (data->contacts.size() <= 0) return;
 
+	resolution2->ResolveContacts(data->contacts);
+
 	//for (auto contact : data->contacts)
 	//{
 	//	//if (contact.body1->rigidbody.IsAtRest()

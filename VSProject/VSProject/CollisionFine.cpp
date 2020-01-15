@@ -401,9 +401,9 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 	for (int v = 0; v < 8; v++)
 	{
 		//distance from vertex to plane
-		float distance = (box->collisionVolume.vertices[v] * normal).Magnitude();
+		float distance = box->collisionVolume.vertices[v].ScalarProduct(normal);// .Magnitude();
 
-		if (distance <= planeOffset + tolerance)
+		if (distance <= planeOffset)// + tolerance)
 		{
 			Contact contact(box, plane);
 			contact.point = normal;

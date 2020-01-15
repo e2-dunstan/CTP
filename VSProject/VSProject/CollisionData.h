@@ -35,7 +35,7 @@ public:
 	Primitive* body2;
 
 	//default value for rubber ball as per book = 0.4
-	float restitution = 0.0f;
+	float restitution = 0.4f;
 	float friction = 0.0f;
 
 protected:
@@ -43,6 +43,13 @@ protected:
 	void CalculateResolutionValues();
 	void CalculateDesiredDeltaVelocity();
 	void CalculateClosingVelocities();
+
+	void ApplyPositionChange();
+	void ApplyAngularMoveLimit(float& linear, float& angular, const float objMag);
+
+	void ApplyVelocityChange();
+	Vector3 FrictionlessImpulse();
+	Vector3 FrictionImpulse();
 
 	//func to make RBs awake here
 
@@ -55,6 +62,12 @@ protected:
 
 	Vector3 relContactPos1 = Vector3();
 	Vector3 relContactPos2 = Vector3();
+
+	Vector3 linearChange[2] = { Vector3(), Vector3() };
+	Vector3 angularChange[2] = { Vector3(), Vector3() };
+
+	Vector3 velocityChange[2] = { Vector3(), Vector3() };
+	Vector3 rotationChange[2] = { Vector3(), Vector3() };
 };
 
 struct CollisionData
