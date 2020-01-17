@@ -9,9 +9,11 @@ void CollisionResolution2::ResolveContacts(std::vector<Contact>& contacts)
 
 void CollisionResolution2::InitialiseContacts(std::vector<Contact>& contacts)
 {
-	for (auto contact : contacts)
+	for (int i = 0; i < contacts.size(); i++)
 	{
-		contact.CalculateResolutionValues();
+		if (contacts[i].body1->type != Primitive::Type::PLANE) contacts[i].body1->colliding = true;
+		if (contacts[i].body2->type != Primitive::Type::PLANE) contacts[i].body2->colliding = true;
+		contacts[i].CalculateResolutionValues();
 	}
 }
 
@@ -24,7 +26,7 @@ void CollisionResolution2::CalculatePenetrationResolution(std::vector<Contact>& 
 
 	const unsigned numContacts = contacts.size();
 
-	while (iterations < numContacts)
+	while (iterations < 1)
 	{
 		//Find the contact with the largest penetration therefore
 		//the most important one to resolve
@@ -40,7 +42,18 @@ void CollisionResolution2::CalculatePenetrationResolution(std::vector<Contact>& 
 		}
 		if (cIndex == numContacts) break;
 
-		//set rbs awake?
+		//Match RB awake states
+		if (contacts[cIndex].body2->type != Primitive::Type::PLANE)
+		{
+			bool body1Awake = contacts[cIndex].body1->rigidbody.isAwake;
+			bool body2Awake = contacts[cIndex].body2->rigidbody.isAwake;
+
+			if (body1Awake ^ body2Awake)
+			{
+				if (body1Awake) contacts[cIndex].body2->rigidbody.SetAwake(true);
+				else contacts[cIndex].body1->rigidbody.SetAwake(true);
+			}
+		}
 
 		contacts[cIndex].ApplyPositionChange();
 
@@ -91,7 +104,7 @@ void CollisionResolution2::CalculateVelocityResolution(std::vector<Contact>& con
 
 	float largestVelocityMag = 0;
 
-	while (iterations < numContacts)
+	while (iterations < 1)
 	{
 		largestVelocityMag = minVelocityDelta;
 		unsigned cIndex = numContacts;
@@ -105,7 +118,18 @@ void CollisionResolution2::CalculateVelocityResolution(std::vector<Contact>& con
 		}
 		if (cIndex == numContacts) break;
 
-		//match rbs awake state?
+		//Match RB awake states
+		if (contacts[cIndex].body2->type != Primitive::Type::PLANE)
+		{
+			bool body1Awake = contacts[cIndex].body1->rigidbody.isAwake;
+			bool body2Awake = contacts[cIndex].body2->rigidbody.isAwake;
+
+			if (body1Awake ^ body2Awake)
+			{
+				if (body1Awake) contacts[cIndex].body2->rigidbody.SetAwake(true);
+				else contacts[cIndex].body1->rigidbody.SetAwake(true);
+			}
+		}
 
 		contacts[cIndex].ApplyVelocityChange();
 
@@ -136,8 +160,8 @@ void CollisionResolution2::CalculateVelocityResolution(std::vector<Contact>& con
 			{
 				if (contacts[i].body2 == contacts[cIndex].body1)
 				{
-					deltaVelocity = contacts[cIndex].velocityChange[0]
-						+ contacts[cIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
+					deltaVelocity = contacts[cIndex].velocityChange[1]
+						+ contacts[cIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
 					Vector3 additionalVel = deltaVelocity;
 					Mathe::Transform(additionalVel, contacts[i].worldToContact);
 					contacts[i].closingVelocity += additionalVel;

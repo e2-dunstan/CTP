@@ -146,6 +146,7 @@
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Primitive.cpp" />
+    <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Vector.cpp" />
@@ -168,6 +169,7 @@
     <ClInclude Include="mathe.h" />
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Primitive.h" />
+    <ClInclude Include="Quaternion.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="Utilities.h" />

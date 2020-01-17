@@ -26,11 +26,20 @@ struct Primitive
 	
 	//Transform data.
 	Vector3 translation = Vector3();
-	Vector3 rotation = Vector3();
+	//Vector3 rotation = Vector3();
+	Quaternion orientation = Quaternion();
 	Vector3 scale = Vector3();
 	Matrix transform = Matrix(4, 4);
 	void UpdateTransform();
 	bool updateTransform = false;
+
+	void GetOrientation(Quaternion* _orientation) const;
+	Quaternion GetOrientation() const;
+	void GetOrientation(Matrix* _matrix) const;
+	void GetOrientation(double _matrix[16]) const;
+
+	void SetOrientation(const Quaternion& _orientation);
+	void SetOrientation(const double r, const double i, const double j, const double k);
 
 	std::vector<Vertex> vertices;
 
@@ -57,5 +66,4 @@ struct Primitive
 private:
 	Vector3 previousPosition;
 	GLenum GetDrawType(Primitive::Type objectType);
-
 };

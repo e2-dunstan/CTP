@@ -69,6 +69,11 @@ void Init()
 {
 	std::cout << "Calling Init functions... " << std::endl;
 
+	//Delta time.
+	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
+	oldTimeSinceStart = timeSinceStart;
+
 	//Initialise OpenGL
 
 	glClearColor(0.0, 0.0, 0.0, 1.0);	//Black window.

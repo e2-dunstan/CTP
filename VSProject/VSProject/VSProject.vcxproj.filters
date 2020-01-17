@@ -105,6 +105,9 @@
     <ClCompile Include="CollisionData.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
+    <ClCompile Include="Quaternion.cpp">
+      <Filter>Source Files\Mathe</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">
@@ -169,6 +172,9 @@
     </ClInclude>
     <ClInclude Include="CollisionResolution2.h">
       <Filter>Header Files\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Quaternion.h">
+      <Filter>Header Files\Mathe</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

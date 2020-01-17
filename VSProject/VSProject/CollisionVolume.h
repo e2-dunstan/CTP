@@ -14,10 +14,10 @@ public:
 	Type type = Type::BOX;
 
 	void Create(Type _type, const Vector3& _centre, float _radius, 
-		const Vector3& _size, const Vector3& _rotation, 
+		const Vector3& _size, const Quaternion& _orientation,
 		const Vector3& _normal = Vector3(), float _length = 0);
 	void Update(const Vector3& _centre, float _radius, 
-		const Vector3& _size, const Vector3& _rotation);
+		const Vector3& _size, const Quaternion& _orientation);
 
 	//Shared
 	Vector3 centre;
@@ -28,7 +28,7 @@ public:
 	//Box
 	Vector3 halfSize;
 	std::vector<Vector3> vertices;
-	Vector3 rotation;
+	Quaternion orientation;
 	std::vector<Vector3> normals;
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);

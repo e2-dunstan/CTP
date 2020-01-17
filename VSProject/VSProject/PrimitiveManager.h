@@ -19,6 +19,8 @@ public:
 	void Draw();
 	void Update();
 
+	std::vector<Primitive> GetPrimitives();
+
 private:
 
 	//void UpdateTransform(Primitive& prim);

@@ -57,11 +57,11 @@ void Contact::CalculateResolutionValues()
 void Contact::CalculateClosingVelocities()
 {
 	//Body 1
-	closingVelocity = body1->rotation.VectorProduct(relContactPos1);
+	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1);
 	closingVelocity += body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
 
-	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousVelocity();
+	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 	Mathe::Transform(prevVelocity1, worldToContact);
 	prevVelocity1.x = 0; //not interested in normal dir
 
@@ -70,11 +70,11 @@ void Contact::CalculateClosingVelocities()
 	//Body2
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		Vector3 closingVelocity2 = body2->rotation.VectorProduct(relContactPos2);
+		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2);
 		closingVelocity2 += body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
 
-		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousVelocity();
+		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 		Mathe::Transform(prevVelocity2, worldToContact);
 		prevVelocity2.x = 0; //not interested in normal dir
 
@@ -89,10 +89,10 @@ void Contact::CalculateDesiredDeltaVelocity()
 	const float velLimit = 0.25f;
 
 	float bodiesVelocity = 0;
-	bodiesVelocity += body1->rigidbody.GetPreviousVelocity().ScalarProduct(normal);
+	bodiesVelocity += body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime;
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		bodiesVelocity -= body2->rigidbody.GetPreviousVelocity().ScalarProduct(normal);
+		bodiesVelocity -= body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime;
 	}
 
 	float thisRestitution = restitution;
@@ -161,31 +161,41 @@ void Contact::ApplyPositionChange()
 	}
 	else angularChange[1] = Vector3();
 
-	bool update1 = false, update2 = false;
 	if (linearMove1 > 0.001f)
 	{
 		body1->translation += normal * linearMove1;
-		update1 = true;
 	}
 	if (angularChange[0].Magnitude() > 0.001f)
 	{
-		body1->rotation += angularChange[0];
-		update1 = true;
+		Quaternion q;
+		body1->GetOrientation(&q);
+		Mathe::AddScaledVector(q, angularChange[0], 1.0);
+		body1->SetOrientation(q);
+		//body1->rotation += angularChange[0];
 	}
 	if (linearMove2 > 0.001f)
 	{
 		body2->translation += normal * linearMove2;
-		update2 = true;
 	}
 	if (angularChange[1].Magnitude() > 0.001f)
 	{
-		body2->rotation += angularChange[1];
-		update2 = true;
+		Quaternion q;
+		body2->GetOrientation(&q);
+		Mathe::AddScaledVector(q, angularChange[1], 1.0);
+		body2->SetOrientation(q);
+		//body2->rotation += angularChange[1];
 	}
 
-	//Should the transforms be updated now?
-	if (update1) body1->updateTransform = true;
-	if (update2) body2->updateTransform = true;
+	if (body1->rigidbody.isAwake)
+	{
+		body1->orientation.Normalise();
+		body1->UpdateTransform();
+	}
+	else if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
+	{
+		body2->orientation.Normalise();
+		body2->UpdateTransform();
+	}
 
 }
 
@@ -248,7 +258,7 @@ Vector3 Contact::FrictionlessImpulse()
 		deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos2);
 
 		deltaSpeed += deltaVelocity_W.ScalarProduct(normal);
-		deltaSpeed += body1->rigidbody.inverseMass;
+		deltaSpeed += body2->rigidbody.inverseMass;
 	}
 
 	return Vector3(desiredDeltaVelocty / deltaSpeed, 0, 0);

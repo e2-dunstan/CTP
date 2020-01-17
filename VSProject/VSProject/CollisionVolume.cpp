@@ -3,23 +3,23 @@
 
 
 void CollisionVolume::Create(Type _type, const Vector3& _centre, float _radius, 
-	const Vector3& _size, const Vector3& _rotation, 
+	const Vector3& _size, const Quaternion& _orientation,
 	const Vector3& _normal, float _length)
 {
 	type = _type;
 	normal = _normal;
 	length = _length;
-	Update(_centre, _radius, _size, _rotation);
+	Update(_centre, _radius, _size, _orientation);
 }
 
 
 void CollisionVolume::Update(const Vector3& _centre, float _radius, 
-	const Vector3& _size, const Vector3& _rotation)
+	const Vector3& _size, const Quaternion& _orientation)
 {
 	centre = _centre;
 	if (_radius != 0 && radius == 0) radius = _radius;
 	halfSize = _size * 2;
-	rotation = _rotation;
+	orientation = _orientation;
 
 	switch (type)
 	{
@@ -81,7 +81,8 @@ void CollisionVolume::Box()
 
 	Matrix transform = Matrix(4, 4);
 	Mathe::Translate(transform, centre.x, centre.y, centre.z);
-	Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
+	//Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
+	Mathe::Rotate(transform, orientation);
 	//mathe->Scale(transform, halfSize.x, halfSize.y, halfSize.z);
 
 	for (int v = 0; v < 8; v++)

@@ -8,14 +8,26 @@ void Primitive::Start()
 
 void Primitive::Update()
 {	
-	rigidbody.UpdatePhysics(colliding);
+	previousPosition = translation;
 
-	if (!rigidbody.IsAtRest())
+	if (rigidbody.PhysicsUpdate())
 	{
+		translation += rigidbody.velocity * Global::deltaTime;
+		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);
+		orientation.Normalise();
+		UpdateTransform();
+
+		rigidbody.EndPhysicsUpdate();
+	}
+	//UpdateTransform();
+
+	/*
+	//if (!rigidbody.IsAtRest())
+	//{
 		//rigidbody.velocity.DebugOutput();
 		translation += rigidbody.velocity;
 		updateTransform = true;
-	}
+	//}
 	rotation += rigidbody.angularVelocity;
 	updateTransform = true;
 
@@ -24,6 +36,7 @@ void Primitive::Update()
 
 	previousPosition = translation;
 	//rigidbody.CalculateVelocity(translation);
+	*/
 }
 
 void Primitive::Draw()
@@ -136,7 +149,8 @@ void Primitive::UpdateTransform()
 
 	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
-	Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
+	//Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
+	Mathe::Rotate(transform, orientation);
 
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, transform);
 
@@ -146,16 +160,62 @@ void Primitive::UpdateTransform()
 	if (type == Type::CAPSULE || type == Type::CYLINDER)
 	{
 		upDirMat.Identity();
-		Mathe::Rotate(upDirMat, rotation.x, rotation.y, rotation.z);
+		//Mathe::Rotate(upDirMat, rotation.x, rotation.y, rotation.z);
+		Mathe::Rotate(upDirMat, orientation);
 		upDir = Vector3(0, 1, 0);
 		Mathe::Transform(upDir, upDirMat);
 		upDir = upDir.Normalise();
 	}
 
 	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
-	collisionVolume.Update(translation, radius, scale / 2, rotation);
+	collisionVolume.Update(translation, radius, scale / 2, orientation);
 
 	updateTransform = false;
+}
+
+void Primitive::GetOrientation(Quaternion* _orientation) const
+{
+	*_orientation = orientation;
+}
+
+Quaternion Primitive::GetOrientation() const
+{
+	return orientation;
+}
+
+void Primitive::GetOrientation(Matrix* _matrix) const
+{
+	GetOrientation(_matrix->matrix4x4);
+}
+
+void Primitive::GetOrientation(double _matrix[16]) const
+{
+	_matrix[0] = transform.Get(0);
+	_matrix[1] = transform.Get(1);
+	_matrix[2] = transform.Get(2);
+
+	_matrix[4] = transform.Get(4);
+	_matrix[5] = transform.Get(5);
+	_matrix[6] = transform.Get(6);
+
+	_matrix[8] = transform.Get(8);
+	_matrix[9] = transform.Get(9);
+	_matrix[10] = transform.Get(10);
+}
+
+void Primitive::SetOrientation(const Quaternion& _orientation)
+{
+	orientation = _orientation;
+	orientation.Normalise();
+}
+
+void Primitive::SetOrientation(const double r, const double i, const double j, const double k)
+{
+	orientation.r = r;
+	orientation.i = i;
+	orientation.j = j;
+	orientation.k = k;
+	orientation.Normalise();
 }
 
 GLenum Primitive::GetDrawType(Type objectType)

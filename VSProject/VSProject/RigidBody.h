@@ -9,12 +9,16 @@ struct RigidBody
 
 	Vector3 velocity = Vector3();
 	Vector3 angularVelocity = Vector3();
+	Vector3 acceleration = Global::gravity;
+	Vector3 angularAcceleration = Vector3();
+
+	Vector3 forceAccumulation = Vector3();
+	Vector3 torqueAccumulation = Vector3();
 
 	//Inverse is used to avoid division by 0
 	float inverseMass = 1;
-	//Drag not yet implemented
-	float drag = 0;
-	float angularDrag = 0.05; //between 0-1
+	float linearDrag = 0.75;
+	float angularDrag = 0.0; //between 0-1
 	float friction = 0;
 
 	bool isKinematic = false;
@@ -24,7 +28,8 @@ struct RigidBody
 	Matrix inverseInertiaTensorWorld = Matrix(4,4);
 
 	void Start(); //not called
-	void UpdatePhysics(bool colliding);
+	bool PhysicsUpdate();
+	void EndPhysicsUpdate();
 	//void CalculateVelocity(Vector3& newPosition);
 	void AddImpulse(Vector3 dir, double force = 1);
 
@@ -33,12 +38,23 @@ struct RigidBody
 
 	void SetTerminalSpeed();
 
-	bool IsAtRest();
+	//bool IsAtRest();
+	void SetAwake(const bool awake);
+	void EnableSleep(const bool _canSleep);
+	bool isAwake = true;
+	bool canSleep = true;
 
 	Vector3 GetPreviousVelocity();
+	Vector3 GetPreviousAcceleration();
 
 private:
-	Vector3 prevVelocity = Vector3(0, 0, 0);
+	Vector3 prevVelocity = Vector3();
+	Vector3 prevAcceleration = Vector3();
+
+	double motion = 0;
+
 	double terminalSpeed = 10000;
 	bool atRest = false;
+
+	double sleepThreshold = 0.05;
 };

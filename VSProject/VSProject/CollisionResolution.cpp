@@ -1,6 +1,6 @@
 #include "CollisionResolution.h"
 
-
+/*
 void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 {
 	//if (contact.body1->type == Primitive::Type::BOX
@@ -287,3 +287,4 @@ void CollisionResolution::ApplyAngularMoveLimit(float& linear, float& angular, c
 	}
 	std::cout << linear << std::endl;
 }
+*/
