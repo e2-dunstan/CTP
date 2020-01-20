@@ -1,4 +1,44 @@
-﻿  Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\Quaternion.h(3,14): warning C4099: 'Vector3': type name first seen using 'struct' now seen using 'class'
-D:\Ellie\CTP\VSProject\VSProject\Vector.h(5): message : see declaration of 'Vector3'
+﻿  BoundingVolume.cpp
+  BVHNode.cpp
+  Camera.cpp
+  CollisionCoarse.cpp
+  CollisionData.cpp
+  CollisionFine.cpp
+  CollisionResolution.cpp
+  CollisionResolution2.cpp
+  Collisions.cpp
+  CollisionVolume.cpp
+  Global.cpp
+  mathe.cpp
+  Matrix.cpp
+  PrimitiveManager.cpp
+  Engine.cpp
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(23,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:             _Ty=int
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         ]
+  Primitive.cpp
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<_Ty>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message :         with
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message :         [
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message :             _Ty=Camera
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message :         ]
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(54,67): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(54,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(54,29): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(68,73): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(68,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Quaternion.cpp
+  RigidBody.cpp
+  Shapes.cpp
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(68,31): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(99,20): warning C4018: '<=': signed/unsigned mismatch
+  Generating Code...
+  Compiling...
+  Vector.cpp
+  Generating Code...
+D:\Ellie\CTP\VSProject\VSProject\Shapes.cpp(105,21): warning C4018: '<=': signed/unsigned mismatch
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

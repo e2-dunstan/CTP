@@ -43,7 +43,7 @@ class Camera {
 
 public:
 
-	enum KEYBOARD { AZERTY, QWERTY };   /* type of keyboard */
+	enum class KEYBOARD { AZERTY, QWERTY };   /* type of keyboard */
 
 	Camera(KEYBOARD p_keyboard, 
 			float p_X, float p_Y, float p_Z, 
@@ -72,12 +72,12 @@ public:
 
 private:
 
-	enum    DIR { FORWARD, BACKWARD, LEFT, RIGHT };   /* translation direction */
+	enum  class  DIR { FORWARD, BACKWARD, LEFT, RIGHT };   /* translation direction */
 	typedef std::map<DIR, int> k_map;
 
 	k_map    key_map;                               /* associations keys - directions */
 	KEYBOARD keyboard;                              /* keyboard type */
-	bool     keys[255];                             /* keys being pushed (true if pushed) */
+	bool     keys[255] = { false };                             /* keys being pushed (true if pushed) */
 	float    X;                                     /* sphere center x axis */
 	float    Y;                                     /* sphere center y axis */
 	float    Z;                                     /* sphere center z axis */

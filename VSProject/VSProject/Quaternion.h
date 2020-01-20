@@ -1,6 +1,6 @@
 #pragma once
 
-class Vector3;
+struct Vector3;
 
 struct Quaternion
 {

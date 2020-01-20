@@ -41,35 +41,35 @@ void BoundingVolume::Draw()
 
 	glColor3f(1, 0, 0);
 
-	glVertex3f(max.x, max.y, min.z);
-	glVertex3f(min.x, max.y, min.z);
-	glVertex3f(min.x, max.y, max.z);
-	glVertex3f(max.x, max.y, max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)max.z);
 
-	glVertex3f(max.x, min.y, max.z);
-	glVertex3f(min.x, min.y, max.z);
-	glVertex3f(min.x, min.y, min.z);
-	glVertex3f(max.x, min.y, min.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)min.z);
 
-	glVertex3f(max.x, max.y, max.z);
-	glVertex3f(min.x, max.y, max.z);
-	glVertex3f(min.x, min.y, max.z);
-	glVertex3f(max.x, min.y, max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)max.z);
 
-	glVertex3f(max.x, min.y, min.z);
-	glVertex3f(min.x, min.y, min.z);
-	glVertex3f(min.x, max.y, min.z);
-	glVertex3f(max.x, max.y, min.z);
-
-	glVertex3f(min.x, max.y, max.z);
-	glVertex3f(min.x, max.y, min.z);
-	glVertex3f(min.x, min.y, min.z);
-	glVertex3f(min.x, min.y, max.z);
-
-	glVertex3f(max.x, max.y, min.z);
-	glVertex3f(max.x, max.y, max.z);
-	glVertex3f(max.x, min.y, max.z);
-	glVertex3f(max.x, min.y, min.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)min.z);
+							
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)max.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)min.x, (GLfloat)min.y, (GLfloat)max.z);
+						
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)min.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)max.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)max.z);
+	glVertex3f((GLfloat)max.x, (GLfloat)min.y, (GLfloat)min.z);
 
 	glEnd();
 

@@ -9,7 +9,7 @@ void CollisionResolution2::ResolveContacts(std::vector<Contact>& contacts)
 
 void CollisionResolution2::InitialiseContacts(std::vector<Contact>& contacts)
 {
-	for (int i = 0; i < contacts.size(); i++)
+	for (unsigned i = 0; i < contacts.size(); i++)
 	{
 		if (contacts[i].body1->type != Primitive::Type::PLANE) contacts[i].body1->colliding = true;
 		if (contacts[i].body2->type != Primitive::Type::PLANE) contacts[i].body2->colliding = true;
@@ -66,13 +66,13 @@ void CollisionResolution2::CalculatePenetrationResolution(std::vector<Contact>& 
 				{
 					deltaPosition = contacts[cIndex].linearChange[0]
 						+ contacts[cIndex].angularChange[0].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body1 == contacts[cIndex].body2)
 				{
 					deltaPosition = contacts[cIndex].linearChange[1]
 						+ contacts[cIndex].angularChange[1].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 			if (contacts[i].body2->type != Primitive::Type::PLANE)
@@ -81,13 +81,13 @@ void CollisionResolution2::CalculatePenetrationResolution(std::vector<Contact>& 
 				{
 					deltaPosition = contacts[cIndex].linearChange[0]
 						+ contacts[cIndex].angularChange[0].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth -= deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body2 == contacts[cIndex].body2)
 				{
 					deltaPosition = contacts[cIndex].linearChange[1]
 						+ contacts[cIndex].angularChange[1].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth += deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 		}

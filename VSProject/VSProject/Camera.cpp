@@ -24,17 +24,17 @@ Camera::Camera(KEYBOARD p_keyboard, float p_X, float p_Y, float p_Z, float p_psi
 	time(0) {
 	for (int i = 0; i < 255; i++) { keys[i] = false; }
 	switch (keyboard) {
-	case AZERTY:
-		key_map[FORWARD] = static_cast<int>('z');
-		key_map[BACKWARD] = static_cast<int>('s');
-		key_map[LEFT] = static_cast<int>('q');
-		key_map[RIGHT] = static_cast<int>('d');
+	case KEYBOARD::AZERTY:
+		key_map[DIR::FORWARD] = static_cast<int>('z');
+		key_map[DIR::BACKWARD] = static_cast<int>('s');
+		key_map[DIR::LEFT] = static_cast<int>('q');
+		key_map[DIR::RIGHT] = static_cast<int>('d');
 		break;
-	case QWERTY:
-		key_map[FORWARD] = static_cast<int>('w');
-		key_map[BACKWARD] = static_cast<int>('s');
-		key_map[LEFT] = static_cast<int>('a');
-		key_map[RIGHT] = static_cast<int>('d');
+	case KEYBOARD::QWERTY:
+		key_map[DIR::FORWARD] = static_cast<int>('w');
+		key_map[DIR::BACKWARD] = static_cast<int>('s');
+		key_map[DIR::LEFT] = static_cast<int>('a');
+		key_map[DIR::RIGHT] = static_cast<int>('d');
 		break;
 	}
 }
@@ -48,7 +48,7 @@ a special treatment in the gluLookAt function).
 void Camera::rotation(int x, int y) {
 	theta -= static_cast<float>(x - mouse_x)* rotation_speed;
 	psi += static_cast<float>(y - mouse_y)* rotation_speed;
-	if (psi <= 0.1)            psi = 0.1;
+	if (psi <= 0.1f)            psi = 0.1f;
 	else if (psi >= 0.95f * M_PI) psi = 0.95f * M_PI;
 	mouse_x = x;
 	mouse_y = y;
@@ -62,21 +62,21 @@ and the elapsed time since the last function call.
 void Camera::translation() {
 	float t = static_cast<float>(glutGet(GLUT_ELAPSED_TIME) - time);
 	time = glutGet(GLUT_ELAPSED_TIME);
-	if (keys[key_map[FORWARD]]) {
+	if (keys[key_map[DIR::FORWARD]]) {
 		X += sin(theta) * sin(psi) * translation_speed * t;
 		Y += cos(psi) * translation_speed * t;
 		Z += cos(theta) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[BACKWARD]]) {
+	if (keys[key_map[DIR::BACKWARD]]) {
 		X -= sin(theta) * sin(psi) * translation_speed * t;
 		Y -= cos(psi) * translation_speed * t;
 		Z -= cos(theta) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[LEFT]]) {
+	if (keys[key_map[DIR::LEFT]]) {
 		X -= sin(theta - M_PI / 2) * sin(psi) * translation_speed * t;
 		Z -= cos(theta - M_PI / 2) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[RIGHT]]) {
+	if (keys[key_map[DIR::RIGHT]]) {
 		X -= sin(theta + M_PI / 2) * sin(psi) * translation_speed * t;
 		Z -= cos(theta + M_PI / 2) * sin(psi) * translation_speed * t;
 	}

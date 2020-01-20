@@ -35,7 +35,7 @@ public:
 	Primitive* body2;
 
 	//default value for rubber ball as per book = 0.4
-	float restitution = 0.4f;
+	float restitution = 0.0f;
 	float friction = 0.0f;
 
 protected:

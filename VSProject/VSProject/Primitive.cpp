@@ -47,7 +47,7 @@ void Primitive::Draw()
 	//the vertices do not have to be cleared and redefined if their transforms have
 	//changed. Performance boost.
 	std::vector<Vertex> verts = vertices;
-	for (int v = 0; v < verts.size(); v++)
+	for (unsigned v = 0; v < verts.size(); v++)
 	{
 		Mathe::Transform(verts[v].position, transform);
 
@@ -58,7 +58,8 @@ void Primitive::Draw()
 		//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 		if (colliding)
 		{
-			glColor3f(1, 0, 0);
+			//glColor3f(1, 0, 0);
+			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
 		}
 		else
 		{
@@ -91,19 +92,19 @@ void Primitive::CalculateInertiaTensor()
 	}
 	case Type::SPHERE:
 	{
-		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
-		matVals[5] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
-		matVals[10] = (2.0 / (5.0 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+		matVals[5] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+		matVals[10] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
 	case Type::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
 	case Type::CYLINDER:
 	{
-		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
-			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * (radius * radius));
-		matVals[5] = ((1.0 / (12.0 * rigidbody.inverseMass)) * (collisionVolume.length * collisionVolume.length))
-			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * (radius * radius));
-		matVals[10] = (1.0 / (2.0 * rigidbody.inverseMass)) * (radius * radius);
+		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
+			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
+		matVals[5] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
+			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
+		matVals[10] = (1.0 / (2.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
 	case Type::COMPLEX:
@@ -126,7 +127,7 @@ void Primitive::Tween(float speed, const Vector3& direction, float approxDistanc
 		tweenMaxSet = true;
 	}
 
-	translation += (direction * (Global::deltaTime * speed)) * (moveTowards ? 1 : -1);
+	translation += (direction * (float)(Global::deltaTime * speed)) * (moveTowards ? 1.0f : -1.0f);
 
 	//Reverse movement
 	if ((moveTowards && translation.Distance(tweenMax) < 0.2)

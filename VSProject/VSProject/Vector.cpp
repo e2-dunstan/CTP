@@ -69,6 +69,7 @@ double& Vector3::operator[](const int i)
 	if (i == 0) return x;
 	if (i == 1) return y;
 	if (i == 2) return z;
+	else return x;
 }
 
 const double& Vector3::operator[](const int i) const
@@ -78,9 +79,17 @@ const double& Vector3::operator[](const int i) const
 	if (i == 0) return x;
 	if (i == 1) return y;
 	if (i == 2) return z;
+	else return x;
 }
 
 void Vector3::operator*=(const float value)
+{
+	x *= value;
+	y *= value;
+	z *= value;
+}
+
+void Vector3::operator*=(const double value)
 {
 	x *= value;
 	y *= value;
@@ -95,6 +104,11 @@ void Vector3::operator*=(const Vector3& vec)
 }
 
 Vector3 Vector3::operator*(const float value) const
+{
+	return Vector3(x * value, y * value, z * value);
+}
+
+Vector3 Vector3::operator*(const double value) const
 {
 	return Vector3(x * value, y * value, z * value);
 }

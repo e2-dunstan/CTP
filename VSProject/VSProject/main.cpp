@@ -27,7 +27,7 @@ namespace
 	bool mouseHeld = false;
 
 	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera::KEYBOARD::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 
 	//in miliseconds
 	unsigned int timeSinceStart = 0;

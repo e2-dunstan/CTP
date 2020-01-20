@@ -35,9 +35,13 @@ struct Vector3
 
 	// -- SCALAR -- //
 	void operator*=(const float value);
+	void operator*=(const double value);
 	void operator*=(const Vector3& vec);
+
 	Vector3 operator*(const float value) const;
+	Vector3 operator*(const double value) const;
 	Vector3 operator*(const Vector3& vec) const;
+
 	void operator/=(const float value);
 	Vector3 operator/(const float value) const;
 

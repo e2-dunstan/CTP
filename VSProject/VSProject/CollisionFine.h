@@ -16,7 +16,7 @@ public:
 
 private:
 	//Separating axis theorem
-	float PositionOnAxis(const Primitive* box, const Vector3& axis);
+	double PositionOnAxis(const Primitive* box, const Vector3& axis);
 	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, Vector3 axis, 
 		int index, float& smallestPenetration, int& smallestIndex);
 	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);

@@ -71,8 +71,6 @@ void RigidBody::EndPhysicsUpdate()
 		double contingency = pow(0.5, Global::deltaTime);
 		motion = contingency * motion + (1 - contingency) * currentMotion;
 
-		std::cout << "RB motion " << motion << std::endl;
-
 		if (motion < sleepThreshold)
 		{
 			SetAwake(false);
@@ -86,7 +84,7 @@ void RigidBody::EndPhysicsUpdate()
 
 void RigidBody::AddImpulse(Vector3 dir, double force)
 {
-	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * 2 * force;
+	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * 2.0 * force;
 }
 
 void RigidBody::AddVelocityChange(const Vector3& velChange)

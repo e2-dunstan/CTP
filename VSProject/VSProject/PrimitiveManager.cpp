@@ -83,7 +83,7 @@ void PrimitiveManager::Draw()
 	if (primitives.size() <= 0) return;
 
 	//For each object.
-	for (int i = 0; i < primitives.size(); i++)
+	for (unsigned i = 0; i < primitives.size(); i++)
 	{	
 		primitives[i].Draw();
 	}
@@ -94,7 +94,7 @@ void PrimitiveManager::Update()
 	//Moves objects to illustrate collision detection.
 	//primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
 
-	for (int i = 0; i < primitives.size(); i++)
+	for (unsigned i = 0; i < primitives.size(); i++)
 	{
 		/*if (numUpdates == 10)
 		{
@@ -140,7 +140,7 @@ void PrimitiveManager::Update()
 	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
 		
 	collisions->DetectFine();
-	for (int i = 0; i < primitives.size(); i++)
+	for (unsigned i = 0; i < primitives.size(); i++)
 	{
 		primitives[i].colliding = false;
 	}

@@ -90,19 +90,19 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, const Colour&
 	float lengthInverse = 1.0f / radius;
 	Vector3 normal = Vector3(lengthInverse, lengthInverse, lengthInverse);
 
-	float PI = 3.141592653589;
+	float PI = 3.141592653589f;
 	float sectorStep = 2 * PI / sectorCount;
 	float stackStep = PI / stackCount;
 	float sectorAngle;
 	float stackAngle;
 
-	for (int i = 0; i <= stackCount; ++i)
+	for (unsigned i = 0; i <= (unsigned)stackCount; ++i)
 	{
 		stackAngle = PI / 2 - (i * stackStep);
 		xy = radius * cosf(stackAngle);
 		pos.z = (double)radius * (double)sin(stackAngle);
 
-		for (int j = 0; j <= sectorCount; ++j)
+		for (unsigned j = 0; j <= (unsigned)sectorCount; ++j)
 		{
 			sectorAngle = j * sectorStep;
 
@@ -119,12 +119,12 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, const Colour&
 
 	unsigned index1;
 	unsigned index2;
-	for (int i = 0; i < stackCount; i++)
+	for (unsigned i = 0; i < (unsigned)stackCount; i++)
 	{
 		index1 = i * (sectorCount + 1);
 		index2 = index1 + sectorCount + 1;
 
-		for (int j = 0; j < sectorCount; ++j, ++index1, ++index2)
+		for (unsigned j = 0; j < (unsigned)sectorCount; ++j, ++index1, ++index2)
 		{
 			if (i != 0)
 			{
@@ -141,7 +141,7 @@ std::vector<Vertex> ShapeVertices::GetSphereVertices(float radius, const Colour&
 		}
 	}
 
-	for (int in = 0; in < indices.size(); in++)
+	for (unsigned in = 0; in < indices.size(); in++)
 	{
 		unsigned index = indices[in];
 		Vector3 indexPos = positions[index];
@@ -174,7 +174,7 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 	float lengthInverse = 1.0f / radius;
 	Vector3 normal = Vector3(lengthInverse, lengthInverse, lengthInverse);
 
-	float PI = 3.141592653589;
+	float PI = 3.141592653589f;
 	float sectorStep = 2 * PI / sectorCount;
 	float stackStep = PI / stackCount;
 	float sectorAngle;
@@ -208,12 +208,12 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 
 	unsigned index1;
 	unsigned index2;
-	for (int i = 0; i < stackCount; i++)
+	for (unsigned i = 0; i < (unsigned)stackCount; i++)
 	{
 		index1 = i * (sectorCount + 1);
 		index2 = index1 + sectorCount + 1;
 
-		for (int j = 0; j < sectorCount; ++j, ++index1, ++index2)
+		for (unsigned j = 0; j < (unsigned)sectorCount; ++j, ++index1, ++index2)
 		{
 			if (i != 0)
 			{
@@ -230,7 +230,7 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 		}
 	}
 
-	for (int in = 0; in < indices.size(); in++)
+	for (unsigned in = 0; in < indices.size(); in++)
 	{
 		unsigned index = indices[in];
 		Vector3 indexPos = positions[index];
@@ -247,7 +247,7 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCylinderVertices(float radius, flo
 
 	std::vector<Vertex> vertices;
 	vertices.clear();
-	float PI = 3.141592653589;
+	float PI = 3.141592653589f;
 	float halfLength = straight / 2;
 
 	//Top
