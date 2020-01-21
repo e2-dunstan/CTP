@@ -2,5 +2,6 @@
 
 const bool BVHNode::IsAtBottomOfHierarchy()
 {
-	return (primitive != NULL);
+	return false;
+	//return (primitive != NULL);
 }

@@ -17,7 +17,7 @@ void Primitive::Update()
 		orientation.Normalise();
 		UpdateTransform();
 
-		rigidbody.EndPhysicsUpdate();
+		rigidbody.EndPhysicsUpdate(colliding);
 	}
 	//UpdateTransform();
 

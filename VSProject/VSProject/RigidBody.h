@@ -29,7 +29,7 @@ struct RigidBody
 
 	void Start(); //not called
 	bool PhysicsUpdate();
-	void EndPhysicsUpdate();
+	void EndPhysicsUpdate(bool colliding);
 	//void CalculateVelocity(Vector3& newPosition);
 	void AddImpulse(Vector3 dir, double force = 1);
 
@@ -54,7 +54,6 @@ private:
 	double motion = 0;
 
 	double terminalSpeed = 10000;
-	bool atRest = false;
 
-	double sleepThreshold = 0.05;
+	const double sleepThreshold = 1.0;
 };

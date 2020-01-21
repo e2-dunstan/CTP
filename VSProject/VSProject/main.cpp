@@ -2,6 +2,7 @@
 
 #include "Engine.h"
 #include "Camera.h"
+#include "ConsoleControls.h"
 
 // [X] AABB before full collision check
 // [X] collision detection visualisation with colour
@@ -28,6 +29,7 @@ namespace
 
 	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
 	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera::KEYBOARD::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<ConsoleControls> consoleControls = std::make_unique<ConsoleControls>(/*engine.get()*/);
 
 	//in miliseconds
 	unsigned int timeSinceStart = 0;
@@ -41,6 +43,8 @@ void PressKey(unsigned char key, int xx, int yy)
 void ReleaseKey(unsigned char key, int x, int y)
 {
 	camera->setKeyboard(key, false);
+
+	consoleControls->OnKeyRelease(key, engine.get());
 }
 void MouseMove(int x, int y)
 {
@@ -102,16 +106,22 @@ void Init()
 	//Init physics engine.
 	engine->Init();
 
-	std::cout << "Done!" << std::endl;
+	std::cout << "Done!" << std::endl << std::endl;
+
+	consoleControls->Init();
 }
 
 void changeViewPort(int w, int h)
 {
+	Global::deltaTime = 0;
+
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(80, (double)w / (double)h, 1, 50);
 	glMatrixMode(GL_MODELVIEW);
+
+	Global::deltaTime = 0;
 }
 
 void render()

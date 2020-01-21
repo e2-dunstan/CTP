@@ -111,6 +111,7 @@ void PrimitiveManager::Update()
 	//Custom define which objects to detect collisions between.
 	//Will convert to a spatial data structure in the future.
 
+
 	//Plane
 	collisions->DetectCoarse(&primitives[0], &primitives[1]);
 	collisions->DetectCoarse(&primitives[0], &primitives[2]);

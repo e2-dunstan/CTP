@@ -28,7 +28,6 @@ bool RigidBody::PhysicsUpdate()
 		angularVelocity *= pow(angularDrag, Global::deltaTime);
 
 	//if (useGravity) velocity += Global::gravity * Global::deltaTime;
-	
 	//Update positions
 
 	return true;
@@ -60,17 +59,17 @@ bool RigidBody::PhysicsUpdate()
 	*/
 }
 
-void RigidBody::EndPhysicsUpdate()
+void RigidBody::EndPhysicsUpdate(bool colliding = false)
 {
 	forceAccumulation = Vector3();
 	torqueAccumulation = Vector3();
 
-	if (canSleep)
+	if (canSleep && colliding)
 	{
 		double currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
 		double contingency = pow(0.5, Global::deltaTime);
 		motion = contingency * motion + (1 - contingency) * currentMotion;
-
+		//std::cout << motion << std::endl;
 		if (motion < sleepThreshold)
 		{
 			SetAwake(false);
@@ -108,7 +107,7 @@ void RigidBody::SetAwake(const bool awake)
 	if (awake)
 	{
 		isAwake = true;
-		motion = sleepThreshold * 2;
+		motion = sleepThreshold * 2.0;
 		//add motion here
 	}
 	else

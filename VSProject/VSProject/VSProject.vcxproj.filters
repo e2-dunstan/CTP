@@ -43,6 +43,12 @@
     <Filter Include="Source Files\Primitives\Volumes">
       <UniqueIdentifier>{59ca9911-2151-40ba-9d2c-26ccf0eb06e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Utilities">
+      <UniqueIdentifier>{c06ce0a9-154b-4f24-8da8-aea0e21ece57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Utilities">
+      <UniqueIdentifier>{daad5500-6140-4a5a-852e-57ab5d28037b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -52,9 +58,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Shapes.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Camera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
@@ -96,9 +99,6 @@
     <ClCompile Include="BoundingVolume.cpp">
       <Filter>Source Files\Primitives\Volumes</Filter>
     </ClCompile>
-    <ClCompile Include="Global.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionResolution2.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
@@ -107,6 +107,18 @@
     </ClCompile>
     <ClCompile Include="Quaternion.cpp">
       <Filter>Source Files\Mathe</Filter>
+    </ClCompile>
+    <ClCompile Include="BVH.cpp">
+      <Filter>Source Files\Primitives\BoundingVolumeHierarchy</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="ConsoleControls.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
+    <ClCompile Include="Global.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -119,16 +131,10 @@
     <ClInclude Include="Engine.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utilities.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="mathe.h">
       <Filter>Header Files\Mathe</Filter>
     </ClInclude>
     <ClInclude Include="Shapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Camera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Collisions.h">
@@ -167,14 +173,23 @@
     <ClInclude Include="CollisionVolume.h">
       <Filter>Header Files\Primitives\Volumes</Filter>
     </ClInclude>
-    <ClInclude Include="Global.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionResolution2.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">
       <Filter>Header Files\Mathe</Filter>
+    </ClInclude>
+    <ClInclude Include="Global.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="Utilities.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="ConsoleControls.h">
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

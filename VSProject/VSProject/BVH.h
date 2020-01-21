@@ -1,5 +1,6 @@
 #pragma once
 #include "BVHNode.h"
+#include <deque>
 
 //Bounding volume hierarchy
 class BVH
@@ -8,15 +9,17 @@ public:
 	BVH() = default;
 	~BVH() = default;
 
+	void AddBV(BoundingVolume& bv);
 
-	void Construct(BoundingVolume& );
+	void ConstructBottomUp();
+	void ConstructTopDown();
+
 
 private:
 
-	std::vector<BoundingVolume> boundingVolumes;
-};
+	void TopDownRecursive(BVHNode* parent, BoundingVolume objects[], int objCount);
+	int PartitionObjects(BoundingVolume objects[], int objCount);
 
-struct QueryContact
-{
-	//std::unique_ptr<Primitive> primitives[2] = std::make_unique<Primitive>()[];
+	std::vector<BoundingVolume> allBVs;
+	std::unique_ptr<BVHNode> tree = std::make_unique<BVHNode>();
 };

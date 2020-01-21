@@ -130,6 +130,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
+    <ClCompile Include="BVH.cpp" />
     <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionCoarse.cpp" />
@@ -139,6 +140,7 @@
     <ClCompile Include="CollisionResolution2.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
+    <ClCompile Include="ConsoleControls.cpp" />
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
@@ -163,6 +165,7 @@
     <ClInclude Include="CollisionResolution2.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
+    <ClInclude Include="ConsoleControls.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="PrimitiveManager.h" />
     <ClInclude Include="Engine.h" />
