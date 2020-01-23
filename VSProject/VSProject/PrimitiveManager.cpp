@@ -1,6 +1,7 @@
 #include "PrimitiveManager.h"
 #include "Collisions.h"
 #include "Shapes.h"
+#include "OctTree.h"
 
 using namespace Shapes;
 
@@ -113,14 +114,14 @@ void PrimitiveManager::Update()
 
 
 	//Plane
-	collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	collisions->DetectCoarse(&primitives[0], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[1]);
+	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
 	//Box1													
-	collisions->DetectCoarse(&primitives[1], &primitives[2]);
+	//collisions->DetectCoarse(&primitives[1], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
@@ -140,6 +141,8 @@ void PrimitiveManager::Update()
 	////Capsule
 	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
 		
+	octTree.TestCollisions(octTree.root, *collisions.get());
+
 	collisions->DetectFine();
 	for (unsigned i = 0; i < primitives.size(); i++)
 	{

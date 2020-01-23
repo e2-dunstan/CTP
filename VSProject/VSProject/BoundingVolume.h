@@ -1,10 +1,12 @@
 #pragma once
 #include "Utilities.h"
 
+class Primitive;
+
 struct BoundingVolume
 {
 public:
-	BoundingVolume(const std::vector<Vertex>& _vertices, Matrix& _transform);
+	BoundingVolume(const std::vector<Vertex>& _vertices, Matrix& _transform, Primitive& prim);
 	BoundingVolume() = default;
 	~BoundingVolume() = default;
 
@@ -16,4 +18,6 @@ public:
 	Vector3 halfSize = Vector3();
 	Vector3 min = Vector3();
 	Vector3 max = Vector3();
+
+	Primitive& primitive;
 };

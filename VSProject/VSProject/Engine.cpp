@@ -21,6 +21,15 @@ void Engine::Init()
 	individualObjectInitialised.push_back(false);
 
 	primitiveCount += 3;
+
+	octTree->Construct(Vector3(0, 32, 0), 64, 4);
+	//skip plane
+	for (int i = 1; i < primitiveManager->GetPrimitives().size(); i++)
+	{
+		std::unique_ptr<Object> newObject = std::make_unique<Object>(primitiveManager->GetPrimitives()[i].boundingVolume);
+		octTree->Insert(newObject, octTree->root);
+	}
+	primitiveManager->octTree = *octTree.get();
 }
 
 void Engine::Update()
@@ -42,7 +51,6 @@ void Engine::Update()
 	{
 		//rebuild spatial data structures
 	}
-
 	primitiveManager->Update();
 }
 

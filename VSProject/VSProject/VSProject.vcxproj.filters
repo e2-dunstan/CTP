@@ -31,9 +31,6 @@
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{7a7bb220-c2ea-4a5b-bcdd-9527ecd3b40e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Primitives\BoundingVolumeHierarchy">
-      <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Primitives\BoundingVolumeHierarchy">
       <UniqueIdentifier>{af9262b0-1480-4a4a-9569-fbe564bdcf18}</UniqueIdentifier>
     </Filter>
@@ -48,6 +45,9 @@
     </Filter>
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{daad5500-6140-4a5a-852e-57ab5d28037b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Primitives\Bounding Volume Hierarchy">
+      <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -120,6 +120,9 @@
     <ClCompile Include="Global.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
+    <ClCompile Include="OctTree.cpp">
+      <Filter>Source Files\Utilities</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">
@@ -156,10 +159,10 @@
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="BVH.h">
-      <Filter>Header Files\Primitives\BoundingVolumeHierarchy</Filter>
+      <Filter>Header Files\Primitives\Bounding Volume Hierarchy</Filter>
     </ClInclude>
     <ClInclude Include="BVHNode.h">
-      <Filter>Header Files\Primitives\BoundingVolumeHierarchy</Filter>
+      <Filter>Header Files\Primitives\Bounding Volume Hierarchy</Filter>
     </ClInclude>
     <ClInclude Include="CollisionCoarse.h">
       <Filter>Header Files\Collision</Filter>
@@ -189,6 +192,9 @@
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleControls.h">
+      <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="OctTree.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>

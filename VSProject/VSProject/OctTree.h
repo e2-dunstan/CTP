@@ -1,81 +1,41 @@
 #pragma once
-#include "RigidBody.h"
-#include <deque>
+#include "Utilities.h"
+#include <array>
 
-//https://www.gamedev.net/articles/programming/general-and-gameplay-programming/introduction-to-octrees-r3529/
+class BoundingVolume;
+class Collisions;
 
-struct OctTreeRegion
+struct Object
 {
-	Vector3 minp;
-	Vector3 maxp;
+	Object() = default;
+	Object(BoundingVolume& bv) : boundingVolume(bv) {}
+	~Object() = default;
 
-
-	OctTreeRegion(Vector3 _min, Vector3 _max)
-		: minp(_min), maxp(_max) {}
-	OctTreeRegion() = default;
-	~OctTreeRegion() = default;
-
-
+	BoundingVolume& boundingVolume;// = std::make_unique<BoundingVolume>();
+	std::unique_ptr<Object> nextObj = std::make_unique<Object>();
 };
 
-struct OctTreeNode
+struct Node
 {
-	std::unique_ptr<OctTreeRegion> region = std::make_unique<OctTreeRegion>();
-	std::vector<RigidBody*> nodeObjects;
-	std::unique_ptr<OctTreeNode> parent = std::make_unique<OctTreeNode>();;
-	std::unique_ptr<OctTreeNode> childNodes[8];
+	Node() = default;
+	~Node() = default;
 
-	OctTreeNode() = default;
+	Vector3 centre = Vector3();
+	float halfWidth = 0;
+
+	std::array<std::unique_ptr<Node>, 8> children = { std::make_unique<Node>() };
+	std::unique_ptr<Object> objList = std::make_unique<Object>();
 };
 
 class OctTree
 {
 public:
-	OctTree() = default;
-	OctTree(std::vector<RigidBody*> rbs, Vector3 size = Vector3(128, 128, 128), Vector3 centre = Vector3());
+	OctTree(const Vector3& centre, float halfWidth, int depth);
+	~OctTree() = default;
 
-	void UpdateTree();
-	void BuildTree();
-	void Insert(RigidBody* rb);
+	std::unique_ptr<Node> Construct(const Vector3& centre, float halfWidth, int depth);
+	void Insert(std::unique_ptr<Object>& object, std::unique_ptr<Node>& node);
+	void TestCollisions(std::unique_ptr<Node>& node, Collisions& collisionRef);
 
-	bool Contains(Vector3 obj, OctTreeRegion oct);
-
-	void CreateVertices();
-	std::vector<OctTreeNode*> GetChildNodes(OctTreeNode* parent);
-	void Draw();
-
-private:
-	static std::deque<RigidBody*> pendingInsertion;
-	static std::vector<RigidBody*> allObjects;
-
-	std::unique_ptr<OctTreeNode> root = std::make_unique<OctTreeNode>();
-	std::unique_ptr<OctTreeNode> currentNode = std::make_unique<OctTreeNode>();
-
-	const Vector3 minRegionSize = Vector3(1, 1, 1);
-	
-	int maxTreeLifespan = 8;
-	int currentTreeLifespan = -1;
-
-	bool treeComplete = false;
-	bool preexistingTree = false;
-
-	std::unique_ptr<ShapeVertices> shapes = std::make_unique<ShapeVertices>();
-	std::vector<std::vector<Vertex>> debugVertices;
+	std::unique_ptr<Node> root = std::make_unique<Node>();
 };
-
-
-//struct OctTreeNode
-//{
-//	Vector3 position;
-//	//OctTreeNode children[8];
-//
-//	unsigned int GetChildIndex(const Vector3& objectOrigin)
-//	{
-//		unsigned int index = 0;
-//		if (objectOrigin.x > position.x) index += 1;
-//		if (objectOrigin.y > position.y) index += 2;
-//		if (objectOrigin.z > position.z) index += 4;
-//		return index;
-//	}
-//};
-

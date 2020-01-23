@@ -144,6 +144,7 @@
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
+    <ClCompile Include="OctTree.cpp" />
     <ClCompile Include="PrimitiveManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -175,6 +176,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="Shapes.h" />
+    <ClInclude Include="OctTree.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>

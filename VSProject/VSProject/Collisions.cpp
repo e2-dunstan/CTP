@@ -1,10 +1,10 @@
 #include "Collisions.h"
 
-void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
+void Collisions::DetectCoarse(BoundingVolume& vol1, BoundingVolume& vol2)
 {
-	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
+	if (coarse->Overlapping(vol1, vol2))
 	{
-		potentialContacts.push_back(PotentialContact(prim1, prim2));
+		potentialContacts.push_back(PotentialContact(&vol1.primitive, &vol2.primitive));
 	}
 }
 

@@ -1,5 +1,5 @@
 #pragma once
-#include "Utilities.h"
+#include "OctTree.h"
 #include "PrimitiveManager.h"
 
 class ConsoleControls;
@@ -15,6 +15,8 @@ public:
 	void Render();
 
 	friend ConsoleControls;
+
+	std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
 
 private:
 

@@ -3,6 +3,8 @@
 #include "Collisions.h"
 //#include "OctTree.h"
 
+class OctTree;
+
 class PrimitiveManager
 {
 public:
@@ -20,6 +22,7 @@ public:
 	void Update();
 
 	std::vector<Primitive> GetPrimitives();
+	OctTree& octTree;
 
 private:
 

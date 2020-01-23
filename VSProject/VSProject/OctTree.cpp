@@ -1,187 +1,98 @@
 #include "OctTree.h"
-#include <algorithm>
+#include "BoundingVolume.h"
+#include "Collisions.h"
 
-
-OctTree::OctTree(std::vector<RigidBody*> rbs, Vector3 min, Vector3 max)
+OctTree::OctTree(const Vector3& centre, float halfWidth, int depth)
 {
-	for (int i = 0; i < rbs.size(); i++)
-	{
-		allObjects.push_back(rbs[i]);
-		pendingInsertion.push_back(rbs[i]);
-	}
-	root->region->minp = min;
-	root->region->maxp = max;
+	root = Construct(centre, halfWidth, depth);
 
-	currentNode = std::make_unique<OctTreeNode>(&root);
+	if (root == nullptr)
+	{
+		std::cout << "ERROR: depth of oct tree less than zero" << std::endl;
+	}
 }
 
-void OctTree::UpdateTree()
+std::unique_ptr<Node> OctTree::Construct(const Vector3& centre, float halfWidth, int depth)
 {
-	if (!preexistingTree)
+	if (depth < 0) return nullptr;
+
+	std::unique_ptr<Node> node = std::make_unique<Node>();
+	Vector3 offset;
+
+	float step = halfWidth * 0.5f;
+	for (unsigned i = 0; i < 8; i++)
 	{
-		while (!pendingInsertion.empty())
+		offset.x = (i & 1) ? step : -step;
+		offset.y = (i & 2) ? step : -step;
+		offset.z = (i & 4) ? step : -step;
+		node->children[i] = Construct(centre + offset, step, depth - 1);
+	}
+	return node;
+}
+
+void OctTree::Insert(std::unique_ptr<Object>& object, std::unique_ptr<Node>& node)
+{
+	unsigned index = 0;
+	int straddle = 0;
+
+	for (unsigned i = 0; i < 3; i++)
+	{
+		float delta = object->boundingVolume.centre[i] - node->centre[i];
+		if (abs(delta) <= object->boundingVolume.halfSize[i])
 		{
-			currentNode->nodeObjects.push_back(pendingInsertion.front());
-			pendingInsertion.pop_front();
+			straddle = 1;
+			break;
 		}
-		BuildTree();
+		if (delta > 0.0f)
+		{
+			index |= (1 << i);
+		}
+	}
+
+	if (!straddle)
+	{
+		if (node->children[index] == NULL)
+		{
+			node->children[index] = std::make_unique<Node>();
+		}
+		Insert(object, node->children[index]);
 	}
 	else
 	{
-		while (!pendingInsertion.empty())
-		{
-			Insert(pendingInsertion.front());
-			pendingInsertion.pop_front();
-		}
+		object->nextObj = std::make_unique<Object>(node->objList);
+		node->objList = std::make_unique<Object>(object);
 	}
-	treeComplete = true;
 }
 
-void OctTree::BuildTree()
+void OctTree::TestCollisions(std::unique_ptr<Node>& node, Collisions& collisionRef)
 {
-	if (currentNode->nodeObjects.size() <= 1)
-		return;
+	const int maxDepth = 40;
+	static std::array<std::unique_ptr<Node>, maxDepth> ancestors;
+	static int depth = 0;
 
-	Vector3 dims = currentNode->region->maxp - currentNode->region->minp;
-
-	//if (dims == Vector3()) ??? not sure what this does
-	//{
-	//	FindEnclosingCube();
-	//	dims = currentNode->region.size;
-	//}
-	if (dims.x <= minRegionSize.x 
-		&& dims.y <= minRegionSize.y
-		&& dims.z <= minRegionSize.z)
-		return;
-	
-	Vector3 currentRegionHalfSize = dims / 2.0f;
-	Vector3 _min = currentNode->region->minp;
-	Vector3 _max = currentNode->region->maxp;
-	Vector3 _centre = currentNode->region->minp + currentRegionHalfSize;
-
-	OctTreeRegion octant[8];
-	octant[0] = OctTreeRegion(_min, _centre);
-	octant[1] = OctTreeRegion(Vector3(_centre.x, _min.y, _min.z), Vector3(_max.x, _centre.y, _centre.z));
-	octant[2] = OctTreeRegion(Vector3(_centre.x, _min.y, _centre.z), Vector3(_max.x, _centre.y, _max.z));
-	octant[3] = OctTreeRegion(Vector3(_min.x, _min.y, _centre.z), Vector3(_centre.x, _centre.y, _max.z));
-	octant[4] = OctTreeRegion(Vector3(_min.x, _centre.y, _min.z), Vector3(_centre.x, _max.y, _centre.z));
-	octant[5] = OctTreeRegion(Vector3(_centre.x, _centre.y, _min.z), Vector3(_max.x, _max.y, _centre.z));
-	octant[6] = OctTreeRegion(_centre, _max);
-	octant[7] = OctTreeRegion(Vector3(_min.x, _centre.y, _centre.z), Vector3(_centre.x, _max.y, _max.z));
-
-	std::vector<std::vector<RigidBody*>> octList;
-	for (int i = 0; i < 8; i++)
+	ancestors[depth++] = std::make_unique<Node>(node);
+	for (unsigned n = 0; n < depth; n++)
 	{
-		octList.push_back(std::vector<RigidBody*>());
-	}
+		Object* obj1;
+		Object* obj2;
 
-	std::vector<RigidBody*> delist;	//objects that can be skipped over
-
-	for (int o = 0; o < allObjects.size(); o++)
-	{
-		if (allObjects[o]->boundingVolume->cube.active)
+		for (obj1 = ancestors[n]->objList.get(); obj1; obj1 = obj1->nextObj.get())
 		{
-			for (int i = 0; i < 8; i++)
+			for (obj2 = node->objList.get(); obj2; obj2 = obj2->nextObj.get())
 			{
-				if (Contains(allObjects[o]->boundingVolume->cube.centre, octant[i]))
-				{
-					octList[i].push_back(allObjects[o]);
-					delist.push_back(allObjects[o]);
-					break;
-				}
-			}
-		}
-		else if (allObjects[o]->boundingVolume->sphere.active)
-		{
-
-		}
-	}
-
-
-	for (int d = 0; d < delist.size(); d++)
-	{
-		allObjects.erase(std::remove(allObjects.begin(), allObjects.end(), delist[d]), allObjects.end());
-	}
-
-	for (int i = 0; i < 8; i++)
-	{
-		if (octList.size() != 0)
-		{
-			currentNode->childNodes[i]->parent = std::make_unique<OctTreeNode>(&currentNode);
-			currentNode->childNodes[i]->region = std::make_unique<OctTreeRegion>(&currentNode->region);
-			currentNode->childNodes[i]->nodeObjects = octList[i];
-
-			currentNode = std::make_unique<OctTreeNode>(&currentNode->childNodes[i]);
-			BuildTree();
-		}
-	}
-
-	preexistingTree = true;
-	treeComplete = true;
-
-	CreateVertices();
-}
-
-
-
-//void OctTree::Insert(RigidBody* rb)
-//{
-//}
-
-bool OctTree::Contains(Vector3 obj, OctTreeRegion oct)
-{
-	if (obj.x < oct.maxp.x && obj.y < oct.maxp.y && obj.z < oct.maxp.z
-		&& obj.x >= oct.minp.x && obj.y >= oct.minp.y && obj.z >= oct.minp.x)
-	{
-		return true;
-	}
-	else return false;
-}
-
-void OctTree::CreateVertices()
-{
-	debugVertices.clear();
-	std::vector<OctTreeNode*> nodes = GetChildNodes(root.get());
-	std::cout << "Oct tree nodes: " << nodes.size() << std::endl;
-}
-
-std::vector<OctTreeNode*> OctTree::GetChildNodes(OctTreeNode* parent)
-{
-	std::vector<OctTreeNode*> children;
-
-	for (int c = 0; c < 8; c++)
-	{
-		OctTreeNode* child = parent->childNodes[c].get;
-		if (child->region->maxp != child->region->minp)
-		{
-			children.push_back(child);
-			std::vector<OctTreeNode*> grandchildren = GetChildNodes(child);
-			for (int g = 0; g < grandchildren.size(); g++)
-			{
-				children.push_back(grandchildren[g]);
+				if (obj1 == obj2) break;
+				collisionRef.DetectCoarse(obj1->boundingVolume, obj2->boundingVolume);
 			}
 		}
 	}
 
-	return children;
-}
-
-void OctTree::Draw()
-{
-	if (!treeComplete) return;
-
-	//draw oct tree to help debug
-	glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-
-	glBegin(GL_QUADS);
-
-	glColor3f(0, 1, 0);
-
-	for (int v = 0; v < debugVertices.size(); v++)
+	for (unsigned i = 0; i < 8; i++)
 	{
-		//glVertex3f(debugVertices[v].position.x, debugVertices[v].position.y, debugVertices[v].position.z);
+		if (node->children[i])
+		{
+			TestCollisions(node->children[i], collisionRef);
+		}
 	}
 
-	glEnd();
-	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+	depth--;
 }
