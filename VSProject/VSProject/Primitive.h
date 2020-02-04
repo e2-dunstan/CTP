@@ -41,7 +41,7 @@ struct Primitive
 	void SetOrientation(const Quaternion& _orientation);
 	void SetOrientation(const double r, const double i, const double j, const double k);
 
-	std::vector<Vertex> vertices;
+	std::vector<Vertex> vertices = std::vector<Vertex>();
 
 	bool enableCollision = true;
 	bool colliding = false;
@@ -56,14 +56,14 @@ struct Primitive
 	void Tween(float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
 
-	Vector3 tweenOrigin;
-	Vector3 tweenMax;
+	Vector3 tweenOrigin = Vector3();
+	Vector3 tweenMax = Vector3();
 	bool tweenMaxSet = false;
 	bool moveTowards = true;
 
 	bool initialised = false;
 
 private:
-	Vector3 previousPosition;
+	Vector3 previousPosition = Vector3();
 	GLenum GetDrawType(Primitive::Type objectType);
 };

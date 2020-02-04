@@ -28,7 +28,7 @@ void BVH::TopDownRecursive(BVHNode* parent, BoundingVolume objects[], int objCou
 	}
 	else
 	{
-		newNode->type == BVHNode::Type::NODE;
+		newNode->type = BVHNode::Type::NODE;
 		int k = PartitionObjects(&objects[0], objCount);
 		TopDownRecursive(&(newNode->children[0]), &objects[0], k);
 		TopDownRecursive(&(newNode->children[1]), &objects[k], objCount - k);

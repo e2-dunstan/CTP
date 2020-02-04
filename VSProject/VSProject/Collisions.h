@@ -13,7 +13,7 @@ public:
 	Collisions() = default;
 	~Collisions() = default;
 
-	void DetectCoarse(BoundingVolume& vol1, BoundingVolume& vol2);
+	void DetectCoarse(Primitive* prim1, Primitive* prim2);
 	void DetectFine();
 	void Resolution();
 	//void Response(RigidBody* rb);

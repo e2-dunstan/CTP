@@ -58,8 +58,8 @@ void Primitive::Draw()
 		//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 		if (colliding)
 		{
-			//glColor3f(1, 0, 0);
-			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			glColor3f(1, 0, 0);
+			//glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
 		}
 		else
 		{

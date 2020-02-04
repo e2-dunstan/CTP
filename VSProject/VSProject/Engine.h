@@ -7,7 +7,7 @@ class ConsoleControls;
 class Engine
 {
 public:
-	Engine();
+	Engine() = default;
 	~Engine() = default;
 
 	void Init();
@@ -15,8 +15,6 @@ public:
 	void Render();
 
 	friend ConsoleControls;
-
-	std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
 
 private:
 

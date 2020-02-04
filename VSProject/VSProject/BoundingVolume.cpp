@@ -1,8 +1,7 @@
 #include "BoundingVolume.h"
 
 
-BoundingVolume::BoundingVolume(const std::vector<Vertex>& _vertices, Matrix& _transform, Primitive& prim)
-	: primitive(prim)
+BoundingVolume::BoundingVolume(const std::vector<Vertex>& _vertices, Matrix& _transform)
 {
 	Generate(_vertices, _transform);
 }

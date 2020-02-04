@@ -13,18 +13,14 @@ public:
 		: body1(prim1), body2(prim2) {};
 	~Contact()
 	{
-		/*
-		if (body1 != nullptr)
+		if (body1)
 		{
 			delete body1;
-			body1 = nullptr;
 		}
-		if (body2 != nullptr)
+		if (body2)
 		{
 			delete body2;
-			body2 = nullptr;
 		}
-		*/
 	};
 
 	Vector3 point;
@@ -88,18 +84,14 @@ struct PotentialContact
 		: prim1(_p1), prim2(_p2) {};
 	~PotentialContact()
 	{
-		/*
-		if (prim1 != nullptr)
+		if (prim1)
 		{
 			delete prim1;
-			prim1 = nullptr;
 		}
-		if (prim2 != nullptr)
+		if (prim2)
 		{
 			delete prim2;
-			prim2 = nullptr;
 		}
-		*/
 	};
 
 	Primitive* prim1;

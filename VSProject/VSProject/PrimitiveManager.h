@@ -11,6 +11,7 @@ public:
 
 	//resize vec when more primitives in simulation
 	PrimitiveManager() = default;
+	//PrimitiveManager(OctTree& oTree) : octTree(oTree) {}
 	~PrimitiveManager() = default;
 
 	void Create(Primitive::Type type, const Vector3& scale, const Vector3& translation, const Vector3& rotation, float radius = 0, float straight = 0);
@@ -22,18 +23,12 @@ public:
 	void Update();
 
 	std::vector<Primitive> GetPrimitives();
-	OctTree& octTree;
+	std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
 
 private:
-
-	//void UpdateTransform(Primitive& prim);
-
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 
 	std::vector<Primitive> primitives;
-
-	//OctTree* octTree;
-	//bool octTreeCreated = false;
 
 	GLenum GetDrawType(Primitive::Type objectType);
 

@@ -1,12 +1,10 @@
 #include "Engine.h"
 #include <time.h>
 
-Engine::Engine()
-{
-}
-
 void Engine::Init()
 {
+	primitiveManager->octTree->root = primitiveManager->octTree->Construct(Vector3(0, 32, 0), 64, 4);
+
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
 	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 15, 10), Vector3(60, 0, 0));
@@ -22,21 +20,19 @@ void Engine::Init()
 
 	primitiveCount += 3;
 
-	octTree->Construct(Vector3(0, 32, 0), 64, 4);
 	//skip plane
-	for (int i = 1; i < primitiveManager->GetPrimitives().size(); i++)
-	{
-		std::unique_ptr<Object> newObject = std::make_unique<Object>(primitiveManager->GetPrimitives()[i].boundingVolume);
-		octTree->Insert(newObject, octTree->root);
-	}
-	primitiveManager->octTree = *octTree.get();
+	//for (unsigned i = 1; i < primitiveManager->GetPrimitives().size(); i++)
+	//{
+	//	//Object* newObject(primitiveManager->GetPrimitives()[i]);
+	//	octTree->Insert(primitiveManager->GetPrimitives()[i], *octTree->root);
+	//}
 }
 
 void Engine::Update()
 {
 	if (!objectsInitialised)
 	{
-		for (int i = 0; i < primitiveManager->GetPrimitives().size(); i++)
+		for (unsigned i = 0; i < primitiveManager->GetPrimitives().size(); i++)
 		{
 			if (!individualObjectInitialised[i])
 			{
@@ -63,7 +59,7 @@ void Engine::SpawnSphere()
 {
 	srand(time(NULL));
 
-	float radius = (rand() % 10 + 1) / 2;
+	float radius = (float)(rand() % 10 + 1) / 2.0f;
 	Vector3 pos((double)(rand() % 20 + radius), (double)(rand() % 20 + radius), (double)(rand() % 20 + radius));
 
 	std::string sphere = "Spawning SPHERE with position (";

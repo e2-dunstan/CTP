@@ -7,14 +7,11 @@ using namespace Shapes;
 
 //pass by const ref
 void PrimitiveManager::Create(Primitive::Type type, 
-	const Vector3& scale, 
-	const Vector3& translation, 
-	const Vector3& rotation, 
-	float radius,
-	float straight)
+	const Vector3& scale, const Vector3& translation, const Vector3& rotation, 
+	float radius, float straight)
 {
 	//default shape
-	Primitive* newObj = nullptr;
+	Primitive* newObj = new Primitive();
 
 	Quaternion orientation = Mathe::VectorToQuaternion(rotation);
 
@@ -61,6 +58,8 @@ void PrimitiveManager::Create(Primitive::Type type,
 	newObj->SetTweenOrigin();
 
 	primitives.push_back(*newObj);
+
+	if (newObj->type != Primitive::Type::PLANE) octTree->Insert(*newObj, *octTree->root);
 	//delete newObj;
 }
 
@@ -97,22 +96,10 @@ void PrimitiveManager::Update()
 
 	for (unsigned i = 0; i < primitives.size(); i++)
 	{
-		/*if (numUpdates == 10)
-		{
-			primitives[i].rigidbody.Start();
-		}*/
 		primitives[i].Update();
 	}
-	/*
-	if (numUpdates <= 10)
-	{
-		numUpdates++;
-	}
-	*/
+
 	//Custom define which objects to detect collisions between.
-	//Will convert to a spatial data structure in the future.
-
-
 	//Plane
 	//collisions->DetectCoarse(&primitives[0], &primitives[1]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
@@ -140,8 +127,14 @@ void PrimitiveManager::Update()
 	//collisions->DetectCoarse(&primitives[4], &primitives[6]);
 	////Capsule
 	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
+
+	//Check plane collisions
+	for (unsigned i = 1; i < primitives.size(); i++)
+	{
+		collisions->DetectCoarse(&primitives[0], &primitives[1]);
+	}
 		
-	octTree.TestCollisions(octTree.root, *collisions.get());
+	octTree->TestCollisions(*octTree->root, *collisions.get());
 
 	collisions->DetectFine();
 	for (unsigned i = 0; i < primitives.size(); i++)

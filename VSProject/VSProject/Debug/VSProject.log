@@ -1,8 +1,29 @@
-﻿  ConsoleControls.cpp
+﻿  CollisionCoarse.cpp
+  CollisionData.cpp
+  CollisionFine.cpp
+  CollisionResolution.cpp
+  CollisionResolution2.cpp
+  Collisions.cpp
+  ConsoleControls.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
   Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(28,21): warning C4018: '<': signed/unsigned mismatch
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(60,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  OctTree.cpp
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(79,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+  PrimitiveManager.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
   main.cpp
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(53,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
 D:\Ellie\CTP\VSProject\VSProject\main.cpp(24,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
@@ -15,5 +36,4 @@ D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         with
 D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         [
 D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :             _Ty=Camera
 D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         ]
-  LINK : D:\Ellie\CTP\VSProject\Debug\VSProject.exe not found or not built by the last incremental link; performing full link
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

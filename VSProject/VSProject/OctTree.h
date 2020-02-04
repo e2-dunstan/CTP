@@ -2,40 +2,68 @@
 #include "Utilities.h"
 #include <array>
 
-class BoundingVolume;
+struct Primitive;
 class Collisions;
 
 struct Object
 {
-	Object() = default;
-	Object(BoundingVolume& bv) : boundingVolume(bv) {}
-	~Object() = default;
+	//Object() = default;
+	Object(Primitive* prim) : primitive(prim) { }
+	~Object()
+	{
+		if (primitive)
+		{
+			delete primitive;
+		}
+		if (nextObj)
+		{
+			delete nextObj;
+		}
+	};
 
-	BoundingVolume& boundingVolume;// = std::make_unique<BoundingVolume>();
-	std::unique_ptr<Object> nextObj = std::make_unique<Object>();
+	Primitive* primitive = nullptr;
+	Object* nextObj = nullptr;// = std::make_unique<Object>();
 };
 
 struct Node
 {
 	Node() = default;
-	~Node() = default;
+	~Node()
+	{
+		if (children)
+		{
+			delete[] children;
+		}
+		if (objList)
+		{
+			delete objList;
+		}
+	}
 
 	Vector3 centre = Vector3();
 	float halfWidth = 0;
 
-	std::array<std::unique_ptr<Node>, 8> children = { std::make_unique<Node>() };
-	std::unique_ptr<Object> objList = std::make_unique<Object>();
+	//std::array<std::unique_ptr<Node>, 8> children = { std::make_unique<Node>() };
+	Node* children[8] = { nullptr };
+	Object* objList = nullptr;// std::make_unique<Object>();
 };
 
 class OctTree
 {
 public:
+	OctTree() = default;
 	OctTree(const Vector3& centre, float halfWidth, int depth);
-	~OctTree() = default;
+	~OctTree()
+	{
+		if (root)
+		{
+			delete root;
+		}
+	}
 
-	std::unique_ptr<Node> Construct(const Vector3& centre, float halfWidth, int depth);
-	void Insert(std::unique_ptr<Object>& object, std::unique_ptr<Node>& node);
-	void TestCollisions(std::unique_ptr<Node>& node, Collisions& collisionRef);
+	Node* Construct(const Vector3& centre, float halfWidth, int depth);
+	void Insert(Primitive& primitive, Node& node);
+	void TestCollisions(Node& node, Collisions& collisionRef);
 
-	std::unique_ptr<Node> root = std::make_unique<Node>();
+	Node* root = new Node();// std::make_unique<Node>();
 };
