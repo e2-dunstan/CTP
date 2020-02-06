@@ -1,39 +1,9 @@
-﻿  CollisionCoarse.cpp
-  CollisionData.cpp
-  CollisionFine.cpp
-  CollisionResolution.cpp
-  CollisionResolution2.cpp
-  Collisions.cpp
-  ConsoleControls.cpp
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
-  Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(60,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-  OctTree.cpp
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(79,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
-  PrimitiveManager.cpp
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-  main.cpp
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(24,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         [
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:             _Ty=int
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         ]
-  Generating Code...
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<_Ty>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         with
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         [
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :             _Ty=Camera
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(31): message :         ]
+﻿  RayCast.cpp
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(32,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(34,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(37,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(52,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(104,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(105,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(106,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

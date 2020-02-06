@@ -1,5 +1,6 @@
 #pragma once
 #include <math.h>
+#include <array>
 #include "Vector.h"
 #include "Matrix.h"
 #include "Quaternion.h"
@@ -24,4 +25,6 @@ namespace Mathe
 	void AddScaledVector(Quaternion& q, const Vector3& v, double scale);
 
 	void TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot);
+
+	std::array<float, 2> SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots = true);
 };

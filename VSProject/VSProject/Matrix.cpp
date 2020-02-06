@@ -89,12 +89,19 @@ void Matrix::Inverse3x3()
 	this->matrix4x4[0] = ((this->matrix4x4[5] * this->matrix4x4[10]) - (this->matrix4x4[6] * this->matrix4x4[9])) * t17;
 	this->matrix4x4[1] = -((this->matrix4x4[1] * this->matrix4x4[10]) - (this->matrix4x4[2] * this->matrix4x4[9])) * t17;
 	this->matrix4x4[2] = ((this->matrix4x4[1] * this->matrix4x4[6]) - (this->matrix4x4[2] * this->matrix4x4[5])) * t17;
+	this->matrix4x4[3] = 0;
 	this->matrix4x4[4] = -((this->matrix4x4[3] * this->matrix4x4[10]) - (this->matrix4x4[6] * this->matrix4x4[8])) * t17;
 	this->matrix4x4[5] = ((this->matrix4x4[0] * this->matrix4x4[10]) - t14) * t17;
 	this->matrix4x4[6] = -(t6 - t10) * t17;
+	this->matrix4x4[7] = 0;
 	this->matrix4x4[8] = ((this->matrix4x4[3] * this->matrix4x4[9]) - (this->matrix4x4[5] * this->matrix4x4[8])) * t17;
 	this->matrix4x4[9] = -((this->matrix4x4[0] * this->matrix4x4[9]) - t12) * t17;
 	this->matrix4x4[10] = (t4 - t8) * t17;
+	this->matrix4x4[11] = 0;
+	this->matrix4x4[12] = 0;
+	this->matrix4x4[13] = 0;
+	this->matrix4x4[14] = 0;
+	this->matrix4x4[15] = 0;
 }
 
 Matrix Matrix::operator+(Matrix& m)

@@ -1,6 +1,7 @@
 #pragma once
 #include "Primitive.h"
 #include "Collisions.h"
+#include "RayCast.h"
 //#include "OctTree.h"
 
 class OctTree;
@@ -23,17 +24,18 @@ public:
 	void Update();
 
 	std::vector<Primitive> GetPrimitives();
-	std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
+	//std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
 
 private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
+	std::unique_ptr<RayCast> rayCast = std::make_unique<RayCast>();
 
 	std::vector<Primitive> primitives;
 
-	GLenum GetDrawType(Primitive::Type objectType);
+	Ray rayToTest;
+	bool drawRay = true;
 
-	bool drawBoundingVolumes = true;
-	bool drawCollisionVolumes = true;
+	GLenum GetDrawType(Primitive::Type objectType);
 
 	double timeSinceCollisionDebug = 0;
 

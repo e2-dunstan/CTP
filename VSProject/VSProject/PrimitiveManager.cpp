@@ -59,7 +59,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 
 	primitives.push_back(*newObj);
 
-	if (newObj->type != Primitive::Type::PLANE) octTree->Insert(*newObj, *octTree->root);
+	//if (newObj->type != Primitive::Type::PLANE) octTree->Insert(*newObj, *octTree->root);
 	//delete newObj;
 }
 
@@ -80,13 +80,33 @@ void PrimitiveManager::CreateCylinder(float radius, float length, const Vector3&
 
 void PrimitiveManager::Draw()
 {
-	if (primitives.size() <= 0) return;
-
-	//For each object.
-	for (unsigned i = 0; i < primitives.size(); i++)
-	{	
-		primitives[i].Draw();
+	if (primitives.size() > 0)
+	{
+		//For each object.
+		for (unsigned i = 0; i < primitives.size(); i++)
+		{
+			primitives[i].Draw();
+		}
 	}
+
+	//raycast test
+	if (drawRay)
+	{
+		rayToTest = Ray(Vector3(0, 0.8, 0), Vector3(0, 0, 1).Normalise());
+
+		glBegin(GL_LINES);
+
+		if (rayCast->Test(primitives[1], rayToTest)) glColor3f(0, 1, 0);
+		else glColor3f(1, 0, 0);
+		
+		glVertex3f(rayToTest.origin.x, rayToTest.origin.y, rayToTest.origin.z);
+		Vector3 point2 = rayToTest.IntersectionPoint();
+		glVertex3f(point2.x, point2.y, point2.z);
+
+		glEnd();
+	}
+	
+
 }
 
 void PrimitiveManager::Update()
@@ -101,14 +121,14 @@ void PrimitiveManager::Update()
 
 	//Custom define which objects to detect collisions between.
 	//Plane
-	//collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[2]);
+	collisions->DetectCoarse(&primitives[0], &primitives[1]);
+	collisions->DetectCoarse(&primitives[0], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
 	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
 	//Box1													
-	//collisions->DetectCoarse(&primitives[1], &primitives[2]);
+	collisions->DetectCoarse(&primitives[1], &primitives[2]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[3]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
 	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
@@ -129,12 +149,12 @@ void PrimitiveManager::Update()
 	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
 
 	//Check plane collisions
-	for (unsigned i = 1; i < primitives.size(); i++)
-	{
-		collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	}
+	//for (unsigned i = 1; i < primitives.size(); i++)
+	//{
+	//	collisions->DetectCoarse(&primitives[0], &primitives[1]);
+	//}
 		
-	octTree->TestCollisions(*octTree->root, *collisions.get());
+	//octTree->TestCollisions(*octTree->root, *collisions.get());
 
 	collisions->DetectFine();
 	for (unsigned i = 0; i < primitives.size(); i++)

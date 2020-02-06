@@ -211,3 +211,18 @@ void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& ten
 		+ t62 * rot.Get(10);
 	tensorWorld.matrix4x4[11] = 0;
 }
+
+std::array<float, 2> Mathe::SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots)
+{
+	std::array<float, 2> x = { 0.0f, 0.0f };
+
+	x[0] = (-b + sqrt(((b * b) - (4 * a * c)))) / (2 * a);
+
+	if (twoRealRoots)
+	{
+		x[1] = (-b - sqrt(((b * b) - (4 * a * c)))) / (2 * a);
+	}
+
+	return x;
+}
+
