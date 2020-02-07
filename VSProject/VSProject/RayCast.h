@@ -8,7 +8,13 @@ struct Ray
 	// ray = origin + (intersection * direction)
 
 	Ray() = default;
-	Ray(Vector3 _origin, Vector3 _direction) : origin(_origin), direction(_direction) {}
+	Ray(const Vector3& _origin, const Vector3& _direction) : origin(_origin), direction(_direction)
+	{
+		//inverseDirection = direction.Inverse();
+		//sign[0] = (inverseDirection.x < 0);
+		//sign[1] = (inverseDirection.y < 0);
+		//sign[2] = (inverseDirection.z < 0);
+	}
 	~Ray() = default;
 
 	Vector3 origin = Vector3();
@@ -17,6 +23,9 @@ struct Ray
 	//always > 0 so default of -1
 	float intersection1 = -1;
 	float intersection2 = -1;
+
+	//Vector3 inverseDirection = Vector3();
+	//int sign[3];
 
 	Vector3 IntersectionPoint()
 	{
@@ -47,6 +56,6 @@ private:
 	bool TestPlane(const Vector3& centre, const Vector3& normal, const Vector3& size, Ray& ray);
 	bool TestSphere(const Vector3& centre, const float radius, Ray& ray);
 	bool TestBox(const Vector3& scale, const Matrix& transform, Ray& ray);
-
+	bool TestCylinder();
 
 };

@@ -7,12 +7,12 @@ void Engine::Init()
 
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
-	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 15, 10), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 15, 10), Vector3(0, 10, 0));
 	//primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(1, 15, 10), Vector3(0, 0, 0));
 	//primitiveManager->Create(Primitive::Type::BOX, Vector3(3, 1, 3), Vector3(1, 5, 0), Vector3(0, 0, 0));
 	primitiveManager->CreateSphere(2, Vector3(10, 10, 0));
-	//primitiveManager->CreateCapsule(2, 4, Vector3(9, 5, 3), Vector3(90, 0, 0));
-	//primitiveManager->CreateCylinder(3, 10, Vector3(5, 7, 5), Vector3(0, 0, 0));
+	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
+	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(5, 0, -5));
 	individualObjectInitialised.push_back(false);
 	individualObjectInitialised.push_back(false);
@@ -59,8 +59,8 @@ void Engine::SpawnSphere()
 {
 	srand(time(NULL));
 
-	float radius = (float)(rand() % 10 + 1) / 2.0f;
-	Vector3 pos((double)(rand() % 20 + radius), (double)(rand() % 20 + radius), (double)(rand() % 20 + radius));
+	double radius = ((double)(rand() % 10) + 1.0) / 2.0;
+	Vector3 pos(((double)(rand() % 20) + radius), ((double)(rand() % 20) + radius), ((double)(rand() % 20) + radius));
 
 	std::string sphere = "Spawning SPHERE with position (";
 	sphere += std::to_string(pos.x) + "," + std::to_string(pos.y) + "," + std::to_string(pos.z) + "), ";
@@ -78,7 +78,7 @@ void Engine::SpawnBox()
 {
 	srand(time(NULL));
 
-	Vector3 scale((double)(rand() % 5 + 1), (double)(rand() % 5 + 1), (double)(rand() % 5 + 1));
+	Vector3 scale((double)(rand() % 5) + 1.0, (double)(rand() % 5) + 1.0, (double)(rand() % 5) + 1.0);
 	Vector3 pos((double)(rand() % 20 + scale.x), (double)(rand() % 20 + scale.y), (double)(rand() % 20 + scale.z));
 	Vector3 rot((double)(rand() % 10), (double)(rand() % 10), (double)(rand() % 10));
 

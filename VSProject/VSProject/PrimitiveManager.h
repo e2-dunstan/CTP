@@ -33,7 +33,7 @@ private:
 	std::vector<Primitive> primitives;
 
 	Ray rayToTest;
-	bool drawRay = true;
+	bool drawRay = false;
 
 	GLenum GetDrawType(Primitive::Type objectType);
 

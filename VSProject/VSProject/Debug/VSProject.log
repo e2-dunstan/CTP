@@ -1,9 +1,2 @@
-﻿  RayCast.cpp
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(32,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(34,16): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(37,22): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(52,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(104,27): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(105,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(106,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  CollisionData.cpp
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

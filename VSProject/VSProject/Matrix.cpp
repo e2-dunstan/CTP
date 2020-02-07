@@ -104,6 +104,51 @@ void Matrix::Inverse3x3()
 	this->matrix4x4[15] = 0;
 }
 
+void Matrix::Inverse4x4()
+{
+	float A2323 = this->matrix4x4[10] * this->matrix4x4[15] - this->matrix4x4[11] * this->matrix4x4[14];
+	float A1323 = this->matrix4x4[9] * this->matrix4x4[15] - this->matrix4x4[11] * this->matrix4x4[13];
+	float A1223 = this->matrix4x4[9] * this->matrix4x4[14] - this->matrix4x4[10] * this->matrix4x4[13];
+	float A0323 = this->matrix4x4[8] * this->matrix4x4[15] - this->matrix4x4[11] * this->matrix4x4[12];
+	float A0223 = this->matrix4x4[8] * this->matrix4x4[14] - this->matrix4x4[10] * this->matrix4x4[12];
+	float A0123 = this->matrix4x4[8] * this->matrix4x4[13] - this->matrix4x4[9] * this->matrix4x4[12];
+	float A2313 = this->matrix4x4[6] * this->matrix4x4[15] - this->matrix4x4[7] * this->matrix4x4[14];
+	float A1313 = this->matrix4x4[5] * this->matrix4x4[15] - this->matrix4x4[7] * this->matrix4x4[13];
+	float A1213 = this->matrix4x4[5] * this->matrix4x4[14] - this->matrix4x4[6] * this->matrix4x4[13];
+	float A2312 = this->matrix4x4[6] * this->matrix4x4[11] - this->matrix4x4[7] * this->matrix4x4[10];
+	float A1312 = this->matrix4x4[5] * this->matrix4x4[11] - this->matrix4x4[7] * this->matrix4x4[9];
+	float A1212 = this->matrix4x4[5] * this->matrix4x4[10] - this->matrix4x4[6] * this->matrix4x4[9];
+	float A0313 = this->matrix4x4[4] * this->matrix4x4[15] - this->matrix4x4[7] * this->matrix4x4[12];
+	float A0213 = this->matrix4x4[4] * this->matrix4x4[14] - this->matrix4x4[6] * this->matrix4x4[12];
+	float A0312 = this->matrix4x4[4] * this->matrix4x4[11] - this->matrix4x4[7] * this->matrix4x4[8];
+	float A0212 = this->matrix4x4[4] * this->matrix4x4[10] - this->matrix4x4[6] * this->matrix4x4[8];
+	float A0113 = this->matrix4x4[4] * this->matrix4x4[13] - this->matrix4x4[5] * this->matrix4x4[12];
+	float A0112 = this->matrix4x4[4] * this->matrix4x4[9] - this->matrix4x4[5] * this->matrix4x4[8];
+
+	float det = this->matrix4x4[0] * (this->matrix4x4[5] * A2323 - this->matrix4x4[6] * A1323 + this->matrix4x4[7] * A1223)
+		- this->matrix4x4[1] * (this->matrix4x4[4] * A2323 - this->matrix4x4[6] * A0323 + this->matrix4x4[7] * A0223)
+		+ this->matrix4x4[2] * (this->matrix4x4[4] * A1323 - this->matrix4x4[5] * A0323 + this->matrix4x4[7] * A0123)
+		- this->matrix4x4[3] * (this->matrix4x4[4] * A1223 - this->matrix4x4[5] * A0223 + this->matrix4x4[6] * A0123);
+	det = 1.0f / det;
+
+	this->matrix4x4[0] = det * (this->matrix4x4[5] * A2323 - this->matrix4x4[6] * A1323 + this->matrix4x4[7]* A1223);
+	this->matrix4x4[1] = det * -(this->matrix4x4[1] * A2323 - this->matrix4x4[2] * A1323 + this->matrix4x4[3] * A1223);
+	this->matrix4x4[2] = det * (this->matrix4x4[1] * A2313 - this->matrix4x4[2] * A1313 + this->matrix4x4[3] * A1213);
+	this->matrix4x4[3] = det * -(this->matrix4x4[1] * A2312 - this->matrix4x4[2] * A1312 + this->matrix4x4[3] * A1212);
+	this->matrix4x4[4] = det * -(this->matrix4x4[4] * A2323 - this->matrix4x4[6] * A0323 + this->matrix4x4[7]* A0223);
+	this->matrix4x4[5] = det * (this->matrix4x4[0] * A2323 - this->matrix4x4[2] * A0323 + this->matrix4x4[3] * A0223);
+	this->matrix4x4[6] = det * -(this->matrix4x4[0] * A2313 - this->matrix4x4[2] * A0313 + this->matrix4x4[3] * A0213);
+	this->matrix4x4[7] = det * (this->matrix4x4[0] * A2312 - this->matrix4x4[2] * A0312 + this->matrix4x4[3] * A0212);
+	this->matrix4x4[8] = det * (this->matrix4x4[4] * A1323 - this->matrix4x4[5] * A0323 + this->matrix4x4[7]* A0123);
+	this->matrix4x4[9] = det * -(this->matrix4x4[0] * A1323 - this->matrix4x4[1] * A0323 + this->matrix4x4[3] * A0123);
+	this->matrix4x4[10] = det * (this->matrix4x4[0] * A1313 - this->matrix4x4[1] * A0313 + this->matrix4x4[3] * A0113);
+	this->matrix4x4[11] = det * -(this->matrix4x4[0] * A1312 - this->matrix4x4[1] * A0312 + this->matrix4x4[3] * A0112);
+	this->matrix4x4[12] = det * -(this->matrix4x4[4] * A1223 - this->matrix4x4[5] * A0223 + this->matrix4x4[6] * A0123);
+	this->matrix4x4[13] = det * (this->matrix4x4[0] * A1223 - this->matrix4x4[1] * A0223 + this->matrix4x4[2] * A0123);
+	this->matrix4x4[14] = det * -(this->matrix4x4[0] * A1213 - this->matrix4x4[1] * A0213 + this->matrix4x4[2] * A0113);
+	this->matrix4x4[15] = det * (this->matrix4x4[0] * A1212 - this->matrix4x4[1] * A0212 + this->matrix4x4[2] * A0112);
+}
+
 Matrix Matrix::operator+(Matrix& m)
 {
 	Matrix sum(rowSize, colSize);

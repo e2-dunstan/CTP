@@ -92,7 +92,7 @@ void PrimitiveManager::Draw()
 	//raycast test
 	if (drawRay)
 	{
-		rayToTest = Ray(Vector3(0, 0.8, 0), Vector3(0, 0, 1).Normalise());
+		rayToTest = Ray(Vector3(0, 0.5, 0), Vector3(-1, 0, 1).Normalise());
 
 		glBegin(GL_LINES);
 

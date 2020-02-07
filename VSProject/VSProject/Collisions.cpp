@@ -10,9 +10,9 @@ void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
 
 void Collisions::DetectFine()
 {
-	for (auto potentialContact : potentialContacts)
+	for (unsigned i = 0; i < potentialContacts.size(); i++)
 	{
-		fine->DetectContacts(potentialContact.prim1, potentialContact.prim2);
+		fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2);
 	}
 	potentialContacts.clear();
 }
@@ -21,17 +21,12 @@ void Collisions::Resolution()
 {
 	if (data->contacts.size() <= 0) return;
 
-	resolution2->ResolveContacts(data->contacts);
-
-	//for (auto contact : data->contacts)
-	//{
-	//	//if (contact.body1->rigidbody.IsAtRest()
-	//	//	&& contact.body2->rigidbody.IsAtRest())
-	//	//{
-	//	//	continue;
-	//	//}
-	//	resolution->ResolveCollision(contact);
-	//}
+	for (unsigned i = 0; i < data->contacts.size(); i++)
+	{
+		data->contacts[i].PrepareResolution();
+	}
+	resolution2->PenetrationResolution(data->contacts);
+	resolution2->VelocityResolution(data->contacts);
 
 	data->contacts.clear();
 }

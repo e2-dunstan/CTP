@@ -7,16 +7,15 @@ public:
 	CollisionResolution2() = default;
 	~CollisionResolution2() = default;
 
-	void ResolveContacts(std::vector<Contact>& contacts);
+	void PenetrationResolution(std::vector<Contact>& contacts);
+	void VelocityResolution(std::vector<Contact>& contacts);
 
 private:
-	void InitialiseContacts(std::vector<Contact>& contacts);
-	void CalculatePenetrationResolution(std::vector<Contact>& contacts);
-	void CalculateVelocityResolution(std::vector<Contact>& contacts);
+	unsigned GetContactWithLargestPenetration(std::vector<Contact>& contacts);
+	unsigned GetContactWithLargestVelocityMagnitude(std::vector<Contact>& contacts);
 
-	unsigned velocityIterations = 0;
-	unsigned penetrationIterations = 0;
+	const float minVelocityChange = 0.01f;
+	const float minPositionChange = 0.01f;
 
-	const float minVelocityDelta = 0.01f;
-	const float minPositionDelta = 0.01f;
+	unsigned numContacts = 0;
 };

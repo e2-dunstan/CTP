@@ -76,34 +76,72 @@ bool RayCast::TestSphere(const Vector3& centre, const float radius, Ray& ray)
 bool RayCast::TestBox(const Vector3& scale, const Matrix& transform, Ray& ray)
 {
 	Matrix inverse = transform;
-	inverse = inverse.Transpose();
-	inverse.Inverse3x3();
+	//inverse = inverse.Transpose();
+	inverse.Inverse4x4();
 
 	//Get ray relative to box
 	Vector3 rayOriginAA = ray.origin;
 	Mathe::Transform(rayOriginAA, inverse);
 	Vector3 rayDirectionAA = ray.direction;
-	Mathe::Transform(rayDirectionAA, inverse);
+	//Mathe::Transform(rayDirectionAA, inverse);
 	rayDirectionAA = rayDirectionAA.Normalise();
+	//Vector3 rayInverseDirectionAA = rayDirectionAA.Inverse();
 
-	float tMin = 0.0f;
+	/*
+	//Vector3 boxMinMax[2] = { scale * -1.0, scale };
+
+	float tMin = (boxMinMax[ray.sign[0]].x - rayOriginAA.x) * rayInverseDirectionAA.x;
+	float tMax = (boxMinMax[1 - ray.sign[0]].x - rayOriginAA.x) * rayInverseDirectionAA.x;
+	float tyMin = (boxMinMax[ray.sign[1]].y - rayOriginAA.y) * rayInverseDirectionAA.y;
+	float tyMax = (boxMinMax[1 - ray.sign[1]].y - rayOriginAA.y) * rayInverseDirectionAA.y;
+	
+	//float temp = tMin;
+	//if (tMin > tMax)
+	//{
+	//	tMin = tMax;
+	//	tMax = temp;
+	//}
+
+	if (tMin > tyMax || tyMin > tMax) return false;
+	if (tyMin > tMin) tMin = tyMin;
+	if (tyMax < tMax) tMax = tyMax;
+
+	float tzMin = (boxMinMax[ray.sign[2]].z - rayOriginAA.z) * rayInverseDirectionAA.z;
+	float tzMax = (boxMinMax[1 - ray.sign[2]].z - rayOriginAA.z) * rayInverseDirectionAA.z;
+
+	if (tMin > tzMax || tzMin > tMax) return false;
+	if (tzMin > tMin) tMin = tzMin;
+	if (tzMax < tMax) tMax = tzMax;
+
+	if (tMin < 0)
+	{
+		tMin = tMax;
+		if (tMin < 0) return false;
+	}
+
+	ray.intersection1 = tMin;
+	ray.intersection2 = tMax;
+
+	return true;
+	*/
+	
+	float tMin = -maxRayLength;
 	float tMax = maxRayLength;
 	Vector3 boxMax = scale;// / 2.0f;
 	Vector3 boxMin = boxMax * -1.0f;
-
+	
 	//3 slabs
 	for (int i = 0; i < 3; i++)
 	{
-		if (abs(rayDirectionAA[i]) < 0.00000001f) //parallel to slab
+		if (abs(rayDirectionAA[i]) < 0.001f) //parallel to slab
 		{
 			//not in slab, can't hit
 			if (rayOriginAA[i] < boxMin[i] || rayOriginAA[i] > boxMax[i]) return false;
 		}
 		else
 		{
-			float inverseDirection = 1.0f / rayDirectionAA[i];
-			float intersectionMin = abs((boxMin[i] - rayOriginAA[i]) * inverseDirection);
-			float intersectionMax = abs((boxMax[i] - rayOriginAA[i]) * inverseDirection);
+			float intersectionMin = (boxMin[i] - rayOriginAA[i]) / rayDirectionAA[i];
+			float intersectionMax = (boxMax[i] - rayOriginAA[i]) / rayDirectionAA[i];
 
 			//intersection min = near plane, max = far plane
 			if (intersectionMin > intersectionMax)
@@ -116,12 +154,14 @@ bool RayCast::TestBox(const Vector3& scale, const Matrix& transform, Ray& ray)
 			tMin = (tMin > intersectionMin) ? tMin : intersectionMin;
 			tMax = (tMax < intersectionMax) ? tMax : intersectionMax;
 
-			if (tMin > tMax) return false;
+			if (tMin > tMax && (tMin >= 0 || tMax >= 0))		
+				return false;
+			
 		}
 	}
 
-	ray.intersection1 = tMin;
-	ray.intersection2 = tMax; //if ray goes through obj
+	ray.intersection1 = abs(tMin);
+	ray.intersection2 = abs(tMax); //if ray goes through obj
 
 	//Convert back to world space
 	//Vector3 localIntersection1 = rayOriginAA + (rayDirectionAA.Normalise() * tMin);

@@ -1,5 +1,16 @@
 #include "CollisionData.h"
 
+void Contact::PrepareResolution()
+{
+	CalculateContactBasisMatrices();
+
+	relContactPos1 = point - body1->translation;
+	relContactPos2 = point - body2->translation;
+
+	CalculateClosingVelocities();
+	CalculateDesiredDeltaVelocity();
+}
+
 void Contact::CalculateContactBasisMatrices()
 {
 	Vector3 contactTangents[2];
@@ -43,17 +54,6 @@ void Contact::CalculateContactBasisMatrices()
 	worldToContact = contactToWorld.Transpose();
 }
 
-void Contact::CalculateResolutionValues()
-{
-	CalculateContactBasisMatrices();
-
-	relContactPos1 = point - body1->translation;
-	relContactPos2 = point - body2->translation;
-
-	CalculateClosingVelocities();
-	CalculateDesiredDeltaVelocity();
-}
-
 void Contact::CalculateClosingVelocities()
 {
 	//Body 1
@@ -78,34 +78,31 @@ void Contact::CalculateClosingVelocities()
 		Mathe::Transform(prevVelocity2, worldToContact);
 		prevVelocity2.x = 0; //not interested in normal dir
 
-		closingVelocity2 += prevVelocity2;
-
-		closingVelocity -= closingVelocity2;
+		closingVelocity -= (closingVelocity2 + prevVelocity2);
 	}
 }
 
 void Contact::CalculateDesiredDeltaVelocity()
 {
-	const float velLimit = 0.25f;
-
-	float bodiesVelocity = 0;
-	bodiesVelocity += (float)(body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime);
+	float bodiesVelocity = (float)(body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime);
 	if (body2->type != Primitive::Type::PLANE)
 	{
 		bodiesVelocity -= (float)(body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime);
 	}
+	float r = restitution;
+	if (abs(closingVelocity.x) < 0.25f) r = 0.0f;
 
-	float thisRestitution = restitution;
-	if (abs(closingVelocity.x) < velLimit) thisRestitution = 0.0f;
-
-	desiredDeltaVelocty = -(float)closingVelocity.x - thisRestitution * ((float)closingVelocity.x - bodiesVelocity);
+	desiredDeltaVelocty = -(float)closingVelocity.x - r * ((float)closingVelocity.x - bodiesVelocity);
 }
 
-void Contact::ApplyPositionChange()
+void Contact::ResolveContactPenetration()
 {
 	// -- Nonlinear Projection -- //
 
-	float angularInertia1 = 0, angularInertia2 = 0, linearInertia1 = 0, linearInertia2 = 0;
+	float angularInertia1 = 0;
+	float angularInertia2 = 0;
+	float linearInertia1 = 0;
+	float linearInertia2 = 0;
 
 	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
 	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
@@ -131,10 +128,10 @@ void Contact::ApplyPositionChange()
 
 	//move values
 	float inverseInertia = 1 / totalInertia;
-	float linearMove1 = penetrationDepth * (linearInertia1 / totalInertia); // * inverseInertia;
-	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia); // *inverseInertia;
-	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia); // * inverseInertia;
-	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia); // * inverseInertia;
+	float linearMove1 = penetrationDepth * (linearInertia1 / totalInertia);
+	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia);
+	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
+	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
 	ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.Magnitude());
 	ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.Magnitude());
 
@@ -171,7 +168,6 @@ void Contact::ApplyPositionChange()
 		body1->GetOrientation(&q);
 		Mathe::AddScaledVector(q, angularChange[0], 1.0);
 		body1->SetOrientation(q);
-		//body1->rotation += angularChange[0];
 	}
 	if (linearMove2 > 0.001f)
 	{
@@ -183,7 +179,6 @@ void Contact::ApplyPositionChange()
 		body2->GetOrientation(&q);
 		Mathe::AddScaledVector(q, angularChange[1], 1.0);
 		body2->SetOrientation(q);
-		//body2->rotation += angularChange[1];
 	}
 
 	if (body1->rigidbody.isAwake)
@@ -196,7 +191,6 @@ void Contact::ApplyPositionChange()
 		body2->orientation.Normalise();
 		body2->UpdateTransform();
 	}
-
 }
 
 void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float objMag)
@@ -211,10 +205,9 @@ void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float o
 
 		linear = total - angular;
 	}
-	//std::cout << linear << std::endl;
 }
 
-void Contact::ApplyVelocityChange()
+void Contact::ResolveContactVelocity()
 {
 	Vector3 impulse;
 
@@ -268,4 +261,24 @@ Vector3 Contact::FrictionImpulse()
 {
 	//to be implemented
 	return FrictionlessImpulse();
+}
+
+void Contact::MatchRigidbodyAwakeStates()
+{
+	bool b1Awake = body1->rigidbody.isAwake;
+	bool b2Awake = body2->rigidbody.isAwake;
+
+	if (b1Awake ^ b2Awake)
+	{
+		if (b1Awake) body2->rigidbody.SetAwake(true);
+		else body1->rigidbody.SetAwake(true);
+	}
+
+	//if ((body1->rigidbody.isAwake && !body2->rigidbody.isAwake)
+	//	|| (body1->rigidbody.isAwake && !body2->rigidbody.isAwake))
+	//{
+	//	body2->rigidbody.SetAwake(true);
+	//}
+	//else /*if (!body1->rigidbody.isAwake && body2->rigidbody.isAwake)*/
+	//	body1->rigidbody.SetAwake(false);
 }

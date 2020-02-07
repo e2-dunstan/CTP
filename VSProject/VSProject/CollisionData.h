@@ -1,27 +1,19 @@
 #pragma once
 #include "Primitive.h"
 
+class Collisions;
 class CollisionResolution2;
 
 struct Contact
 {
+	friend class Collisions;
 	friend class CollisionResolution2;
 
 public:
 	Contact() = default;
 	Contact(Primitive* prim1, Primitive* prim2)
 		: body1(prim1), body2(prim2) {};
-	~Contact()
-	{
-		//if (body1)
-		//{
-		//	delete body1;
-		//}
-		//if (body2)
-		//{
-		//	delete body2;
-		//}
-	};
+	~Contact() = default;
 
 	Vector3 point;
 	Vector3 normal;
@@ -34,20 +26,21 @@ public:
 	float restitution = 0.0f;
 	float friction = 0.0f;
 
+
 protected:
+	void PrepareResolution();
 	void CalculateContactBasisMatrices();
-	void CalculateResolutionValues();
 	void CalculateDesiredDeltaVelocity();
 	void CalculateClosingVelocities();
 
-	void ApplyPositionChange();
+	void ResolveContactPenetration();
 	void ApplyAngularMoveLimit(float& linear, float& angular, const float objMag);
 
-	void ApplyVelocityChange();
+	void ResolveContactVelocity();
 	Vector3 FrictionlessImpulse();
 	Vector3 FrictionImpulse();
 
-	//func to make RBs awake here
+	void MatchRigidbodyAwakeStates();
 
 	Matrix contactToWorld = Matrix(4,4);
 	Matrix worldToContact = Matrix(4,4);
@@ -82,17 +75,7 @@ struct PotentialContact
 	PotentialContact() = default;
 	PotentialContact(Primitive* _p1, Primitive* _p2)
 		: prim1(_p1), prim2(_p2) {};
-	~PotentialContact()
-	{
-		//if (prim1)
-		//{
-		//	delete prim1;
-		//}
-		//if (prim2)
-		//{
-		//	delete prim2;
-		//}
-	};
+	~PotentialContact() = default;
 
 	Primitive* prim1;
 	Primitive* prim2;

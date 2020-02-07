@@ -1,14 +1,8 @@
 #include "CollisionResolution.h"
 
-/*
+
 void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 {
-	//if (contact.body1->type == Primitive::Type::BOX
-	//	&& contact.body2->type == Primitive::Type::BOX)
-	//{
-		//std::cout << "Contact penetration: " << contact.penetrationDepth << std::endl;
-	//}
-
 	//Get body positions relative to contact
 	relContactPos1 = contact.point - contact.body1->translation;
 	relContactPos2 = contact.point - contact.body2->translation;
@@ -22,7 +16,7 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	Mathe::Transform(angularInertia_W, contact.body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
 
-	angularInertia1 = angularInertia_W.ScalarProduct(contact.normal);
+	angularInertia1 = (float)angularInertia_W.ScalarProduct(contact.normal);
 	linearInertia1 = contact.body1->rigidbody.inverseMass;
 
 	float totalInertia = linearInertia1 + angularInertia1;
@@ -34,7 +28,7 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 		Mathe::Transform(angularInertia_W, contact.body2->rigidbody.inverseInertiaTensorWorld);
 		angularInertia_W = angularInertia_W.VectorProduct(relContactPos2);
 
-		angularInertia2 = angularInertia_W.ScalarProduct(contact.normal);
+		angularInertia2 = (float)angularInertia_W.ScalarProduct(contact.normal);
 		linearInertia2 = contact.body2->rigidbody.inverseMass;
 
 		totalInertia += linearInertia2 + angularInertia2;
@@ -46,8 +40,8 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	float linearMove2 = -contact.penetrationDepth * (linearInertia2 / totalInertia); // *inverseInertia;
 	float angularMove1 = contact.penetrationDepth * (angularInertia1 / totalInertia); // * inverseInertia;
 	float angularMove2 = -contact.penetrationDepth * (angularInertia2 / totalInertia); // * inverseInertia;
-	ApplyAngularMoveLimit(linearMove1, angularMove1, contact.body1->scale.Magnitude());
-	ApplyAngularMoveLimit(linearMove2, angularMove2, contact.body2->scale.Magnitude());
+	ApplyAngularMoveLimit(linearMove1, angularMove1, (float)contact.body1->scale.Magnitude());
+	ApplyAngularMoveLimit(linearMove2, angularMove2, (float)contact.body2->scale.Magnitude());
 
 	//Applying angular resolution
 	// 1. Calculate the rotation needed to move contact point by one unit
@@ -77,7 +71,10 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	}
 	if (angularChange1.Magnitude() > 0.001f)
 	{
-		contact.body1->rotation += angularChange1;
+		Quaternion q;
+		contact.body1->GetOrientation(&q);
+		Mathe::AddScaledVector(q, angularChange1, 1.0f);
+		contact.body1->SetOrientation(q);
 		update1 = true;
 	}
 	if (linearMove2 > 0.001f)
@@ -87,7 +84,10 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	}
 	if (angularChange2.Magnitude() > 0.001f)
 	{
-		contact.body2->rotation += angularChange2;
+		Quaternion q;
+		contact.body2->GetOrientation(&q);
+		Mathe::AddScaledVector(q, angularChange2, 1.0f);
+		contact.body2->SetOrientation(q);
 		update2 = true;
 	}
 	if (update1) contact.body1->UpdateTransform();
@@ -99,17 +99,6 @@ void CollisionResolution::ResolveCollision(const Contact& contact)
 	//Debugging
 	if (contact.body1->type != Primitive::Type::PLANE) contact.body1->colliding = true;
 	if (contact.body2->type != Primitive::Type::PLANE) contact.body2->colliding = true;
-
-	//Simple resolution of spheres hitting planes
-	//if (contact.body1->type == Primitive::Type::SPHERE && contact.body2->type == Primitive::Type::PLANE)
-	//{
-	//	contact.body1->rigidbody.AddImpulse(contact.normal, contact.restitution);
-	//}
-	//if (contact.body2->type == Primitive::Type::SPHERE && contact.body1->type == Primitive::Type::PLANE)
-	//{
-	//	contact.body2->rigidbody.AddImpulse(contact.normal, contact.restitution);
-	//}
-
 
 	// -- 1. Get transform matrices for working in coordinates relative to the contact/world
 	contactToWorld = CalculateContactBasis(contact);
@@ -124,7 +113,7 @@ void CollisionResolution::ResolveCollision(const Contact& contact)
 		contactClosingVelocity -= CalculateClosingVelocity(*contact.body2);
 	}
 	//due to contact normal, y and z values are 0 and can be ignored
-	changeInVelocity = -contactClosingVelocity.x * (1.0f + contact.restitution);
+	changeInVelocity = -(float)contactClosingVelocity.x * (1.0f + contact.restitution);
 
 
 	// -- 3. Calculate the desired change in velocity
@@ -196,7 +185,7 @@ float CollisionResolution::CalculateChangeInVelocity(const Contact& contact)
 	Mathe::Transform(deltaVelocity_W, contact.body1->rigidbody.inverseInertiaTensorWorld);
 	deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos1);
 
-	float deltaSpeed = deltaVelocity_W.ScalarProduct(contact.normal);
+	float deltaSpeed = (float)deltaVelocity_W.ScalarProduct(contact.normal);
 	deltaSpeed += contact.body1->rigidbody.inverseMass;
 
 	if (contact.body2->type != Primitive::Type::PLANE)
@@ -205,7 +194,7 @@ float CollisionResolution::CalculateChangeInVelocity(const Contact& contact)
 		Mathe::Transform(deltaVelocity_W, contact.body2->rigidbody.inverseInertiaTensorWorld);
 		deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos2);
 
-		deltaSpeed += deltaVelocity_W.ScalarProduct(contact.normal);
+		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(contact.normal);
 		deltaSpeed += contact.body1->rigidbody.inverseMass;
 	}
 
@@ -214,7 +203,7 @@ float CollisionResolution::CalculateChangeInVelocity(const Contact& contact)
 
 Vector3 CollisionResolution::CalculateClosingVelocity(const Primitive& prim)
 {
-	Vector3 vel = prim.rotation.VectorProduct(relContactPos1);
+	Vector3 vel = prim.rigidbody.angularVelocity.VectorProduct(relContactPos1);
 	vel += prim.rigidbody.velocity;
 
 	//if (contact.body2->type != Primitive::Type::PLANE)
@@ -234,15 +223,15 @@ float CollisionResolution::CalculateDesiredChangeInVelocity(const Contact& conta
 {
 	float velFromBodies = 0;
 
-	velFromBodies += contact.body1->rigidbody.velocity.ScalarProduct(contact.normal);
+	velFromBodies += (float)contact.body1->rigidbody.velocity.ScalarProduct(contact.normal);
 	if (contact.body2->type != Primitive::Type::PLANE)
 	{
-		velFromBodies -= contact.body2->rigidbody.velocity.ScalarProduct(contact.normal);
+		velFromBodies -= (float)contact.body2->rigidbody.velocity.ScalarProduct(contact.normal);
 	}
 	float thisRestitution = contact.restitution;
 	if (abs(contactVel.x) < 0.25) thisRestitution = 0.0f;
 
-	return -contactVel.x - thisRestitution * (contactVel.x - velFromBodies);
+	return -(float)contactVel.x - thisRestitution * ((float)contactVel.x - velFromBodies);
 }
 
 Vector3 CollisionResolution::CalculateFrictionlessImpulse(const Contact& contact)
@@ -287,4 +276,4 @@ void CollisionResolution::ApplyAngularMoveLimit(float& linear, float& angular, c
 	}
 	std::cout << linear << std::endl;
 }
-*/
+

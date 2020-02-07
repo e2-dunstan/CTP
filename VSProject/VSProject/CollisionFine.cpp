@@ -27,12 +27,12 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
 			prim2->collisionVolume.centre, prim2->collisionVolume.radius);
 	}
-	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::PLANE)
-	{
-		SphereAndPlane(prim1, prim2,
-			prim1->collisionVolume.centre, prim1->collisionVolume.radius,
-			prim2->collisionVolume.centre, prim2->collisionVolume.normal);
-	}
+	//else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::PLANE)
+	//{
+	//	SphereAndPlane(prim1, prim2,
+	//		prim1->collisionVolume.centre, prim1->collisionVolume.radius,
+	//		prim2->collisionVolume.centre, prim2->collisionVolume.normal);
+	//}
 	else if (prim1->type == Primitive::Type::SPHERE && prim2->type == Primitive::Type::BOX)
 	{
 		SphereAndBox(prim1, prim2, prim1->collisionVolume.centre, prim1->collisionVolume.radius);
@@ -45,10 +45,10 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		CapsuleAndSphere(prim2, prim1);
 	}
-	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::PLANE)
-	{
-		BoxAndPlane(prim1, prim2, prim2->collisionVolume.centre, prim2->collisionVolume.normal);
-	}
+	//else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::PLANE)
+	//{
+	//	BoxAndPlane(prim1, prim2, prim2->collisionVolume.centre, prim2->collisionVolume.normal);
+	//}
 	else if (prim1->type == Primitive::Type::BOX && prim2->type == Primitive::Type::SPHERE)
 	{
 		SphereAndBox(prim2, prim1, prim2->collisionVolume.centre, prim2->collisionVolume.radius);
@@ -69,10 +69,10 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		//CylinderAndCylinder(prim1, prim2);
 	}
-	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::PLANE) 
-	{
-		CylinderAndPlane(prim1, prim2);
-	}
+	//else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::PLANE) 
+	//{
+	//	CylinderAndPlane(prim1, prim2);
+	//}
 	else if (prim1->type == Primitive::Type::CYLINDER && prim2->type == Primitive::Type::SPHERE)
 	{
 		CylinderAndSphere(prim1, prim2);
@@ -93,10 +93,10 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		
 	}
-	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::PLANE)
-	{
-		CapsuleAndPlane(prim1, prim2);
-	}
+	//else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::PLANE)
+	//{
+	//	CapsuleAndPlane(prim1, prim2);
+	//}
 	else if (prim1->type == Primitive::Type::CAPSULE && prim2->type == Primitive::Type::BOX)
 	{
 
