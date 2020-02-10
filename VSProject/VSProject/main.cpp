@@ -19,7 +19,7 @@
 //dont worry about spatial stuff now
 //for monday: 
 // - ray intersections with objects centred and oriented at the origin and give ray the transform of the obj
-// - reimplement physics in my own code
+// - reimplement physics in my own code (ish)
 // - fix contact generation SAT
 
 

@@ -18,7 +18,7 @@ void CollisionVolume::Update(const Vector3& _centre, float _radius,
 {
 	centre = _centre;
 	if (_radius != 0 && radius == 0) radius = _radius;
-	halfSize = _size * 2.0;
+	halfSize = _size;// *2.0;
 	orientation = _orientation;
 
 	switch (type)

@@ -152,6 +152,7 @@
     <ClCompile Include="Quaternion.cpp" />
     <ClCompile Include="RayCast.cpp" />
     <ClCompile Include="RigidBody.cpp" />
+    <ClCompile Include="SeparatingAxisTheorem.cpp" />
     <ClCompile Include="Shapes.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
@@ -177,6 +178,7 @@
     <ClInclude Include="Quaternion.h" />
     <ClInclude Include="RayCast.h" />
     <ClInclude Include="RigidBody.h" />
+    <ClInclude Include="SeparatingAxisTheorem.h" />
     <ClInclude Include="Shapes.h" />
     <ClInclude Include="OctTree.h" />
     <ClInclude Include="Utilities.h" />

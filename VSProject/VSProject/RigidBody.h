@@ -16,9 +16,9 @@ struct RigidBody
 	Vector3 torqueAccumulation = Vector3();
 
 	//Inverse is used to avoid division by 0
-	float inverseMass = 1.0f;
-	float linearDrag = 0.75f;
-	float angularDrag = 0.05f; //between 0-1
+	float inverseMass = 1.0f / 10.0f;
+	const float linearDrag = 0.75f;
+	const float angularDrag = 0.01f;// 1f; //between 0-1
 	float friction = 0.0f;
 
 	bool isKinematic = false;
@@ -52,6 +52,8 @@ private:
 	Vector3 prevAcceleration = Vector3();
 
 	double motion = 0;
+	double timeMotionBelowSleepThreshold = 0;
+	double timeToSleep = 3.0;
 
 	double terminalSpeed = 10000;
 

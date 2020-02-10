@@ -20,6 +20,8 @@ void PrimitiveManager::Create(Primitive::Type type,
 	case Primitive::Type::BOX:
 		newObj = new Primitive(ShapeVertices::GetCubeVertices());
 		newObj->collisionVolume.Create(CollisionVolume::Type::BOX, translation, 0, scale, orientation, Vector3());
+		//if ((int)translation.y == 20) 
+		//	newObj->rigidbody.inverseMass *= 2;
 		break;
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
@@ -117,6 +119,7 @@ void PrimitiveManager::Update()
 	for (unsigned i = 0; i < primitives.size(); i++)
 	{
 		primitives[i].Update();
+		primitives[i].colliding = false;
 	}
 
 	//Custom define which objects to detect collisions between.
@@ -157,10 +160,6 @@ void PrimitiveManager::Update()
 	//octTree->TestCollisions(*octTree->root, *collisions.get());
 
 	collisions->DetectFine();
-	for (unsigned i = 0; i < primitives.size(); i++)
-	{
-		primitives[i].colliding = false;
-	}
 	collisions->Resolution();
 }
 

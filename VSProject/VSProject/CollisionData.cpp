@@ -251,7 +251,7 @@ Vector3 Contact::FrictionlessImpulse()
 		deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos2);
 
 		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(normal);
-		deltaSpeed += (float)body2->rigidbody.inverseMass;
+		deltaSpeed += body2->rigidbody.inverseMass;
 	}
 
 	return Vector3((double)(desiredDeltaVelocty / deltaSpeed), 0.0, 0.0);
@@ -268,7 +268,7 @@ void Contact::MatchRigidbodyAwakeStates()
 	bool b1Awake = body1->rigidbody.isAwake;
 	bool b2Awake = body2->rigidbody.isAwake;
 
-	if (b1Awake ^ b2Awake)
+	if (b1Awake != b2Awake)
 	{
 		if (b1Awake) body2->rigidbody.SetAwake(true);
 		else body1->rigidbody.SetAwake(true);

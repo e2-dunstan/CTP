@@ -5,7 +5,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	bool finished = false;
 	numContacts = contacts.size();
-
+	int iterations = 0;
 	while (!finished)
 	{
 		//Find the contact with the largest penetration therefore
@@ -123,7 +123,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}
-		}
+		}		
 		finished = true;
 	}
 }

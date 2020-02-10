@@ -1,6 +1,7 @@
 #pragma once
 #include "CollisionVolume.h"
 #include "CollisionData.h"
+#include "SeparatingAxisTheorem.h"
 
 
 class CollisionFine
@@ -15,12 +16,14 @@ public:
 	std::string outputStr;
 
 private:
-	//Separating axis theorem
+
+	std::unique_ptr<SAT> sat = std::make_unique<SAT>();
+
 	double PositionOnAxis(const Primitive* box, const Vector3& axis);
-	bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, Vector3 axis, 
-		int index, float& smallestPenetration, int& smallestIndex);
-	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
-	Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
+	//bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, Vector3 axis, 
+	//	int index, float& smallestPenetration, int& smallestIndex);
+	//void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
+	//Vector3 GetContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
 	//Type checks
 	/* TYPE CHECKS: (total of 24 if statements)

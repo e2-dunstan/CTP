@@ -20,23 +20,6 @@ void Primitive::Update()
 		rigidbody.EndPhysicsUpdate(colliding);
 	}
 	//UpdateTransform();
-
-	/*
-	//if (!rigidbody.IsAtRest())
-	//{
-		//rigidbody.velocity.DebugOutput();
-		translation += rigidbody.velocity;
-		updateTransform = true;
-	//}
-	rotation += rigidbody.angularVelocity;
-	updateTransform = true;
-
-	//Update transforms if they have changed.
-	if (updateTransform) UpdateTransform();
-
-	previousPosition = translation;
-	//rigidbody.CalculateVelocity(translation);
-	*/
 }
 
 void Primitive::Draw()
@@ -114,7 +97,7 @@ void Primitive::CalculateInertiaTensor()
 	}
 
 	rigidbody.inverseInertiaTensor = Matrix(matVals);
-	rigidbody.inverseInertiaTensor.Inverse3x3();
+	rigidbody.inverseInertiaTensor.Inverse4x4();
 }
 
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
@@ -169,7 +152,7 @@ void Primitive::UpdateTransform()
 	}
 
 	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
-	collisionVolume.Update(translation, radius, scale / 2, orientation);
+	collisionVolume.Update(translation, radius, scale, orientation);
 
 	updateTransform = false;
 }
