@@ -12,7 +12,7 @@ namespace Mathe
 
 	void Transform(Vector3& vector, Matrix& matrix4x4);
 
-	Vector3 matrixInverse(Matrix& m, Vector3& v);
+	Vector3 MatrixInverse(Matrix& m, Vector3& v);
 
 	void Translate(Matrix& m, double x, double y, double z);
 	void Rotate(Matrix& m, double x, double y, double z);

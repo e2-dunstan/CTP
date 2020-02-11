@@ -10,7 +10,7 @@ struct Contact
 	friend class CollisionResolution2;
 
 public:
-	Contact() = default;
+	//Contact() = default;
 	Contact(Primitive* prim1, Primitive* prim2)
 		: body1(prim1), body2(prim2) 
 	{
@@ -70,7 +70,6 @@ struct CollisionData
 	
 	//Collision response will reference contacts.
 	std::vector<Contact> contacts = std::vector<Contact>();
-	int contactsLeft = 5;
 	float tolerance = 0.5f;
 };
 

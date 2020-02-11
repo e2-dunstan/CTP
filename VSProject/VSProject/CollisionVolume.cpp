@@ -79,14 +79,13 @@ void CollisionVolume::Box()
 		vertices[7] = Vector3(halfSize.x, halfSize.y, halfSize.z);
 	}
 
-	Matrix transform = Matrix(4, 4);
-	Mathe::Translate(transform, centre.x, centre.y, centre.z);
-	//Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
-	Mathe::Rotate(transform, orientation);
+	//Matrix transform = Matrix(4, 4);
+	//Mathe::Translate(transform, centre.x, centre.y, centre.z);
+	//Mathe::Rotate(transform, orientation);
 	//mathe->Scale(transform, halfSize.x, halfSize.y, halfSize.z);
 
 	for (int v = 0; v < 8; v++)
 	{
-		Mathe::Transform(vertices[v], transform);
+		Mathe::Transform(vertices[v], axisMat);
 	}
 }

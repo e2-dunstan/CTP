@@ -25,6 +25,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
 		{
+			if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
@@ -81,6 +82,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 		Vector3 deltaVelocity;
 		for (unsigned i = 0; i < numContacts; i++)
 		{
+			if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)

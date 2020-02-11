@@ -21,12 +21,12 @@ void Contact::CalculateContactBasisMatrices()
 		//scaling factor to ensure normalisation
 		const float scalingFactor = 1.0f / (float)sqrt((normal.z * normal.z) + (normal.x * normal.x));
 
-		//new X axis is at right angles to the world Y axis
+		//new X axis is perpendicular to the world Y axis
 		contactTangents[0].x = normal.z * scalingFactor;
 		contactTangents[0].y = 0;
 		contactTangents[0].z = -normal.x * scalingFactor;
 
-		//new Y axis at right angles to X and Z axes
+		//new Y axis is perpendicular to X and Z axes
 		contactTangents[1].x = normal.y * contactTangents[0].x;
 		contactTangents[1].y = (normal.z * contactTangents[0].x)
 			- (normal.x * contactTangents[0].z);
@@ -36,7 +36,7 @@ void Contact::CalculateContactBasisMatrices()
 	{
 		const float scalingFactor = 1.0f / (float)sqrt((normal.z * normal.z) + (normal.y * normal.y));
 
-		//new X axis is at right angles to the world X axis
+		//new X axis is perpendicular to the world X axis
 		contactTangents[0].x = 0;
 		contactTangents[0].y = -normal.z * scalingFactor;
 		contactTangents[0].z = normal.y * scalingFactor;
@@ -48,7 +48,8 @@ void Contact::CalculateContactBasisMatrices()
 	}
 	double matVals[16] = { normal.x, contactTangents[0].x, contactTangents[1].x, 0,
 					normal.y, contactTangents[0].y, contactTangents[1].y, 0,
-					normal.z, contactTangents[0].z, contactTangents[1].z, 0 };
+					normal.z, contactTangents[0].z, contactTangents[1].z, 0,
+					0, 0, 0, 0};
 
 	contactToWorld = Matrix(matVals);
 	worldToContact = contactToWorld.Transpose();
@@ -57,61 +58,54 @@ void Contact::CalculateContactBasisMatrices()
 void Contact::CalculateClosingVelocities()
 {
 	//Body 1
-	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1);
-	closingVelocity += body1->rigidbody.velocity;
+	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
-
 	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 	Mathe::Transform(prevVelocity1, worldToContact);
-	prevVelocity1.x = 0; //not interested in normal dir
 
-	closingVelocity += prevVelocity1;
+	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
 
 	//Body2
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2);
-		closingVelocity2 += body2->rigidbody.velocity;
+		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
-
 		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 		Mathe::Transform(prevVelocity2, worldToContact);
-		prevVelocity2.x = 0; //not interested in normal dir
+		prevVelocity2.x = 0; 
 
-		closingVelocity -= (closingVelocity2 + prevVelocity2);
+		closingVelocity -= (closingVelocity2 + Vector3(0, prevVelocity2.y, prevVelocity2.z));
 	}
 }
 
 void Contact::CalculateDesiredDeltaVelocity()
 {
-	float bodiesVelocity = (float)(body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime);
+	double bodiesVelocity = body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime;
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		bodiesVelocity -= (float)(body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime);
+		bodiesVelocity -= body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal) * Global::deltaTime;
 	}
 	float r = restitution;
-	if (abs(closingVelocity.x) < 0.25f) r = 0.0f;
+	if (abs(closingVelocity.x) < 0.25) r = 0.0f;
 
-	desiredDeltaVelocty = -(float)closingVelocity.x - r * ((float)closingVelocity.x - bodiesVelocity);
+	desiredDeltaVelocty = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
 }
 
 void Contact::ResolveContactPenetration()
 {
 	// -- Nonlinear Projection -- //
 
-	float angularInertia1 = 0;
-	float angularInertia2 = 0;
-	float linearInertia1 = 0;
-	float linearInertia2 = 0;
-
 	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
 	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
 
-	angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
-	linearInertia1 = body1->rigidbody.inverseMass;
+	float angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
+	float linearInertia1 = body1->rigidbody.inverseMass;
 
 	float totalInertia = linearInertia1 + angularInertia1;
+
+	float angularInertia2 = 0;
+	float linearInertia2 = 0;
 
 	//inertia for body 2
 	if (body2->type != Primitive::Type::PLANE)
@@ -132,8 +126,8 @@ void Contact::ResolveContactPenetration()
 	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia);
 	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
 	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
-	ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.Magnitude());
-	ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.Magnitude());
+	//ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.Magnitude() * 2.0f);
+	//ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.Magnitude() * 2.0f);
 
 	//Applying angular resolution
 	// 1. Calculate the rotation needed to move contact point by one unit
@@ -160,7 +154,7 @@ void Contact::ResolveContactPenetration()
 
 	if (linearMove1 > 0.001f)
 	{
-		body1->translation += normal * linearMove1;
+		body1->translation += normal * linearMove1 * 2.0;
 	}
 	if (angularChange[0].Magnitude() > 0.001f)
 	{
@@ -171,7 +165,7 @@ void Contact::ResolveContactPenetration()
 	}
 	if (linearMove2 > 0.001f)
 	{
-		body2->translation += normal * linearMove2;
+		body2->translation += normal * linearMove2 * 2.0;
 	}
 	if (angularChange[1].Magnitude() > 0.001f)
 	{
@@ -181,7 +175,7 @@ void Contact::ResolveContactPenetration()
 		body2->SetOrientation(q);
 	}
 
-	if (body1->rigidbody.isAwake)
+	/*if (body1->rigidbody.isAwake)
 	{
 		body1->orientation.Normalise();
 		body1->UpdateTransform();
@@ -190,7 +184,7 @@ void Contact::ResolveContactPenetration()
 	{
 		body2->orientation.Normalise();
 		body2->UpdateTransform();
-	}
+	}*/
 }
 
 void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float objMag)
@@ -250,11 +244,10 @@ Vector3 Contact::FrictionlessImpulse()
 		Mathe::Transform(deltaVelocity_W, body2->rigidbody.inverseInertiaTensorWorld);
 		deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos2);
 
-		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(normal);
-		deltaSpeed += body2->rigidbody.inverseMass;
+		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(normal) + body2->rigidbody.inverseMass;
 	}
 
-	return Vector3((double)(desiredDeltaVelocty / deltaSpeed), 0.0, 0.0);
+	return Vector3((double)desiredDeltaVelocty / (double)deltaSpeed, 0.0, 0.0);
 }
 
 Vector3 Contact::FrictionImpulse()

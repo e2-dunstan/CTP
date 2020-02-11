@@ -16,7 +16,7 @@ void Mathe::Transform(Vector3& vector, Matrix& matrix4x4)
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
 
-Vector3 Mathe::matrixInverse(Matrix& m, Vector3& v)
+Vector3 Mathe::MatrixInverse(Matrix& m, Vector3& v)
 {
 	Matrix transp = m;
 	Vector3 vec = v;

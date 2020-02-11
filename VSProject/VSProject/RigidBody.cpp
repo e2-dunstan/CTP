@@ -90,12 +90,12 @@ void RigidBody::AddImpulse(Vector3 dir, double force)
 
 void RigidBody::AddVelocityChange(const Vector3& velChange)
 {
-	velocity += velChange;// *Global::deltaTime;
+	velocity += velChange;// *Global::deltaTime* Global::deltaTime;
 }
 
 void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
-	angularVelocity += rotChange;// *Global::deltaTime;
+	angularVelocity += rotChange;// *Global::deltaTime* Global::deltaTime;
 }
 
 void RigidBody::SetTerminalSpeed()

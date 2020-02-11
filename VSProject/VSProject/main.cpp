@@ -164,7 +164,7 @@ void timer(int)
 
 	engine->Update();
 	//60 fps
-	glutTimerFunc(1000 / 60, timer, 0);
+	glutTimerFunc(1000 / 120, timer, 0);
 }
 
 
