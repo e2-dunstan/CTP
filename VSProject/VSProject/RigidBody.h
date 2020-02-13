@@ -16,7 +16,7 @@ struct RigidBody
 	Vector3 torqueAccumulation = Vector3();
 
 	//Inverse is used to avoid division by 0
-	float inverseMass = 1.0f / 1.0f;
+	float inverseMass = 1.0f / 0.1f;
 	const float linearDrag = 0.75f;
 	const float angularDrag = 0.01f;// 1f; //between 0-1
 	float friction = 0.0f;

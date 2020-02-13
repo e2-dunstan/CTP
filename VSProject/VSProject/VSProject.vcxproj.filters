@@ -129,9 +129,6 @@
     <ClCompile Include="RayCast.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionFine2.cpp">
-      <Filter>Source Files\Collision</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Matrix.h">
@@ -210,9 +207,6 @@
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="SeparatingAxisTheorem.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionFine2.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
   </ItemGroup>

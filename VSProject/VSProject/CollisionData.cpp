@@ -60,7 +60,7 @@ void Contact::CalculateClosingVelocities()
 	//Body 1
 	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
-	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
+	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime * Global::deltaTime;
 	Mathe::Transform(prevVelocity1, worldToContact);
 
 	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
@@ -70,7 +70,7 @@ void Contact::CalculateClosingVelocities()
 	{
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
-		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
+		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime * Global::deltaTime;
 		Mathe::Transform(prevVelocity2, worldToContact);
 		prevVelocity2.x = 0; 
 
@@ -126,8 +126,8 @@ void Contact::ResolveContactPenetration()
 	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia);
 	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
 	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
-	//ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.Magnitude() * 2.0f);
-	//ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.Magnitude() * 2.0f);
+	ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.Magnitude() * 2.0f);
+	ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.Magnitude() * 2.0f);
 
 	//Applying angular resolution
 	// 1. Calculate the rotation needed to move contact point by one unit
@@ -175,21 +175,21 @@ void Contact::ResolveContactPenetration()
 		body2->SetOrientation(q);
 	}
 
-	/*if (body1->rigidbody.isAwake)
+	if (body1->rigidbody.isAwake)
 	{
 		body1->orientation.Normalise();
 		body1->UpdateTransform();
 	}
-	else if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
+	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
 	{
 		body2->orientation.Normalise();
 		body2->UpdateTransform();
-	}*/
+	}
 }
 
 void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float objMag)
 {
-	float angularLimit = 0.2f * objMag;
+	float angularLimit = 1.0f * objMag;
 	if (abs(angular) > angularLimit)
 	{
 		float total = linear + angular;
@@ -266,12 +266,4 @@ void Contact::MatchRigidbodyAwakeStates()
 		if (b1Awake) body2->rigidbody.SetAwake(true);
 		else body1->rigidbody.SetAwake(true);
 	}
-
-	//if ((body1->rigidbody.isAwake && !body2->rigidbody.isAwake)
-	//	|| (body1->rigidbody.isAwake && !body2->rigidbody.isAwake))
-	//{
-	//	body2->rigidbody.SetAwake(true);
-	//}
-	//else /*if (!body1->rigidbody.isAwake && body2->rigidbody.isAwake)*/
-	//	body1->rigidbody.SetAwake(false);
 }

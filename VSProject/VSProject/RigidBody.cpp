@@ -3,6 +3,7 @@
 void RigidBody::Start()
 {
 	//AddImpulse(Vector3(1, 0, 0), 0.5);
+	//acceleration *= Global::deltaTime;
 	SetAwake(true);
 }
 
@@ -85,23 +86,23 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 
 void RigidBody::AddImpulse(Vector3 dir, double force)
 {
-	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * 2.0 * force;
+	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * force * Global::deltaTime;
 }
 
 void RigidBody::AddVelocityChange(const Vector3& velChange)
 {
-	velocity += velChange;// *Global::deltaTime* Global::deltaTime;
+	velocity += velChange * Global::deltaTime;
 }
 
 void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
-	angularVelocity += rotChange;// *Global::deltaTime* Global::deltaTime;
+	angularVelocity += rotChange * Global::deltaTime;
 }
 
 void RigidBody::SetTerminalSpeed()
 {
 	//Approximation assuming area = 1, which it is not.
-	terminalSpeed = sqrt((Global::gravityMag * 2) / (inverseMass * Global::airDensity * linearDrag));
+	terminalSpeed = sqrt((Global::gravityMag) / (inverseMass * Global::airDensity * linearDrag));
 }
 
 void RigidBody::SetAwake(const bool awake)
