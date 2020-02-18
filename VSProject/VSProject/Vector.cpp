@@ -19,7 +19,11 @@ double Vector3::Magnitude()
 Vector3 Vector3::Normalise()
 {
 	double mag = Magnitude();
-	return Vector3(x / mag, y / mag, z / mag);
+	Vector3 norm = Vector3(x / mag, y / mag, z / mag);
+	if (abs(norm.x) < 0.0001) norm.x = 0;
+	if (abs(norm.y) < 0.0001) norm.y = 0;
+	if (abs(norm.z) < 0.0001) norm.z = 0;
+	return norm;
 }
 
 Vector3 Vector3::Inverse()
@@ -60,6 +64,11 @@ Vector3 Vector3::VectorProduct(const Vector3& vec) const
 	double _z = (x * vec.y) - (y * vec.x);
 
 	return Vector3(_x, _y, _z);
+}
+
+double Vector3::SumComponents() const
+{
+	return x + y + z;
 }
 
 double& Vector3::operator[](const int i)
@@ -171,6 +180,17 @@ bool Vector3::operator==(const Vector3& vec)
 bool Vector3::operator!=(const Vector3& vec)
 {
 	if (x != vec.x || y != vec.y || z != vec.z)
+		return true;
+	else
+		return false;
+}
+
+bool Vector3::IsRoughlyEqualTo(const Vector3& vec)
+{
+	const double threshold = 0.01f;
+	if (abs(x - vec.x) < threshold
+		&& abs(y - vec.y) < threshold
+		&& abs(z - vec.z) < threshold)
 		return true;
 	else
 		return false;

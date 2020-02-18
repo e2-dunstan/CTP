@@ -7,8 +7,8 @@ void Engine::Init()
 
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
-	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 5, 10), Vector3(0, 0, 0));
-	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(-3, 50, 10), Vector3(10, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 10, 10), Vector3(0, 90, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 15, 10), Vector3(40, 0, 30));
 	//primitiveManager->Create(Primitive::Type::BOX, Vector3(3, 1, 3), Vector3(1, 5, 0), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 10, 0));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
@@ -59,7 +59,7 @@ void Engine::SpawnSphere()
 {
 	srand(time(NULL));
 
-	double radius = ((double)(rand() % 10) + 1.0) / 2.0;
+	float radius = ((rand() % 10) + 1.0f) / 2.0f;
 	Vector3 pos(((double)(rand() % 20) + radius), ((double)(rand() % 20) + radius), ((double)(rand() % 20) + radius));
 
 	std::string sphere = "Spawning SPHERE with position (";

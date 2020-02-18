@@ -27,13 +27,13 @@ public:
 	float length = 0;
 	//Box
 	Vector3 halfSize;
-	std::vector<Vector3> vertices;
+	Vector3 vertices[8] = { Vector3() };
 	Quaternion orientation;
-	std::vector<Vector3> normals;
+	Vector3 normals[6] = { Vector3() };
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);
 
-	Matrix axisMat = Matrix(4,4);
+	Matrix axisMat = Matrix();
 
 private:
 

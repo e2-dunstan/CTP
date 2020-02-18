@@ -28,6 +28,8 @@ struct Vector3
 	double ScalarProduct(const Vector3& vec) const;
 	Vector3 VectorProduct(const Vector3& vec) const;
 
+	double SumComponents() const;
+
 	// -- INDEX GETTER/SETTER -- //
 	double& operator[](const int i);
 	const double& operator[](const int i) const;
@@ -60,6 +62,7 @@ struct Vector3
 	// -- COMPARISON -- //
 	bool operator==(const Vector3& vec);
 	bool operator!=(const Vector3& vec);
+	bool IsRoughlyEqualTo(const Vector3& vec);
 
 	void DebugOutput();
 };

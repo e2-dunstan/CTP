@@ -17,15 +17,15 @@ struct RigidBody
 
 	//Inverse is used to avoid division by 0
 	float inverseMass = 1.0f / 0.1f;
-	const float linearDrag = 0.75f;
-	const float angularDrag = 0.01f;// 1f; //between 0-1
+	const float linearDrag = 0.0f;
+	const float angularDrag = 0.0f;// 1f; //between 0-1
 	float friction = 0.0f;
 
 	bool isKinematic = false;
 	bool useGravity = true;
 
-	Matrix inverseInertiaTensor = Matrix(4,4);
-	Matrix inverseInertiaTensorWorld = Matrix(4,4);
+	Matrix inverseInertiaTensor = Matrix();
+	Matrix inverseInertiaTensorWorld = Matrix();
 
 	void Start(); //not called
 	bool PhysicsUpdate();
@@ -53,9 +53,9 @@ private:
 
 	double motion = 0;
 	double timeMotionBelowSleepThreshold = 0;
-	double timeToSleep = 3.0;
+	double timeToSleep = 1.0;
 
 	double terminalSpeed = 10000;
 
-	const double sleepThreshold = 1.0;
+	const double sleepThreshold = 30.0;
 };

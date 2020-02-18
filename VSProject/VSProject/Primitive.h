@@ -29,7 +29,7 @@ struct Primitive
 	//Vector3 rotation = Vector3();
 	Quaternion orientation = Quaternion();
 	Vector3 scale = Vector3();
-	Matrix transform = Matrix(4, 4);
+	Matrix transform = Matrix();
 	void UpdateTransform();
 	bool updateTransform = false;
 
@@ -51,7 +51,7 @@ struct Primitive
 
 	float radius = 0; //if sphere, capsule or cylinder
 	Vector3 upDir = Vector3(0, 1, 0); //if capsule or cylinder
-	Matrix upDirMat = Matrix(4, 4); //if cylinder
+	Matrix upDirMat = Matrix(); //if cylinder
 
 	void Tween(float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
@@ -66,4 +66,6 @@ struct Primitive
 private:
 	Vector3 previousPosition = Vector3();
 	GLenum GetDrawType(Primitive::Type objectType);
+
+	bool debugCollision = false;
 };

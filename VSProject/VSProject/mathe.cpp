@@ -4,14 +4,26 @@
 
 //https://www.slideshare.net/DelwarHossain8/3d-transformation-computer-graphics
 
-void Mathe::Transform(Vector3& vector, Matrix& matrix4x4)
+void Mathe::Transform(Vector3& vector, Matrix& matrix)
 {
 	Matrix vectorToMatrix = Matrix(4, 1);
 	vectorToMatrix(0, 0) = vector.x;
 	vectorToMatrix(1, 0) = vector.y;
 	vectorToMatrix(2, 0) = vector.z;
 	vectorToMatrix(3, 0) = 1;
-	Matrix multiplied = matrix4x4 * vectorToMatrix;
+	Matrix multiplied = matrix * vectorToMatrix;
+
+	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
+}
+
+void Mathe::TransformTranspose(Vector3& vector, Matrix& matrix)
+{
+	Matrix vectorToMatrix = Matrix(4, 1);
+	vectorToMatrix(0, 0) = vector.x;
+	vectorToMatrix(1, 0) = vector.y;
+	vectorToMatrix(2, 0) = vector.z;
+	vectorToMatrix(3, 0) = 1;
+	Matrix multiplied = matrix.Transpose() * vectorToMatrix;
 
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
@@ -43,6 +55,7 @@ Vector3 Mathe::MatrixInverse(Matrix& m, Vector3& v)
 void Mathe::Translate(Matrix& m, double x, double y, double z)
 {
 	Matrix translation = Matrix(4, 4);
+
 	translation(0, 3) = x;
 	translation(1, 3) = y;
 	translation(2, 3) = z;
@@ -93,6 +106,7 @@ void Mathe::Rotate(Matrix& m, const Quaternion& q)
 void Mathe::Scale(Matrix& m, double x, double y, double z)
 {
 	Matrix scale = Matrix(4, 4);
+
 	scale(0, 0) = x;
 	scale(1, 1) = y;
 	scale(2, 2) = z;
@@ -100,20 +114,25 @@ void Mathe::Scale(Matrix& m, double x, double y, double z)
 	m = m * scale;
 }
 
-Vector3 Mathe::GetAxis(unsigned i, Matrix mat)
+Vector3 Mathe::GetAxis(unsigned i, Matrix& mat)
 {
-	return Vector3(mat(i, 0), mat(i, 1), mat(i, 2));
+	return Vector3(mat.matrix[i], mat.matrix[i + 4], mat.matrix[i + 8]);
+	//return Vector3(mat(i, 0), mat(i, 1), mat(i, 2));
 }
 
 Quaternion Mathe::VectorToQuaternion(const Vector3& v)
 {
+	double x = ToRadians(v.x);
+	double y = ToRadians(v.y);
+	double z = ToRadians(v.z);
+
 	// yaw = z, pitch = y, roll = x
-	double cy = cos(v.z * 0.5);
-	double sy = sin(v.z * 0.5);
-	double cp = cos(v.y * 0.5);
-	double sp = sin(v.y * 0.5);
-	double cr = cos(v.x * 0.5);
-	double sr = sin(v.x * 0.5);
+	double cy = cos(z * 0.5);
+	double cp = cos(y * 0.5);
+	double cr = cos(x * 0.5);
+	double sy = sin(z * 0.5);
+	double sp = sin(y * 0.5);
+	double sr = sin(x * 0.5);
 
 	Quaternion q;    
 	q.r = cy * cp * cr + sy * sp * sr;
@@ -139,77 +158,75 @@ void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& ten
 	//treating rot as a Mat4 and tensor mats as Mat3
 
 	double t4 = rot.Get(0) * tensorLocal.Get(0)
-		+ rot.Get(1) * tensorLocal.Get(4)
-		+ rot.Get(2) * tensorLocal.Get(8);
+		+ rot.Get(1) * tensorLocal.Get(3)
+		+ rot.Get(2) * tensorLocal.Get(6);
 	double t9 = rot.Get(0) * tensorLocal.Get(1)
-		+ rot.Get(1) * tensorLocal.Get(5)
-		+ rot.Get(2) * tensorLocal.Get(9);
+		+ rot.Get(1) * tensorLocal.Get(4)
+		+ rot.Get(2) * tensorLocal.Get(7);
 	double t14 = rot.Get(0) * tensorLocal.Get(2)
-		+ rot.Get(1) * tensorLocal.Get(6)
-		+ rot.Get(2) * tensorLocal.Get(10);
+		+ rot.Get(1) * tensorLocal.Get(5)
+		+ rot.Get(2) * tensorLocal.Get(8);
 
 	double t28 = rot.Get(4) * tensorLocal.Get(0)
-		+ rot.Get(5) * tensorLocal.Get(4)
-		+ rot.Get(6) * tensorLocal.Get(8);
+		+ rot.Get(5) * tensorLocal.Get(3)
+		+ rot.Get(6) * tensorLocal.Get(6);
 	double t33 = rot.Get(4) * tensorLocal.Get(1)
-		+ rot.Get(5) * tensorLocal.Get(5)
-		+ rot.Get(6) * tensorLocal.Get(9);
+		+ rot.Get(5) * tensorLocal.Get(4)
+		+ rot.Get(6) * tensorLocal.Get(7);
 	double t38 = rot.Get(4) * tensorLocal.Get(2)
-		+ rot.Get(5) * tensorLocal.Get(6)
-		+ rot.Get(6) * tensorLocal.Get(10);
+		+ rot.Get(5) * tensorLocal.Get(5)
+		+ rot.Get(6) * tensorLocal.Get(8);
 
 	double t52 = rot.Get(8) * tensorLocal.Get(0)
-		+ rot.Get(9) * tensorLocal.Get(4)
-		+ rot.Get(10) * tensorLocal.Get(8);
+		+ rot.Get(9) * tensorLocal.Get(3)
+		+ rot.Get(10) * tensorLocal.Get(6);
 	double t57 = rot.Get(8) * tensorLocal.Get(1)
-		+ rot.Get(9) * tensorLocal.Get(5)
-		+ rot.Get(10) * tensorLocal.Get(9);
+		+ rot.Get(9) * tensorLocal.Get(4)
+		+ rot.Get(10) * tensorLocal.Get(7);
 	double t62 = rot.Get(8) * tensorLocal.Get(2)
-		+ rot.Get(9) * tensorLocal.Get(6)
-		+ rot.Get(10) * tensorLocal.Get(10);
+		+ rot.Get(9) * tensorLocal.Get(5)
+		+ rot.Get(10) * tensorLocal.Get(8);
 
+	tensorWorld.Identity();
 
-	tensorWorld.matrix4x4[0] =
+	tensorWorld.matrix[0] =
 		t4 * rot.Get(0)
 		+ t9 * rot.Get(1)
 		+ t14 * rot.Get(2);
-	tensorWorld.matrix4x4[1] = 
+	tensorWorld.matrix[1] = 
 		t4 * rot.Get(4)
 		+ t9 * rot.Get(5)
 		+ t14 * rot.Get(6);
-	tensorWorld.matrix4x4[2] = 
+	tensorWorld.matrix[2] = 
 		t4 * rot.Get(8)
 		+ t9 * rot.Get(9)
 		+ t14 * rot.Get(10);
-	tensorWorld.matrix4x4[3] = 0;
 
-	tensorWorld.matrix4x4[4] = 
+	tensorWorld.matrix[4] = 
 		t28 * rot.Get(0)
 		+ t33 * rot.Get(1)
 		+ t38 * rot.Get(2);
-	tensorWorld.matrix4x4[5] =
+	tensorWorld.matrix[5] =
 		t28 * rot.Get(4)
 		+ t33 * rot.Get(5)
 		+ t38 * rot.Get(6);
-	tensorWorld.matrix4x4[6] =
+	tensorWorld.matrix[6] =
 		t28 * rot.Get(8)
 		+ t33 * rot.Get(9)
 		+ t38 * rot.Get(10);
-	tensorWorld.matrix4x4[7] = 0;
 
-	tensorWorld.matrix4x4[8] =
+	tensorWorld.matrix[8] =
 		t52 * rot.Get(0)
 		+ t57 * rot.Get(1)
 		+ t62 * rot.Get(2);
-	tensorWorld.matrix4x4[9] =
+	tensorWorld.matrix[9] =
 		t52 * rot.Get(4)
 		+ t57 * rot.Get(5)
 		+ t62 * rot.Get(6);
-	tensorWorld.matrix4x4[10] =
+	tensorWorld.matrix[10] =
 		t52 * rot.Get(8)
 		+ t57 * rot.Get(9)
 		+ t62 * rot.Get(10);
-	tensorWorld.matrix4x4[11] = 0;
 }
 
 std::array<float, 2> Mathe::SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots)
@@ -224,5 +241,15 @@ std::array<float, 2> Mathe::SolveQuadraticFormula(float a, float b, float c, boo
 	}
 
 	return x;
+}
+
+double Mathe::ToRadians(const double deg)
+{
+	return deg * PI / 180.0;
+}
+
+double Mathe::ToDegrees(const double rad)
+{
+	return rad * 180.0 / PI;
 }
 

@@ -39,10 +39,9 @@ void Primitive::Draw()
 		//For future shader use.
 		//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
 		//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
-		if (colliding)
+		if (colliding && debugCollision)
 		{
-			//glColor3f(1, 0, 0);
-			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			glColor3f(1, 0, 0);
 		}
 		else
 		{
@@ -96,8 +95,9 @@ void Primitive::CalculateInertiaTensor()
 		return;
 	}
 
+	rigidbody.inverseInertiaTensor.Identity();
 	rigidbody.inverseInertiaTensor = Matrix(matVals);
-	rigidbody.inverseInertiaTensor.Inverse4x4();
+	rigidbody.inverseInertiaTensor.Inverse3x3();
 }
 
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
@@ -169,7 +169,7 @@ Quaternion Primitive::GetOrientation() const
 
 void Primitive::GetOrientation(Matrix* _matrix) const
 {
-	GetOrientation(_matrix->matrix4x4);
+	GetOrientation(_matrix->matrix);
 }
 
 void Primitive::GetOrientation(double _matrix[16]) const

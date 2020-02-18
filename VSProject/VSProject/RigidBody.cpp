@@ -76,10 +76,10 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 				SetAwake(false);
 			}
 		}
-		else if (motion > sleepThreshold * 10.0)
+		else if (motion > sleepThreshold * 2.0)
 		{
 			timeMotionBelowSleepThreshold = 0;
-			motion = sleepThreshold * 10.0;
+			motion = sleepThreshold * 2.0;
 		}
 	}
 }

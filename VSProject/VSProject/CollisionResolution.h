@@ -23,8 +23,8 @@ private:
 	void ApplyAngularMoveLimit(float& linear, float& angular, const float objMag);
 
 	//Transforms
-	Matrix contactToWorld = Matrix(4,4);
-	Matrix worldToContact = Matrix(4,4);
+	Matrix contactToWorld = Matrix();
+	Matrix worldToContact = Matrix();
 
 	Vector3 relContactPos1 = Vector3();
 	Vector3 relContactPos2 = Vector3();

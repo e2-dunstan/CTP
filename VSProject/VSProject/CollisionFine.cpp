@@ -169,10 +169,12 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3& sph
 
 double CollisionFine::PositionOnAxis(const Primitive* box, const Vector3& axis)
 {
+	Matrix axisMat = box->collisionVolume.axisMat;
+
 	return
-		box->collisionVolume.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, box->collisionVolume.axisMat)))
-		+ box->collisionVolume.halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, box->collisionVolume.axisMat)))
-		+ box->collisionVolume.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, box->collisionVolume.axisMat)));
+		box->collisionVolume.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))
+		+ box->collisionVolume.halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, axisMat)))
+		+ box->collisionVolume.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
 }
 
 //bool CollisionFine::BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, 
@@ -376,7 +378,7 @@ double CollisionFine::PositionOnAxis(const Primitive* box, const Vector3& axis)
 
 void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3& planePosition, const Vector3& normal)
 {
-	float boxDistance = (float)(normal * box->collisionVolume.centre).Magnitude() - PositionOnAxis(box, normal);
+	float boxDistance = (float)(normal * box->collisionVolume.centre).Magnitude() - (float)PositionOnAxis(box, normal);
 	float planeOffset = (float)planePosition.ScalarProduct(normal);
 
 	if (boxDistance > planeOffset) return;
@@ -397,7 +399,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 			contact.point *= distance - (float)(planePosition * normal).Magnitude();
 			contact.point += box->collisionVolume.vertices[v];
 			contact.normal = normal;
-			contact.penetrationDepth = (float)abs((planePosition * normal).Magnitude() - distance) / 2.0f;
+			contact.penetrationDepth = (float)abs((planePosition * normal).Magnitude() - distance);// / 2.0f;
 			boxPlaneContacts.push_back(contact);
 			//boxPlaneContacts[numContacts] = contact;
 			//contacts.push_back(contact);
@@ -428,8 +430,8 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 		mergedContact.point += boxPlaneContacts[i].point;
 		mergedContact.penetrationDepth += boxPlaneContacts[i].penetrationDepth;
 	}
-	mergedContact.point /= numContacts;
-	mergedContact.penetrationDepth /= numContacts;
+	mergedContact.point /= (float)numContacts;
+	mergedContact.penetrationDepth /= (float)numContacts;
 	contacts.push_back(mergedContact);
 
 	/*if (vecSize == 0) return;

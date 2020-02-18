@@ -29,18 +29,18 @@ bool RayCast::TestPlane(const Vector3& centre, const Vector3& normal, const Vect
 	//Vector3 lineAB = B - ray.origin;
 	//Simplified: 
 	Vector3 lineAB = ray.direction * maxRayLength;
-	float planePos = centre.ScalarProduct(normal);
+	double planePos = centre.ScalarProduct(normal);
 
-	float divisor = normal.ScalarProduct(lineAB);
+	double divisor = normal.ScalarProduct(lineAB);
 	if (divisor == 0) return false;
 	
-	float distAlongLine = (planePos - normal.ScalarProduct(ray.origin)) / divisor;
+	double distAlongLine = (planePos - normal.ScalarProduct(ray.origin)) / divisor;
 	if (distAlongLine >= 0 && distAlongLine <= 1)
 	{
 		//ray.origin + (intersection * direction) = ray.origin + (distAlongLine * lineAB)
 		//intersection * direction = distAlongLine * lineAB
 		//intersection * direction = distAlongLine * direction * maxRayLength, therefore...
-		ray.intersection1 = distAlongLine * maxRayLength;
+		ray.intersection1 = (float)distAlongLine * maxRayLength;
 		return true;
 	}
 	else return false;
@@ -49,23 +49,23 @@ bool RayCast::TestPlane(const Vector3& centre, const Vector3& normal, const Vect
 bool RayCast::TestSphere(const Vector3& centre, const float radius, Ray& ray)
 {
 	Vector3 m = ray.origin - centre;
-	float b = 2 * (m.ScalarProduct(ray.direction));
+	float b = 2.0f * (float)(m.ScalarProduct(ray.direction));
 	float c = (float)m.ScalarProduct(m) - (radius * radius);
 	
 	if (c > 0 && b > 0) return false;
 
-	float discriminant = (b * b) - (4 * c); //2b - 4ac
+	float discriminant = (b * b) - (4.0f * c); //2b - 4ac
 
 	if (discriminant < 0) return false; //no intersection
 	else if (discriminant == 0) //one intersection
 	{
-		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1, b, c, false);
+		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1.0f, b, c, false);
 		ray.intersection1 = i[0];
 		return true;
 	}
 	else //two intersections
 	{
-		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1, b, c, true);
+		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1.0f, b, c, true);
 		ray.intersection1 = i[0];
 		ray.intersection2 = i[1];
 		return true;

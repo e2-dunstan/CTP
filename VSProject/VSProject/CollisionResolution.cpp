@@ -172,9 +172,9 @@ Matrix CollisionResolution::CalculateContactBasis(const Contact& contact)
 		contactTangents[1].y = -contact.normal.x * contact.normal.z;
 		contactTangents[1].z = contact.normal.x * contactTangents[0].y;
 	}
-	double matVals[16] = { contact.normal.x, contactTangents[0].x, contactTangents[1].x, 0,
-					contact.normal.y, contactTangents[0].y, contactTangents[1].y, 0,
-					contact.normal.z, contactTangents[0].z, contactTangents[1].z, 0 };
+	double matVals[9] = { contact.normal.x, contactTangents[0].x, contactTangents[1].x,
+					contact.normal.y, contactTangents[0].y, contactTangents[1].y,
+					contact.normal.z, contactTangents[0].z, contactTangents[1].z };
 
 	return Matrix(matVals);
 }

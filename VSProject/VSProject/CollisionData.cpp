@@ -49,7 +49,7 @@ void Contact::CalculateContactBasisMatrices()
 	double matVals[16] = { normal.x, contactTangents[0].x, contactTangents[1].x, 0,
 					normal.y, contactTangents[0].y, contactTangents[1].y, 0,
 					normal.z, contactTangents[0].z, contactTangents[1].z, 0,
-					0, 0, 0, 0};
+					0, 0, 0, 1};
 
 	contactToWorld = Matrix(matVals);
 	worldToContact = contactToWorld.Transpose();
@@ -57,10 +57,12 @@ void Contact::CalculateContactBasisMatrices()
 
 void Contact::CalculateClosingVelocities()
 {
+	//Matrix wtc = worldToContact.Resize();
+
 	//Body 1
 	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
-	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime * Global::deltaTime;
+	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime;// *Global::deltaTime;
 	Mathe::Transform(prevVelocity1, worldToContact);
 
 	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
@@ -70,7 +72,7 @@ void Contact::CalculateClosingVelocities()
 	{
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
-		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime * Global::deltaTime;
+		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime;// *Global::deltaTime;
 		Mathe::Transform(prevVelocity2, worldToContact);
 		prevVelocity2.x = 0; 
 
@@ -177,19 +179,19 @@ void Contact::ResolveContactPenetration()
 
 	if (body1->rigidbody.isAwake)
 	{
-		body1->orientation.Normalise();
+		//body1->orientation.Normalise();
 		body1->UpdateTransform();
 	}
 	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
 	{
-		body2->orientation.Normalise();
+		//body2->orientation.Normalise();
 		body2->UpdateTransform();
 	}
 }
 
 void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float objMag)
 {
-	float angularLimit = 1.0f * objMag;
+	float angularLimit = 5.0f * objMag;
 	if (abs(angular) > angularLimit)
 	{
 		float total = linear + angular;

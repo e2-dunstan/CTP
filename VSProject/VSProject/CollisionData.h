@@ -46,8 +46,8 @@ protected:
 
 	void MatchRigidbodyAwakeStates();
 
-	Matrix contactToWorld = Matrix(4,4);
-	Matrix worldToContact = Matrix(4,4);
+	Matrix contactToWorld = Matrix();
+	Matrix worldToContact = Matrix();
 
 	Vector3 closingVelocity = Vector3();
 

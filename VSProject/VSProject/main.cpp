@@ -9,18 +9,11 @@
 // [~] capsules collision detection
 // [~] cylinders collision detection
 // [ ] convex hulls collision detection
-// [ ] impulse based response - boxes
+// [X] impulse based response - boxes
 
 
 // week before deadline dev time is over
 // week before that, make it pretty
-//9 weeks left (6 for physics)
-//2 weeks max for path tracer
-//dont worry about spatial stuff now
-//for monday: 
-// - ray intersections with objects centred and oriented at the origin and give ray the transform of the obj
-// - reimplement physics in my own code (ish)
-// - fix contact generation SAT
 
 
 namespace
