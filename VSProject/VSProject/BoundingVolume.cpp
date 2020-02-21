@@ -11,17 +11,19 @@ void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix& _tra
 	min = Vector3(10000, 10000, 10000);
 	max = Vector3(-10000, -10000, -10000);
 
-	for (auto v : _vertices)
+	Vector3 vert = Vector3();
+	for (unsigned v = 0; v < _vertices.size(); v++)
 	{
-		Mathe::Transform(v.position, _transform);
+		vert = _vertices[v].position;
+		Mathe::Transform(vert, _transform);
 			
-		if (v.position.x < min.x) min.x = v.position.x;
-		if (v.position.x > max.x) max.x = v.position.x;
-		if (v.position.y < min.y) min.y = v.position.y;
-		if (v.position.y > max.y) max.y = v.position.y;
-		if (v.position.z < min.z) min.z = v.position.z;
-		if (v.position.z > max.z) max.z = v.position.z;
-	}
+		if (vert.x < min.x) min.x = vert.x;
+		if (vert.x > max.x) max.x = vert.x;
+		if (vert.y < min.y) min.y = vert.y;
+		if (vert.y > max.y) max.y = vert.y;
+		if (vert.z < min.z) min.z = vert.z;
+		if (vert.z > max.z) max.z = vert.z;
+	}												 
 
 	halfSize = Vector3((max.x - min.x) / 2,
 					   (max.y - min.y) / 2,

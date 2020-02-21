@@ -1,5 +1,4 @@
 #pragma once
-
 #include <GL\glew.h>
 #include <GL\freeglut.h>
 #include <stdio.h>
@@ -28,11 +27,13 @@ struct Vertex
 {
 	Vector3 position = Vector3();
 	Vector3 normal = Vector3();
-	Colour colour;
+	Colour colour = Colour(1, 1, 1);
 
 	//Vertex constructor.
+	Vertex() = default;
 	Vertex(double _x, double _y, double _z, Colour _c, Vector3 _n)
 		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b), normal(_n) {}
+	~Vertex() = default;
 };
 
 namespace Colours

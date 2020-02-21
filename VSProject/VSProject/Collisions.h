@@ -16,7 +16,6 @@ public:
 	void DetectCoarse(Primitive* prim1, Primitive* prim2);
 	void DetectFine();
 	void Resolution();
-	//void Response(RigidBody* rb);
 
 private:
 

@@ -23,7 +23,7 @@ public:
 	void Draw();
 	void Update();
 
-	std::vector<Primitive> GetPrimitives();
+	std::vector<Primitive>& GetPrimitives();
 	//std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
 
 private:

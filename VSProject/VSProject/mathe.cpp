@@ -2,10 +2,10 @@
 
 #define PI 3.14159265
 
-//https://www.slideshare.net/DelwarHossain8/3d-transformation-computer-graphics
-
 void Mathe::Transform(Vector3& vector, Matrix& matrix)
 {
+	if (IsVectorNAN(vector)) return;
+
 	Matrix vectorToMatrix = Matrix(4, 1);
 	vectorToMatrix(0, 0) = vector.x;
 	vectorToMatrix(1, 0) = vector.y;
@@ -67,22 +67,22 @@ void Mathe::Translate(Matrix& m, double x, double y, double z)
 void Mathe::Rotate(Matrix& m, double x, double y, double z)
 {
 	Matrix xMatrix = Matrix(4, 4);
-	xMatrix(1, 1) = cos(x == 0 ? 0 : x * PI / 180.0);
-	xMatrix(1, 2) = -sin(x == 0 ? 0 : x * PI / 180.0);
-	xMatrix(2, 1) = sin(x == 0 ? 0 : x * PI / 180.0);
-	xMatrix(2, 2) = cos(x == 0 ? 0 : x * PI / 180.0);
+	xMatrix(1, 1) = cos(x == 0 ? 0 : ToRadians(x));
+	xMatrix(1, 2) = -sin(x == 0 ? 0 : ToRadians(x));
+	xMatrix(2, 1) = sin(x == 0 ? 0 : ToRadians(x));
+	xMatrix(2, 2) = cos(x == 0 ? 0 : ToRadians(x));
 
 	Matrix yMatrix = Matrix(4, 4);
-	yMatrix(0, 0) = cos(y == 0 ? 0 : y * PI / 180.0);
-	yMatrix(0, 2) = sin(y == 0 ? 0 : y * PI / 180.0);
-	yMatrix(2, 0) = -sin(y == 0 ? 0 : y * PI / 180.0);
-	yMatrix(2, 2) = cos(y == 0 ? 0 : y * PI / 180.0);
+	yMatrix(0, 0) = cos(y == 0 ? 0 : ToRadians(y));
+	yMatrix(0, 2) = sin(y == 0 ? 0 : ToRadians(y));
+	yMatrix(2, 0) = -sin(y == 0 ? 0 : ToRadians(y));
+	yMatrix(2, 2) = cos(y == 0 ? 0 : ToRadians(y));
 
 	Matrix zMatrix = Matrix(4, 4);
-	zMatrix(0, 0) = cos(z == 0 ? 0 : z * PI / 180.0);
-	zMatrix(1, 0) = -sin(z == 0 ? 0 : z * PI / 180.0);
-	zMatrix(0, 1) = sin(z == 0 ? 0 : z * PI / 180.0);
-	zMatrix(1, 1) = cos(z == 0 ? 0 : z * PI / 180.0);
+	zMatrix(0, 0) = cos(z == 0 ? 0 : ToRadians(z));
+	zMatrix(1, 0) = -sin(z == 0 ? 0 : ToRadians(z));
+	zMatrix(0, 1) = sin(z == 0 ? 0 : ToRadians(z));
+	zMatrix(1, 1) = cos(z == 0 ? 0 : ToRadians(z));
 
 	Matrix rot = xMatrix * yMatrix * zMatrix;
 	m = m * rot;
@@ -116,8 +116,8 @@ void Mathe::Scale(Matrix& m, double x, double y, double z)
 
 Vector3 Mathe::GetAxis(unsigned i, Matrix& mat)
 {
-	return Vector3(mat.matrix[i], mat.matrix[i + 4], mat.matrix[i + 8]);
-	//return Vector3(mat(i, 0), mat(i, 1), mat(i, 2));
+	//return Vector3(mat.matrix[i], mat.matrix[i + 4], mat.matrix[i + 8]);
+	return Vector3(mat(0, i), mat(1, i), mat(2, i));
 }
 
 Quaternion Mathe::VectorToQuaternion(const Vector3& v)
@@ -158,34 +158,34 @@ void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& ten
 	//treating rot as a Mat4 and tensor mats as Mat3
 
 	double t4 = rot.Get(0) * tensorLocal.Get(0)
-		+ rot.Get(1) * tensorLocal.Get(3)
-		+ rot.Get(2) * tensorLocal.Get(6);
-	double t9 = rot.Get(0) * tensorLocal.Get(1)
 		+ rot.Get(1) * tensorLocal.Get(4)
-		+ rot.Get(2) * tensorLocal.Get(7);
-	double t14 = rot.Get(0) * tensorLocal.Get(2)
-		+ rot.Get(1) * tensorLocal.Get(5)
 		+ rot.Get(2) * tensorLocal.Get(8);
+	double t9 = rot.Get(0) * tensorLocal.Get(1)
+		+ rot.Get(1) * tensorLocal.Get(5)
+		+ rot.Get(2) * tensorLocal.Get(9);
+	double t14 = rot.Get(0) * tensorLocal.Get(2)
+		+ rot.Get(1) * tensorLocal.Get(6)
+		+ rot.Get(2) * tensorLocal.Get(10);
 
 	double t28 = rot.Get(4) * tensorLocal.Get(0)
-		+ rot.Get(5) * tensorLocal.Get(3)
-		+ rot.Get(6) * tensorLocal.Get(6);
-	double t33 = rot.Get(4) * tensorLocal.Get(1)
 		+ rot.Get(5) * tensorLocal.Get(4)
-		+ rot.Get(6) * tensorLocal.Get(7);
-	double t38 = rot.Get(4) * tensorLocal.Get(2)
-		+ rot.Get(5) * tensorLocal.Get(5)
 		+ rot.Get(6) * tensorLocal.Get(8);
+	double t33 = rot.Get(4) * tensorLocal.Get(1)
+		+ rot.Get(5) * tensorLocal.Get(5)
+		+ rot.Get(6) * tensorLocal.Get(9);
+	double t38 = rot.Get(4) * tensorLocal.Get(2)
+		+ rot.Get(5) * tensorLocal.Get(6)
+		+ rot.Get(6) * tensorLocal.Get(10);
 
 	double t52 = rot.Get(8) * tensorLocal.Get(0)
-		+ rot.Get(9) * tensorLocal.Get(3)
-		+ rot.Get(10) * tensorLocal.Get(6);
-	double t57 = rot.Get(8) * tensorLocal.Get(1)
 		+ rot.Get(9) * tensorLocal.Get(4)
-		+ rot.Get(10) * tensorLocal.Get(7);
-	double t62 = rot.Get(8) * tensorLocal.Get(2)
-		+ rot.Get(9) * tensorLocal.Get(5)
 		+ rot.Get(10) * tensorLocal.Get(8);
+	double t57 = rot.Get(8) * tensorLocal.Get(1)
+		+ rot.Get(9) * tensorLocal.Get(5)
+		+ rot.Get(10) * tensorLocal.Get(9);
+	double t62 = rot.Get(8) * tensorLocal.Get(2)
+		+ rot.Get(9) * tensorLocal.Get(6)
+		+ rot.Get(10) * tensorLocal.Get(10);
 
 	tensorWorld.Identity();
 
@@ -251,5 +251,11 @@ double Mathe::ToRadians(const double deg)
 double Mathe::ToDegrees(const double rad)
 {
 	return rad * 180.0 / PI;
+}
+
+bool Mathe::IsVectorNAN(const Vector3& v)
+{
+	if (isnan(v.x) || isnan(v.y) || isnan(v.z)) return true;
+	else return false;
 }
 

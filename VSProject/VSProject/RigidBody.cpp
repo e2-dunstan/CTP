@@ -24,9 +24,9 @@ bool RigidBody::PhysicsUpdate()
 
 	//Drag
 	if (linearDrag != 0)
-		velocity *= pow(linearDrag, Global::deltaTime);
+		velocity *= 1.0f - linearDrag * Global::deltaTime;//pow(1.0f - linearDrag, Global::deltaTime);
 	if (angularDrag != 0)
-		angularVelocity *= pow(angularDrag, Global::deltaTime);
+		angularVelocity *= 1.0f - linearDrag * Global::deltaTime;//pow(1.0f - angularDrag, Global::deltaTime);
 
 	return true;
 
@@ -67,6 +67,7 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 		double currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
 		double contingency = pow(0.5, Global::deltaTime);
 		motion = contingency * motion + (1 - contingency) * currentMotion;
+		//std::cout << motion << std::endl;
 		if (motion < sleepThreshold)
 		{
 			timeMotionBelowSleepThreshold += Global::deltaTime;
@@ -91,12 +92,14 @@ void RigidBody::AddImpulse(Vector3 dir, double force)
 
 void RigidBody::AddVelocityChange(const Vector3& velChange)
 {
-	velocity += velChange * Global::deltaTime;
+	if (Mathe::IsVectorNAN(velChange)) return;
+	velocity += velChange;// *Global::deltaTime;
 }
 
 void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
-	angularVelocity += rotChange * Global::deltaTime;
+	if (Mathe::IsVectorNAN(rotChange)) return;
+	angularVelocity += rotChange;// *Global::deltaTime;
 }
 
 void RigidBody::SetTerminalSpeed()

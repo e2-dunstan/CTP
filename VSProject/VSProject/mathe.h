@@ -33,4 +33,6 @@ namespace Mathe
 
 	double ToRadians(const double deg);
 	double ToDegrees(const double rad);
+
+	bool IsVectorNAN(const Vector3& v);
 };

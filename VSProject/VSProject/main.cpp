@@ -38,6 +38,9 @@ namespace
 	//in miliseconds
 	unsigned int timeSinceStart = 0;
 	unsigned int oldTimeSinceStart = 0;
+
+	bool beginUpdate = false;
+	//double deltaTimeDebug = 0;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -135,6 +138,16 @@ void render()
 	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
+	if (!beginUpdate && timeSinceStart > 2000) //wait 2 seconds before updating
+		beginUpdate = true;
+	//if (deltaTimeDebug > 0.1)
+	//{
+	//	deltaTimeDebug = 0;
+	//	std::cout << "Delta Time: " << Global::deltaTime << ", FPS: " << 1.0 / Global::deltaTime << std::endl;
+	//}
+	//else deltaTimeDebug += Global::deltaTime;
+
+
 	//Clear the buffers.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -155,9 +168,11 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	engine->Update();
+	if (beginUpdate) engine->Update();
+
 	//60 fps
-	glutTimerFunc(1000 / 120, timer, 0);
+	glutTimerFunc(1000 / 60, timer, 0);
+	
 }
 
 

@@ -1,13 +1,81 @@
-﻿  Camera.cpp
+﻿  micro-profiler.initializer.cpp
+  BoundingVolume.cpp
+  BVH.cpp
+D:\Ellie\CTP\VSProject\VSProject\BVH.cpp(5,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  BVHNode.cpp
+  Camera.cpp
+  CollisionCoarse.cpp
+  CollisionData.cpp
+D:\Ellie\CTP\VSProject\VSProject\BVH.cpp(10,28): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionData.cpp(127,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  CollisionFine.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionData.cpp(128,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(220,40): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+  CollisionResolution.cpp
+  CollisionResolution2.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionFine.cpp(232,65): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\CollisionResolution2.cpp(7,31): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+  Collisions.cpp
+  CollisionVolume.cpp
+  ConsoleControls.cpp
+D:\Ellie\CTP\VSProject\VSProject\CollisionResolution2.cpp(67,31): warning C4267: '=': conversion from 'size_t' to 'unsigned int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+  Global.cpp
   mathe.cpp
-  Matrix.cpp
-  Objects.cpp
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(3,10): fatal error C1083: Cannot open include file: 'GL\glew.h': No such file or directory
+  OctTree.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+  PrimitiveManager.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,70): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
   Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(3,10): fatal error C1083: Cannot open include file: 'GL\glew.h': No such file or directory
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,20): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(61,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   main.cpp
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(3,10): fatal error C1083: Cannot open include file: 'GL\glew.h': No such file or directory
-  Shapes.cpp
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(3,10): fatal error C1083: Cannot open include file: 'GL\glew.h': No such file or directory
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(28,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         with
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         [
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:             _Ty=int
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.23.28105\include\memory(2057,56): warning C4244:         ]
+  Primitive.cpp
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<_Ty>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message :         with
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message :         [
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message :             _Ty=Camera
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message :         ]
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(37,67): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(37,48): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(37,29): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(50,73): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(50,52): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Quaternion.cpp
   Generating Code...
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(3,10): fatal error C1083: Cannot open include file: 'GL\glew.h': No such file or directory
+  Compiling...
+  RayCast.cpp
+D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(50,31): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(143,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  RigidBody.cpp
+  SeparatingAxisTheorem.cpp
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(144,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(160,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(161,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Shapes.cpp
+  Vector.cpp
+  Generating Code...
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(185,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+LINK : fatal error LNK1104: cannot open file 'freeglut.lib'

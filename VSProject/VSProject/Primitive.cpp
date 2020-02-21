@@ -13,13 +13,14 @@ void Primitive::Update()
 	if (rigidbody.PhysicsUpdate())
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
-		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);
-		orientation.Normalise();
+		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);//Global::deltaTime * Global::deltaTime);
+		//orientation.Normalise();
 		UpdateTransform();
+		//updateTransform = true;
 
 		rigidbody.EndPhysicsUpdate(colliding);
 	}
-	//UpdateTransform();
+	if (updateTransform) UpdateTransform();
 }
 
 void Primitive::Draw()
@@ -28,13 +29,15 @@ void Primitive::Draw()
 
 	//Only locally transform the vertices. This makes it so that each draw call
 	//the vertices do not have to be cleared and redefined if their transforms have
-	//changed. Performance boost.
-	std::vector<Vertex> verts = vertices;
-	for (unsigned v = 0; v < verts.size(); v++)
+	//changed. Performance boost. (or is it?)
+	//std::vector<Vertex> verts = vertices;
+	Vector3 position;
+	for (unsigned v = 0; v < vertices.size(); v++)
 	{
-		Mathe::Transform(verts[v].position, transform);
+		position = vertices[v].position;
+		Mathe::Transform(position, transform);
 
-		glNormal3f(verts[v].normal.x, verts[v].normal.y, verts[v].normal.z);
+		glNormal3f(vertices[v].normal.x, vertices[v].normal.y, vertices[v].normal.z);
 
 		//For future shader use.
 		//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
@@ -45,24 +48,20 @@ void Primitive::Draw()
 		}
 		else
 		{
-			glColor3f(verts[v].colour.r, verts[v].colour.g, verts[v].colour.b);
+			glColor3f(vertices[v].colour.r, vertices[v].colour.g, vertices[v].colour.b);
 		}
-		glVertex3f(verts[v].position.x, verts[v].position.y, verts[v].position.z);
+		glVertex3f(position.x, position.y, position.z);
 	}
 
 	glEnd();
 
 	//boundingVolume.Draw();
-
-	//Debug display for bounding and collision volumes.
-	//Bounding volumes have been put on hold until spatial data structures have been implemented.
-	//if (drawBoundingVolumes) primitives[i]->boundingVolume->Draw();
-	//if (drawCollisionVolumes) primitives[i]->collisionVolume.Draw();
 }
 
 void Primitive::CalculateInertiaTensor()
 {
 	double matVals[16] = { 0 };
+	matVals[15] = 1.0;
 	switch (type)
 	{
 	case Type::BOX:
@@ -95,7 +94,6 @@ void Primitive::CalculateInertiaTensor()
 		return;
 	}
 
-	rigidbody.inverseInertiaTensor.Identity();
 	rigidbody.inverseInertiaTensor = Matrix(matVals);
 	rigidbody.inverseInertiaTensor.Inverse3x3();
 }

@@ -20,8 +20,6 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 {
 	rowSize = _row;
 	colSize = _col;
-
-	//Init as identity
 	Identity();
 }
 
@@ -117,18 +115,18 @@ void Matrix::Identity()
 		{
 			if (r == c)
 			{
-				matrix[(r * colSize) + c] = 1;
+				matrix[(r * colSize) + c] = 1.0;
 			}
 			else
 			{
-				matrix[(r * colSize) + c] = 0;
+				matrix[(r * colSize) + c] = 0.0;
 			}
 		}
 	}
 }
 
 void Matrix::Inverse3x3()
-{
+{	
 	double t4 = this->matrix[0] * this->matrix[5];
 	double t6 = this->matrix[0] * this->matrix[6];
 	double t8 = this->matrix[1] * this->matrix[4];
@@ -260,7 +258,8 @@ Matrix Matrix::operator-(double scalar)
 
 Matrix Matrix::operator*(Matrix& m)
 {
-	Matrix multiplied(this->rowSize, m.GetColumns());
+	unsigned mColumns = m.GetColumns();
+	Matrix multiplied(this->rowSize, mColumns);
 
 	if (this->colSize == m.GetRows())
 	{
@@ -268,15 +267,15 @@ Matrix Matrix::operator*(Matrix& m)
 
 		for (unsigned r = 0; r < this->rowSize; r++)
 		{
-			for (unsigned c = 0; c < m.GetColumns(); c++)
+			for (unsigned c = 0; c < mColumns; c++)
 			{
 				temp = 0.0;
 				for (unsigned k = 0; k < this->colSize; k++)
 				{
 					//temp += matrix4x4[r][k] * m(k, c);
-					temp += matrix[(r * colSize) + k] * m(k, c);
+					temp += matrix[(r * colSize) + k] * m.matrix[(k * mColumns) + c];
 				}
-				multiplied(r, c) = temp;
+				multiplied.matrix[(r * mColumns) + c] = temp;
 			}
 		}
 		return multiplied;

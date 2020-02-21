@@ -38,7 +38,10 @@ struct Matrix
 	unsigned rowSize = 4;
 	unsigned colSize = 4;
 
-	double matrix[16] = { 0.0 };
+	double matrix[16] = { 1.0, 0.0, 0.0, 0.0,
+						  0.0, 1.0, 0.0, 0.0,
+						  0.0, 0.0, 1.0, 0.0,
+						  0.0, 0.0, 0.0, 1.0};
 	//double* matrixPtr = nullptr;
 };
 

@@ -14,13 +14,17 @@ public:
 
 private:
 
+	struct ContactPoint
+	{
+		Vector3 point = Vector3();
+		double penetration = 0.0;
+
+		double weighting = 1.0;
+	};
+
 	std::vector<Contact>& contacts;
 
 	double PositionOnAxis(const Primitive* box, const Vector3& axis);
-	//bool BoxesOverlapOnAxis(const Primitive* box1, const Primitive* box2, const Vector3& toCentre, Vector3 axis, 
-	//	int index, float& smallestPenetration, int& smallestIndex);
-	//void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
-	//Vector3 GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
 	//Type checks
 	/* TYPE CHECKS: (total of 24 if statements)
@@ -59,8 +63,6 @@ private:
 
 	//CYLINDER COLLISION DETECTION IS DIFFICULT FOR SOME PRIMIIVES, THEREFORE
 	//THE COLLISION VOLUME IS A CAPSULE FOR THESE DIFFICULT ONES INSTEAD
-
-	//std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
 
 	float tolerance = 0.5f;
 };

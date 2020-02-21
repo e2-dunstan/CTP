@@ -32,6 +32,7 @@ struct Primitive
 	Matrix transform = Matrix();
 	void UpdateTransform();
 	bool updateTransform = false;
+	bool transformChanged = true;
 
 	void GetOrientation(Quaternion* _orientation) const;
 	Quaternion GetOrientation() const;
