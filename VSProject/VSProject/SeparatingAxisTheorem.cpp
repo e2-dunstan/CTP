@@ -155,8 +155,6 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 {
 	//convert coord space to box 1 so box 1 pos is 0
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
-	//if (std::isnan(normal.x) || std::isnan(normal.y) || std::isnan(normal.z))
-	//	return;
 	float comparison1 = (box1->collisionVolume.centre + normal).ScalarProduct(box2->collisionVolume.centre);
 	float comparison2 = (box1->collisionVolume.centre - normal).ScalarProduct(box2->collisionVolume.centre);
 	if (comparison1 < comparison2)
@@ -173,7 +171,6 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	//could get box2 on box1 axis using inverse but inversing a matrix is bad so
 	//convert to dir and work with it like the normal
 
-	//Vector3 box2position = toCentre; //relative to the normal
 	Vector3 box2Pos = toCentre;
 	box2Pos = box2Pos.Normalise();
 	Mathe::TransformTranspose(box2Pos, box1->collisionVolume.axisMat);
@@ -189,13 +186,13 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 			incidentNormal = box2->collisionVolume.normals[f];
 		}
 	}
-	if (incidentNormal.ScalarProduct(toCentre) > 0)
-	{
-		incidentNormal *= -1.0;
-	}
+	//if (incidentNormal.ScalarProduct(toCentre) > 0)
+	//{
+	//	incidentNormal *= -1.0;
+	//}
 	
 	Vector3 referenceVertices[4] = { Vector3() };
-	SetReferenceVertices(referenceNormal, referenceVertices, box1->collisionVolume.halfSize);
+	if (!SetReferenceVertices(referenceNormal, referenceVertices, box1->collisionVolume.halfSize)) return;
 	//Vector3 referenceMin = Vector3(1000, 1000, 1000);
 	//Vector3 referenceMax = Vector3();
 	//SetReferenceMinMax(referenceNormal, box1->collisionVolume.halfSize, referenceMin, referenceMax);
@@ -204,34 +201,16 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 
 	//Get local incident normal to get vertices in the correct order
 
-	Vector3 localIncidentNormal = incidentNormal;
+	Vector3 localIncidentNormal = incidentNormal;// .Normalise();
 	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
 	localIncidentNormal = localIncidentNormal.Normalise();
-	SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize);
+	if (!SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize)) return;
 	//Transform back to box 1 space
 	for (unsigned v = 0; v < 4; v++)
 	{
 		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
-		incidentVertices[v] -= box1->collisionVolume.centre;
+		incidentVertices[v] += localIncidentNormal * box2->collisionVolume.halfSize;//box1->collisionVolume.centre / box1->collisionVolume.halfSize) * referenceNormal;
 	}
-
-
-	/* This returns vertices in the wrong order which is not ideal for SH
-	//WRT world coords
-	Vector3 incidentWorldPoint = box2->collisionVolume.centre + box2->collisionVolume.halfSize * incidentNormal;
-	unsigned index = 0;
-	for (unsigned v = 0; v < 8; v++)
-	{
-		//if scalar(A - B, P) = 0, then A lies on plane where B is known point and P is normal
-		if (abs((box2->collisionVolume.vertices[v] - incidentWorldPoint).ScalarProduct(incidentNormal)) < 0.001f)
-		{
-			//WRT box1
-			incidentVertices[index] = box2->collisionVolume.vertices[v] - box1->collisionVolume.centre;
-			//incidentVertices[index] = incidentVertices[index].Normalise();
-			//Mathe::TransformTranspose(incidentVertices[index], box1->collisionVolume.axisMat);
-			index++;
-		}
-	}*/
 
 	std::vector<Vector3> clippedVertices;
 	//index to ignore is dependent on what ref axis is 0
@@ -243,10 +222,13 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
 
 	//only keep vertices below the reference plane
+	float relBox = abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal));
 	for (unsigned v = 0; v < clippedVertices.size(); v++)
 	{
-		if ((box1Above2 && abs(clippedVertices[v].ScalarProduct(referenceNormal)) > abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal)))
-			|| (!box1Above2 && abs(clippedVertices[v].ScalarProduct(referenceNormal)) < abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal))))
+		float clipped = abs(clippedVertices[v].ScalarProduct(referenceNormal));
+
+		if ((box1Above2 && clipped > relBox)
+			|| (!box1Above2 && clipped < relBox))
 		{
 			contactPoint += clippedVertices[v];
 			numContactPoints++;
@@ -256,12 +238,12 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	if (contactPoint.y != 0) contactPoint.y /= (double)numContactPoints;
 	if (contactPoint.z != 0) contactPoint.z /= (double)numContactPoints;
 	//transform to world coordinates
-	Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
+	//Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
 
-	Contact contact(box1, box2);
-	contact.normal = normal.Normalise();
+	Contact contact = box1Above2 ? Contact(box1, box2) : Contact(box2, box1);
 	contact.penetrationDepth = penetration;
-	contact.point = contactPoint + (contact.normal * box1->collisionVolume.halfSize);
+	contact.normal = normal.Normalise();// *(box1Above2 ? 1.0 : -1.0);
+	contact.point = contactPoint;// +(contact.normal * box1->collisionVolume.halfSize * (box1Above2 ? 1.0 : -1.0));
 	contacts.push_back(contact);
 
 	//Order of finding all collision points:
@@ -310,7 +292,7 @@ Vector3 SAT::GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgeP
 	}
 }
 
-void SAT::SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize)
+bool SAT::SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize)
 {
 	if (abs(abs(normal.x) - 1.0) < 0.001)
 	{
@@ -335,9 +317,11 @@ void SAT::SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vec
 	}
 	else
 	{
-		std::cout << "WARNING: reference vertices not set because normal is not properly set up!" << std::endl;
+		std::cout << "WARNING: reference vertices not set because normal is not properly set up! Cancelling contact generation." << std::endl;
 		std::cout << "Normal: " << normal.x << ", " << normal.y << ", " << normal.z << std::endl;
+		return false;
 	}
+	return true;
 }
 
 void SAT::SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vector3& min, Vector3& max)
@@ -437,10 +421,16 @@ void SAT::SutherlandHodgmanBoxes(std::vector<Vector3>& clipped, const Vector3& n
 	{
 		for (unsigned v = 0; v < num; v++) //for each input vertex
 		{
-			Vector3 v1 = polyVertices[v].VectorProduct(normal);// +polyVertices[v] * norm;
-			Vector3 v2 = polyVertices[(v + 1) % num].VectorProduct(normal);// +polyVertices[v + 1] * norm;
+			Vector3 v1 = polyVertices[v];// .VectorProduct(normal);// +polyVertices[v] * norm;
+			Vector3 v2 = polyVertices[(v + 1) % num];// .VectorProduct(normal);// +polyVertices[v + 1] * norm;
 			Vector3 edgeMin = clippingVertices[edge];
 			Vector3 edgeMax = clippingVertices[(edge + 1) % num];
+			if (edgeMin.SumComponents() > edgeMax.SumComponents())
+			{
+				Vector3 temp = edgeMin;
+				edgeMin = edgeMax;
+				edgeMax = temp;
+			}
 
 			bool insideEdge1 = InsideEdge(v1[axes[0]], v1[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 			bool insideEdge2 = InsideEdge(v2[axes[0]], v2[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);

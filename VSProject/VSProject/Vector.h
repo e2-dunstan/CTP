@@ -46,6 +46,7 @@ struct Vector3
 
 	void operator/=(const float value);
 	Vector3 operator/(const float value) const;
+	Vector3 operator/(const Vector3& vec) const;
 
 	// -- ADDITION -- //
 	void operator+=(const Vector3& vec);

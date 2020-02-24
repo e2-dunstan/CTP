@@ -139,6 +139,15 @@ Vector3 Vector3::operator/(const float value) const
 	return Vector3(x / value, y / value, z / value);
 }
 
+Vector3 Vector3::operator/(const Vector3& vec) const
+{
+	Vector3 ret = Vector3(x, y, z);
+	if (vec.x != 0) ret.x /= vec.x;
+	if (vec.y != 0) ret.y /= vec.y;
+	if (vec.z != 0) ret.x /= vec.z;
+	return ret;
+}
+
 void Vector3::operator+=(const Vector3& vec)
 {
 	x += vec.x;

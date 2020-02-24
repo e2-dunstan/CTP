@@ -179,12 +179,12 @@ void Contact::ResolveContactPenetration()
 
 	if (body1->rigidbody.isAwake)
 	{
-		//body1->orientation.Normalise();
+		body1->orientation.Normalise();
 		body1->UpdateTransform();
 	}
 	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
 	{
-		//body2->orientation.Normalise();
+		body2->orientation.Normalise();
 		body2->UpdateTransform();
 	}
 }
@@ -214,10 +214,14 @@ void Contact::ResolveContactVelocity()
 
 	velocityChange[0] = impulse * body1->rigidbody.inverseMass * normal.SumComponents();
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
+	//rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 
 	body1->rigidbody.AddVelocityChange(velocityChange[0]);
 	body1->rigidbody.AddRotationChange(rotationChange[0]);
+
+	//if (body1->type == Primitive::Type::BOX) 
+	//	return;
 
 	if (body2->type != Primitive::Type::PLANE)
 	{

@@ -1,2 +1,12 @@
-﻿  mathe.cpp
+﻿  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(28,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\memory(2055,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<Camera>> std::make_unique<Camera,Camera::KEYBOARD,int,int,int,float,int,float&,float&,int&,int&,0>(Camera::KEYBOARD &&,int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

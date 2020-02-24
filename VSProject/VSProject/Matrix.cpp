@@ -259,7 +259,7 @@ Matrix Matrix::operator-(double scalar)
 Matrix Matrix::operator*(Matrix& m)
 {
 	unsigned mColumns = m.GetColumns();
-	Matrix multiplied(this->rowSize, mColumns);
+	Matrix multiplied = Matrix(this->rowSize, mColumns);
 
 	if (this->colSize == m.GetRows())
 	{
@@ -275,7 +275,8 @@ Matrix Matrix::operator*(Matrix& m)
 					//temp += matrix4x4[r][k] * m(k, c);
 					temp += matrix[(r * colSize) + k] * m.matrix[(k * mColumns) + c];
 				}
-				multiplied.matrix[(r * mColumns) + c] = temp;
+				//multiplied.matrix[(r * mColumns) + c] = temp;
+				multiplied(r, c) = temp;
 			}
 		}
 		return multiplied;

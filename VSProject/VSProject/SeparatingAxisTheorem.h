@@ -24,7 +24,7 @@ private:
 	void PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration);
 	Vector3 GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
-	void SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize);
+	bool SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize);
 	void SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vector3& min, Vector3& max);
 
 	Vector3 CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax);

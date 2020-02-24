@@ -40,6 +40,7 @@ namespace
 	unsigned int oldTimeSinceStart = 0;
 
 	bool beginUpdate = false;
+	bool shouldUpdate = true;
 	//double deltaTimeDebug = 0;
 }
 
@@ -52,6 +53,8 @@ void ReleaseKey(unsigned char key, int x, int y)
 	camera->setKeyboard(key, false);
 
 	consoleControls->OnKeyRelease(key, engine.get());
+
+	if (key == 'p') shouldUpdate = !shouldUpdate;
 }
 void MouseMove(int x, int y)
 {
@@ -138,7 +141,7 @@ void render()
 	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
-	if (!beginUpdate && timeSinceStart > 2000) //wait 2 seconds before updating
+	if (!beginUpdate && shouldUpdate && timeSinceStart > 2000) //wait 2 seconds before updating
 		beginUpdate = true;
 	//if (deltaTimeDebug > 0.1)
 	//{
@@ -168,7 +171,7 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	if (beginUpdate) engine->Update();
+	if (beginUpdate && shouldUpdate) engine->Update();
 
 	//60 fps
 	glutTimerFunc(1000 / 60, timer, 0);

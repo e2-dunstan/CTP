@@ -14,7 +14,7 @@ void Primitive::Update()
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
 		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);//Global::deltaTime * Global::deltaTime);
-		//orientation.Normalise();
+		orientation.Normalise();
 		UpdateTransform();
 		//updateTransform = true;
 
