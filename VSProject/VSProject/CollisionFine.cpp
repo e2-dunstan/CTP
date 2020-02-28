@@ -193,12 +193,12 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 		//distance from vertex to plane
 		float distance = (float)box->collisionVolume.vertices[v].ScalarProduct(normal);
 
-		if (distance <= planeOffset)
+		if (distance <= planeOffset + 0.01f)
 		{
 			contactPoints[numContacts].point = normal;
 			contactPoints[numContacts].point *= distance - (float)(planePosition * normal).Magnitude();
 			contactPoints[numContacts].point += box->collisionVolume.vertices[v];
-			contactPoints[numContacts].penetration = (float)abs((planePosition * normal).Magnitude() - distance);// / 2.0f;
+			contactPoints[numContacts].penetration = (float)abs((planePosition * normal).Magnitude() - distance) + 0.01f;// / 2.0f;
 			totalPenetration += contactPoints[numContacts].penetration;
 			
 			numContacts++;

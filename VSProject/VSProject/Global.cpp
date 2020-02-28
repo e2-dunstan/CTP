@@ -9,6 +9,8 @@ namespace Global
 	const Vector3 gravity(0, -9.81, 0);
 	const double gravityMag = -9.81;
 	const double airDensity = 1.225;
+
+	bool shouldUpdate = true;
 }
 
 //double Global::GetDeltaTime()

@@ -168,12 +168,12 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	//normal (referenceNormal) should now be something like (0, 1, 0), easier to work with
 	//and position is 0, but plane position is normal * half size
 
-	//could get box2 on box1 axis using inverse but inversing a matrix is bad so
-	//convert to dir and work with it like the normal
+	//could get box2 on box1 axis using inverse but inversing a matrix is
+	//expensive so convert to dir and work with it like the normal
 
-	Vector3 box2Pos = toCentre;
-	box2Pos = box2Pos.Normalise();
-	Mathe::TransformTranspose(box2Pos, box1->collisionVolume.axisMat);
+	//Vector3 box2Pos = toCentre;
+	//box2Pos = box2Pos.Normalise();
+	//Mathe::TransformTranspose(box2Pos, box1->collisionVolume.axisMat);
 
 	Vector3 incidentNormal = Vector3();
 	float smallestFace = 1000.0f;
@@ -197,11 +197,12 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	//Vector3 referenceMax = Vector3();
 	//SetReferenceMinMax(referenceNormal, box1->collisionVolume.halfSize, referenceMin, referenceMax);
 
+	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
+
 	Vector3 incidentVertices[4] = { Vector3() };
 
 	//Get local incident normal to get vertices in the correct order
-
-	Vector3 localIncidentNormal = incidentNormal;// .Normalise();
+	Vector3 localIncidentNormal = incidentNormal;
 	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
 	localIncidentNormal = localIncidentNormal.Normalise();
 	if (!SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize)) return;
@@ -210,40 +211,55 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	{
 		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
 		incidentVertices[v] += localIncidentNormal * box2->collisionVolume.halfSize;//box1->collisionVolume.centre / box1->collisionVolume.halfSize) * referenceNormal;
+		incidentVertices[v] -= box1->collisionVolume.centre;// *(localIncidentNormal.SumComponents() < 0 ? -1.0 : 1.0);
 	}
 
 	std::vector<Vector3> clippedVertices;
 	//index to ignore is dependent on what ref axis is 0
-	SutherlandHodgmanBoxes(clippedVertices, referenceNormal, incidentVertices, referenceVertices);
+	SutherlandHodgman(clippedVertices, referenceNormal, incidentVertices, referenceVertices);
 
 	Vector3 contactPoint = Vector3();
 	unsigned numContactPoints = 0;
 
-	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
 
 	//only keep vertices below the reference plane
 	float relBox = abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal));
+	float pen = 0;
 	for (unsigned v = 0; v < clippedVertices.size(); v++)
 	{
+		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
 		float clipped = abs(clippedVertices[v].ScalarProduct(referenceNormal));
 
 		if ((box1Above2 && clipped > relBox)
 			|| (!box1Above2 && clipped < relBox))
 		{
+			//Contact contact(box1, box2);
+			//contact.normal = normal;
+			//contact.penetrationDepth = relBox - clipped;// clippedVertices[v].ScalarProduct(normal);
+			//contact.point = clippedVertices[v];
+			//contacts.push_back(contact);
+
+			pen += relBox - clipped;
 			contactPoint += clippedVertices[v];
 			numContactPoints++;
 		}
 	}
+	//return;
+
+	//Previous implementation using only one contact point
+
 	if (contactPoint.x != 0) contactPoint.x /= (double)numContactPoints;
 	if (contactPoint.y != 0) contactPoint.y /= (double)numContactPoints;
 	if (contactPoint.z != 0) contactPoint.z /= (double)numContactPoints;
+	if (pen != 0) pen /= (float)numContactPoints;
 	//transform to world coordinates
-	//Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
+	Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
+	//contactPoint += box1->collisionVolume.centre;
 
-	Contact contact = box1Above2 ? Contact(box1, box2) : Contact(box2, box1);
-	contact.penetrationDepth = penetration;
+	Contact contact/* = box1Above2 ? Contact*/(box1, box2);// : Contact(box2, box1);
+	contact.penetrationDepth = pen;
 	contact.normal = normal.Normalise();// *(box1Above2 ? 1.0 : -1.0);
-	contact.point = contactPoint;// +(contact.normal * box1->collisionVolume.halfSize * (box1Above2 ? 1.0 : -1.0));
+	contact.point = contactPoint;// +box1->collisionVolume.centre;// +(contact.normal * box1->collisionVolume.halfSize * (box1Above2 ? 1.0 : -1.0));
 	contacts.push_back(contact);
 
 	//Order of finding all collision points:
@@ -366,22 +382,56 @@ void SAT::SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vec
 
 Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
 {
-	//https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+	//intersection = (v1 + m(v2 - v1)) = (clippingMin + n(clippingMax - clippingMin))
+	//ix = (v1x + m(v2x - v1x)) = (clippingMinx + n(clippingMaxx - clippingMinx))
 
-	double dc[2] = { clippingMin[axes[0]] - clippingMax[axes[0]], clippingMin[axes[1]] - clippingMax[axes[1]] };
-	double dp[2] = { v1[axes[0]] - v2[axes[0]], v1[axes[1]] - v2[axes[1]] };
+	double x1 = clippingMin[axes[0]];
+	double x2 = clippingMax[axes[0]];
+	double x3 = v1[axes[0]];
+	double x4 = v2[axes[0]];
+	double y1 = clippingMin[axes[1]];
+	double y2 = clippingMax[axes[1]];
+	double y3 = v1[axes[1]];
+	double y4 = v2[axes[1]];
 
-	double n1 = clippingMin[axes[0]] * clippingMax[axes[1]] - clippingMin[axes[1]] * clippingMax[axes[0]];
-	double n2 = v1[axes[0]] * v2[axes[1]] - v1[axes[1]] * v2[axes[0]];
-	double div = dc[0] * dp[1] - dc[1] * dp[0];
-	double n3 = 1.0 / (div < 0.001 ? 1.0 : div);// (dc[0] * dp[1] - dc[1] * dp[0]);
+	//x intersect
+	double num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
+	double den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+	double X = num / den;
 
-	Vector3 intersection = Vector3();
-	intersection[axes[0]] = (n1 * dp[0] - n2 * dc[0]) * n3;
-	intersection[axes[1]] = (n1 * dp[1] - n2 * dc[1]) * n3;
+	//y intersect
+	num = (x1 * y2 - y1 * x2) * (y3 - y4) -	(y1 - y2) * (x3 * y4 - y3 * x4);
+	den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+	double Y = num / den;
+
+	Vector3 intersection;
+	intersection[axes[0]] = X;
+	intersection[axes[1]] = Y;
+
+	//solve for m or n
+	//double m1 =	(v1[axes[0]] - clippingMin[axes[0]]) * (clippingMin[axes[1]] - clippingMax[axes[1]])
+	//	- (v1[axes[1]] - clippingMin[axes[1]]) * (clippingMin[axes[0]] - clippingMax[axes[0]]);
+	//double m2 = (v1[axes[0]] - v2[axes[0]]) * (clippingMin[axes[1]] - clippingMax[axes[1]])
+	//	- (v1[axes[1]] - v2[axes[1]]) * (clippingMin[axes[0]] - clippingMax[axes[0]]);
+	//double m = m1 / m2;
+	//Vector3 v2v1 = v2 - v1;
+	//Vector3 intersection = v1 + (v2v1 * m);
+	// *(v2v1.SumComponents() < 0 ? -1.0 : 1.0));
+	//if (m < 0)
+	//{
+	//	m1 = (v1[axes[0]] - v1[axes[0]]) * (v1[axes[1]] - clippingMin[axes[1]])
+	//		- (v1[axes[1]] - v2[axes[1]]) * (v1[axes[0]] - clippingMin[axes[0]]);
+	//	m = m1 / m2;
+	//	intersection = clippingMin + ((clippingMax - clippingMin) * m);
+	//}
 
 	//Get the value of the remaining axis
-	double percAcrossLine = (v1[axes[0]] + intersection[axes[0]]) / v2[axes[0]];
+	double percAcrossLine = 1;
+	if (x2 != 0)
+		percAcrossLine = (x1 + X) / x2;
+	else if (y2 != 0)
+		percAcrossLine = (y1 + Y) / y2;
+
 	unsigned i = 0;
 	if (axes[0] == 0)
 	{
@@ -396,10 +446,46 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 	return intersection;
 }
 
-void SAT::SutherlandHodgmanBoxes(std::vector<Vector3>& clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
+//Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
+//{
+//	//https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
+//
+//	double dc[2] = { clippingMin[axes[0]] - clippingMax[axes[0]], clippingMin[axes[1]] - clippingMax[axes[1]] };
+//	double dp[2] = { v1[axes[0]] - v2[axes[0]], v1[axes[1]] - v2[axes[1]] };
+//
+//	double n1 = clippingMin[axes[0]] * clippingMax[axes[1]] - clippingMin[axes[1]] * clippingMax[axes[0]];
+//	double n2 = v1[axes[0]] * v2[axes[1]] - v1[axes[1]] * v2[axes[0]];
+//	double div = dc[0] * dp[1] - dc[1] * dp[0];
+//	double n3 = div == 0 ? 0 : (1.0 / div);
+//	//double n3 = (dc[0] * dp[1] - dc[1] * dp[0]);
+//
+//	Vector3 intersection = Vector3();
+//	intersection[axes[0]] = (n1 * dp[0] - n2 * dc[0]) * n3;
+//	intersection[axes[1]] = (n1 * dp[1] - n2 * dc[1]) * n3;
+//
+//	//Get the value of the remaining axis
+//	double percAcrossLine = (v1[axes[0]] + intersection[axes[0]]) / v2[axes[0]];
+//	unsigned i = 0;
+//	if (axes[0] == 0)
+//	{
+//		if (axes[1] == 1)
+//			i = 2;
+//		else if (axes[1] == 2)
+//			i = 1;
+//	}
+//
+//	intersection[i] = v1[i] + (v2[i] - v1[i]) * percAcrossLine;
+//
+//	return intersection;
+//}
+
+void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
 {
-	const unsigned num = 4;
+	const unsigned numEdges = sizeof(clippingVertices);
+	const unsigned polyVertSize = sizeof(polyVertices);
+	unsigned numVertices = polyVertSize;
 	const float epsilon = 0.001f;
+
 	unsigned axes[2] = { 0, 0 };
 	if (abs(abs(normal.x) - 1.0) < epsilon)
 	{
@@ -417,42 +503,164 @@ void SAT::SutherlandHodgmanBoxes(std::vector<Vector3>& clipped, const Vector3& n
 		axes[1] = 1;
 	}
 
-	for (unsigned edge = 0; edge < num; edge++) //for each clipping edge
+	Vector3 min = clippingVertices[0];
+	Vector3 max = clippingVertices[1];
+	for (unsigned i = 0; i < numVertices; i++)
 	{
-		for (unsigned v = 0; v < num; v++) //for each input vertex
+		double sum = clippingVertices[i].SumComponents();
+		if (min.SumComponents() > sum)
+			min = clippingVertices[i];
+		if (max.SumComponents() < sum)
+			max = clippingVertices[i];
+	}
+	/*Vector3 incidentMin = polyVertices[0];
+	Vector3 incidentMax = polyVertices[1];
+
+	for (unsigned i = 0; i < currentSize; i++)
+	{
+		double sum2 = polyVertices[i].SumComponents();
+		if (sum2 < incidentMin.SumComponents())
+			incidentMin = polyVertices[i];
+		if (sum2 > incidentMax.SumComponents())
+			incidentMax = polyVertices[i];
+	}
+	bool inside[4] = { false };
+	for (unsigned i = 0; i < currentSize; i++)
+	{
+		inside[i] = polyVertices[i][axes[0]] > min[axes[0]] && polyVertices[i][axes[0]] < max[axes[0]]
+			&& polyVertices[i][axes[1]] > min[axes[1]] && polyVertices[i][axes[1]] < max[axes[1]];
+
+		if (inside[i]) _clipped.push_back(polyVertices[i]);
+	}
+
+	if (inside[0] && inside[1] && inside[2] && inside[3]) return;
+
+	//Check for reference vertices inside incident plane
+	for (unsigned i = 0; i < 4; i++)
+	{
+		if (clippingVertices[i][axes[0]] > incidentMin[axes[0]] && clippingVertices[i][axes[0]] < incidentMax[axes[0]]
+			&& clippingVertices[i][axes[1]] > incidentMin[axes[1]] && clippingVertices[i][axes[1]] < incidentMax[axes[1]])
 		{
-			Vector3 v1 = polyVertices[v];// .VectorProduct(normal);// +polyVertices[v] * norm;
-			Vector3 v2 = polyVertices[(v + 1) % num];// .VectorProduct(normal);// +polyVertices[v + 1] * norm;
-			Vector3 edgeMin = clippingVertices[edge];
-			Vector3 edgeMax = clippingVertices[(edge + 1) % num];
-			if (edgeMin.SumComponents() > edgeMax.SumComponents())
-			{
-				Vector3 temp = edgeMin;
-				edgeMin = edgeMax;
-				edgeMax = temp;
-			}
+			_clipped.push_back(clippingVertices[i] + ((incidentMax * normal + incidentMin * normal) / 2.0));
+		}
+	}
+
+	Vector3 v = Vector3();
+	v[axes[0]] = max[axes[0]];
+	v[axes[1]] = min[axes[1]];
+	if ((inside[0] && !inside[1]) || (!inside[0] && inside[1])) //left
+	{
+		_clipped.push_back(CalculateIntersection(polyVertices[1], polyVertices[0], axes, min, v));
+	}
+	if ((inside[3] && !inside[0]) || (!inside[3] && inside[0])) //top
+	{
+		_clipped.push_back(CalculateIntersection(polyVertices[0], polyVertices[3], axes, v, max));
+	}
+	v[axes[0]] = min[axes[0]];
+	v[axes[1]] = max[axes[1]];
+	if ((inside[1] && !inside[2]) || (!inside[1] && inside[2])) //bottom
+	{
+		_clipped.push_back(CalculateIntersection(polyVertices[1], polyVertices[2], axes, min, v));
+	}
+	if ((inside[2] && !inside[3]) || (!inside[2] && inside[3])) //right
+	{
+		_clipped.push_back(CalculateIntersection(polyVertices[2], polyVertices[3], axes, v, max));
+	}*/
+
+	const unsigned maxPoints = polyVertSize * polyVertSize * 2;
+	Vector3 newPoints[maxPoints];
+	for (unsigned i = 0; i < numVertices; i++)
+	{
+		newPoints[i] = polyVertices[i];
+	}
+	unsigned newSize = 4;
+
+	for (unsigned edge = 0; edge < numEdges; edge++) //for each clipping edge
+	{
+		Vector3 edgeMin = clippingVertices[edge];
+		Vector3 edgeMax = clippingVertices[(edge + 1) % numEdges];
+		//if (edgeMin.SumComponents() < edgeMax.SumComponents())
+		//{
+		//	Vector3 temp = edgeMin;
+		//	edgeMin = edgeMax;
+		//	edgeMax = temp;
+		//}
+
+		for (unsigned v = 0; v < numVertices; v++) //for each input vertex
+		{
+			Vector3 v1 = newPoints[v];
+			Vector3 v2 = newPoints[(v + 1) % numVertices];
+			if (v1 == v2 ||
+				(v1[axes[0]] != v2[axes[0]]
+				&& (v1[axes[1]] != v2[axes[1]]))) 
+				continue;
 
 			bool insideEdge1 = InsideEdge(v1[axes[0]], v1[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 			bool insideEdge2 = InsideEdge(v2[axes[0]], v2[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 
 			if (insideEdge1 && insideEdge2)
 			{
-				clipped.push_back(v2);
+				//VerifyVertex(_clipped, v2, max, min, axes);
+				//newPoints[newSize] = v1;
+				//newSize++;
+				if (std::find(std::begin(newPoints), std::end(newPoints), v2) == std::end(newPoints))
+				{
+					newPoints[newSize] = v2;
+					newSize++;
+				}
 			}
 			else if (!insideEdge1 && insideEdge2)
 			{
-				clipped.push_back(CalculateIntersection(v1, v2, axes, edgeMin, edgeMax));
-				clipped.push_back(v2);
+				//VerifyVertex(_clipped, CalculateIntersection(v1, v2, axes, edgeMin, edgeMax), max, min, axes);
+				//VerifyVertex(_clipped, v2, max, min, axes);
+				Vector3 vec = CalculateIntersection(v1, v2, axes, edgeMin, edgeMax);
+				if (std::find(std::begin(newPoints), std::end(newPoints), vec) == std::end(newPoints))
+				{
+					newPoints[newSize] = vec;
+					newSize++;
+				}
+				if (std::find(std::begin(newPoints), std::end(newPoints), v2) == std::end(newPoints))
+				{
+					newPoints[newSize] = v2;
+					newSize++;
+				}
 			}
 			else if (insideEdge1 && !insideEdge2)
 			{
-				clipped.push_back(CalculateIntersection(v1, v2, axes, edgeMin, edgeMax));
+				//VerifyVertex(_clipped, CalculateIntersection(v1, v2, axes, edgeMin, edgeMax), max, min, axes);
+				Vector3 vec = CalculateIntersection(v1, v2, axes, edgeMin, edgeMax);
+				if (std::find(std::begin(newPoints), std::end(newPoints), vec) == std::end(newPoints))
+				{
+					newPoints[newSize] = vec;
+					newSize++;
+				}
 			}
+			if (newSize >= maxPoints)
+				break;
+		}
+		numVertices = (newSize < 4) ? 4 : newSize;
+		for (unsigned i = 0; i < numVertices; i++)
+		{
+			VerifyVertex(_clipped, newPoints[i], max, min, axes);
 		}
 	}
 }
 
 bool SAT::InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, double edgeMinX, double edgeMinY)
 {
-	return (edgeMaxY - edgeMinY) * px + (edgeMinX - edgeMaxX) * py + (edgeMaxX * edgeMinY - edgeMinX * edgeMaxY) < 0;
+	double one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
+	double two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
+	return (one - two) < 0;
+
+	//return (edgeMaxX - edgeMinX) * (py - edgeMinY) - (edgeMaxY - edgeMinY) * (px - edgeMinX) < 0;
+}
+
+void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const unsigned axes[])
+{
+	if (vec[axes[0]] <= max[axes[0]] && vec[axes[0]] >= min[axes[0]]
+		&& vec[axes[1]] <= max[axes[1]] && vec[axes[1]] >= min[axes[1]])
+	{
+		if (std::find(clipped.begin(), clipped.end(), vec) == clipped.end())
+			clipped.push_back(vec);
+	}
 }

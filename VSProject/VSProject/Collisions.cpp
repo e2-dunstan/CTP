@@ -1,4 +1,5 @@
 #include "Collisions.h"
+#include "RayCast.h"
 
 Collisions::Collisions()
 {
@@ -32,10 +33,43 @@ void Collisions::Resolution()
 
 	for (unsigned i = 0; i < data->contacts.size(); i++)
 	{
+		contactDisplays[i].origin = data->contacts[i].point;
+		contactDisplays[i].normal = data->contacts[i].normal;
+
 		data->contacts[i].PrepareResolution();
 	}
 	resolution2->PenetrationResolution(data->contacts);
 	resolution2->VelocityResolution(data->contacts);
 
 	data->contacts.clear();
+}
+
+void Collisions::DrawContacts()
+{
+	//if (data->contacts.size() <= 0) return;
+
+	for (unsigned i = 0; i < 6; i++)
+	{
+		if (contactDisplays[i].origin == Vector3()) continue;
+
+		//glLoadIdentity();
+
+		glBegin(GL_LINES);
+
+		glColor3f(1, 0, 0);
+		glVertex3f(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
+		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 5.0;
+		glVertex3f(point2.x, point2.y, point2.z);
+
+		glEnd();
+
+		glPushMatrix();
+		glTranslated(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
+		glutWireSphere(0.2, 4, 4);
+		glPopMatrix();
+
+		//if (i == 2) Global::shouldUpdate = false;
+		glFlush();
+	}
+	
 }

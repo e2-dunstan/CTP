@@ -2,6 +2,7 @@
 
 void Primitive::Start()
 {
+	rigidbody.inverseMass = 1.0f / scale.Magnitude();
 	CalculateInertiaTensor();
 	rigidbody.Start();
 }
@@ -15,8 +16,8 @@ void Primitive::Update()
 		translation += rigidbody.velocity * Global::deltaTime;
 		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);//Global::deltaTime * Global::deltaTime);
 		orientation.Normalise();
-		UpdateTransform();
-		//updateTransform = true;
+		//UpdateTransform();
+		updateTransform = true;
 
 		rigidbody.EndPhysicsUpdate(colliding);
 	}
@@ -61,7 +62,7 @@ void Primitive::Draw()
 void Primitive::CalculateInertiaTensor()
 {
 	double matVals[16] = { 0 };
-	matVals[15] = 1.0;
+	//matVals[15] = 1.0;
 	switch (type)
 	{
 	case Type::BOX:
@@ -131,12 +132,11 @@ void Primitive::UpdateTransform()
 
 	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
-	//Mathe::Rotate(transform, rotation.x, rotation.y, rotation.z);
 	Mathe::Rotate(transform, orientation);
 
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, transform);
-
 	collisionVolume.axisMat = transform;
+
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
 	if (type == Type::CAPSULE || type == Type::CYLINDER)

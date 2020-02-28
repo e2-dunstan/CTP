@@ -7,10 +7,10 @@ void Engine::Init()
 
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
-	primitiveManager->Create(Primitive::Type::BOX, Vector3(2, 2, 2), Vector3(0, 10, 10), Vector3(0, 90, 0));
-	primitiveManager->Create(Primitive::Type::BOX, Vector3(1.5, 1.5, 1.5), Vector3(0.5, 20, 10), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(2, 2, 2), Vector3(0, 10, 10), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 20, 10), Vector3(0, 0, 0));
 	//primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 25, 10), Vector3(0, 180, 0));
-	primitiveManager->CreateSphere(2, Vector3(10, 10, 0));
+	primitiveManager->CreateSphere(2, Vector3(10, 50, 0));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
 	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 15, 0.1));

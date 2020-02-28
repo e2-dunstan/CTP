@@ -10,7 +10,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 	{
 		//Find the contact with the largest penetration therefore
 		//the most important one to resolve
-		unsigned contactIndex = GetContactWithLargestPenetration(contacts);
+		unsigned contactIndex = iterations;//GetContactWithLargestPenetration(contacts);
 		if (contactIndex == numContacts) break; //all contacts resolved
 
 		//Match RB awake states
@@ -57,7 +57,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				}
 			}
 		}
-		iterations = numContacts;
+		iterations++;// = numContacts;
 		//finished = true;
 	}
 }
@@ -70,7 +70,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 
 	while (numIterations < numContacts)
 	{
-		unsigned contactIndex = GetContactWithLargestVelocityMagnitude(contacts);
+		unsigned contactIndex = numIterations;//GetContactWithLargestVelocityMagnitude(contacts);
 		if (contactIndex == numContacts) break; //all contacts resolved
 
 		//Match RB awake states
@@ -129,7 +129,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			}
 		}		
 		//finished = true;
-		numIterations = numContacts;
+		numIterations++;// = numContacts;
 	}
 }
 

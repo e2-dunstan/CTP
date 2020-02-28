@@ -73,7 +73,7 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	{
 		Quaternion q;
 		contact.body1->GetOrientation(&q);
-		Mathe::AddScaledVector(q, angularChange1, 1.0f);
+		Mathe::AddScaledVector(q, angularChange1, 1.0);
 		contact.body1->SetOrientation(q);
 		update1 = true;
 	}
@@ -86,7 +86,7 @@ void CollisionResolution::ResolveInterpenetration(const Contact& contact)
 	{
 		Quaternion q;
 		contact.body2->GetOrientation(&q);
-		Mathe::AddScaledVector(q, angularChange2, 1.0f);
+		Mathe::AddScaledVector(q, angularChange2, 1.0);
 		contact.body2->SetOrientation(q);
 		update2 = true;
 	}

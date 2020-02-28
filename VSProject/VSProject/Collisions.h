@@ -17,6 +17,8 @@ public:
 	void DetectFine();
 	void Resolution();
 
+	void DrawContacts();
+
 private:
 
 	std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
@@ -27,4 +29,12 @@ private:
 	std::unique_ptr<CollisionResolution2> resolution2 = std::make_unique<CollisionResolution2>();
 
 	std::vector<PotentialContact> potentialContacts;
+
+	struct ContactDisplay
+	{
+		Vector3 origin = Vector3();
+		Vector3 normal = Vector3();
+	};
+
+	ContactDisplay contactDisplays[6];
 };

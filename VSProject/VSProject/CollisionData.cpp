@@ -49,7 +49,7 @@ void Contact::CalculateContactBasisMatrices()
 	double matVals[16] = { normal.x, contactTangents[0].x, contactTangents[1].x, 0,
 					normal.y, contactTangents[0].y, contactTangents[1].y, 0,
 					normal.z, contactTangents[0].z, contactTangents[1].z, 0,
-					0, 0, 0, 1};
+					0, 0, 0, 0};
 
 	contactToWorld = Matrix(matVals);
 	worldToContact = contactToWorld.Transpose();
@@ -158,22 +158,24 @@ void Contact::ResolveContactPenetration()
 	{
 		body1->translation += normal * linearMove1;
 	}
-	if (angularChange[0].SquaredMagnitude() > 0.001f)
+	if (angularChange[0].SquaredMagnitude() > 0.01f)
 	{
 		Quaternion q;
 		body1->GetOrientation(&q);
-		Mathe::AddScaledVector(q, angularChange[0], 1.0);
+		angularChange[0] = Vector3(Mathe::ToRadians(angularChange[0].x), Mathe::ToRadians(angularChange[0].y), Mathe::ToRadians(angularChange[0].z));
+		Mathe::AddScaledVector(q, angularChange[0], 1.0/*Global::deltaTime*/);
 		body1->SetOrientation(q);
 	}
 	if (linearMove2 != 0)
 	{
 		body2->translation += normal * linearMove2;
 	}
-	if (angularChange[1].SquaredMagnitude() > 0.001f)
+	if (angularChange[1].SquaredMagnitude() > 0.01f)
 	{
 		Quaternion q;
 		body2->GetOrientation(&q);
-		Mathe::AddScaledVector(q, angularChange[1], 1.0);
+		angularChange[1] = Vector3(Mathe::ToRadians(angularChange[1].x), Mathe::ToRadians(angularChange[1].y), Mathe::ToRadians(angularChange[1].z));
+		Mathe::AddScaledVector(q, angularChange[1], 1.0/*Global::deltaTime*/);
 		body2->SetOrientation(q);
 	}
 
@@ -214,19 +216,17 @@ void Contact::ResolveContactVelocity()
 
 	velocityChange[0] = impulse * body1->rigidbody.inverseMass * normal.SumComponents();
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
-	//rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
+	rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
-
+	
 	body1->rigidbody.AddVelocityChange(velocityChange[0]);
 	body1->rigidbody.AddRotationChange(rotationChange[0]);
-
-	//if (body1->type == Primitive::Type::BOX) 
-	//	return;
 
 	if (body2->type != Primitive::Type::PLANE)
 	{
 		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -normal.SumComponents();
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
+		rotationChange[1] = Vector3(Mathe::ToRadians(rotationChange[1].x), Mathe::ToRadians(rotationChange[1].y), Mathe::ToRadians(rotationChange[1].z));
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
 		body2->rigidbody.AddVelocityChange(velocityChange[1]);

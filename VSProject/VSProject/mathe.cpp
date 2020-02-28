@@ -140,6 +140,8 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v)
 	q.j = sy * cp * sr + cy * sp * cr;
 	q.k = sy * cp * cr - cy * sp * sr;
 
+	q.Normalise();
+
 	return q;
 }
 
@@ -147,10 +149,10 @@ void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale)
 {
 	Quaternion newq(0, v.x * scale, v.y * scale, v.z * scale);
 	newq *= q;
-	q.r += newq.r * (double)0.5;
-	q.i += newq.i * (double)0.5;
-	q.j += newq.j * (double)0.5;
-	q.k += newq.k * (double)0.5;
+	q.r += newq.r * 0.5;
+	q.i += newq.i * 0.5;
+	q.j += newq.j * 0.5;
+	q.k += newq.k * 0.5;
 }
 
 void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot)

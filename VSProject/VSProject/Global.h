@@ -12,4 +12,6 @@ namespace Global
 	extern const Vector3 gravity;
 	extern const double gravityMag;
 	extern const double airDensity;
+
+	extern bool shouldUpdate;
 }
