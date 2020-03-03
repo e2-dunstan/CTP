@@ -3,14 +3,13 @@
 
 void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
-	bool finished = false;
 	numContacts = contacts.size();
 	int iterations = 0;
 	while (iterations < numContacts)
 	{
 		//Find the contact with the largest penetration therefore
 		//the most important one to resolve
-		unsigned contactIndex = iterations;//GetContactWithLargestPenetration(contacts);
+		unsigned contactIndex = iterations;// GetContactWithLargestPenetration(contacts);
 		if (contactIndex == numContacts) break; //all contacts resolved
 
 		//Match RB awake states
@@ -25,7 +24,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			if (contactIndex == i) continue;
+			//if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
@@ -58,13 +57,11 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 			}
 		}
 		iterations++;// = numContacts;
-		//finished = true;
 	}
 }
 
 void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 {
-	bool finished = false;
 	numContacts = contacts.size();
 	unsigned numIterations = 0;
 
@@ -84,7 +81,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 		Vector3 deltaVelocity;
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			if (contactIndex == i) continue;
+			//if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
@@ -128,7 +125,6 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 				}
 			}
 		}		
-		//finished = true;
 		numIterations++;// = numContacts;
 	}
 }
@@ -154,9 +150,9 @@ unsigned CollisionResolution2::GetContactWithLargestVelocityMagnitude(std::vecto
 	unsigned contactIndex = numContacts;
 	for (unsigned i = 0; i < numContacts; i++)
 	{
-		if (contacts[i].desiredDeltaVelocty > largestVelocityMag)
+		if (contacts[i].desiredDeltaVelocity > largestVelocityMag)
 		{
-			largestVelocityMag = contacts[i].desiredDeltaVelocty;
+			largestVelocityMag = contacts[i].desiredDeltaVelocity;
 			contactIndex = i;
 		}
 	}

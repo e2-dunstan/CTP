@@ -108,7 +108,7 @@ void PrimitiveManager::Draw()
 		glEnd();
 	}
 
-	if (drawContacts) collisions->DrawContacts();
+	//if (drawContacts) collisions->DrawContacts();
 }
 
 void PrimitiveManager::Update()

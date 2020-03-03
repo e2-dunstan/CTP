@@ -90,7 +90,19 @@ void Mathe::Rotate(Matrix& m, double x, double y, double z)
 
 void Mathe::Rotate(Matrix& m, const Quaternion& q)
 {
-	m(0, 0) = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
+	m.matrix[0] = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
+	m.matrix[1] = (2 * q.i * q.j) - (2 * q.r * q.k);
+	m.matrix[2] = (2 * q.i * q.k) + (2 * q.r * q.j);
+
+	m.matrix[4] = (2 * q.i * q.j) + (2 * q.r * q.k);
+	m.matrix[5] = 1 - (2 * q.i * q.i) - (2 * q.k * q.k);
+	m.matrix[6] = (2 * q.j * q.k) - (2 * q.r * q.i);
+
+	m.matrix[8] = (2 * q.i * q.k) - (2 * q.r * q.j);
+	m.matrix[9] = (2 * q.j * q.k) + (2 * q.r * q.i);
+	m.matrix[10] = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
+
+	/*m(0, 0) = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
 	m(0, 1) = (2 * q.i * q.j) - (2 * q.r * q.k);
 	m(0, 2) = (2 * q.i * q.k) + (2 * q.r * q.j);
 
@@ -100,7 +112,7 @@ void Mathe::Rotate(Matrix& m, const Quaternion& q)
 
 	m(2, 0) = (2 * q.i * q.k) - (2 * q.r * q.j);
 	m(2, 1) = (2 * q.j * q.k) + (2 * q.r * q.i);
-	m(2, 2) = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
+	m(2, 2) = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);*/
 }
 
 void Mathe::Scale(Matrix& m, double x, double y, double z)
@@ -126,7 +138,7 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v)
 	double y = ToRadians(v.y);
 	double z = ToRadians(v.z);
 
-	// yaw = z, pitch = y, roll = x
+	// yaw (y) = z, pitch (p) = y, roll (r) = x
 	double cy = cos(z * 0.5);
 	double cp = cos(y * 0.5);
 	double cr = cos(x * 0.5);
@@ -153,6 +165,8 @@ void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale)
 	q.i += newq.i * 0.5;
 	q.j += newq.j * 0.5;
 	q.k += newq.k * 0.5;
+
+	q.Normalise();
 }
 
 void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot)

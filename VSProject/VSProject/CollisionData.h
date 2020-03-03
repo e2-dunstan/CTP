@@ -6,6 +6,7 @@ class CollisionResolution2;
 
 struct Contact
 {
+	friend struct CollisionData;
 	friend class Collisions;
 	friend class CollisionResolution2;
 
@@ -38,7 +39,7 @@ protected:
 	void CalculateClosingVelocities();
 
 	void ResolveContactPenetration();
-	void ApplyAngularMoveLimit(float& linear, float& angular, const float objMag);
+	void ApplyAngularMoveLimit(float& linear, float& angular, const float projection/*const float objMag*/);
 
 	void ResolveContactVelocity();
 	Vector3 FrictionlessImpulse();
@@ -51,7 +52,7 @@ protected:
 
 	Vector3 closingVelocity = Vector3();
 
-	float desiredDeltaVelocty = 0;
+	float desiredDeltaVelocity = 0;
 
 	Vector3 relContactPos1 = Vector3();
 	Vector3 relContactPos2 = Vector3();
@@ -71,6 +72,9 @@ struct CollisionData
 	//Collision response will reference contacts.
 	std::vector<Contact> contacts = std::vector<Contact>();
 	float tolerance = 0.5f;
+
+	void SortContactsByPenetration();
+	void SortContactsByVelocityMag();
 };
 
 struct PotentialContact

@@ -20,7 +20,12 @@ void Collisions::DetectFine()
 	for (unsigned i = 0; i < potentialContacts.size(); i++)
 	{
 		if (potentialContacts[i].prim1->type == Primitive::Type::BOX && potentialContacts[i].prim2->type == Primitive::Type::BOX)
-			sat->Test(potentialContacts[i].prim1, potentialContacts[i].prim2);
+		{
+			if (potentialContacts[i].prim1->scale.SquaredMagnitude() >= potentialContacts[i].prim2->scale.SquaredMagnitude())
+				sat->Test(potentialContacts[i].prim1, potentialContacts[i].prim2);
+			else
+				sat->Test(potentialContacts[i].prim2, potentialContacts[i].prim1);
+		}
 		else
 			fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2);
 	}
@@ -38,7 +43,9 @@ void Collisions::Resolution()
 
 		data->contacts[i].PrepareResolution();
 	}
+	data->SortContactsByPenetration();
 	resolution2->PenetrationResolution(data->contacts);
+	data->SortContactsByVelocityMag();
 	resolution2->VelocityResolution(data->contacts);
 
 	data->contacts.clear();
@@ -65,10 +72,10 @@ void Collisions::DrawContacts()
 
 		glPushMatrix();
 		glTranslated(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
-		glutWireSphere(0.2, 4, 4);
+		glutWireSphere(0.15, 4, 4);
 		glPopMatrix();
 
-		//if (i == 2) Global::shouldUpdate = false;
+		//if (i == 1) Global::shouldUpdate = false;
 		glFlush();
 	}
 	

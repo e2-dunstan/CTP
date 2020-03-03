@@ -1,11 +1,12 @@
 #include "CollisionData.h"
+#include <algorithm>
 
 void Contact::PrepareResolution()
 {
 	CalculateContactBasisMatrices();
 
-	relContactPos1 = point - body1->translation;
-	relContactPos2 = point - body2->translation;
+	relContactPos1 = (point - body1->translation);// *normal.SumComponents();
+	relContactPos2 = (point - body2->translation);// *normal.SumComponents();
 
 	CalculateClosingVelocities();
 	CalculateDesiredDeltaVelocity();
@@ -62,7 +63,7 @@ void Contact::CalculateClosingVelocities()
 	//Body 1
 	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
-	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration();// *Global::deltaTime;
+	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 	Mathe::Transform(prevVelocity1, worldToContact);
 
 	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
@@ -72,7 +73,7 @@ void Contact::CalculateClosingVelocities()
 	{
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
-		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration();// *Global::deltaTime;
+		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousAcceleration() * Global::deltaTime;
 		Mathe::Transform(prevVelocity2, worldToContact);
 		prevVelocity2.x = 0; 
 
@@ -90,7 +91,7 @@ void Contact::CalculateDesiredDeltaVelocity()
 	float r = restitution;
 	if (abs(closingVelocity.x) < 0.25) r = 0.0f;
 
-	desiredDeltaVelocty = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
+	desiredDeltaVelocity = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
 }
 
 void Contact::ResolveContactPenetration()
@@ -100,6 +101,7 @@ void Contact::ResolveContactPenetration()
 	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
 	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
+	angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 	float angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
 	float linearInertia1 = body1->rigidbody.inverseMass;
@@ -115,6 +117,7 @@ void Contact::ResolveContactPenetration()
 		angularInertia_W = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularInertia_W, body2->rigidbody.inverseInertiaTensorWorld);
 		angularInertia_W = angularInertia_W.VectorProduct(relContactPos2);
+		angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 		angularInertia2 = (float)angularInertia_W.ScalarProduct(normal);
 		linearInertia2 = body2->rigidbody.inverseMass;
@@ -124,12 +127,15 @@ void Contact::ResolveContactPenetration()
 
 	//move values
 	float inverseInertia = 1.0f / totalInertia;
-	float linearMove1 = penetrationDepth * (linearInertia1 / totalInertia) * normal.SumComponents();// *2.0;
-	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia) * normal.SumComponents();// *2.0;
-	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
-	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
-	ApplyAngularMoveLimit(linearMove1, angularMove1, (float)body1->scale.SquaredMagnitude());
-	ApplyAngularMoveLimit(linearMove2, angularMove2, (float)body2->scale.SquaredMagnitude());
+	float linearMove1 = penetrationDepth * (linearInertia1 / totalInertia);// *4.0f;
+	float linearMove2 = -penetrationDepth * (linearInertia2 / totalInertia);// *4.0f;
+	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);// *2.0f;
+	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);// *2.0f;
+
+	float m = (relContactPos1 - (normal * relContactPos1.ScalarProduct(normal))).Magnitude();
+	ApplyAngularMoveLimit(linearMove1, angularMove1, m/*(float)body1->scale.SquaredMagnitude()*/);
+	m = (relContactPos2 - (normal * relContactPos2.ScalarProduct(normal))).Magnitude();
+	ApplyAngularMoveLimit(linearMove2, angularMove2, m/*(float)body2->scale.SquaredMagnitude()*/);
 
 	//Applying angular resolution
 	// 1. Calculate the rotation needed to move contact point by one unit
@@ -163,7 +169,7 @@ void Contact::ResolveContactPenetration()
 		Quaternion q;
 		body1->GetOrientation(&q);
 		angularChange[0] = Vector3(Mathe::ToRadians(angularChange[0].x), Mathe::ToRadians(angularChange[0].y), Mathe::ToRadians(angularChange[0].z));
-		Mathe::AddScaledVector(q, angularChange[0], 1.0/*Global::deltaTime*/);
+		Mathe::AddScaledVector(q, angularChange[0], 1.0);// Global::deltaTime);
 		body1->SetOrientation(q);
 	}
 	if (linearMove2 != 0)
@@ -175,25 +181,25 @@ void Contact::ResolveContactPenetration()
 		Quaternion q;
 		body2->GetOrientation(&q);
 		angularChange[1] = Vector3(Mathe::ToRadians(angularChange[1].x), Mathe::ToRadians(angularChange[1].y), Mathe::ToRadians(angularChange[1].z));
-		Mathe::AddScaledVector(q, angularChange[1], 1.0/*Global::deltaTime*/);
+		Mathe::AddScaledVector(q, angularChange[1], 1.0);// Global::deltaTime);
 		body2->SetOrientation(q);
 	}
 
 	if (body1->rigidbody.isAwake)
 	{
-		body1->orientation.Normalise();
 		body1->UpdateTransform();
+		//body1->updateTransform = true;
 	}
 	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
 	{
-		body2->orientation.Normalise();
 		body2->UpdateTransform();
+		//body2->updateTransform = true;
 	}
 }
 
-void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float objMag)
+void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float projection/*const float objMag*/)
 {
-	float angularLimit = 5.0f * objMag;
+	float angularLimit = 1.0f * projection;
 	if (abs(angular) > angularLimit)
 	{
 		float total = linear + angular;
@@ -214,7 +220,7 @@ void Contact::ResolveContactVelocity()
 
 	Mathe::Transform(impulse, contactToWorld);
 
-	velocityChange[0] = impulse * body1->rigidbody.inverseMass * normal.SumComponents();
+	velocityChange[0] = impulse * body1->rigidbody.inverseMass;// *normal.SumComponents();
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
 	rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
@@ -224,7 +230,7 @@ void Contact::ResolveContactVelocity()
 
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -normal.SumComponents();
+		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -1.0;// *-normal.SumComponents();
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
 		rotationChange[1] = Vector3(Mathe::ToRadians(rotationChange[1].x), Mathe::ToRadians(rotationChange[1].y), Mathe::ToRadians(rotationChange[1].z));
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
@@ -252,7 +258,7 @@ Vector3 Contact::FrictionlessImpulse()
 		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(normal) + body2->rigidbody.inverseMass;
 	}
 
-	return Vector3((double)desiredDeltaVelocty / (double)deltaSpeed, 0.0, 0.0);
+	return Vector3((double)desiredDeltaVelocity / (double)deltaSpeed, 0.0, 0.0);
 }
 
 Vector3 Contact::FrictionImpulse()
@@ -271,4 +277,18 @@ void Contact::MatchRigidbodyAwakeStates()
 		if (b1Awake) body2->rigidbody.SetAwake(true);
 		else body1->rigidbody.SetAwake(true);
 	}
+}
+
+void CollisionData::SortContactsByPenetration()
+{
+	std::sort(contacts.begin(), contacts.end(),
+		[](Contact const& a, Contact const& b) -> bool
+		{ return a.penetrationDepth > b.penetrationDepth; });
+}
+
+void CollisionData::SortContactsByVelocityMag()
+{
+	std::sort(contacts.begin(), contacts.end(), 
+		[](Contact const& a, Contact const& b) -> bool
+		{ return a.desiredDeltaVelocity > b.desiredDeltaVelocity; });
 }

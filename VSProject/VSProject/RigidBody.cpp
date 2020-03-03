@@ -17,6 +17,7 @@ bool RigidBody::PhysicsUpdate()
 	prevVelocity = velocity;
 
 	angularAcceleration = torqueAccumulation;
+	angularAcceleration = Vector3(Mathe::ToRadians(angularAcceleration.x), Mathe::ToRadians(angularAcceleration.y), Mathe::ToRadians(angularAcceleration.z));
 	Mathe::Transform(angularAcceleration, inverseInertiaTensorWorld);
 
 	velocity += prevAcceleration * Global::deltaTime;

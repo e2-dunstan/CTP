@@ -2,7 +2,7 @@
 
 void Primitive::Start()
 {
-	rigidbody.inverseMass = 1.0f / scale.Magnitude();
+	rigidbody.inverseMass = 3.0f / scale.SumComponents();
 	CalculateInertiaTensor();
 	rigidbody.Start();
 }
@@ -14,8 +14,7 @@ void Primitive::Update()
 	if (rigidbody.PhysicsUpdate())
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
-		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);//Global::deltaTime * Global::deltaTime);
-		orientation.Normalise();
+		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);
 		//UpdateTransform();
 		updateTransform = true;
 
@@ -62,7 +61,7 @@ void Primitive::Draw()
 void Primitive::CalculateInertiaTensor()
 {
 	double matVals[16] = { 0 };
-	//matVals[15] = 1.0;
+	matVals[15] = 1.0;
 	switch (type)
 	{
 	case Type::BOX:
@@ -96,7 +95,7 @@ void Primitive::CalculateInertiaTensor()
 	}
 
 	rigidbody.inverseInertiaTensor = Matrix(matVals);
-	rigidbody.inverseInertiaTensor.Inverse3x3();
+	rigidbody.inverseInertiaTensor.Inverse4x4();
 }
 
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
@@ -135,6 +134,7 @@ void Primitive::UpdateTransform()
 	Mathe::Rotate(transform, orientation);
 
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, transform);
+
 	collisionVolume.axisMat = transform;
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);

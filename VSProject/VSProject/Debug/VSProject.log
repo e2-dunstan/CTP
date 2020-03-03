@@ -1,7 +1,7 @@
-﻿  SeparatingAxisTheorem.cpp
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(158,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(159,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(182,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(226,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(231,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+﻿  Engine.cpp
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
+D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(61,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(80,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe
