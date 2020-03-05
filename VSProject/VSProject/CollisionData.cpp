@@ -3,6 +3,31 @@
 
 void Contact::PrepareResolution()
 {
+	//find restitution
+	switch (bounceCombineType)
+	{
+		case BounceCombineType::MAXIMUM:
+		{
+			restitution = std::max(body1->rigidbody.bounciness, body2->rigidbody.bounciness);
+			break;
+		}
+		case BounceCombineType::MULTIPLY:
+		{
+			restitution = body1->rigidbody.bounciness * body2->rigidbody.bounciness;
+			break;
+		}
+		case BounceCombineType::MINIMUM:
+		{
+			restitution = std::min(body1->rigidbody.bounciness, body2->rigidbody.bounciness);
+			break;
+		}
+		case BounceCombineType::AVERAGE:
+		{
+			restitution = (body1->rigidbody.bounciness + body2->rigidbody.bounciness) * 0.5f;
+			break;
+		}
+	}
+
 	CalculateContactBasisMatrices();
 
 	relContactPos1 = (point - body1->translation);// *normal.SumComponents();
@@ -83,13 +108,14 @@ void Contact::CalculateClosingVelocities()
 
 void Contact::CalculateDesiredDeltaVelocity()
 {
-	double bodiesVelocity = body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal);// *Global::deltaTime;
+	double bodiesVelocity = abs(body1->rigidbody.GetPreviousAcceleration().ScalarProduct(normal));// *Global::deltaTime;
 	if (body2->type != Primitive::Type::PLANE)
 	{
-		bodiesVelocity -= body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal);// *Global::deltaTime;
+		bodiesVelocity -= abs(body2->rigidbody.GetPreviousAcceleration().ScalarProduct(normal));// *Global::deltaTime;
 	}
 	float r = restitution;
-	if (abs(closingVelocity.x) < 0.25) r = 0.0f;
+	if (abs(closingVelocity.x) < 3.5) 
+		r = 0.0f;
 
 	desiredDeltaVelocity = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
 }
@@ -187,13 +213,13 @@ void Contact::ResolveContactPenetration()
 
 	if (body1->rigidbody.isAwake)
 	{
-		body1->UpdateTransform();
-		//body1->updateTransform = true;
+		//body1->UpdateTransform();
+		body1->updateTransform = true;
 	}
 	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
 	{
-		body2->UpdateTransform();
-		//body2->updateTransform = true;
+		//body2->UpdateTransform();
+		body2->updateTransform = true;
 	}
 }
 

@@ -21,6 +21,7 @@ struct RigidBody
 	const float linearDrag = 0.5f;
 	const float angularDrag = 0.05f;
 	float friction = 0.0f;
+	float bounciness = 0.0f; // 0 = not at all bouncy, 1 = no loss of energy so very bouncy
 
 	bool isKinematic = false;
 	bool useGravity = true;

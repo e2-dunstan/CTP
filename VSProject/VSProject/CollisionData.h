@@ -4,6 +4,11 @@
 class Collisions;
 class CollisionResolution2;
 
+enum class BounceCombineType
+{
+	MAXIMUM, MULTIPLY, MINIMUM, AVERAGE
+};
+
 struct Contact
 {
 	friend struct CollisionData;
@@ -34,9 +39,6 @@ public:
 
 protected:
 	void PrepareResolution();
-	void CalculateContactBasisMatrices();
-	void CalculateDesiredDeltaVelocity();
-	void CalculateClosingVelocities();
 
 	void ResolveContactPenetration();
 	void ApplyAngularMoveLimit(float& linear, float& angular, const float projection/*const float objMag*/);
@@ -47,12 +49,10 @@ protected:
 
 	void MatchRigidbodyAwakeStates();
 
-	Matrix contactToWorld = Matrix();
 	Matrix worldToContact = Matrix();
 
 	Vector3 closingVelocity = Vector3();
 
-	float desiredDeltaVelocity = 0;
 
 	Vector3 relContactPos1 = Vector3();
 	Vector3 relContactPos2 = Vector3();
@@ -62,6 +62,17 @@ protected:
 
 	Vector3 velocityChange[2] = { Vector3(), Vector3() };
 	Vector3 rotationChange[2] = { Vector3(), Vector3() };
+
+private:
+	void CalculateContactBasisMatrices();
+	void CalculateDesiredDeltaVelocity();
+	void CalculateClosingVelocities();
+
+	float desiredDeltaVelocity = 0;
+	Matrix contactToWorld = Matrix();
+
+	BounceCombineType bounceCombineType = BounceCombineType::AVERAGE;
+
 };
 
 struct CollisionData

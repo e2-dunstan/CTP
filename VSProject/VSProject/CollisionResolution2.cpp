@@ -4,14 +4,9 @@
 void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
-	int iterations = 0;
-	while (iterations < numContacts)
-	{
-		//Find the contact with the largest penetration therefore
-		//the most important one to resolve
-		unsigned contactIndex = iterations;// GetContactWithLargestPenetration(contacts);
-		if (contactIndex == numContacts) break; //all contacts resolved
 
+	for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
+	{
 		//Match RB awake states
 		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
 		{
@@ -56,20 +51,15 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				}
 			}
 		}
-		iterations++;// = numContacts;
 	}
 }
 
 void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
-	unsigned numIterations = 0;
 
-	while (numIterations < numContacts)
+	for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
 	{
-		unsigned contactIndex = numIterations;//GetContactWithLargestVelocityMagnitude(contacts);
-		if (contactIndex == numContacts) break; //all contacts resolved
-
 		//Match RB awake states
 		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
 		{
@@ -125,36 +115,36 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 				}
 			}
 		}		
-		numIterations++;// = numContacts;
 	}
 }
 
-unsigned CollisionResolution2::GetContactWithLargestPenetration(std::vector<Contact>& contacts)
-{
-	float largestPenetration = minPositionChange;
-	unsigned contactIndex = numContacts;
-	for (unsigned i = 0; i < numContacts; i++)
-	{
-		if (contacts[i].penetrationDepth > largestPenetration)
-		{
-			largestPenetration = contacts[i].penetrationDepth;
-			contactIndex = i;
-		}
-	}
-	return contactIndex;
-}
-
-unsigned CollisionResolution2::GetContactWithLargestVelocityMagnitude(std::vector<Contact>& contacts)
-{
-	float largestVelocityMag = minVelocityChange;
-	unsigned contactIndex = numContacts;
-	for (unsigned i = 0; i < numContacts; i++)
-	{
-		if (contacts[i].desiredDeltaVelocity > largestVelocityMag)
-		{
-			largestVelocityMag = contacts[i].desiredDeltaVelocity;
-			contactIndex = i;
-		}
-	}
-	return contactIndex;
-}
+//Now handled by collision data
+//unsigned CollisionResolution2::GetContactWithLargestPenetration(std::vector<Contact>& contacts)
+//{
+//	float largestPenetration = minPositionChange;
+//	unsigned contactIndex = numContacts;
+//	for (unsigned i = 0; i < numContacts; i++)
+//	{
+//		if (contacts[i].penetrationDepth > largestPenetration)
+//		{
+//			largestPenetration = contacts[i].penetrationDepth;
+//			contactIndex = i;
+//		}
+//	}
+//	return contactIndex;
+//}
+//
+//unsigned CollisionResolution2::GetContactWithLargestVelocityMagnitude(std::vector<Contact>& contacts)
+//{
+//	float largestVelocityMag = minVelocityChange;
+//	unsigned contactIndex = numContacts;
+//	for (unsigned i = 0; i < numContacts; i++)
+//	{
+//		if (contacts[i].desiredDeltaVelocity > largestVelocityMag)
+//		{
+//			largestVelocityMag = contacts[i].desiredDeltaVelocity;
+//			contactIndex = i;
+//		}
+//	}
+//	return contactIndex;
+//}

@@ -75,7 +75,7 @@ void Collisions::DrawContacts()
 		glutWireSphere(0.15, 4, 4);
 		glPopMatrix();
 
-		//if (i == 1) Global::shouldUpdate = false;
+		//Global::shouldUpdate = false;
 		glFlush();
 	}
 	

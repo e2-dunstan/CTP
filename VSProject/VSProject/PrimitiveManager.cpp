@@ -20,8 +20,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 	case Primitive::Type::BOX:
 		newObj = new Primitive(ShapeVertices::GetCubeVertices());
 		newObj->collisionVolume.Create(CollisionVolume::Type::BOX, translation, 0, scale, orientation, Vector3());
-		//if ((int)translation.y == 20) 
-		//	newObj->rigidbody.inverseMass *= 2;
+		newObj->rigidbody.bounciness = 0.1f;
 		break;
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
@@ -34,6 +33,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 	case Primitive::Type::SPHERE:
 		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
 		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, orientation, Vector3());
+		newObj->rigidbody.bounciness = 0.4f;
 		break;
 	case Primitive::Type::CAPSULE:
 		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9), radius);
@@ -108,7 +108,7 @@ void PrimitiveManager::Draw()
 		glEnd();
 	}
 
-	//if (drawContacts) collisions->DrawContacts();
+	if (drawContacts) collisions->DrawContacts();
 }
 
 void PrimitiveManager::Update()

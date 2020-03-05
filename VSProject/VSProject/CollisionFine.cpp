@@ -160,6 +160,8 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3& sph
 	distance = (closestPoint - relCentre).Magnitude();
 	if (distance > (double)radius * (double)radius) return;	//not in contact
 	
+	Mathe::Transform(closestPoint, box->collisionVolume.axisMat);
+
 	Contact contact(sphere, box);
 	contact.normal = (spherePosition - closestPoint).Normalise();
 	contact.point = closestPoint;
