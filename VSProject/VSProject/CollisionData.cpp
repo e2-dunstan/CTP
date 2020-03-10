@@ -130,7 +130,7 @@ void Contact::ResolveContactPenetration()
 	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
 	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
-	angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
+	//angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 	float angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
 	float linearInertia1 = body1->rigidbody.inverseMass;
@@ -146,7 +146,7 @@ void Contact::ResolveContactPenetration()
 		angularInertia_W = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularInertia_W, body2->rigidbody.inverseInertiaTensorWorld);
 		angularInertia_W = angularInertia_W.VectorProduct(relContactPos2);
-		angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
+		//angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 		angularInertia2 = (float)angularInertia_W.ScalarProduct(normal);
 		linearInertia2 = body2->rigidbody.inverseMass;
@@ -161,9 +161,9 @@ void Contact::ResolveContactPenetration()
 	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
 	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
 
-	float m = (relContactPos1 - (normal * relContactPos1.ScalarProduct(normal))).Magnitude();
+	float m = (relContactPos1 - (normal * relContactPos1.ScalarProduct(normal))).SquaredMagnitude();
 	ApplyAngularMoveLimit(linearMove1, angularMove1, m/*(float)body1->scale.SquaredMagnitude()*/);
-	m = (relContactPos2 - (normal * relContactPos2.ScalarProduct(normal))).Magnitude();
+	m = (relContactPos2 - (normal * relContactPos2.ScalarProduct(normal))).SquaredMagnitude();
 	ApplyAngularMoveLimit(linearMove2, angularMove2, m/*(float)body2->scale.SquaredMagnitude()*/);
 
 	//Applying angular resolution
@@ -224,11 +224,6 @@ void Contact::ResolveContactPenetration()
 	{
 		body2->updateTransform = true;
 	}
-	//if (!body1->rigidbody.isAwake)
-	//	body1->UpdateTransform();
-	//if (!body2->rigidbody.isAwake)
-	//	body2->UpdateTransform();
-	//std::cout << linearMove1 << ", " << linearMove2 << std::endl;
 	if (linearMove1 > 0.8f || linearMove2 < -0.8f)
 		std::cout << "WARNING: large linear change detected: linear move 1 - " << linearMove1 << ", linear move 2 - " << linearMove2 << std::endl;
 }
@@ -236,8 +231,10 @@ void Contact::ResolveContactPenetration()
 void Contact::ApplyAngularMoveLimit(float& linear, float& angular, const float projection/*const float objMag*/)
 {
 	float angularLimit = 1.0f * projection;
+	if (angularLimit == 0) angularLimit = 1.0f;
 	if (abs(angular) > angularLimit)
 	{
+		std::cout << "WARNING: angular limit (" << angularLimit << ") reached with value of " << abs(angular) << std::endl;
 		float total = linear + angular;
 
 		if (angular >= 0) angular = angularLimit;
@@ -258,7 +255,7 @@ void Contact::ResolveContactVelocity()
 
 	velocityChange[0] = impulse * body1->rigidbody.inverseMass;// *normal.SumComponents();
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
-	rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
+	//rotationChange[0] = Vector3(Mathe::ToRadians(rotationChange[0].x), Mathe::ToRadians(rotationChange[0].y), Mathe::ToRadians(rotationChange[0].z));
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 	
 	body1->rigidbody.AddVelocityChange(velocityChange[0]);
@@ -268,7 +265,7 @@ void Contact::ResolveContactVelocity()
 	{
 		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -1.0;// *-normal.SumComponents();
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
-		rotationChange[1] = Vector3(Mathe::ToRadians(rotationChange[1].x), Mathe::ToRadians(rotationChange[1].y), Mathe::ToRadians(rotationChange[1].z));
+		//rotationChange[1] = Vector3(Mathe::ToRadians(rotationChange[1].x), Mathe::ToRadians(rotationChange[1].y), Mathe::ToRadians(rotationChange[1].z));
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
 		body2->rigidbody.AddVelocityChange(velocityChange[1]);

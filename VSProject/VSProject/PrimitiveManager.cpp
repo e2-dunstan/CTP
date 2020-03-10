@@ -20,7 +20,7 @@ void PrimitiveManager::Create(Primitive::Type type,
 	case Primitive::Type::BOX:
 		newObj = new Primitive(ShapeVertices::GetCubeVertices());
 		newObj->collisionVolume.Create(CollisionVolume::Type::BOX, translation, 0, scale, orientation, Vector3());
-		newObj->rigidbody.bounciness = 0.4f;
+		newObj->rigidbody.bounciness = 0.1f;
 		break;
 	case Primitive::Type::PLANE:
 		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
@@ -113,51 +113,27 @@ void PrimitiveManager::Draw()
 
 void PrimitiveManager::Update()
 {
+	unsigned primSize = primitives.size();
 	//Moves objects to illustrate collision detection.
 	//primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
 
-	for (unsigned i = 0; i < primitives.size(); i++)
+	for (unsigned i = 0; i < primSize; i++)
 	{
 		primitives[i].Update();
 		primitives[i].colliding = false;
 	}
 
 	//Custom define which objects to detect collisions between.
-	//Plane
-	collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	collisions->DetectCoarse(&primitives[0], &primitives[2]);
-	collisions->DetectCoarse(&primitives[0], &primitives[3]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[4]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[5]);
-	//collisions->DetectCoarse(&primitives[0], &primitives[6]);
-	//Box1													
-	collisions->DetectCoarse(&primitives[1], &primitives[2]);
-	collisions->DetectCoarse(&primitives[1], &primitives[3]);
-	//collisions->DetectCoarse(&primitives[1], &primitives[4]);
-	//collisions->DetectCoarse(&primitives[1], &primitives[5]);
-	//collisions->DetectCoarse(&primitives[1], &primitives[6]);
-	//Box2													
-	collisions->DetectCoarse(&primitives[2], &primitives[3]);
-	//collisions->DetectCoarse(&primitives[2], &primitives[4]);
-	//collisions->DetectCoarse(&primitives[2], &primitives[5]);
-	//collisions->DetectCoarse(&primitives[2], &primitives[6]);
-	////Box3												
-	//collisions->DetectCoarse(&primitives[3], &primitives[4]);
-	//collisions->DetectCoarse(&primitives[3], &primitives[5]);
-	//collisions->DetectCoarse(&primitives[3], &primitives[6]);
-	////Sphere
-	//collisions->DetectCoarse(&primitives[4], &primitives[5]);
-	//collisions->DetectCoarse(&primitives[4], &primitives[6]);
-	////Capsule
-	//collisions->DetectCoarse(&primitives[5], &primitives[6]);
-
-	//Check plane collisions
-	//for (unsigned i = 1; i < primitives.size(); i++)
-	//{
-	//	collisions->DetectCoarse(&primitives[0], &primitives[1]);
-	//}
 		
 	//octTree->TestCollisions(*octTree->root, *collisions.get());
+
+	for (unsigned i = 0; i < primSize; i++)
+	{
+		for (unsigned j = i + 1; j < primSize; j++)
+		{
+			collisions->DetectCoarse(&primitives[i], &primitives[j]);
+		}
+	}
 
 	collisions->DetectFine();
 	collisions->Resolution();
