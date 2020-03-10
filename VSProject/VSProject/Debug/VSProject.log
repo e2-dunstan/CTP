@@ -1,4 +1,7 @@
-﻿  CollisionData.cpp
-D:\Ellie\CTP\VSProject\VSProject\CollisionData.cpp(161,10): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\CollisionData.cpp(163,82): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+﻿  SeparatingAxisTheorem.cpp
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(158,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(159,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(182,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(228,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(233,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

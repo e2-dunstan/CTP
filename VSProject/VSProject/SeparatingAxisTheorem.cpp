@@ -197,7 +197,7 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	//Vector3 referenceMax = Vector3();
 	//SetReferenceMinMax(referenceNormal, box1->collisionVolume.halfSize, referenceMin, referenceMax);
 
-	//bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
+	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
 
 	Vector3 incidentVertices[4] = { Vector3() };
 
@@ -221,7 +221,7 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 	Vector3 contactPoint = Vector3();
 	unsigned numContactPoints = 0;
 
-	bool mergeContacts = true;
+	bool mergeContacts = false;
 	normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
 
 	//only keep vertices below the reference plane
@@ -232,19 +232,19 @@ void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& to
 		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
 		float clipped = abs(clippedVertices[v].ScalarProduct(referenceNormal));
 
-		if (clipped < relBox)
+		if (clipped < relBox) 
 		{
 			if (!mergeContacts)
 			{
 				Contact contact(box1, box2);
 				contact.normal = normal;
-				contact.penetrationDepth = relBox - clipped;// clippedVertices[v].ScalarProduct(normal);
+				contact.penetrationDepth = (box1Above2 ? clipped : (relBox - clipped));// clippedVertices[v].ScalarProduct(normal);
 				contact.point = clippedVertices[v];
 				contacts.push_back(contact);
 			}
 			else
 			{
-				pen += relBox - clipped;
+				pen += (box1Above2 ? clipped : (relBox - clipped));
 				contactPoint += clippedVertices[v];
 				numContactPoints++;
 			}

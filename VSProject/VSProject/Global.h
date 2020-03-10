@@ -5,6 +5,7 @@ namespace Global
 {
 	//time
 	extern double deltaTime;
+	extern const double fixedDeltaTime;
 	//double GetDeltaTime();
 	//void SetDeltaTime(const double d);
 

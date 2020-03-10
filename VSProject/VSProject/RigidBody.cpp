@@ -9,7 +9,12 @@ void RigidBody::Start()
 
 bool RigidBody::PhysicsUpdate()
 {
-	if (!isAwake || isKinematic) return false;
+	if (!isAwake || isKinematic)
+	{
+		//velocity = Vector3();
+		//angularVelocity = Vector3();
+		return false;
+	}
 
 	prevAcceleration = acceleration;
 	prevAcceleration += forceAccumulation * inverseMass;
@@ -144,7 +149,7 @@ Vector3 RigidBody::GetPreviousVelocity()
 	return prevVelocity;
 }
 
-Vector3 RigidBody::GetPreviousAcceleration()
-{
-	return prevAcceleration;
-}
+//Vector3 RigidBody::GetPreviousAcceleration()
+//{
+//	return prevAcceleration;
+//}

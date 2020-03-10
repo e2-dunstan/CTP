@@ -5,8 +5,9 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
 
-	for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
+	for (unsigned i = 0; i < numContacts; i++)
 	{
+		unsigned contactIndex = i % numContacts; //to allow for multiple iterations
 		//Match RB awake states
 		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
 		{
@@ -19,20 +20,19 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			//if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[1]
 						+ contacts[contactIndex].angularChange[1].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 			if (contacts[i].body2->type != Primitive::Type::PLANE)
@@ -41,13 +41,13 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[1]
 						+ contacts[contactIndex].angularChange[1].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 		}
@@ -58,8 +58,9 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
 
-	for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
+	for (unsigned i = 0; i < numContacts; i++)
 	{
+		unsigned contactIndex = i % numContacts;
 		//Match RB awake states
 		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
 		{
@@ -68,28 +69,28 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 
 		contacts[contactIndex].ResolveContactVelocity();
 
+		//continue;
 		Vector3 deltaVelocity;
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			//if (contactIndex == i) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
 					deltaVelocity = contacts[contactIndex].velocityChange[0]
 						+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos1);
-					Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(additionalVel, contacts[i].worldToContact);
-					contacts[i].closingVelocity -= additionalVel;
+					//Vector3 additionalVel = deltaVelocity;
+					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					contacts[i].closingVelocity += deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
 					deltaVelocity = contacts[contactIndex].velocityChange[1]
 						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
-					Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(additionalVel, contacts[i].worldToContact);
-					contacts[i].closingVelocity -= additionalVel;
+					//Vector3 additionalVel = deltaVelocity;
+					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					contacts[i].closingVelocity += deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}
@@ -97,20 +98,20 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
-					deltaVelocity = contacts[contactIndex].velocityChange[1]
-						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
-					Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(additionalVel, contacts[i].worldToContact);
-					contacts[i].closingVelocity += additionalVel;
+					deltaVelocity = contacts[contactIndex].velocityChange[0]
+						+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
+					//Vector3 additionalVel = deltaVelocity;
+					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					contacts[i].closingVelocity -= deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
 					deltaVelocity = contacts[contactIndex].velocityChange[1]
 						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
-					Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(additionalVel, contacts[i].worldToContact);
-					contacts[i].closingVelocity += additionalVel;
+					//Vector3 additionalVel = deltaVelocity;
+					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					contacts[i].closingVelocity -= deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}

@@ -18,8 +18,8 @@ struct RigidBody
 	//Inverse is used to avoid division by 0
 	float inverseMass = 1.0f / 1.0f;
 	//Drag is a percentage so 1.0f is a lot and 0.0f is none
-	const float linearDrag = 0.5f;
-	const float angularDrag = 0.05f;
+	const float linearDrag = 0.75f;
+	const float angularDrag = 0.01f;
 	float friction = 0.0f;
 	float bounciness = 0.0f; // 0 = not at all bouncy, 1 = no loss of energy so very bouncy
 
@@ -47,7 +47,7 @@ struct RigidBody
 	bool canSleep = true;
 
 	Vector3 GetPreviousVelocity();
-	Vector3 GetPreviousAcceleration();
+	//Vector3 GetPreviousAcceleration();
 
 private:
 	Vector3 prevVelocity = Vector3();
@@ -59,5 +59,5 @@ private:
 
 	double terminalSpeed = 10000;
 
-	const double sleepThreshold = 0.5;
+	const double sleepThreshold = 1.5;
 };

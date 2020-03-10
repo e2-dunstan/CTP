@@ -30,7 +30,7 @@ private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 	std::unique_ptr<RayCast> rayCast = std::make_unique<RayCast>();
 
-	bool drawContacts = true;
+	bool drawContacts = false;
 
 	std::vector<Primitive> primitives;
 

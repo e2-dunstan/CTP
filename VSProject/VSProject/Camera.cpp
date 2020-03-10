@@ -10,8 +10,7 @@ the right hand. Indeed, these letters are on the left-hand side of
 the keyboard and offer a configuration similar to the arrow pad's one.
 */
 
-Camera::Camera(KEYBOARD p_keyboard, float p_X, float p_Y, float p_Z, float p_psi, float p_theta, float p_rotation_speed, float p_translation_speed, int p_window_width, int p_window_height) :
-	keyboard(p_keyboard),
+Camera::Camera(float p_X, float p_Y, float p_Z, float p_psi, float p_theta, float p_rotation_speed, float p_translation_speed, int p_window_width, int p_window_height) :
 	X(p_X),
 	Y(p_Y),
 	Z(p_Z),
@@ -23,20 +22,10 @@ Camera::Camera(KEYBOARD p_keyboard, float p_X, float p_Y, float p_Z, float p_psi
 	translation_speed(p_translation_speed),
 	time(0) {
 	for (int i = 0; i < 255; i++) { keys[i] = false; }
-	switch (keyboard) {
-	case KEYBOARD::AZERTY:
-		key_map[DIR::FORWARD] = static_cast<int>('z');
-		key_map[DIR::BACKWARD] = static_cast<int>('s');
-		key_map[DIR::LEFT] = static_cast<int>('q');
-		key_map[DIR::RIGHT] = static_cast<int>('d');
-		break;
-	case KEYBOARD::QWERTY:
-		key_map[DIR::FORWARD] = static_cast<int>('w');
-		key_map[DIR::BACKWARD] = static_cast<int>('s');
-		key_map[DIR::LEFT] = static_cast<int>('a');
-		key_map[DIR::RIGHT] = static_cast<int>('d');
-		break;
-	}
+	//key_map[DIR::FORWARD] = static_cast<int>('w');
+	//key_map[DIR::BACKWARD] = static_cast<int>('s');
+	//key_map[DIR::LEFT] = static_cast<int>('a');
+	//key_map[DIR::RIGHT] = static_cast<int>('d');
 }
 
 /*
@@ -62,21 +51,21 @@ and the elapsed time since the last function call.
 void Camera::translation() {
 	float t = static_cast<float>(glutGet(GLUT_ELAPSED_TIME) - time);
 	time = glutGet(GLUT_ELAPSED_TIME);
-	if (keys[key_map[DIR::FORWARD]]) {
+	if (keys[static_cast<int>('w')]) {
 		X += sin(theta) * sin(psi) * translation_speed * t;
 		Y += cos(psi) * translation_speed * t;
 		Z += cos(theta) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[DIR::BACKWARD]]) {
+	if (keys[static_cast<int>('s')]) {
 		X -= sin(theta) * sin(psi) * translation_speed * t;
 		Y -= cos(psi) * translation_speed * t;
 		Z -= cos(theta) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[DIR::LEFT]]) {
+	if (keys[static_cast<int>('a')]) {
 		X -= sin(theta - M_PI / 2) * sin(psi) * translation_speed * t;
 		Z -= cos(theta - M_PI / 2) * sin(psi) * translation_speed * t;
 	}
-	if (keys[key_map[DIR::RIGHT]]) {
+	if (keys[static_cast<int>('d')]) {
 		X -= sin(theta + M_PI / 2) * sin(psi) * translation_speed * t;
 		Z -= cos(theta + M_PI / 2) * sin(psi) * translation_speed * t;
 	}

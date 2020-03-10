@@ -162,10 +162,14 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3& sph
 	
 	Mathe::Transform(closestPoint, box->collisionVolume.axisMat);
 
+	Vector3 normal = (spherePosition - closestPoint).Normalise();
+	//if (spherePosition.ScalarProduct(normal) > box->collisionVolume.centre.ScalarProduct(normal))
+	//	normal *= -1.0;
+
 	Contact contact(sphere, box);
-	contact.normal = (spherePosition - closestPoint).Normalise();
+	contact.normal = normal;
 	contact.point = closestPoint;
-	contact.penetrationDepth = radius - (float)sqrt(distance);
+	contact.penetrationDepth = radius - (float)distance;
 	contacts.push_back(contact);	
 }
 
@@ -225,16 +229,32 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 		return;
 	}
 
-	Contact mergedContact(box, plane);
-	mergedContact.normal = normal;
-	for (unsigned i = 0; i < numContacts; i++)
+	bool mergeContacts = true;
+
+	if (mergeContacts)
 	{
-		contactPoints[i].weighting = contactPoints[i].penetration / totalPenetration;
-		mergedContact.point += contactPoints[i].point * contactPoints[i].weighting;
-		mergedContact.penetrationDepth += contactPoints[i].penetration;
+		Contact mergedContact(box, plane);
+		mergedContact.normal = normal;
+		for (unsigned i = 0; i < numContacts; i++)
+		{
+			contactPoints[i].weighting = contactPoints[i].penetration / totalPenetration;
+			mergedContact.point += contactPoints[i].point * contactPoints[i].weighting;
+			mergedContact.penetrationDepth += contactPoints[i].penetration;
+		}
+		mergedContact.penetrationDepth /= (float)numContacts;
+		contacts.push_back(mergedContact);
 	}
-	mergedContact.penetrationDepth /= (float)numContacts;
-	contacts.push_back(mergedContact);
+	else
+	{
+		for (unsigned i = 0; i < numContacts; i++)
+		{
+			Contact contact(box, plane);
+			contact.point = contactPoints[i].point;
+			contact.penetrationDepth = contactPoints[i].penetration;
+			contact.normal = normal;
+			contacts.push_back(contact);
+		}
+	}
 }
 
 void CollisionFine::CylinderAndPlane(Primitive* cyl, Primitive* plane)

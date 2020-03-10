@@ -32,7 +32,7 @@ namespace
 	bool mouseHeld = false;
 
 	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(Camera::KEYBOARD::QWERTY, 0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 	std::unique_ptr<ConsoleControls> consoleControls = std::make_unique<ConsoleControls>(/*engine.get()*/);
 
 	//in miliseconds
@@ -41,6 +41,10 @@ namespace
 
 	bool beginUpdate = false;
 	//double deltaTimeDebug = 0;
+
+	int numPhysicsUpdatesPerSecond = 0;
+
+	float playbackSpeed = 1.0f;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -137,7 +141,7 @@ void render()
 {
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
+	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) * playbackSpeed / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
 	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 2000) //wait 2 seconds before updating
@@ -170,13 +174,23 @@ void timer(int)
 {
 	glutPostRedisplay();
 
-	if (beginUpdate && Global::shouldUpdate) engine->Update();
+	if (beginUpdate && Global::shouldUpdate)
+	{
+		engine->Update();
+		//numPhysicsUpdatesPerSecond++;
+	}
 
-	//60 fps
-	glutTimerFunc(1000 / 60, timer, 0);
-	
+	glutTimerFunc(Global::fixedDeltaTime, timer, 0);
 }
 
+//displays number of update calls per frame
+void physicsUpdateCounter(int)
+{
+	glutPostRedisplay();
+	std::cout << "Number of physics updates: " << numPhysicsUpdatesPerSecond << std::endl;
+	numPhysicsUpdatesPerSecond = 0;
+	glutTimerFunc(1000, physicsUpdateCounter, 0);
+} 
 
 
 int main(int argc, char* argv[]) {
@@ -196,6 +210,7 @@ int main(int argc, char* argv[]) {
 	glutDisplayFunc(render);
 
 	glutTimerFunc(0, timer, 0);
+	//glutTimerFunc(0, physicsUpdateCounter, 0);
 
 	// Very important!  This initializes the entry points in the OpenGL driver so we can 
 	// call all the functions in the API.

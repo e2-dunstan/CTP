@@ -2,7 +2,7 @@
 
 void Primitive::Start()
 {
-	rigidbody.inverseMass = 3.0f / scale.SumComponents();
+	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 3.0);
 	CalculateInertiaTensor();
 	rigidbody.Start();
 }
