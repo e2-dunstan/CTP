@@ -1,12 +1,12 @@
 #include "BoundingVolume.h"
 
 
-BoundingVolume::BoundingVolume(const std::vector<Vertex>& _vertices, Matrix& _transform)
+BoundingVolume::BoundingVolume(const std::vector<Vertex>& _vertices, Matrix4& _transform)
 {
 	Generate(_vertices, _transform);
 }
 
-void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix& _transform)
+void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix4& _transform)
 {
 	min = Vector3(10000, 10000, 10000);
 	max = Vector3(-10000, -10000, -10000);
@@ -25,13 +25,13 @@ void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix& _tra
 		if (vert.z > max.z) max.z = vert.z;
 	}												 
 
-	halfSize = Vector3((max.x - min.x) / 2.0,
-					   (max.y - min.y) / 2.0,
-					   (max.z - min.z) / 2.0);
+	//halfSize = Vector3((max.x - min.x) / 2.0,
+	//				   (max.y - min.y) / 2.0,
+	//				   (max.z - min.z) / 2.0);
 
-	centre = Vector3(min.x + halfSize.x,
-					 min.y + halfSize.y,
-					 min.z + halfSize.z);
+	//centre = Vector3(min.x + halfSize.x,
+	//				 min.y + halfSize.y,
+	//				 min.z + halfSize.z);
 
 }
 

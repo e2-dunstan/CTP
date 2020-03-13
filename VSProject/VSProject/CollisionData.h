@@ -49,7 +49,7 @@ protected:
 
 	void MatchRigidbodyAwakeStates();
 
-	Matrix worldToContact = Matrix();
+	Matrix3 worldToContact = Matrix3();
 
 	Vector3 closingVelocity = Vector3();
 
@@ -69,7 +69,7 @@ private:
 	void CalculateClosingVelocities();
 
 	float desiredDeltaVelocity = 0;
-	Matrix contactToWorld = Matrix();
+	Matrix3 contactToWorld = Matrix3();
 
 	BounceCombineType bounceCombineType = BounceCombineType::AVERAGE;
 
@@ -95,6 +95,6 @@ struct PotentialContact
 		: prim1(_p1), prim2(_p2) {};
 	~PotentialContact() = default;
 
-	Primitive* prim1;
-	Primitive* prim2;
+	Primitive* prim1 = nullptr;
+	Primitive* prim2 = nullptr;
 };

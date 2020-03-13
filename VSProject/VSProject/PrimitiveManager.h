@@ -4,7 +4,7 @@
 #include "RayCast.h"
 //#include "OctTree.h"
 
-class OctTree;
+//class OctTree;
 
 class PrimitiveManager
 {

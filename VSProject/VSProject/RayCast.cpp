@@ -73,11 +73,11 @@ bool RayCast::TestSphere(const Vector3& centre, const float radius, Ray& ray)
 }
 
 //Similar to SAT
-bool RayCast::TestBox(const Vector3& scale, const Matrix& transform, Ray& ray)
+bool RayCast::TestBox(const Vector3& scale, const Matrix4& transform, Ray& ray)
 {
-	Matrix inverse = transform;
+	Matrix4 inverse = transform;
 	//inverse = inverse.Transpose();
-	inverse.Inverse4x4();
+	inverse.Inverse();
 
 	//Get ray relative to box
 	Vector3 rayOriginAA = ray.origin;

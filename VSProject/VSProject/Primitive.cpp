@@ -14,7 +14,7 @@ void Primitive::Update()
 	if (rigidbody.PhysicsUpdate())
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
-		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime);
+		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime, false);
 		//UpdateTransform();
 		updateTransform = true;
 
@@ -60,22 +60,21 @@ void Primitive::Draw()
 
 void Primitive::CalculateInertiaTensor()
 {
-	double matVals[16] = { 0 };
-	matVals[15] = 1.0;
+	double matVals[9] = { 0.0 };
 	switch (type)
 	{
 	case Type::BOX:
 	{
 		matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
-		matVals[5] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
-		matVals[10] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
+		matVals[4] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
+		matVals[8] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
 		break;
 	}
 	case Type::SPHERE:
 	{
 		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		matVals[5] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		matVals[10] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+		matVals[4] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+		matVals[8] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
 	case Type::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
@@ -83,9 +82,9 @@ void Primitive::CalculateInertiaTensor()
 	{
 		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
 			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
-		matVals[5] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
+		matVals[4] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
 			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
-		matVals[10] = (1.0 / (2.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+		matVals[8] = (1.0 / (2.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
 	case Type::COMPLEX:
@@ -94,8 +93,8 @@ void Primitive::CalculateInertiaTensor()
 		return;
 	}
 
-	rigidbody.inverseInertiaTensor = Matrix(matVals);
-	rigidbody.inverseInertiaTensor.Inverse4x4();
+	rigidbody.inverseInertiaTensor = Matrix3(matVals);
+	rigidbody.inverseInertiaTensor.Inverse();
 }
 
 void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
@@ -127,15 +126,21 @@ void Primitive::SetTweenOrigin()
 
 void Primitive::UpdateTransform()
 {
+	if (freeze) return;
+	if (translation.y < -25.0)
+	{
+		std::cout << "WARNING: object fallen below ground plane." << std::endl;
+		freeze = true;
+	}
+
 	transform.Identity();
 
 	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
 	Mathe::Rotate(transform, orientation);
 
-	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, transform);
-
 	collisionVolume.axisMat = transform;
+	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
@@ -165,24 +170,21 @@ Quaternion Primitive::GetOrientation() const
 	return orientation;
 }
 
-void Primitive::GetOrientation(Matrix* _matrix) const
+Matrix3 Primitive::GetOrientation(Matrix4 _matrix)
 {
-	GetOrientation(_matrix->matrix);
+	return GetOrientation(_matrix.matrix);
 }
 
-void Primitive::GetOrientation(double _matrix[16]) const
+Matrix3 Primitive::GetOrientation(double _matrix[16])
 {
-	_matrix[0] = transform.Get(0);
-	_matrix[1] = transform.Get(1);
-	_matrix[2] = transform.Get(2);
+	double matVals[9] =
+	{
+		_matrix[0], _matrix[1], _matrix[2],
+		_matrix[4], _matrix[5], _matrix[6],
+		_matrix[8], _matrix[9], _matrix[10]
+	};
 
-	_matrix[4] = transform.Get(4);
-	_matrix[5] = transform.Get(5);
-	_matrix[6] = transform.Get(6);
-
-	_matrix[8] = transform.Get(8);
-	_matrix[9] = transform.Get(9);
-	_matrix[10] = transform.Get(10);
+	return Matrix3(matVals);
 }
 
 void Primitive::SetOrientation(const Quaternion& _orientation)

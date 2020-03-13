@@ -159,7 +159,7 @@ void render()
 
 	glLoadIdentity();
 
-	//camera->LookAt();
+	//camera->LookAt();amaz
 	camera->translation();
 	gluLookAt(camera->getX(), camera->getY(), camera->getZ(),
 		camera->getSightX(), camera->getSightY(), camera->getSightZ(),

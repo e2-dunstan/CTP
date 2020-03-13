@@ -19,15 +19,15 @@ struct RigidBody
 	float inverseMass = 1.0f / 1.0f;
 	//Drag is a percentage so 1.0f is a lot and 0.0f is none
 	const float linearDrag = 0.75f;
-	const float angularDrag = 0.01f;
+	const float angularDrag = 0.05f;
 	float friction = 0.0f;
 	float bounciness = 0.0f; // 0 = not at all bouncy, 1 = no loss of energy so very bouncy
 
 	bool isKinematic = false;
 	bool useGravity = true;
 
-	Matrix inverseInertiaTensor = Matrix();
-	Matrix inverseInertiaTensorWorld = Matrix();
+	Matrix3 inverseInertiaTensor = Matrix3();
+	Matrix3 inverseInertiaTensorWorld = Matrix3();
 
 	void Start(); //not called
 	bool PhysicsUpdate();

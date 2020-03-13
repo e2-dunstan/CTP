@@ -20,19 +20,20 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
 		{
+			if (i == contactIndex) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[1]
 						+ contacts[contactIndex].angularChange[1].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 			if (contacts[i].body2->type != Primitive::Type::PLANE)
@@ -73,6 +74,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 		Vector3 deltaVelocity;
 		for (unsigned i = 0; i < numContacts; i++)
 		{
+			if (i == contactIndex) continue;
 			if (contacts[i].body1->type != Primitive::Type::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
@@ -102,7 +104,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 						+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
 					//Vector3 additionalVel = deltaVelocity;
 					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity -= deltaVelocity;
+					contacts[i].closingVelocity += deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
@@ -111,7 +113,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
 					//Vector3 additionalVel = deltaVelocity;
 					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity -= deltaVelocity;
+					contacts[i].closingVelocity += deltaVelocity;
 					contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}

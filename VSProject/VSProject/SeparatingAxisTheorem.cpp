@@ -123,7 +123,7 @@ void SAT::GetContactData(int& smallestIndex, Primitive* box1, Primitive* box2, c
 
 double SAT::GetPositionOnAxis(const CollisionVolume* box, const Vector3& axis)
 {
-	Matrix axisMat = box->axisMat;
+	Matrix4 axisMat = box->axisMat;
 
 	return
 		box->halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))

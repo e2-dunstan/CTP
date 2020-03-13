@@ -1,9 +1,10 @@
 #include "Matrix.h"
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <algorithm>
 
-Matrix::Matrix()
+/*Matrix::Matrix()
 {
 	Matrix(4,4);
 }
@@ -22,9 +23,7 @@ Matrix::Matrix(unsigned _row, unsigned _col)
 	colSize = _col;
 	Identity();
 }
-
-
-/*Matrix4<>::Matrix4()
+Matrix4<>::Matrix4()
 {
 	rowSize = 4;
 	colSize = 4;
@@ -88,24 +87,24 @@ Matrix3::Matrix3(std::array<double, 9> m3x3)
 	//matrix[6] = m3x3[6];
 	//matrix[7] = m3x3[7];
 	//matrix[8] = m3x3[8];
-}*/
+}
 
-//Matrix Matrix::Resize()
-//{
-//	Matrix mat;
-//	
-//	mat.matrix[0] = matrix[0];
-//	mat.matrix[1] = matrix[1];
-//	mat.matrix[2] = matrix[2];
-//	mat.matrix[4] = matrix[3];
-//	mat.matrix[5] = matrix[4];
-//	mat.matrix[6] = matrix[5];
-//	mat.matrix[8] = matrix[6];
-//	mat.matrix[9] = matrix[7];
-//	mat.matrix[10] = matrix[8];
-//
-//	return mat;
-//}
+Matrix Matrix::Resize()
+{
+	Matrix mat;
+	
+	mat.matrix[0] = matrix[0];
+	mat.matrix[1] = matrix[1];
+	mat.matrix[2] = matrix[2];
+	mat.matrix[4] = matrix[3];
+	mat.matrix[5] = matrix[4];
+	mat.matrix[6] = matrix[5];
+	mat.matrix[8] = matrix[6];
+	mat.matrix[9] = matrix[7];
+	mat.matrix[10] = matrix[8];
+
+	return mat;
+}
 
 void Matrix::Identity()
 {
@@ -123,37 +122,298 @@ void Matrix::Identity()
 			}
 		}
 	}
+}*/
+
+void MatrixHelper::Identity(const uint16_t colSize, const uint16_t rowSize, double* arr)
+{
+	for (uint16_t c = 0; c < colSize; c++)
+	{
+		for (uint16_t r = 0; r < rowSize; r++)
+		{
+			if (c == r) arr[(r * colSize) + c] = 1.0;
+			else arr[(r * colSize) + c] = 0.0;
+		}
+	}
 }
 
-void Matrix::Inverse3x3()
+double* MatrixHelper::GetTranspose(const uint16_t colSize, const uint16_t rowSize, double* arr)
+{
+	double* transpose = new double[rowSize * colSize];
+
+	for (uint16_t r = 0; r < rowSize; r++)
+	{
+		for (uint16_t c = 0; c < colSize; c++)
+		{
+			transpose[(r * colSize) + c] = arr[(c * rowSize) + r];
+		}
+	}
+	return transpose;
+}
+
+/*Matrix3 MatrixHelper::Convert(const Matrix4& m4)
+{
+	double arr[9] =
+	{
+		m4.matrix[0],
+		m4.matrix[1],
+		m4.matrix[2],
+
+		m4.matrix[4],
+		m4.matrix[5],
+		m4.matrix[6],
+
+		m4.matrix[8],
+		m4.matrix[9],
+		m4.matrix[10],
+	};
+	return Matrix3(arr);
+}
+
+Matrix4 MatrixHelper::Convert(const Matrix3& m3)
+{
+	double arr[16] =
+	{
+		m3.matrix[0],
+		m3.matrix[1],
+		m3.matrix[2],
+		0.0,
+		m3.matrix[3],
+		m3.matrix[4],
+		m3.matrix[5],
+		0.0,
+		m3.matrix[6],
+		m3.matrix[7],
+		m3.matrix[8],
+		0.0, 0.0, 0.0, 1.0
+	};
+	return Matrix4(arr);
+}*/
+
+//Matrix3 MatrixHelper::Multiply3(double* mat1, uint16_t colSize1, uint16_t rowSize1, double* mat2, uint16_t colSize2, uint16_t rowSize2)
+//{
+//	double multiplied[9];
+//
+//	if (colSize1 == rowSize2)
+//	{
+//		double temp = 0.0;
+//
+//		for (uint16_t r = 0; r < rowSize1; r++)
+//		{
+//			for (uint16_t c = 0; c < colSize2; c++)
+//			{
+//				temp = 0.0;
+//				for (uint16_t k = 0; k < colSize1; k++)
+//				{
+//					temp += mat1[(r * colSize1) + k] * mat2[(k * colSize2) + c];
+//				}
+//				multiplied[(r * colSize2) + c] = temp;
+//			}
+//		}
+//		return Matrix3(multiplied);
+//	}
+//	else
+//	{
+//		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
+//		for (uint16_t r = 0; r < rowSize1; r++)
+//		{
+//			for (uint16_t c = 0; c < colSize2; c++)
+//			{
+//				if (r == c) multiplied[(r * colSize2) + c] = 1.0;
+//				else multiplied[(r * colSize2) + c] = 0.0;
+//			}
+//		}
+//		return Matrix3(multiplied);
+//	}
+//}
+//Matrix4 MatrixHelper::Multiply4(double* mat1, uint16_t colSize1, uint16_t rowSize1, double* mat2, uint16_t colSize2, uint16_t rowSize2)
+//{
+//	double multiplied[16];
+//
+//	if (colSize1 == rowSize2)
+//	{
+//		double temp = 0.0;
+//
+//		for (uint16_t r = 0; r < rowSize1; r++)
+//		{
+//			for (uint16_t c = 0; c < colSize2; c++)
+//			{
+//				temp = 0.0;
+//				for (uint16_t k = 0; k < colSize1; k++)
+//				{
+//					temp += mat1[(r * colSize1) + k] * mat2[(k * colSize2) + c];
+//				}
+//				multiplied[(r * colSize2) + c] = temp;
+//			}
+//		}
+//		return Matrix4(multiplied);
+//	}
+//	else
+//	{
+//		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
+//		for (uint16_t r = 0; r < rowSize1; r++)
+//		{
+//			for (uint16_t c = 0; c < colSize2; c++)
+//			{
+//				if (r == c) multiplied[(r * colSize2) + c] = 1.0;
+//				else multiplied[(r * colSize2) + c] = 0.0;
+//			}
+//		}
+//		return Matrix4(multiplied);
+//	}
+//}
+
+Matrix3::Matrix3(double matrixValues[9])
+{
+	matrix[0] = matrixValues[0];
+	matrix[1] = matrixValues[1];
+	matrix[2] = matrixValues[2];
+	matrix[3] = matrixValues[3];
+	matrix[4] = matrixValues[4];
+	matrix[5] = matrixValues[5];
+	matrix[6] = matrixValues[6];
+	matrix[7] = matrixValues[7];
+	matrix[8] = matrixValues[8];
+}
+
+void Matrix3::Inverse()
 {	
-	double t4 = this->matrix[0] * this->matrix[5];
-	double t6 = this->matrix[0] * this->matrix[6];
-	double t8 = this->matrix[1] * this->matrix[4];
-	double t10 = this->matrix[2] * this->matrix[4];
-	double t12 = this->matrix[1] * this->matrix[8];
-	double t14 = this->matrix[2] * this->matrix[8];
+	double t4 = this->matrix[0] * this->matrix[4];
+	double t6 = this->matrix[0] * this->matrix[5];
+	double t8 = this->matrix[1] * this->matrix[3];
+	double t10 = this->matrix[2] * this->matrix[3];
+	double t12 = this->matrix[1] * this->matrix[6];
+	double t14 = this->matrix[2] * this->matrix[6];
 
 	//determinant
-	double t16 = (t4 * this->matrix[10]) - (t6 * this->matrix[9])
-		- (t8 * this->matrix[10]) + (t10 * this->matrix[9])
-		+ (t12 * this->matrix[6]) - (t14 * this->matrix[5]);
+	double t16 = (t4 * this->matrix[8]) - (t6 * this->matrix[7])
+		- (t8 * this->matrix[8]) + (t10 * this->matrix[7])
+		+ (t12 * this->matrix[5]) - (t14 * this->matrix[4]);
 
 	if (t16 < 0.01) return;
 	double t17 = 1.0 / t16;
 
-	this->matrix[0] = ((this->matrix[5] * this->matrix[10]) - (this->matrix[6] * this->matrix[9])) * t17;
-	this->matrix[1] = -((this->matrix[1] * this->matrix[10]) - (this->matrix[2] * this->matrix[9])) * t17;
-	this->matrix[2] = ((this->matrix[1] * this->matrix[6]) - (this->matrix[2] * this->matrix[5])) * t17;
-	this->matrix[3] = -((this->matrix[4] * this->matrix[10]) - (this->matrix[6] * this->matrix[8])) * t17;
-	this->matrix[4] = ((this->matrix[0] * this->matrix[10]) - t14) * t17;
+	this->matrix[0] = ((this->matrix[4] * this->matrix[8]) - (this->matrix[5] * this->matrix[7])) * t17;
+	this->matrix[1] = -((this->matrix[1] * this->matrix[8]) - (this->matrix[2] * this->matrix[7])) * t17;
+	this->matrix[2] = ((this->matrix[1] * this->matrix[5]) - (this->matrix[2] * this->matrix[4])) * t17;
+	this->matrix[3] = -((this->matrix[3] * this->matrix[8]) - (this->matrix[5] * this->matrix[6])) * t17;
+	this->matrix[4] = ((this->matrix[0] * this->matrix[8]) - t14) * t17;
 	this->matrix[5] = -(t6 - t10) * t17;
-	this->matrix[6] = ((this->matrix[4] * this->matrix[9]) - (this->matrix[5] * this->matrix[8])) * t17;
-	this->matrix[7] = -((this->matrix[0] * this->matrix[9]) - t12) * t17;
+	this->matrix[6] = ((this->matrix[3] * this->matrix[7]) - (this->matrix[4] * this->matrix[6])) * t17;
+	this->matrix[7] = -((this->matrix[0] * this->matrix[7]) - t12) * t17;
 	this->matrix[8] = (t4 - t8) * t17;
 }
 
-void Matrix::Inverse4x4()
+Matrix3 Matrix3::operator*(Matrix3& m)
+{
+	double multiplied[9];
+
+	if (colSize == m.rowSize)
+	{
+		double temp = 0.0;
+
+		for (uint16_t r = 0; r < rowSize; r++)
+		{
+			for (uint16_t c = 0; c < m.colSize; c++)
+			{
+				temp = 0.0;
+				for (uint16_t k = 0; k < colSize; k++)
+				{
+					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * m.colSize) + c];
+				}
+				multiplied[(r * m.colSize) + c] = temp;
+			}
+		}
+		return Matrix3(multiplied);
+	}
+	else
+	{
+		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
+		for (uint16_t r = 0; r < rowSize; r++)
+		{
+			for (uint16_t c = 0; c < m.colSize; c++)
+			{
+				if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
+				else multiplied[(r * m.colSize) + c] = 0.0;
+			}
+		}
+		return Matrix3(multiplied);
+	}
+}
+
+Matrix3 Matrix3::operator*(double scalar)
+{
+	Matrix3 result;
+	for (unsigned r = 0; r < rowSize; r++)
+	{
+		for (unsigned c = 0; c < colSize; c++)
+		{
+			result(r, c) = this->matrix[(r * colSize) + c] * scalar;
+		}
+	}
+	return result;
+}
+
+Matrix3 Matrix3::operator+(Matrix3& m)
+{
+	Matrix3 sum;
+	for (unsigned r = 0; r < rowSize; r++)
+	{
+		for (unsigned c = 0; c < colSize; c++)
+		{
+			sum(r, c) = this->matrix[(r * colSize) + c] + m(r, c);
+		}
+	}
+	return sum;
+}
+
+void Matrix3::DebugOutput()
+{
+	std::string str = "\n[ ";
+
+	for (uint16_t r = 0; r < rowSize; r++)
+	{
+		for (uint16_t c = 0; c < colSize; c++)
+		{
+			str += std::to_string(matrix[(r * colSize) + c]);
+			if (c < colSize - 1)
+			{
+				str += " , ";
+			}
+			else
+			{
+				str += " ]\n";
+			}
+		}
+		if (r < rowSize - 1)
+		{
+			str += "[ ";
+		}
+	}
+
+	std::cout << str << std::endl;
+}
+
+Matrix4::Matrix4(double matrixValues[16])
+{
+	matrix[0] = matrixValues[0];
+	matrix[1] = matrixValues[1];
+	matrix[2] = matrixValues[2];
+	matrix[3] = matrixValues[3];
+	matrix[4] = matrixValues[4];
+	matrix[5] = matrixValues[5];
+	matrix[6] = matrixValues[6];
+	matrix[7] = matrixValues[7];
+	matrix[8] = matrixValues[8];
+	matrix[9] = matrixValues[9];
+	matrix[10] = matrixValues[10];
+	matrix[11] = matrixValues[11];
+	matrix[12] = matrixValues[12];
+	matrix[13] = matrixValues[13];
+	matrix[14] = matrixValues[14];
+	matrix[15] = matrixValues[15];
+}
+
+void Matrix4::Inverse()
 {
 	double A2323 = this->matrix[10] * this->matrix[15] - this->matrix[11] * this->matrix[14];
 	double A1323 = this->matrix[9] * this->matrix[15] - this->matrix[11] * this->matrix[13];
@@ -198,7 +458,97 @@ void Matrix::Inverse4x4()
 	this->matrix[15] = det * (this->matrix[0] * A1212 - this->matrix[1] * A0212 + this->matrix[2] * A0112);
 }
 
-Matrix Matrix::operator+(Matrix& m)
+Matrix4 Matrix4::operator*(Matrix4& m)
+{
+	double multiplied[16];
+
+	if (colSize == m.rowSize)
+	{
+		double temp = 0.0;
+
+		for (uint16_t r = 0; r < rowSize; r++)
+		{
+			for (uint16_t c = 0; c < m.colSize; c++)
+			{
+				temp = 0.0;
+				for (uint16_t k = 0; k < colSize; k++)
+				{
+					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * m.colSize) + c];
+				}
+				multiplied[(r * m.colSize) + c] = temp;
+			}
+		}
+		return Matrix4(multiplied);
+	}
+	else
+	{
+		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
+		for (uint16_t r = 0; r < rowSize; r++)
+		{
+			for (uint16_t c = 0; c < m.colSize; c++)
+			{
+				if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
+				else multiplied[(r * m.colSize) + c] = 0.0;
+			}
+		}
+		return Matrix4(multiplied);
+	}
+}
+
+Matrix4 Matrix4::operator*(double scalar)
+{
+	Matrix4 result;
+	for (unsigned r = 0; r < rowSize; r++)
+	{
+		for (unsigned c = 0; c < colSize; c++)
+		{
+			result(r, c) = this->matrix[(r * colSize) + c] * scalar;
+		}
+	}
+	return result;
+}
+
+Matrix4 Matrix4::operator+(Matrix4& m)
+{
+	Matrix4 sum;
+	for (unsigned r = 0; r < rowSize; r++)
+	{
+		for (unsigned c = 0; c < colSize; c++)
+		{
+			sum(r, c) = this->matrix[(r * colSize) + c] + m(r, c);
+		}
+	}
+	return sum;
+}
+
+void Matrix4::DebugOutput()
+{
+	std::string str = "\n[ ";
+
+	for (uint16_t r = 0; r < rowSize; r++)
+	{
+		for (uint16_t c = 0; c < colSize; c++)
+		{
+			str += std::to_string(matrix[(r * colSize) + c]);
+			if (c < colSize - 1)
+			{
+				str += " , ";
+			}
+			else
+			{
+				str += " ]\n";
+			}
+		}
+		if (r < rowSize - 1)
+		{
+			str += "[ ";
+		}
+	}
+
+	std::cout << str << std::endl;
+}
+
+/*Matrix Matrix::operator+(Matrix& m)
 {
 	Matrix sum(rowSize, colSize);
 
@@ -206,7 +556,6 @@ Matrix Matrix::operator+(Matrix& m)
 	{
 		for (unsigned c = 0; c < colSize; c++)
 		{
-			//sum(r, c) = this->matrix4x4[r][c] + m(r, c);
 			sum(r, c) = this->matrix[(r * colSize) + c] + m(r, c);
 		}
 	}
@@ -330,7 +679,7 @@ Matrix Matrix::Transpose()
 	return transposed;
 }
 
-/*Matrix4 Matrix4::Transpose()
+Matrix4 Matrix4::Transpose()
 {
 	Matrix4 transposed;
 
@@ -356,7 +705,7 @@ Matrix3 Matrix3::Transpose()
 		}
 	}
 	return transposed;
-}*/
+}
 
 double& Matrix::operator()(const unsigned& _row, const unsigned& _col)
 {
@@ -403,4 +752,4 @@ void Matrix::DebugOutput()
 	}
 
 	std::cout << str << std::endl;
-}
+}*/

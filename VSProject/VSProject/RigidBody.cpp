@@ -22,7 +22,7 @@ bool RigidBody::PhysicsUpdate()
 	prevVelocity = velocity;
 
 	angularAcceleration = torqueAccumulation;
-	angularAcceleration = Vector3(Mathe::ToRadians(angularAcceleration.x), Mathe::ToRadians(angularAcceleration.y), Mathe::ToRadians(angularAcceleration.z));
+	//angularAcceleration = Vector3(Mathe::ToRadians(angularAcceleration.x), Mathe::ToRadians(angularAcceleration.y), Mathe::ToRadians(angularAcceleration.z));
 	Mathe::Transform(angularAcceleration, inverseInertiaTensorWorld);
 
 	velocity += prevAcceleration * Global::deltaTime;
@@ -105,6 +105,7 @@ void RigidBody::AddVelocityChange(const Vector3& velChange)
 void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
 	if (Mathe::IsVectorNAN(rotChange)) return;
+	//Vector3 rotChangeRad = Vector3(Mathe::ToRadians(rotChange.x), Mathe::ToRadians(rotChange.y), Mathe::ToRadians(rotChange.z));
 	angularVelocity += rotChange;// *Global::deltaTime;
 }
 

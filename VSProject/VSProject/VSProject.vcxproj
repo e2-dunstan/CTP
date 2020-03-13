@@ -135,13 +135,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="BoundingVolume.cpp" />
-    <ClCompile Include="BVH.cpp" />
-    <ClCompile Include="BVHNode.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionCoarse.cpp" />
     <ClCompile Include="CollisionData.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
-    <ClCompile Include="CollisionResolution.cpp" />
     <ClCompile Include="CollisionResolution2.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
@@ -149,7 +146,6 @@
     <ClCompile Include="Global.cpp" />
     <ClCompile Include="mathe.cpp" />
     <ClCompile Include="Matrix.cpp" />
-    <ClCompile Include="OctTree.cpp" />
     <ClCompile Include="PrimitiveManager.cpp" />
     <ClCompile Include="Engine.cpp" />
     <ClCompile Include="main.cpp" />
@@ -163,13 +159,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="BoundingVolume.h" />
-    <ClInclude Include="BVH.h" />
-    <ClInclude Include="BVHNode.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CollisionCoarse.h" />
     <ClInclude Include="CollisionData.h" />
     <ClInclude Include="CollisionFine.h" />
-    <ClInclude Include="CollisionResolution.h" />
     <ClInclude Include="CollisionResolution2.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
@@ -185,7 +178,6 @@
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SeparatingAxisTheorem.h" />
     <ClInclude Include="Shapes.h" />
-    <ClInclude Include="OctTree.h" />
     <ClInclude Include="Utilities.h" />
     <ClInclude Include="Vector.h" />
   </ItemGroup>

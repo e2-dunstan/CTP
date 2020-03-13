@@ -1,6 +1,40 @@
-﻿  Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(16,1): warning C4150: deletion of pointer to incomplete type 'Primitive'; no destructor called
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(5): message : see declaration of 'Primitive'
-D:\Ellie\CTP\VSProject\VSProject\OctTree.h(35,1): warning C4154: deletion of an array expression; conversion to pointer supplied
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(23,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+﻿  Collisions.cpp
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(67,97): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(67,68): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(67,39): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(69,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(69,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Collisions.cpp(69,20): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  ConsoleControls.cpp
+  mathe.cpp
+  PrimitiveManager.cpp
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,70): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(104,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(106,20): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+  Engine.cpp
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(27,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(28,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(183,24): warning C4244: 'argument': conversion from 'const double' to 'unsigned int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.24.28314\include\memory(2055,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<Camera>> std::make_unique<Camera,int,int,int,float,int,float&,float&,int&,int&,0>(int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
+  RayCast.cpp
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(143,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCast.cpp(144,26): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  RigidBody.cpp
+  SeparatingAxisTheorem.cpp
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(158,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(159,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(182,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(228,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(233,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+  Shapes.cpp
+  Generating Code...
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

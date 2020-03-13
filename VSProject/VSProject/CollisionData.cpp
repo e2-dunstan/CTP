@@ -73,13 +73,12 @@ void Contact::CalculateContactBasisMatrices()
 		contactTangents[1].y = -normal.x * normal.z;
 		contactTangents[1].z = normal.x * contactTangents[0].y;
 	}
-	double matVals[16] = { normal.x, contactTangents[0].x, contactTangents[1].x, 0,
-					normal.y, contactTangents[0].y, contactTangents[1].y, 0,
-					normal.z, contactTangents[0].z, contactTangents[1].z, 0,
-					0, 0, 0, 1};
+	double matVals[9] = { normal.x, contactTangents[0].x, contactTangents[1].x,
+					normal.y, contactTangents[0].y, contactTangents[1].y,
+					normal.z, contactTangents[0].z, contactTangents[1].z };
 
-	contactToWorld = Matrix(matVals);
-	worldToContact = contactToWorld.Transpose();
+	contactToWorld = Matrix3(matVals);
+	worldToContact = contactToWorld.GetTranspose();
 }
 
 void Contact::CalculateClosingVelocities()
@@ -130,7 +129,6 @@ void Contact::ResolveContactPenetration()
 	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
 	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
-	//angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 	float angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
 	float linearInertia1 = body1->rigidbody.inverseMass;
@@ -146,7 +144,6 @@ void Contact::ResolveContactPenetration()
 		angularInertia_W = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularInertia_W, body2->rigidbody.inverseInertiaTensorWorld);
 		angularInertia_W = angularInertia_W.VectorProduct(relContactPos2);
-		//angularInertia_W = Vector3(Mathe::ToRadians(angularInertia_W.x), Mathe::ToRadians(angularInertia_W.y), Mathe::ToRadians(angularInertia_W.z));
 
 		angularInertia2 = (float)angularInertia_W.ScalarProduct(normal);
 		linearInertia2 = body2->rigidbody.inverseMass;
@@ -161,10 +158,10 @@ void Contact::ResolveContactPenetration()
 	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
 	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
 
-	float m = (relContactPos1 - (normal * relContactPos1.ScalarProduct(normal))).SquaredMagnitude();
-	ApplyAngularMoveLimit(linearMove1, angularMove1, m/*(float)body1->scale.SquaredMagnitude()*/);
-	m = (relContactPos2 - (normal * relContactPos2.ScalarProduct(normal))).SquaredMagnitude();
-	ApplyAngularMoveLimit(linearMove2, angularMove2, m/*(float)body2->scale.SquaredMagnitude()*/);
+	//float m = (relContactPos1 - (normal * relContactPos1.ScalarProduct(normal))).SquaredMagnitude();
+	//ApplyAngularMoveLimit(linearMove1, angularMove1, m/*(float)body1->scale.SquaredMagnitude()*/);
+	//m = (relContactPos2 - (normal * relContactPos2.ScalarProduct(normal))).SquaredMagnitude();
+	//ApplyAngularMoveLimit(linearMove2, angularMove2, m/*(float)body2->scale.SquaredMagnitude()*/);
 
 	//Applying angular resolution
 	// 1. Calculate the rotation needed to move contact point by one unit
@@ -176,6 +173,7 @@ void Contact::ResolveContactPenetration()
 	{
 		Vector3 angularDir1 = relContactPos1.VectorProduct(normal);
 		Mathe::Transform(angularDir1, body1->rigidbody.inverseInertiaTensorWorld);
+		//angularDir1 = angularDir1.Normalise();
 		angularChange[0] = angularDir1 * (angularMove1 / angularInertia1);
 	}
 	else angularChange[0] = Vector3();
@@ -185,12 +183,18 @@ void Contact::ResolveContactPenetration()
 	{
 		Vector3 angularDir2 = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularDir2, body2->rigidbody.inverseInertiaTensorWorld);
+		//angularDir2 = angularDir2.Normalise();
 		angularChange[1] = angularDir2 * (angularMove2 / angularInertia2);
 	}
 	else angularChange[1] = Vector3();
 
 	if (linearMove1 != 0)
 	{
+		if (abs(linearMove1) > 1.0)
+		{
+			std::cout << "WARNING: large linear change detected: " << linearMove1 << std::endl;
+			//linearMove1 = 1.0;
+		}
 		linearChange[0] = normal * linearMove1;
 		body1->translation += linearChange[0];
 	}
@@ -198,12 +202,17 @@ void Contact::ResolveContactPenetration()
 	{
 		Quaternion q;
 		body1->GetOrientation(&q);
-		angularChange[0] = Vector3(Mathe::ToRadians(angularChange[0].x), Mathe::ToRadians(angularChange[0].y), Mathe::ToRadians(angularChange[0].z));
-		Mathe::AddScaledVector(q, angularChange[0], 1.0);// Global::deltaTime);
+		//angularChange[0] = Vector3(Mathe::ToRadians(angularChange[0].x), Mathe::ToRadians(angularChange[0].y), Mathe::ToRadians(angularChange[0].z));
+		Mathe::AddScaledVector(q, angularChange[0], 1.0, true);
 		body1->SetOrientation(q);
 	}
 	if (linearMove2 != 0)
 	{
+		if (abs(linearMove2) > 1.0)
+		{
+			std::cout << "WARNING: large linear change detected: " << linearMove2 << std::endl;
+			//linearMove2 = 1.0;
+		}
 		linearChange[1] = normal * linearMove2;
 		body2->translation += linearChange[1];
 	}
@@ -211,8 +220,8 @@ void Contact::ResolveContactPenetration()
 	{
 		Quaternion q;
 		body2->GetOrientation(&q);
-		angularChange[1] = Vector3(Mathe::ToRadians(angularChange[1].x), Mathe::ToRadians(angularChange[1].y), Mathe::ToRadians(angularChange[1].z));
-		Mathe::AddScaledVector(q, angularChange[1], 1.0);// Global::deltaTime);
+		//angularChange[1] = Vector3(Mathe::ToRadians(angularChange[1].x), Mathe::ToRadians(angularChange[1].y), Mathe::ToRadians(angularChange[1].z));
+		Mathe::AddScaledVector(q, angularChange[1], 1.0, true);
 		body2->SetOrientation(q);
 	}
 
@@ -224,7 +233,7 @@ void Contact::ResolveContactPenetration()
 	{
 		body2->updateTransform = true;
 	}
-	if (linearMove1 > 0.8f || linearMove2 < -0.8f)
+	if (linearMove1 > 1.0f || linearMove2 < -1.0f)
 		std::cout << "WARNING: large linear change detected: linear move 1 - " << linearMove1 << ", linear move 2 - " << linearMove2 << std::endl;
 }
 
@@ -296,8 +305,67 @@ Vector3 Contact::FrictionlessImpulse()
 
 Vector3 Contact::FrictionImpulse()
 {
-	//to be implemented
-	return FrictionlessImpulse();
+	double matVals[9] = { 0.0 };
+	matVals[1] = -relContactPos1.z;
+	matVals[2] = relContactPos1.y;
+	matVals[3] = relContactPos1.z;
+	matVals[5] = -relContactPos1.x;
+	matVals[6] = -relContactPos1.y;
+	matVals[7] = relContactPos1.x;
+
+	//Should be mat3
+	Matrix3 impulseToTorque = Matrix3(matVals);
+
+	Matrix3 deltaVelWorld = impulseToTorque;
+	deltaVelWorld = (deltaVelWorld * body1->rigidbody.inverseInertiaTensor) * impulseToTorque;
+	deltaVelWorld = deltaVelWorld * -1.0;
+	
+	if (body2->type != Primitive::Type::PLANE)
+	{
+		impulseToTorque.matrix[1] = -relContactPos2.z;
+		impulseToTorque.matrix[2] = relContactPos2.y;
+		impulseToTorque.matrix[4] = relContactPos2.z;
+		impulseToTorque.matrix[6] = -relContactPos2.x;
+		impulseToTorque.matrix[8] = -relContactPos2.y;
+		impulseToTorque.matrix[9] = relContactPos2.x;
+
+		Matrix3 deltaVelWorld2 = impulseToTorque;
+		deltaVelWorld2 = (deltaVelWorld2 * body2->rigidbody.inverseInertiaTensorWorld) * impulseToTorque;
+		deltaVelWorld2 = deltaVelWorld2 * -1.0;
+
+		deltaVelWorld = deltaVelWorld + deltaVelWorld2;
+	}
+	Matrix3 deltaVel = worldToContact;
+	deltaVel = deltaVel * deltaVelWorld;
+	deltaVel = deltaVel * contactToWorld;
+
+	deltaVel.matrix[0] += body1->rigidbody.inverseMass;
+	deltaVel.matrix[5] += body1->rigidbody.inverseMass;
+	deltaVel.matrix[10] += body1->rigidbody.inverseMass;
+
+	Matrix3 impulsePerUnitVel = deltaVel;
+	impulsePerUnitVel.Inverse();
+
+	Vector3 velToKill = Vector3(desiredDeltaVelocity, -closingVelocity.y, -closingVelocity.z);
+	Vector3 impulseContact = velToKill;
+	Mathe::Transform(impulseContact, impulsePerUnitVel);
+
+	double planarImpulse = sqrt(impulseContact.y * impulseContact.y + impulseContact.z * impulseContact.z);
+	if (planarImpulse > impulseContact.x * friction)
+	{
+		impulseContact.y /= planarImpulse;
+		impulseContact.z /= planarImpulse;
+
+		impulseContact.x = deltaVel.matrix[0]
+			+ (deltaVel.matrix[1] * friction * impulseContact.y)
+			+ (deltaVel.matrix[2] * friction * impulseContact.z);
+		impulseContact.x = desiredDeltaVelocity / impulseContact.x;
+		impulseContact.y *= friction * impulseContact.x;
+		impulseContact.z *= friction * impulseContact.x;
+	}
+
+	return impulseContact;
+	//return FrictionlessImpulse();
 }
 
 void Contact::MatchRigidbodyAwakeStates()

@@ -81,12 +81,6 @@
     <ClCompile Include="RigidBody.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionResolution.cpp">
-      <Filter>Source Files\Collision</Filter>
-    </ClCompile>
-    <ClCompile Include="BVHNode.cpp">
-      <Filter>Source Files\Primitives\BoundingVolumeHierarchy</Filter>
-    </ClCompile>
     <ClCompile Include="CollisionCoarse.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
@@ -108,9 +102,6 @@
     <ClCompile Include="Quaternion.cpp">
       <Filter>Source Files\Mathe</Filter>
     </ClCompile>
-    <ClCompile Include="BVH.cpp">
-      <Filter>Source Files\Primitives\BoundingVolumeHierarchy</Filter>
-    </ClCompile>
     <ClCompile Include="Camera.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
@@ -118,9 +109,6 @@
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="Global.cpp">
-      <Filter>Source Files\Utilities</Filter>
-    </ClCompile>
-    <ClCompile Include="OctTree.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="SeparatingAxisTheorem.cpp">
@@ -158,17 +146,8 @@
     <ClInclude Include="CollisionFine.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionResolution.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionData.h">
       <Filter>Header Files\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="BVH.h">
-      <Filter>Header Files\Primitives\Bounding Volume Hierarchy</Filter>
-    </ClInclude>
-    <ClInclude Include="BVHNode.h">
-      <Filter>Header Files\Primitives\Bounding Volume Hierarchy</Filter>
     </ClInclude>
     <ClInclude Include="CollisionCoarse.h">
       <Filter>Header Files\Collision</Filter>
@@ -198,9 +177,6 @@
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="ConsoleControls.h">
-      <Filter>Header Files\Utilities</Filter>
-    </ClInclude>
-    <ClInclude Include="OctTree.h">
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="RayCast.h">

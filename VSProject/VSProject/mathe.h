@@ -10,24 +10,28 @@ namespace Mathe
 {
 	//Functions for matrix and vector math, mostly transformations.
 
-	void Transform(Vector3& vector, Matrix& matrix);
-	void TransformTranspose(Vector3& vector, Matrix& matrix);
+	void Transform(Vector3& vector, Matrix4& matrix);
+	void Transform(Vector3& vector, Matrix3& matrix);
+	void TransformTranspose(Vector3& vector, Matrix4& matrix);
+	void TransformTranspose(Vector3& vector, Matrix3& matrix);
 
-	Vector3 MatrixInverse(Matrix& m, Vector3& v); //don't use this
+	Vector3 MatrixInverse(Matrix4& m, Vector3& v); //don't use this
 
-	void Translate(Matrix& m, double x, double y, double z);
+	void Translate(Matrix4& m, double x, double y, double z);
 
-	void Rotate(Matrix& m, double x, double y, double z);
-	void Rotate(Matrix& m, const Quaternion& q);
+	void Rotate(Matrix4& m, double x, double y, double z);
+	void Rotate(Matrix4& m, const Quaternion& q);
+	void Rotate(Matrix3& m, const Quaternion& q);
 
-	void Scale (Matrix& m, double x, double y, double z);
+	void Scale (Matrix4& m, double x, double y, double z);
 
-	Vector3 GetAxis(unsigned col, Matrix& mat);
+	Vector3 GetAxis(uint16_t col, Matrix4& mat);
+	Vector3 GetAxis(uint16_t col, Matrix3& mat);
 
 	Quaternion VectorToQuaternion(const Vector3& v);
-	void AddScaledVector(Quaternion& q, const Vector3& v, double scale);
+	void AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians);
 
-	void TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot);
+	void TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& tensorLocal, const Matrix3& rot);
 
 	std::array<float, 2> SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots = true);
 

@@ -11,9 +11,6 @@ public:
 	void VelocityResolution(std::vector<Contact>& contacts);
 
 private:
-	unsigned GetContactWithLargestPenetration(std::vector<Contact>& contacts);
-	unsigned GetContactWithLargestVelocityMagnitude(std::vector<Contact>& contacts);
-
 	const float minVelocityChange = 0.01f;
 	const float minPositionChange = 0.01f;
 

@@ -175,7 +175,7 @@ void CollisionFine::SphereAndBox(Primitive* sphere, Primitive* box, Vector3& sph
 
 double CollisionFine::PositionOnAxis(const Primitive* box, const Vector3& axis)
 {
-	Matrix axisMat = box->collisionVolume.axisMat;
+	Matrix4 axisMat = box->collisionVolume.axisMat;
 
 	return
 		box->collisionVolume.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))
@@ -194,7 +194,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 	unsigned numContacts = 0;
 	double totalPenetration = 0.0;
 
-	for (unsigned v = 0; v < 8; v++)
+	for (uint16_t v = 0; v < 8; v++)
 	{
 		//distance from vertex to plane
 		float distance = (float)box->collisionVolume.vertices[v].ScalarProduct(normal);
@@ -204,7 +204,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 			contactPoints[numContacts].point = normal;
 			contactPoints[numContacts].point *= distance - (float)(planePosition * normal).Magnitude();
 			contactPoints[numContacts].point += box->collisionVolume.vertices[v];
-			contactPoints[numContacts].penetration = (float)abs((planePosition * normal).Magnitude() - distance) + 0.01f;// / 2.0f;
+			contactPoints[numContacts].penetration = abs((float)(planePosition * normal).Magnitude() - distance) + 0.01f;// / 2.0f;
 			totalPenetration += contactPoints[numContacts].penetration;
 			
 			numContacts++;
@@ -235,7 +235,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 	{
 		Contact mergedContact(box, plane);
 		mergedContact.normal = normal;
-		for (unsigned i = 0; i < numContacts; i++)
+		for (uint16_t i = 0; i < numContacts; i++)
 		{
 			contactPoints[i].weighting = contactPoints[i].penetration / totalPenetration;
 			mergedContact.point += contactPoints[i].point * contactPoints[i].weighting;
@@ -246,7 +246,7 @@ void CollisionFine::BoxAndPlane(Primitive* box, Primitive* plane, const Vector3&
 	}
 	else
 	{
-		for (unsigned i = 0; i < numContacts; i++)
+		for (uint16_t i = 0; i < numContacts; i++)
 		{
 			Contact contact(box, plane);
 			contact.point = contactPoints[i].point;
@@ -368,7 +368,7 @@ void CollisionFine::CylinderAndSphere(Primitive* cyl, Primitive* sphere)
 {
 	//Convert to cylinder basis (transform)
 	Vector3 relativeSpherePos = (sphere->collisionVolume.centre - cyl->collisionVolume.centre);// .Normalise();
-	Matrix cylTranspose = cyl->collisionVolume.axisMat.Transpose();
+	Matrix4 cylTranspose = cyl->collisionVolume.axisMat.GetTranspose();
 	Mathe::Transform(relativeSpherePos, cylTranspose);
 
 	//NOT COLLIDING - actually calculated in AABB stage so sort of unnecessary here
@@ -552,7 +552,7 @@ void CollisionFine::CapsuleAndSphere(Primitive* cap, Primitive* sphere)
 {
 	//Convert to capsule basis (transform)
 	Vector3 relativeSpherePos = (sphere->collisionVolume.centre - cap->collisionVolume.centre);
-	Matrix capTranspose = cap->collisionVolume.axisMat.Transpose();
+	Matrix4 capTranspose = cap->collisionVolume.axisMat.GetTranspose();
 	Mathe::Transform(relativeSpherePos, capTranspose);
 
 	//NOT COLLIDING - actually calculated in AABB stage so sort of unnecessary here

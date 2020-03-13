@@ -33,7 +33,7 @@ public:
 	//Plane
 	Vector3 normal = Vector3(0, 1, 0);
 
-	Matrix axisMat = Matrix();
+	Matrix4 axisMat = Matrix4();
 
 private:
 

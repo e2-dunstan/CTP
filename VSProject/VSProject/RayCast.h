@@ -55,7 +55,7 @@ public:
 private:
 	bool TestPlane(const Vector3& centre, const Vector3& normal, const Vector3& size, Ray& ray);
 	bool TestSphere(const Vector3& centre, const float radius, Ray& ray);
-	bool TestBox(const Vector3& scale, const Matrix& transform, Ray& ray);
+	bool TestBox(const Vector3& scale, const Matrix4& transform, Ray& ray);
 	bool TestCylinder();
 
 };

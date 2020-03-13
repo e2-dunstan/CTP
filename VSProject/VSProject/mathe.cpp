@@ -2,35 +2,77 @@
 
 #define PI 3.14159265
 
-void Mathe::Transform(Vector3& vector, Matrix& matrix)
+void Mathe::Transform(Vector3& vector, Matrix4& matrix)
 {
 	if (IsVectorNAN(vector)) return;
 
-	Matrix vectorToMatrix = Matrix(4, 1);
+	Matrix4 vectorToMatrix;
 	vectorToMatrix(0, 0) = vector.x;
 	vectorToMatrix(1, 0) = vector.y;
 	vectorToMatrix(2, 0) = vector.z;
-	vectorToMatrix(3, 0) = 1;
-	Matrix multiplied = matrix * vectorToMatrix;
+	vectorToMatrix(3, 0) = 1.0;
+	//double vectorToMatrix[4] =
+	//{ vector.x, vector.y, vector.z, 1.0 };
+
+	Matrix4 multiplied = matrix * vectorToMatrix;
 
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
 
-void Mathe::TransformTranspose(Vector3& vector, Matrix& matrix)
+void Mathe::Transform(Vector3& vector, Matrix3& matrix)
 {
-	Matrix vectorToMatrix = Matrix(4, 1);
+	if (IsVectorNAN(vector)) return;
+
+	Matrix3 vectorToMatrix;
 	vectorToMatrix(0, 0) = vector.x;
 	vectorToMatrix(1, 0) = vector.y;
 	vectorToMatrix(2, 0) = vector.z;
-	vectorToMatrix(3, 0) = 1;
-	Matrix multiplied = matrix.Transpose() * vectorToMatrix;
+	//double vectorToMatrix[3] =
+	//{ vector.x, vector.y, vector.z};
+
+	Matrix3 multiplied = matrix * vectorToMatrix;
 
 	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
 }
 
-Vector3 Mathe::MatrixInverse(Matrix& m, Vector3& v)
+void Mathe::TransformTranspose(Vector3& vector, Matrix4& matrix)
 {
-	Matrix transp = m;
+	if (IsVectorNAN(vector)) return;
+
+	Matrix4 vectorToMatrix;
+	vectorToMatrix(0, 0) = vector.x;
+	vectorToMatrix(1, 0) = vector.y;
+	vectorToMatrix(2, 0) = vector.z;
+	vectorToMatrix(3, 0) = 1.0;
+	//double vectorToMatrix[4] =
+	//{ vector.x, vector.y, vector.z, 1.0 };
+
+	Matrix4 transpose = matrix.GetTranspose();
+	Matrix4 multiplied = transpose * vectorToMatrix;
+
+	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
+}
+
+void Mathe::TransformTranspose(Vector3& vector, Matrix3& matrix)
+{
+	if (IsVectorNAN(vector)) return;
+
+	Matrix3 vectorToMatrix;
+	vectorToMatrix(0, 0) = vector.x;
+	vectorToMatrix(1, 0) = vector.y;
+	vectorToMatrix(2, 0) = vector.z;
+	//double vectorToMatrix[3] =
+	//{ vector.x, vector.y, vector.z };
+
+	Matrix3 transpose = matrix.GetTranspose();
+	Matrix3 multiplied = transpose * vectorToMatrix;
+
+	vector = Vector3(multiplied(0, 0), multiplied(1, 0), multiplied(2, 0));
+}
+
+Vector3 Mathe::MatrixInverse(Matrix4& m, Vector3& v)
+{
+	Matrix4 transp = Matrix4(m.matrix);
 	Vector3 vec = v;
 	vec.x -= transp(0, 3);
 	vec.y -= transp(1, 3);
@@ -52,10 +94,9 @@ Vector3 Mathe::MatrixInverse(Matrix& m, Vector3& v)
 	return ret;
 }
 
-void Mathe::Translate(Matrix& m, double x, double y, double z)
+void Mathe::Translate(Matrix4& m, double x, double y, double z)
 {
-	Matrix translation = Matrix(4, 4);
-
+	Matrix4 translation;
 	translation(0, 3) = x;
 	translation(1, 3) = y;
 	translation(2, 3) = z;
@@ -64,31 +105,31 @@ void Mathe::Translate(Matrix& m, double x, double y, double z)
 }
 
 //pitch, yaw, roll
-void Mathe::Rotate(Matrix& m, double x, double y, double z)
+void Mathe::Rotate(Matrix4& m, double x, double y, double z)
 {
-	Matrix xMatrix = Matrix(4, 4);
+	Matrix4 xMatrix;
 	xMatrix(1, 1) = cos(x == 0 ? 0 : ToRadians(x));
 	xMatrix(1, 2) = -sin(x == 0 ? 0 : ToRadians(x));
 	xMatrix(2, 1) = sin(x == 0 ? 0 : ToRadians(x));
 	xMatrix(2, 2) = cos(x == 0 ? 0 : ToRadians(x));
 
-	Matrix yMatrix = Matrix(4, 4);
+	Matrix4 yMatrix;
 	yMatrix(0, 0) = cos(y == 0 ? 0 : ToRadians(y));
 	yMatrix(0, 2) = sin(y == 0 ? 0 : ToRadians(y));
 	yMatrix(2, 0) = -sin(y == 0 ? 0 : ToRadians(y));
 	yMatrix(2, 2) = cos(y == 0 ? 0 : ToRadians(y));
 
-	Matrix zMatrix = Matrix(4, 4);
+	Matrix4 zMatrix;
 	zMatrix(0, 0) = cos(z == 0 ? 0 : ToRadians(z));
 	zMatrix(1, 0) = -sin(z == 0 ? 0 : ToRadians(z));
 	zMatrix(0, 1) = sin(z == 0 ? 0 : ToRadians(z));
 	zMatrix(1, 1) = cos(z == 0 ? 0 : ToRadians(z));
 
-	Matrix rot = xMatrix * yMatrix * zMatrix;
+	Matrix4 rot = xMatrix * yMatrix * zMatrix;
 	m = m * rot;
 }
 
-void Mathe::Rotate(Matrix& m, const Quaternion& q)
+void Mathe::Rotate(Matrix4& m, const Quaternion& q)
 {
 	m.matrix[0] = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
 	m.matrix[1] = (2 * q.i * q.j) - (2 * q.r * q.k);
@@ -115,10 +156,24 @@ void Mathe::Rotate(Matrix& m, const Quaternion& q)
 	m(2, 2) = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);*/
 }
 
-void Mathe::Scale(Matrix& m, double x, double y, double z)
+void Mathe::Rotate(Matrix3& m, const Quaternion& q)
 {
-	Matrix scale = Matrix(4, 4);
+	m.matrix[0] = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
+	m.matrix[1] = (2 * q.i * q.j) - (2 * q.r * q.k);
+	m.matrix[2] = (2 * q.i * q.k) + (2 * q.r * q.j);
 
+	m.matrix[3] = (2 * q.i * q.j) + (2 * q.r * q.k);
+	m.matrix[4] = 1 - (2 * q.i * q.i) - (2 * q.k * q.k);
+	m.matrix[5] = (2 * q.j * q.k) - (2 * q.r * q.i);
+
+	m.matrix[6] = (2 * q.i * q.k) - (2 * q.r * q.j);
+	m.matrix[7] = (2 * q.j * q.k) + (2 * q.r * q.i);
+	m.matrix[8] = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
+}
+
+void Mathe::Scale(Matrix4& m, double x, double y, double z)
+{
+	Matrix4 scale;
 	scale(0, 0) = x;
 	scale(1, 1) = y;
 	scale(2, 2) = z;
@@ -126,9 +181,12 @@ void Mathe::Scale(Matrix& m, double x, double y, double z)
 	m = m * scale;
 }
 
-Vector3 Mathe::GetAxis(unsigned i, Matrix& mat)
+Vector3 Mathe::GetAxis(uint16_t i, Matrix4& mat)
 {
-	//return Vector3(mat.matrix[i], mat.matrix[i + 4], mat.matrix[i + 8]);
+	return Vector3(mat(0, i), mat(1, i), mat(2, i));
+}
+Vector3 Mathe::GetAxis(uint16_t i, Matrix3& mat)
+{
 	return Vector3(mat(0, i), mat(1, i), mat(2, i));
 }
 
@@ -157,9 +215,13 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v)
 	return q;
 }
 
-void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale)
+void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians)
 {
-	Quaternion newq(0, v.x * scale, v.y * scale, v.z * scale);
+	Vector3 rad = v;
+	if (toRadians) 
+		rad = Vector3(Mathe::ToRadians(v.x), Mathe::ToRadians(v.y), Mathe::ToRadians(v.z));
+
+	Quaternion newq(0, rad.x * scale, rad.y * scale, rad.z * scale);
 	newq *= q;
 	q.r += newq.r * 0.5;
 	q.i += newq.i * 0.5;
@@ -169,80 +231,80 @@ void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale)
 	q.Normalise();
 }
 
-void Mathe::TransformInverseInertiaTensor(Matrix& tensorWorld, const Matrix& tensorLocal, const Matrix& rot)
+void Mathe::TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& tensorLocal, const Matrix3& rot)
 {
 	//treating rot as a Mat4 and tensor mats as Mat3
 
-	double t4 = rot.Get(0) * tensorLocal.Get(0)
-		+ rot.Get(1) * tensorLocal.Get(4)
-		+ rot.Get(2) * tensorLocal.Get(8);
-	double t9 = rot.Get(0) * tensorLocal.Get(1)
-		+ rot.Get(1) * tensorLocal.Get(5)
-		+ rot.Get(2) * tensorLocal.Get(9);
-	double t14 = rot.Get(0) * tensorLocal.Get(2)
-		+ rot.Get(1) * tensorLocal.Get(6)
-		+ rot.Get(2) * tensorLocal.Get(10);
+	double t4 = rot.matrix[0] * tensorLocal.matrix[0]
+		+ rot.matrix[1] * tensorLocal.matrix[3]
+		+ rot.matrix[2] * tensorLocal.matrix[6];
+	double t9 = rot.matrix[0] * tensorLocal.matrix[1]
+		+ rot.matrix[1] * tensorLocal.matrix[4]
+		+ rot.matrix[2] * tensorLocal.matrix[7];
+	double t14 = rot.matrix[0] * tensorLocal.matrix[2]
+		+ rot.matrix[1] * tensorLocal.matrix[5]
+		+ rot.matrix[2] * tensorLocal.matrix[8];
 
-	double t28 = rot.Get(4) * tensorLocal.Get(0)
-		+ rot.Get(5) * tensorLocal.Get(4)
-		+ rot.Get(6) * tensorLocal.Get(8);
-	double t33 = rot.Get(4) * tensorLocal.Get(1)
-		+ rot.Get(5) * tensorLocal.Get(5)
-		+ rot.Get(6) * tensorLocal.Get(9);
-	double t38 = rot.Get(4) * tensorLocal.Get(2)
-		+ rot.Get(5) * tensorLocal.Get(6)
-		+ rot.Get(6) * tensorLocal.Get(10);
+	double t28 = rot.matrix[3] * tensorLocal.matrix[0]
+		+ rot.matrix[4] * tensorLocal.matrix[3]
+		+ rot.matrix[5] * tensorLocal.matrix[6];
+	double t33 = rot.matrix[3] * tensorLocal.matrix[1]
+		+ rot.matrix[4] * tensorLocal.matrix[4]
+		+ rot.matrix[5] * tensorLocal.matrix[7];
+	double t38 = rot.matrix[3] * tensorLocal.matrix[2]
+		+ rot.matrix[4] * tensorLocal.matrix[5]
+		+ rot.matrix[5] * tensorLocal.matrix[8];
 
-	double t52 = rot.Get(8) * tensorLocal.Get(0)
-		+ rot.Get(9) * tensorLocal.Get(4)
-		+ rot.Get(10) * tensorLocal.Get(8);
-	double t57 = rot.Get(8) * tensorLocal.Get(1)
-		+ rot.Get(9) * tensorLocal.Get(5)
-		+ rot.Get(10) * tensorLocal.Get(9);
-	double t62 = rot.Get(8) * tensorLocal.Get(2)
-		+ rot.Get(9) * tensorLocal.Get(6)
-		+ rot.Get(10) * tensorLocal.Get(10);
+	double t52 = rot.matrix[6] * tensorLocal.matrix[0]
+		+ rot.matrix[7] * tensorLocal.matrix[3]
+		+ rot.matrix[8] * tensorLocal.matrix[6];
+	double t57 = rot.matrix[6] * tensorLocal.matrix[1]
+		+ rot.matrix[7] * tensorLocal.matrix[4]
+		+ rot.matrix[8] * tensorLocal.matrix[7];
+	double t62 = rot.matrix[6] * tensorLocal.matrix[2]
+		+ rot.matrix[7] * tensorLocal.matrix[5]
+		+ rot.matrix[8] * tensorLocal.matrix[8];
 
-	tensorWorld.Identity();
+	//tensorWorld.Identity();
 
 	tensorWorld.matrix[0] =
-		t4 * rot.Get(0)
-		+ t9 * rot.Get(1)
-		+ t14 * rot.Get(2);
+		t4 * rot.matrix[0]
+		+ t9 * rot.matrix[1]
+		+ t14 * rot.matrix[2];
 	tensorWorld.matrix[1] = 
-		t4 * rot.Get(4)
-		+ t9 * rot.Get(5)
-		+ t14 * rot.Get(6);
+		t4 * rot.matrix[3]
+		+ t9 * rot.matrix[4]
+		+ t14 * rot.matrix[5];
 	tensorWorld.matrix[2] = 
-		t4 * rot.Get(8)
-		+ t9 * rot.Get(9)
-		+ t14 * rot.Get(10);
+		t4 * rot.matrix[6]
+		+ t9 * rot.matrix[7]
+		+ t14 * rot.matrix[8];
 
-	tensorWorld.matrix[4] = 
-		t28 * rot.Get(0)
-		+ t33 * rot.Get(1)
-		+ t38 * rot.Get(2);
+	tensorWorld.matrix[3] = 
+		t28 * rot.matrix[0]
+		+ t33 * rot.matrix[1]
+		+ t38 * rot.matrix[2];
+	tensorWorld.matrix[4] =
+		t28 * rot.matrix[3]
+		+ t33 * rot.matrix[4]
+		+ t38 * rot.matrix[5];
 	tensorWorld.matrix[5] =
-		t28 * rot.Get(4)
-		+ t33 * rot.Get(5)
-		+ t38 * rot.Get(6);
-	tensorWorld.matrix[6] =
-		t28 * rot.Get(8)
-		+ t33 * rot.Get(9)
-		+ t38 * rot.Get(10);
+		t28 * rot.matrix[6]
+		+ t33 * rot.matrix[7]
+		+ t38 * rot.matrix[8];
 
+	tensorWorld.matrix[6] =
+		t52 * rot.matrix[0]
+		+ t57 * rot.matrix[1]
+		+ t62 * rot.matrix[2];
+	tensorWorld.matrix[7] =
+		t52 * rot.matrix[3]
+		+ t57 * rot.matrix[4]
+		+ t62 * rot.matrix[5];
 	tensorWorld.matrix[8] =
-		t52 * rot.Get(0)
-		+ t57 * rot.Get(1)
-		+ t62 * rot.Get(2);
-	tensorWorld.matrix[9] =
-		t52 * rot.Get(4)
-		+ t57 * rot.Get(5)
-		+ t62 * rot.Get(6);
-	tensorWorld.matrix[10] =
-		t52 * rot.Get(8)
-		+ t57 * rot.Get(9)
-		+ t62 * rot.Get(10);
+		t52 * rot.matrix[6]
+		+ t57 * rot.matrix[7]
+		+ t62 * rot.matrix[8];
 }
 
 std::array<float, 2> Mathe::SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots)

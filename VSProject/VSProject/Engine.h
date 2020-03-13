@@ -1,5 +1,5 @@
 #pragma once
-#include "OctTree.h"
+//#include "OctTree.h"
 #include "PrimitiveManager.h"
 
 class ConsoleControls;

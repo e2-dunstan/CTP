@@ -29,15 +29,15 @@ struct Primitive
 	//Vector3 rotation = Vector3();
 	Quaternion orientation = Quaternion();
 	Vector3 scale = Vector3();
-	Matrix transform = Matrix();
+	Matrix4 transform = Matrix4();
 	void UpdateTransform();
 	bool updateTransform = false;
 	bool transformChanged = true;
 
 	void GetOrientation(Quaternion* _orientation) const;
 	Quaternion GetOrientation() const;
-	void GetOrientation(Matrix* _matrix) const;
-	void GetOrientation(double _matrix[16]) const;
+	Matrix3 GetOrientation(Matrix4 _matrix);
+	Matrix3 GetOrientation(double _matrix[16]);
 
 	void SetOrientation(const Quaternion& _orientation);
 	void SetOrientation(const double r, const double i, const double j, const double k);
@@ -52,7 +52,7 @@ struct Primitive
 
 	float radius = 0; //if sphere, capsule or cylinder
 	Vector3 upDir = Vector3(0, 1, 0); //if capsule or cylinder
-	Matrix upDirMat = Matrix(); //if cylinder
+	Matrix3 upDirMat = Matrix3(); //if cylinder
 
 	void Tween(float speed, const Vector3& direction, float distance);
 	void SetTweenOrigin();
@@ -69,4 +69,6 @@ private:
 	GLenum GetDrawType(Primitive::Type objectType);
 
 	bool debugCollision = false;
+
+	bool freeze = false;
 };

@@ -37,8 +37,8 @@ void OctTree::Insert(Primitive& primitive, Node& node)
 
 	for (unsigned i = 0; i < 3; i++)
 	{
-		double delta = primitive.boundingVolume.centre[i] - node.centre[i];
-		if (abs(delta) <= primitive.boundingVolume.halfSize[i])
+		double delta = 0;// primitive.boundingVolume.centre[i] - node.centre[i];
+		if (abs(delta) <= 0)//primitive.boundingVolume.halfSize[i])
 		{
 			straddle = 1;
 			break;

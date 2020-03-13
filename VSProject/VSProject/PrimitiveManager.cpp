@@ -1,7 +1,7 @@
 #include "PrimitiveManager.h"
 #include "Collisions.h"
 #include "Shapes.h"
-#include "OctTree.h"
+//#include "OctTree.h"
 
 using namespace Shapes;
 
@@ -117,7 +117,7 @@ void PrimitiveManager::Update()
 	//Moves objects to illustrate collision detection.
 	//primitives[2].Tween(1, Vector3(1, 0, 0), 3.5);
 
-	for (unsigned i = 0; i < primSize; i++)
+	for (uint32_t i = 0; i < primSize; i++)
 	{
 		primitives[i].Update();
 		primitives[i].colliding = false;

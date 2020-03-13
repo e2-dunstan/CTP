@@ -9,32 +9,36 @@ void Engine::Init()
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->Create(Primitive::Type::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
 	individualObjectInitialised.push_back(false);
-	//primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 5, 5), Vector3(0, 40, 0));
-	//primitiveManager->Create(Primitive::Type::BOX, Vector3(2, 2, 2), Vector3(0, 15, 5), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1.5, 1.5, 1.5), Vector3(1.5, 15, 5), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 20, 5), Vector3(0, 0, 0));
+	//primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 1, 1), Vector3(0, 25, 5), Vector3(0, 0, 0));
+	primitiveManager->Create(Primitive::Type::BOX, Vector3(2, 2, 2), Vector3(0, 5, 5), Vector3(0, 0, 0));
 	//primitiveManager->Create(Primitive::Type::BOX, Vector3(1, 2, 3), Vector3(10, 25, 10), Vector3(20, 180, 40));
 	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
 	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 50, -10));
-	//individualObjectInitialised.push_back(false);
-	//individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 
 	srand(time(NULL));
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnSphere();
-	SpawnSphere();
-	SpawnSphere();
-	SpawnSphere();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnSphere();
+	//SpawnSphere();
+	//SpawnSphere();
+	//SpawnSphere();
 
-	primitiveCount += 1;
-
+	primitiveCount += 4;
+	//primitiveCount++;
 	//skip plane
 	//for (unsigned i = 1; i < primitiveManager->GetPrimitives().size(); i++)
 	//{
