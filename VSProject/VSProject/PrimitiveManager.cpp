@@ -5,48 +5,53 @@
 
 using namespace Shapes;
 
-//pass by const ref
-void PrimitiveManager::Create(Primitive::Type type, 
+/*void PrimitiveManager::Create(PrimitiveType type, 
 	const Vector3& scale, const Vector3& translation, const Vector3& rotation, 
 	float radius, float straight)
 {
 	//default shape
-	Primitive* newObj = new Primitive();
+	Primitive* newObj;// = new Primitive();
 
 	Quaternion orientation = Mathe::VectorToQuaternion(rotation);
 
 	switch (type)
 	{
-	case Primitive::Type::BOX:
-		newObj = new Primitive(ShapeVertices::GetCubeVertices());
-		newObj->collisionVolume.Create(CollisionVolume::Type::BOX, translation, 0, scale, orientation, Vector3());
+	case PrimitiveType::BOX:
+		newObj = new Box(ShapeVertices::GetCubeVertices());
+		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::BOX, translation, 0, scale, orientation, Vector3());
 		newObj->rigidbody.bounciness = 0.1f;
 		break;
-	case Primitive::Type::PLANE:
+
+	case PrimitiveType::PLANE:
 		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
-		newObj->collisionVolume.Create(CollisionVolume::Type::PLANE, translation, 0, scale, orientation, Vector3(0,1,0));
+		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::PLANE, translation, 0, scale, orientation, Vector3(0,1,0));
 		newObj->rigidbody.useGravity = false;
 		newObj->rigidbody.isKinematic = true;
 		newObj->rigidbody.SetAwake(false);
 		newObj->rigidbody.EnableSleep(true);
 		break;
-	case Primitive::Type::SPHERE:
+
+	case PrimitiveType::SPHERE:
 		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
-		newObj->collisionVolume.Create(CollisionVolume::Type::SPHERE, translation, radius, scale, orientation, Vector3());
+		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::SPHERE, translation, radius, scale, orientation, Vector3());
 		newObj->rigidbody.bounciness = 0.8f;
 		break;
-	case Primitive::Type::CAPSULE:
+
+	case PrimitiveType::CAPSULE:
 		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9), radius);
-		newObj->collisionVolume.Create(CollisionVolume::Type::CAPSULE, translation, radius, scale, orientation, Vector3(), straight);
+		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::CAPSULE, translation, radius, scale, orientation, Vector3(), straight);
 		break;
-	case Primitive::Type::CYLINDER:
+
+	case PrimitiveType::CYLINDER:
 		newObj = new Primitive(ShapeVertices::GetCylinderVertices(radius, straight, Colours::magenta, 12), radius);
-		newObj->collisionVolume.Create(CollisionVolume::Type::CYLINDER, translation, radius, scale, orientation, Vector3(), straight);
+		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::CYLINDER, translation, radius, scale, orientation, Vector3(), straight);
 		break;
-	case Primitive::Type::COMPLEX:
+
+	case PrimitiveType::COMPLEX:
 		break;
+
 	default:
-		newObj = new Primitive(ShapeVertices::GetCubeVertices());
+		newObj = new Box(ShapeVertices::GetCubeVertices());
 		break;
 	}
 	newObj->type = type;
@@ -57,28 +62,67 @@ void PrimitiveManager::Create(Primitive::Type type,
 
 	//newObj->Start();
 	newObj->UpdateTransform();
-	newObj->SetTweenOrigin();
+	//newObj->SetTweenOrigin();
 
 	primitives.push_back(*newObj);
 
-	//if (newObj->type != Primitive::Type::PLANE) octTree->Insert(*newObj, *octTree->root);
+	//if (newObj->type != PrimitiveType::PLANE) octTree->Insert(*newObj, *octTree->root);
 	//delete newObj;
+}*/
+
+void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation)
+{
+	Plane plane = Plane(ShapeVertices::GetPlaneVertices());
+	plane.collisionVolume.Create(translation, Vector3(0, 1, 0));
+	plane.rigidbody.useGravity = false;
+	plane.rigidbody.isKinematic = true;
+	plane.rigidbody.SetAwake(false);
+	plane.rigidbody.EnableSleep(true);
+
+	plane.type = PrimitiveType::PLANE;
+	plane.scale = scale;
+	plane.translation = translation;
+	plane.UpdateTransform();
+
+	primitives.emplace_back(std::make_unique<Plane>(std::move(plane)));
+}
+
+void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation)
+{
+	Box box = Box(ShapeVertices::GetCubeVertices());
+	box.collisionVolume.Create(translation, scale);
+	box.rigidbody.bounciness = 0.1f;
+
+	box.type = PrimitiveType::BOX;
+	box.scale = scale;
+	box.translation = translation;
+	box.orientation = Mathe::VectorToQuaternion(rotation);
+	box.UpdateTransform();
+
+	primitives.emplace_back(std::make_unique<Box>(std::move(box)));
 }
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Create(Primitive::Type::SPHERE, Vector3(1, 1, 1), translation, Vector3(), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
+	sphere.collisionVolume.Create(translation);
+	sphere.rigidbody.bounciness = 0.8f;
+
+	sphere.type = PrimitiveType::SPHERE;
+	sphere.translation = translation;
+	sphere.UpdateTransform();
+
+	primitives.emplace_back(std::make_unique<Sphere>(std::move(sphere)));
 }
 
-void PrimitiveManager::CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation)
-{
-	Create(Primitive::Type::CAPSULE, Vector3(1, 1, 1), translation, rotation, radius, straight);
-}
-
-void PrimitiveManager::CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation)
-{
-	Create(Primitive::Type::CYLINDER, Vector3(1, 1, 1), translation, rotation, radius, length);
-}
+//void PrimitiveManager::CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation)
+//{
+//	Create(PrimitiveType::CAPSULE, Vector3(1, 1, 1), translation, rotation, radius, straight);
+//}
+//void PrimitiveManager::CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation)
+//{
+//	Create(PrimitiveType::CYLINDER, Vector3(1, 1, 1), translation, rotation, radius, length);
+//}
 
 void PrimitiveManager::Draw()
 {
@@ -87,7 +131,7 @@ void PrimitiveManager::Draw()
 		//For each object.
 		for (unsigned i = 0; i < primitives.size(); i++)
 		{
-			primitives[i].Draw();
+			primitives[i]->Draw();
 		}
 	}
 
@@ -98,8 +142,8 @@ void PrimitiveManager::Draw()
 
 		glBegin(GL_LINES);
 
-		if (rayCast->Test(primitives[1], rayToTest)) glColor3f(0, 1, 0);
-		else glColor3f(1, 0, 0);
+		//if (rayCast->Test(&primitives[1], rayToTest)) glColor3f(0, 1, 0);
+		//else glColor3f(1, 0, 0);
 		
 		glVertex3f(rayToTest.origin.x, rayToTest.origin.y, rayToTest.origin.z);
 		Vector3 point2 = rayToTest.IntersectionPoint();
@@ -119,8 +163,8 @@ void PrimitiveManager::Update()
 
 	for (uint32_t i = 0; i < primSize; i++)
 	{
-		primitives[i].Update();
-		primitives[i].colliding = false;
+		primitives[i]->Update();
+		primitives[i]->colliding = false;
 	}
 
 	//Custom define which objects to detect collisions between.
@@ -131,7 +175,7 @@ void PrimitiveManager::Update()
 	{
 		for (unsigned j = i + 1; j < primSize; j++)
 		{
-			collisions->DetectCoarse(&primitives[i], &primitives[j]);
+			collisions->DetectCoarse(primitives[i].get(), primitives[j].get());
 		}
 	}
 
@@ -139,23 +183,23 @@ void PrimitiveManager::Update()
 	collisions->Resolution();
 }
 
-std::vector<Primitive>& PrimitiveManager::GetPrimitives()
+std::vector<std::unique_ptr<Primitive>>& PrimitiveManager::GetPrimitives()
 {
 	return primitives;
 }
 
-GLenum PrimitiveManager::GetDrawType(Primitive::Type objectType)
-{
-	switch (objectType)
-	{
-		case Primitive::Type::SPHERE:
-		{
-			return GL_TRIANGLES;
-		}
-		case Primitive::Type::BOX:
-		default:
-		{
-			return GL_QUADS;
-		}
-	}
-}
+//GLenum PrimitiveManager::GetDrawType(Primitive::PrimitiveType objectType)
+//{
+//	switch (objectType)
+//	{
+//		case PrimitiveType::SPHERE:
+//		{
+//			return GL_TRIANGLES;
+//		}
+//		case PrimitiveType::BOX:
+//		default:
+//		{
+//			return GL_QUADS;
+//		}
+//	}
+//}

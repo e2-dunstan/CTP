@@ -14,5 +14,7 @@ private:
 	const float minVelocityChange = 0.01f;
 	const float minPositionChange = 0.01f;
 
-	unsigned numContacts = 0;
+	unsigned int numContacts = 0;
+
+	void AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp);
 };

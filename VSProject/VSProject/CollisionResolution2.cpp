@@ -9,7 +9,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 	{
 		unsigned contactIndex = i % numContacts; //to allow for multiple iterations
 		//Match RB awake states
-		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
+		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE)
 		{
 			contacts[contactIndex].MatchRigidbodyAwakeStates();
 		}
@@ -21,7 +21,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		for (unsigned i = 0; i < numContacts; i++)
 		{
 			if (i == contactIndex) continue;
-			if (contacts[i].body1->type != Primitive::Type::PLANE)
+			if (contacts[i].body1->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
@@ -36,7 +36,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
-			if (contacts[i].body2->type != Primitive::Type::PLANE)
+			if (contacts[i].body2->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
@@ -63,7 +63,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 	{
 		unsigned contactIndex = i % numContacts;
 		//Match RB awake states
-		if (contacts[contactIndex].body2->type != Primitive::Type::PLANE)
+		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE)
 		{
 			contacts[contactIndex].MatchRigidbodyAwakeStates();
 		}
@@ -75,50 +75,64 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 		for (unsigned i = 0; i < numContacts; i++)
 		{
 			if (i == contactIndex) continue;
-			if (contacts[i].body1->type != Primitive::Type::PLANE)
+			if (contacts[i].body1->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
-					deltaVelocity = contacts[contactIndex].velocityChange[0]
-						+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos1);
-					//Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity += deltaVelocity;
-					contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos1);
+					//deltaVelocity = contacts[contactIndex].velocityChange[0]
+					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos1);
+					////Vector3 additionalVel = deltaVelocity;
+					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					//contacts[i].closingVelocity += deltaVelocity;
+					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
-					deltaVelocity = contacts[contactIndex].velocityChange[1]
-						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
-					//Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity += deltaVelocity;
-					contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos1);
+					//deltaVelocity = contacts[contactIndex].velocityChange[1]
+					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
+					////Vector3 additionalVel = deltaVelocity;
+					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					//contacts[i].closingVelocity += deltaVelocity;
+					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}
-			if (contacts[i].body2->type != Primitive::Type::PLANE)
+			if (contacts[i].body2->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
-					deltaVelocity = contacts[contactIndex].velocityChange[0]
-						+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
-					//Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity += deltaVelocity;
-					contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2);
+					//deltaVelocity = contacts[contactIndex].velocityChange[0]
+					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
+					////Vector3 additionalVel = deltaVelocity;
+					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					//contacts[i].closingVelocity += deltaVelocity;
+					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
-					deltaVelocity = contacts[contactIndex].velocityChange[1]
-						+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
-					//Vector3 additionalVel = deltaVelocity;
-					Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					contacts[i].closingVelocity += deltaVelocity;
-					contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2);
+					//deltaVelocity = contacts[contactIndex].velocityChange[1]
+					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
+					////Vector3 additionalVel = deltaVelocity;
+					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
+					//contacts[i].closingVelocity += deltaVelocity;
+					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}
 		}		
 	}
+}
+
+void CollisionResolution2::AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp)
+{
+	Vector3 deltaVelocity = thisContact->velocityChange[bt]
+		+ thisContact->rotationChange[bt].VectorProduct(rcp);
+	//Vector3 additionalVel = deltaVelocity;
+	Mathe::Transform(deltaVelocity, otherContact->worldToContact);
+	otherContact->closingVelocity += deltaVelocity;
+	otherContact->CalculateDesiredDeltaVelocity();
 }
 
 //Now handled by collision data

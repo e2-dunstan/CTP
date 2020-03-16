@@ -1,8 +1,17 @@
 #include "Primitive.h"
 
-void Primitive::Start()
+void Box::Start()
 {
+	drawType = GL_QUADS;
 	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 3.0);
+	CalculateInertiaTensor();
+	rigidbody.Start();
+}
+
+void Sphere::Start()
+{
+	drawType = GL_TRIANGLES;
+	rigidbody.inverseMass = 1.0f / (radius * 3.0);
 	CalculateInertiaTensor();
 	rigidbody.Start();
 }
@@ -25,8 +34,7 @@ void Primitive::Update()
 
 void Primitive::Draw()
 {
-	glBegin(GetDrawType(type));
-
+	glBegin(drawType);
 	//Only locally transform the vertices. This makes it so that each draw call
 	//the vertices do not have to be cleared and redefined if their transforms have
 	//changed. Performance boost. (or is it?)
@@ -52,33 +60,32 @@ void Primitive::Draw()
 		}
 		glVertex3f(position.x, position.y, position.z);
 	}
-
 	glEnd();
 
 	//boundingVolume.Draw();
 }
 
-void Primitive::CalculateInertiaTensor()
+/*void OldPrimitive::CalculateInertiaTensor()
 {
 	double matVals[9] = { 0.0 };
 	switch (type)
 	{
-	case Type::BOX:
+	case PrimitiveType::BOX:
 	{
 		matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
 		matVals[4] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
 		matVals[8] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
 		break;
 	}
-	case Type::SPHERE:
+	case PrimitiveType::SPHERE:
 	{
 		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		matVals[4] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		matVals[8] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
-	case Type::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
-	case Type::CYLINDER:
+	case PrimitiveType::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
+	case PrimitiveType::CYLINDER:
 	{
 		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
 			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
@@ -87,8 +94,8 @@ void Primitive::CalculateInertiaTensor()
 		matVals[8] = (1.0 / (2.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
 		break;
 	}
-	case Type::COMPLEX:
-	case Type::PLANE:
+	case PrimitiveType::COMPLEX:
+	case PrimitiveType::PLANE:
 	default:
 		return;
 	}
@@ -97,9 +104,9 @@ void Primitive::CalculateInertiaTensor()
 	rigidbody.inverseInertiaTensor.Inverse();
 }
 
-void Primitive::Tween(float speed, const Vector3& direction, float approxDistance)
+void OldPrimitive::Tween(float speed, const Vector3& direction, float approxDistance)
 {
-	if (/*!initialised || */!rigidbody.isKinematic) return;
+	if (/*!initialised || !rigidbody.isKinematic) return;
 
 	if (!tweenMaxSet)
 	{
@@ -119,12 +126,12 @@ void Primitive::Tween(float speed, const Vector3& direction, float approxDistanc
 	updateTransform = true;
 }
 
-void Primitive::SetTweenOrigin()
+void OldPrimitive::SetTweenOrigin()
 {
 	tweenOrigin = translation;
-}
+}*/
 
-void Primitive::UpdateTransform()
+/*void Primitive::UpdateTransform()
 {
 	if (freeze) return;
 	if (translation.y < -25.0)
@@ -144,7 +151,7 @@ void Primitive::UpdateTransform()
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	if (type == Type::CAPSULE || type == Type::CYLINDER)
+	if (type == PrimitiveType::CAPSULE || type == PrimitiveType::CYLINDER)
 	{
 		upDirMat.Identity();
 		//Mathe::Rotate(upDirMat, rotation.x, rotation.y, rotation.z);
@@ -158,7 +165,7 @@ void Primitive::UpdateTransform()
 	collisionVolume.Update(translation, radius, scale, orientation);
 
 	updateTransform = false;
-}
+}*/
 
 void Primitive::GetOrientation(Quaternion* _orientation) const
 {
@@ -202,23 +209,121 @@ void Primitive::SetOrientation(const double r, const double i, const double j, c
 	orientation.Normalise();
 }
 
-GLenum Primitive::GetDrawType(Type objectType)
+//GLenum OldPrimitive::GetDrawType(PrimitiveType objectType)
+//{
+//	switch (objectType)
+//	{
+//	case PrimitiveType::CYLINDER:
+//	{
+//		return GL_TRIANGLE_STRIP;
+//	}
+//	case PrimitiveType::CAPSULE:
+//	case PrimitiveType::SPHERE:
+//	{
+//		return GL_TRIANGLES;
+//	}
+//	case PrimitiveType::BOX:
+//	default:
+//	{
+//		return GL_QUADS;
+//	}
+//	}
+//}
+
+void Box::CalculateInertiaTensor()
 {
-	switch (objectType)
+	double matVals[9] = { 0.0 };
+	matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
+	matVals[4] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
+	matVals[8] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
+
+	rigidbody.inverseInertiaTensor = Matrix3(matVals);
+	rigidbody.inverseInertiaTensor.Inverse();
+}
+
+void Box::UpdateTransform()
+{
+	if (freeze) return;
+	if (translation.y < -25.0)
 	{
-	case Type::CYLINDER:
+		std::cout << "WARNING: object fallen below ground plane." << std::endl;
+		freeze = true;
+	}
+
+	transform.Identity();
+
+	//Update the transform matrix4x4 with the new transform vectors.
+	Mathe::Translate(transform, translation.x, translation.y, translation.z);
+	Mathe::Rotate(transform, orientation);
+
+	collisionVolume.axisMat = transform;
+	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
+
+	Mathe::Scale(transform, scale.x, scale.y, scale.z);
+
+	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	collisionVolume.Update(translation, scale);
+
+	updateTransform = false;
+}
+
+void Sphere::CalculateInertiaTensor()
+{
+	double matVals[9] = { 0.0 };
+	matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+	matVals[4] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+	matVals[8] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+
+	rigidbody.inverseInertiaTensor = Matrix3(matVals);
+	rigidbody.inverseInertiaTensor.Inverse();
+}
+
+void Sphere::UpdateTransform()
+{
+	if (freeze) return;
+	if (translation.y < -25.0)
 	{
-		return GL_TRIANGLE_STRIP;
+		std::cout << "WARNING: object fallen below ground plane." << std::endl;
+		freeze = true;
 	}
-	case Type::CAPSULE:
-	case Type::SPHERE:
+
+	transform.Identity();
+
+	//Update the transform matrix4x4 with the new transform vectors.
+	Mathe::Translate(transform, translation.x, translation.y, translation.z);
+	Mathe::Rotate(transform, orientation);
+
+	collisionVolume.axisMat = transform;
+	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
+
+	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	collisionVolume.Update(translation);
+
+	updateTransform = false;
+}
+
+void Plane::UpdateTransform()
+{
+	if (freeze) return;
+	if (translation.y < -25.0)
 	{
-		return GL_TRIANGLES;
+		std::cout << "WARNING: object fallen below ground plane." << std::endl;
+		freeze = true;
 	}
-	case Type::BOX:
-	default:
-	{
-		return GL_QUADS;
-	}
-	}
+
+	transform.Identity();
+
+	//Update the transform matrix4x4 with the new transform vectors.
+	Mathe::Translate(transform, translation.x, translation.y, translation.z);
+	Mathe::Rotate(transform, orientation);
+
+	collisionVolume.axisMat = transform;
+	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
+
+	Mathe::Scale(transform, scale.x, scale.y, scale.z);
+
+	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	collisionVolume.Update(translation);
+
+	updateTransform = false;
 }

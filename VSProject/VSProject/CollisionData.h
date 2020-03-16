@@ -20,8 +20,8 @@ public:
 	Contact(Primitive* prim1, Primitive* prim2)
 		: body1(prim1), body2(prim2) 
 	{
-		if (body1->type != Primitive::Type::PLANE) body1->colliding = true;
-		if (body2->type != Primitive::Type::PLANE) body2->colliding = true;
+		if (body1->type != PrimitiveType::PLANE) body1->colliding = true;
+		if (body2->type != PrimitiveType::PLANE) body2->colliding = true;
 	};
 	~Contact() = default;
 

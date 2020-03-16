@@ -24,15 +24,15 @@ void Contact::PrepareResolution()
 		case BounceCombineType::AVERAGE:
 		{
 			restitution = (body1->rigidbody.bounciness + body2->rigidbody.bounciness) * 0.5f;
-			if (body2->type != Primitive::Type::PLANE) restitution *= 2.0f;
+			if (body2->type != PrimitiveType::PLANE) restitution *= 2.0f;
 			break;
 		}
 	}
 
 	CalculateContactBasisMatrices();
 
-	relContactPos1 = (point - body1->collisionVolume.centre);
-	relContactPos2 = (point - body2->collisionVolume.centre);
+	relContactPos1 = (point - body1->translation);
+	relContactPos2 = (point - body2->translation);
 
 	CalculateClosingVelocities();
 	CalculateDesiredDeltaVelocity();
@@ -92,7 +92,7 @@ void Contact::CalculateClosingVelocities()
 	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
 
 	//Body2
-	if (body2->type != Primitive::Type::PLANE)
+	if (body2->type != PrimitiveType::PLANE)
 	{
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
@@ -111,7 +111,7 @@ void Contact::CalculateDesiredDeltaVelocity()
 	{
 		bodiesVelocity += abs(body1->rigidbody.GetPreviousVelocity().ScalarProduct(normal));// *Global::deltaTime;
 	}
-	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
+	if (body2->type != PrimitiveType::PLANE && body2->rigidbody.isAwake)
 	{
 		bodiesVelocity -= abs(body2->rigidbody.GetPreviousVelocity().ScalarProduct(normal));// *Global::deltaTime;
 	}
@@ -139,7 +139,7 @@ void Contact::ResolveContactPenetration()
 	float linearInertia2 = 0;
 
 	//inertia for body 2
-	if (body2->type != Primitive::Type::PLANE)
+	if (body2->type != PrimitiveType::PLANE)
 	{
 		angularInertia_W = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularInertia_W, body2->rigidbody.inverseInertiaTensorWorld);
@@ -179,7 +179,7 @@ void Contact::ResolveContactPenetration()
 	else angularChange[0] = Vector3();
 
 	//Body2
-	if (angularMove2 != 0 && body2->type != Primitive::Type::PLANE)
+	if (angularMove2 != 0 && body2->type != PrimitiveType::PLANE)
 	{
 		Vector3 angularDir2 = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(angularDir2, body2->rigidbody.inverseInertiaTensorWorld);
@@ -229,7 +229,7 @@ void Contact::ResolveContactPenetration()
 	{
 		body1->updateTransform = true;
 	}
-	if (body2->type != Primitive::Type::PLANE && body2->rigidbody.isAwake)
+	if (body2->type != PrimitiveType::PLANE && body2->rigidbody.isAwake)
 	{
 		body2->updateTransform = true;
 	}
@@ -270,7 +270,7 @@ void Contact::ResolveContactVelocity()
 	body1->rigidbody.AddVelocityChange(velocityChange[0]);
 	body1->rigidbody.AddRotationChange(rotationChange[0]);
 
-	if (body2->type != Primitive::Type::PLANE)
+	if (body2->type != PrimitiveType::PLANE)
 	{
 		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -1.0;// *-normal.SumComponents();
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
@@ -291,7 +291,7 @@ Vector3 Contact::FrictionlessImpulse()
 	float deltaSpeed = (float)deltaVelocity_W.ScalarProduct(normal);
 	deltaSpeed += body1->rigidbody.inverseMass;
 
-	if (body2->type != Primitive::Type::PLANE)
+	if (body2->type != PrimitiveType::PLANE)
 	{
 		deltaVelocity_W = relContactPos2.VectorProduct(normal);
 		Mathe::Transform(deltaVelocity_W, body2->rigidbody.inverseInertiaTensorWorld);
@@ -320,7 +320,7 @@ Vector3 Contact::FrictionImpulse()
 	deltaVelWorld = (deltaVelWorld * body1->rigidbody.inverseInertiaTensor) * impulseToTorque;
 	deltaVelWorld = deltaVelWorld * -1.0;
 	
-	if (body2->type != Primitive::Type::PLANE)
+	if (body2->type != PrimitiveType::PLANE)
 	{
 		impulseToTorque.matrix[1] = -relContactPos2.z;
 		impulseToTorque.matrix[2] = relContactPos2.y;

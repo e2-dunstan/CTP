@@ -1,8 +1,6 @@
 #pragma once
 #include "mathe.h"
 
-struct Primitive;
-
 struct Ray
 {
 	// ray = origin + (intersection * direction)
@@ -49,7 +47,7 @@ public:
 	RayCast() = default;
 	~RayCast() = default;
 
-	bool Test(const Primitive& prim, Ray& ray);
+	bool Test(class Primitive* prim, Ray& ray);
 	const float maxRayLength = 500.0f;
 
 private:

@@ -1,25 +1,33 @@
 #include "RayCast.h"
 #include "Primitive.h"
 
-bool RayCast::Test(const Primitive& prim, Ray& ray)
+bool RayCast::Test(Primitive* prim, Ray& ray)
 {
 	ray.direction = ray.direction.Normalise();
 
-	switch (prim.type)
+	switch (prim->type)
 	{
-	case Primitive::Type::PLANE:
-		return TestPlane(prim.translation, prim.collisionVolume.normal, prim.scale, ray);
-
-	case Primitive::Type::SPHERE:
-		return TestSphere(prim.translation, prim.radius, ray);
-
-	case Primitive::Type::BOX:
+	case PrimitiveType::PLANE:
+	{
+		Plane* p = dynamic_cast<Plane*>(prim);
+		return TestPlane(p->translation, p->collisionVolume.normal, p->scale, ray);
+	}
+	case PrimitiveType::SPHERE:
+	{
+		Sphere* s = dynamic_cast<Sphere*>(prim);
+		return TestSphere(s->translation, s->radius, ray);
+	}
+	case PrimitiveType::BOX:
+	{
 		//need full transform for box and the transform excluding scale
-		return TestBox(prim.scale, prim.collisionVolume.axisMat, ray);
-
+		Box* b = dynamic_cast<Box*>(prim);
+		return TestBox(b->scale, b->collisionVolume.axisMat, ray);
+	}
 	default:
+	{
 		std::cout << "Warning: primitive type not supported in ray tests." << std::endl;
 		return false;
+	}
 	}
 }
 

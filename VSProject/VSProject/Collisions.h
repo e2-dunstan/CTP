@@ -4,8 +4,6 @@
 #include "SeparatingAxisTheorem.h"
 #include "CollisionResolution2.h"
 
-struct Primitive;
-
 //Base class for all collision related behaviours.
 class Collisions
 {
@@ -13,7 +11,7 @@ public:
 	Collisions();
 	~Collisions() = default;
 
-	void DetectCoarse(Primitive* prim1, Primitive* prim2);
+	void DetectCoarse(class Primitive* prim1, class Primitive* prim2);
 	void DetectFine();
 	void Resolution();
 

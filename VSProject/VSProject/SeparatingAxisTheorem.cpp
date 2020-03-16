@@ -2,14 +2,17 @@
 #include "Primitive.h"
 #include "CollisionData.h"
 
-void SAT::Test(Primitive* box1, Primitive* box2)
+void SAT::Test(Primitive* _box1, Primitive* _box2)
 {
+	Box* box1 = dynamic_cast<Box*>(_box1);
+	Box* box2 = dynamic_cast<Box*>(_box2);
+
 	Vector3 toCentre = box2->collisionVolume.centre - box1->collisionVolume.centre;
 	float smallestPenetration = 1000;
 	int smallestIndex = -1;
 
-	CollisionVolume* cv1 = &box1->collisionVolume;
-	CollisionVolume* cv2 = &box2->collisionVolume;
+	BoxCV* cv1 = &box1->collisionVolume;
+	BoxCV* cv2 = &box2->collisionVolume;
 
 	//Early-outs if any axes are found to be not overlapping.
 	//FACES
@@ -56,7 +59,7 @@ void SAT::Test(Primitive* box1, Primitive* box2)
 	//contacts.push_back(contact);
 }
 
-void SAT::GetContactData(int& smallestIndex, Primitive* box1, Primitive* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
+void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
 {	   	 
 	//Point-face collision
 	if (smallestIndex < 3)
@@ -121,7 +124,7 @@ void SAT::GetContactData(int& smallestIndex, Primitive* box1, Primitive* box2, c
 	}
 }
 
-double SAT::GetPositionOnAxis(const CollisionVolume* box, const Vector3& axis)
+double SAT::GetPositionOnAxis(const BoxCV* box, const Vector3& axis)
 {
 	Matrix4 axisMat = box->axisMat;
 
@@ -131,7 +134,7 @@ double SAT::GetPositionOnAxis(const CollisionVolume* box, const Vector3& axis)
 		+ box->halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
 }
 
-bool SAT::BoxesOverlapOnAxis(const CollisionVolume* box1, const CollisionVolume* box2, const Vector3& toCentre, Vector3 axis, int index, float& smallestPenetration, int& smallestIndex)
+bool SAT::BoxesOverlapOnAxis(const BoxCV* box1, const BoxCV* box2, const Vector3& toCentre, Vector3 axis, int index, float& smallestPenetration, int& smallestIndex)
 {
 	if (axis.SquaredMagnitude() < 0.0001) return true;
 	axis = axis.Normalise();
@@ -151,7 +154,7 @@ bool SAT::BoxesOverlapOnAxis(const CollisionVolume* box1, const CollisionVolume*
 	return true;
 }
 
-void SAT::PointFaceCollision(Primitive* box1, Primitive* box2, const Vector3& toCentre, int smallest, float penetration)
+void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration)
 {
 	//convert coord space to box 1 so box 1 pos is 0
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
