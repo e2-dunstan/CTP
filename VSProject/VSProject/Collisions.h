@@ -34,5 +34,5 @@ private:
 		Vector3 normal = Vector3();
 	};
 
-	ContactDisplay contactDisplays[6];
+	ContactDisplay contactDisplays[30];
 };

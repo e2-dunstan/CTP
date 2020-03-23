@@ -7,38 +7,37 @@ void Engine::Init()
 	//primitiveManager->octTree->root = primitiveManager->octTree->Construct(Vector3(0, 32, 0), 64, 4);
 
 	//If you wish to draw more objects, this is where to define them.
-	//primitiveManager->Create(PrimitiveType::PLANE, Vector3(64, 64, 64), Vector3(0,0,0), Vector3());
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
-	//primitiveManager->Create(PrimitiveType::BOX, Vector3(1.5, 1.5, 1.5), Vector3(0, 15, 5), Vector3(0, 0, 0));
-	//primitiveManager->Create(PrimitiveType::BOX, Vector3(1, 1, 1), Vector3(0, 20, 5), Vector3(0, 0, 0));
-	//primitiveManager->Create(PrimitiveType::BOX, Vector3(1, 1, 1), Vector3(0, 25, 5), Vector3(0, 0, 0));
-	//primitiveManager->Create(PrimitiveType::BOX, Vector3(2, 2, 2), Vector3(0, 5, 5), Vector3(0, 0, 0));
-	//primitiveManager->Create(PrimitiveType::BOX, Vector3(1, 2, 3), Vector3(10, 25, 10), Vector3(20, 180, 40));
+
+	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(0, 5, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2), Vector3(0, 10, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 15, 8),	Vector3(0, 0, 0));
+
 	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
 	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 50, -10));
-	//individualObjectInitialised.push_back(false);
-	//individualObjectInitialised.push_back(false);
-	//individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
+	individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 
 	srand(time(NULL));
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnBox();
-	SpawnSphere();
-	SpawnSphere();
-	SpawnSphere();
-	SpawnSphere();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnSphere();
+	//SpawnSphere();
+	//SpawnSphere();
+	//SpawnSphere();
 
-	primitiveCount += 1;
+	primitiveCount += 4;
 	//primitiveCount++;
 	//skip plane
 	//for (unsigned i = 1; i < primitiveManager->GetPrimitives().size(); i++)
@@ -108,6 +107,15 @@ void Engine::SpawnBox()
 	std::cout << box << std::endl;
 	primitiveManager->CreateBox(scale, pos, rot);
 
+	individualObjectInitialised.push_back(false);
+	objectsInitialised = false;
+	primitiveCount++;
+}
+
+void Engine::ThrowSphere()
+{
+	primitiveManager->CreateSphere(1.0, Vector3(6, 6, 0));
+	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(-20, 0, 20);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;

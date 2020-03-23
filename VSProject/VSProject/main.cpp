@@ -236,7 +236,6 @@ int main(int argc, char* argv[]) {
 
 	glutMainLoop();
 
-
 	//https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
 
 

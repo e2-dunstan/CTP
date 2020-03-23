@@ -27,4 +27,6 @@ private:
 protected:
 	void SpawnSphere();
 	void SpawnBox();
+
+	void ThrowSphere();
 };

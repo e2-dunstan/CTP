@@ -4,18 +4,15 @@
 void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
+	//return;
 
 	for (unsigned i = 0; i < numContacts; i++)
 	{
 		unsigned contactIndex = i % numContacts; //to allow for multiple iterations
-		//Match RB awake states
-		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE)
-		{
-			contacts[contactIndex].MatchRigidbodyAwakeStates();
-		}
 
 		contacts[contactIndex].ResolveContactPenetration();
 
+		//continue;
 		Vector3 deltaPosition;
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
@@ -27,7 +24,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
@@ -42,7 +39,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
@@ -62,24 +59,27 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 	for (unsigned i = 0; i < numContacts; i++)
 	{
 		unsigned contactIndex = i % numContacts;
+
+		contacts[contactIndex].ResolveContactVelocity();
+
 		//Match RB awake states
-		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE)
+		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE
+			&& contacts[contactIndex].body1->rigidbody.GetMotion() > contacts[contactIndex].body1->rigidbody.sleepThreshold
+			&& contacts[contactIndex].body2->rigidbody.GetMotion() > contacts[contactIndex].body2->rigidbody.sleepThreshold)
 		{
 			contacts[contactIndex].MatchRigidbodyAwakeStates();
 		}
 
-		contacts[contactIndex].ResolveContactVelocity();
+		continue;//better results WITHOUT checking other contacts
 
-		//continue;
-		Vector3 deltaVelocity;
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			if (i == contactIndex) continue;
+			//if (i == contactIndex) continue;
 			if (contacts[i].body1->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos1);
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos1, true);
 					//deltaVelocity = contacts[contactIndex].velocityChange[0]
 					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos1);
 					////Vector3 additionalVel = deltaVelocity;
@@ -89,7 +89,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos1);
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos1, true);
 					//deltaVelocity = contacts[contactIndex].velocityChange[1]
 					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
 					////Vector3 additionalVel = deltaVelocity;
@@ -102,7 +102,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2);
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2, true);
 					//deltaVelocity = contacts[contactIndex].velocityChange[0]
 					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
 					////Vector3 additionalVel = deltaVelocity;
@@ -112,7 +112,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2);
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2, true);
 					//deltaVelocity = contacts[contactIndex].velocityChange[1]
 					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
 					////Vector3 additionalVel = deltaVelocity;
@@ -125,43 +125,11 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 	}
 }
 
-void CollisionResolution2::AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp)
+void CollisionResolution2::AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp, bool sign)
 {
 	Vector3 deltaVelocity = thisContact->velocityChange[bt]
 		+ thisContact->rotationChange[bt].VectorProduct(rcp);
-	//Vector3 additionalVel = deltaVelocity;
 	Mathe::Transform(deltaVelocity, otherContact->worldToContact);
-	otherContact->closingVelocity += deltaVelocity;
+	otherContact->closingVelocity += deltaVelocity * (sign ? 1.0 : -1.0);
 	otherContact->CalculateDesiredDeltaVelocity();
 }
-
-//Now handled by collision data
-//unsigned CollisionResolution2::GetContactWithLargestPenetration(std::vector<Contact>& contacts)
-//{
-//	float largestPenetration = minPositionChange;
-//	unsigned contactIndex = numContacts;
-//	for (unsigned i = 0; i < numContacts; i++)
-//	{
-//		if (contacts[i].penetrationDepth > largestPenetration)
-//		{
-//			largestPenetration = contacts[i].penetrationDepth;
-//			contactIndex = i;
-//		}
-//	}
-//	return contactIndex;
-//}
-//
-//unsigned CollisionResolution2::GetContactWithLargestVelocityMagnitude(std::vector<Contact>& contacts)
-//{
-//	float largestVelocityMag = minVelocityChange;
-//	unsigned contactIndex = numContacts;
-//	for (unsigned i = 0; i < numContacts; i++)
-//	{
-//		if (contacts[i].desiredDeltaVelocity > largestVelocityMag)
-//		{
-//			largestVelocityMag = contacts[i].desiredDeltaVelocity;
-//			contactIndex = i;
-//		}
-//	}
-//	return contactIndex;
-//}

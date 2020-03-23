@@ -206,25 +206,26 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 
 	//Get local incident normal to get vertices in the correct order
 	Vector3 localIncidentNormal = incidentNormal;
-	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
 	localIncidentNormal = localIncidentNormal.Normalise();
+	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
 	if (!SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize)) return;
 	//Transform back to box 1 space
 	for (unsigned v = 0; v < 4; v++)
 	{
 		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
-		incidentVertices[v] += localIncidentNormal * box2->collisionVolume.halfSize;//box1->collisionVolume.centre / box1->collisionVolume.halfSize) * referenceNormal;
+		incidentVertices[v] += incidentNormal * box2->collisionVolume.halfSize;//box1->collisionVolume.centre / box1->collisionVolume.halfSize) * referenceNormal;
 		incidentVertices[v] -= box1->collisionVolume.centre;// *(localIncidentNormal.SumComponents() < 0 ? -1.0 : 1.0);
 	}
 
 	std::vector<Vector3> clippedVertices;
 	//index to ignore is dependent on what ref axis is 0
 	SutherlandHodgman(clippedVertices, referenceNormal, incidentVertices, referenceVertices);
+	if (clippedVertices.size() <= 0) return;
 
 	Vector3 contactPoint = Vector3();
 	unsigned numContactPoints = 0;
 
-	bool mergeContacts = false;
+	bool mergeContacts = true;
 	normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
 
 	//only keep vertices below the reference plane
@@ -235,7 +236,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
 		float clipped = abs(clippedVertices[v].ScalarProduct(referenceNormal));
 
-		if (clipped < relBox) 
+		if (clipped < relBox + 0.05f) 
 		{
 			if (!mergeContacts)
 			{
@@ -257,11 +258,21 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 
 	//Previous implementation using only one contact point
 
-	if (contactPoint.x != 0) contactPoint.x /= (double)numContactPoints;
-	if (contactPoint.y != 0) contactPoint.y /= (double)numContactPoints;
-	if (contactPoint.z != 0) contactPoint.z /= (double)numContactPoints;
-	if (pen != 0) pen /= (float)numContactPoints;
-	//transform to world coordinates
+	if (numContactPoints != 0)
+	{
+		contactPoint.x /= (double)numContactPoints;
+		contactPoint.y /= (double)numContactPoints;
+		contactPoint.z /= (double)numContactPoints;
+		pen /= (float)numContactPoints;
+	}
+	else
+	{
+		std::cout << "ERROR: No contact points found. Clipped vertices:" << std::endl;
+		for (unsigned i = 0; i < clippedVertices.size(); i++)
+		{
+			clippedVertices[i].DebugOutput();
+		}
+	}
 	//Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
 	//contactPoint += box1->collisionVolume.centre;
 
@@ -319,21 +330,21 @@ Vector3 SAT::GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgeP
 
 bool SAT::SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize)
 {
-	if (abs(abs(normal.x) - 1.0) < 0.001)
+	if (abs(abs(normal.x) - 1.0) < 0.01)
 	{
 		planes[0] = Vector3(0, 1, 1) * halfSize;
 		planes[1] = Vector3(0, 1, -1) * halfSize;
 		planes[2] = Vector3(0, -1, -1) * halfSize;
 		planes[3] = Vector3(0, -1, 1) * halfSize;
 	}
-	else if (abs(abs(normal.y) - 1.0) < 0.001)
+	else if (abs(abs(normal.y) - 1.0) < 0.01)
 	{
 		planes[0] = Vector3(1, 0, 1) * halfSize;
 		planes[1] = Vector3(1, 0, -1) * halfSize;
 		planes[2] = Vector3(-1, 0, -1) * halfSize;
 		planes[3] = Vector3(-1, 0, 1) * halfSize;
 	}
-	else if (abs(abs(normal.z) - 1.0) < 0.001)
+	else if (abs(abs(normal.z) - 1.0) < 0.01)
 	{
 		planes[0] = Vector3(1, 1, 0) * halfSize;
 		planes[1] = Vector3(1, -1, 0) * halfSize;

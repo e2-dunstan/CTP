@@ -239,7 +239,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 		return;
 	}
 
-	bool mergeContacts = true;
+	bool mergeContacts = false;
 
 	if (mergeContacts)
 	{

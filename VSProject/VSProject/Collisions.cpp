@@ -55,7 +55,7 @@ void Collisions::DrawContacts()
 {
 	//if (data->contacts.size() <= 0) return;
 
-	for (unsigned i = 0; i < 6; i++)
+	for (unsigned i = 0; i < 30; i++)
 	{
 		if (contactDisplays[i].origin == Vector3()) continue;
 
@@ -65,7 +65,7 @@ void Collisions::DrawContacts()
 
 		glColor3f(1, 0, 0);
 		glVertex3f(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
-		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 5.0;
+		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 2.0;
 		glVertex3f(point2.x, point2.y, point2.z);
 
 		glEnd();

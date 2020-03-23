@@ -16,5 +16,5 @@ private:
 
 	unsigned int numContacts = 0;
 
-	void AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp);
+	void AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp, bool sign);
 };

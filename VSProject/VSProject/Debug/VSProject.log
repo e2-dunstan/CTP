@@ -1,15 +1,2 @@
-﻿  PrimitiveManager.cpp
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(148,70): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(148,50): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(148,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(150,40): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(150,30): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\PrimitiveManager.cpp(150,20): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-  SeparatingAxisTheorem.cpp
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(161,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(162,20): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(185,14): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(231,15): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\SeparatingAxisTheorem.cpp(236,17): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-  Generating Code...
+﻿  CollisionResolution2.cpp
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

@@ -4,6 +4,9 @@
 //Will be used for collision response.
 struct RigidBody
 {
+	friend class CollisionResolution2;
+
+public:
 	RigidBody() = default;
 	~RigidBody() = default;
 
@@ -20,7 +23,7 @@ struct RigidBody
 	//Drag is a percentage so 1.0f is a lot and 0.0f is none
 	const float linearDrag = 0.75f;
 	const float angularDrag = 0.05f;
-	float friction = 0.0f;
+	float friction = 1.0f;
 	float bounciness = 0.0f; // 0 = not at all bouncy, 1 = no loss of energy so very bouncy
 
 	bool isKinematic = false;
@@ -29,7 +32,7 @@ struct RigidBody
 	Matrix3 inverseInertiaTensor = Matrix3();
 	Matrix3 inverseInertiaTensorWorld = Matrix3();
 
-	void Start(); //not called
+	void Start(Vector3 startingVelocity = Vector3());
 	bool PhysicsUpdate();
 	void EndPhysicsUpdate(bool colliding);
 	//void CalculateVelocity(Vector3& newPosition);
@@ -48,6 +51,7 @@ struct RigidBody
 
 	Vector3 GetPreviousVelocity();
 	//Vector3 GetPreviousAcceleration();
+	double GetMotion();
 
 private:
 	Vector3 prevVelocity = Vector3();
@@ -55,9 +59,10 @@ private:
 
 	double motion = 0;
 	double timeMotionBelowSleepThreshold = 0;
-	double timeToSleep = 3.0;
+	double timeToSleep = 1.0;
 
 	double terminalSpeed = 10000;
 
-	const double sleepThreshold = 1.5;
+protected:
+	const double sleepThreshold = 0.5;
 };

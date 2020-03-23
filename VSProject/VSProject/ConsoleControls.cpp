@@ -6,11 +6,15 @@ using namespace std;
 void ConsoleControls::Init()
 {
 	consoleState = State::NONE;
-	MainMenu();
+	//MainMenu();
 }
 
 void ConsoleControls::OnKeyRelease(const unsigned char key, Engine* engine)
 {
+	if (key == 'm')
+		engine->ThrowSphere();
+
+
 	switch (consoleState)
 	{
 		case State::NONE:

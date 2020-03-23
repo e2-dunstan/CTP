@@ -57,11 +57,11 @@ public:
 
 	//protected:
 	static void Identity(const uint16_t colSize, const uint16_t rowSize, double* arr);
-	static double* GetTranspose(const uint16_t colSize, const uint16_t rowSize, double* arr);
-	static void Transpose(const uint16_t colSize, const uint16_t rowSize, double* arr)
-	{
-		arr = GetTranspose(colSize, rowSize, arr);
-	}
+	//static double* GetTranspose(const uint16_t colSize, const uint16_t rowSize, double* arr);
+	//static void Transpose(const uint16_t colSize, const uint16_t rowSize, double* arr)
+	//{
+	//	arr = GetTranspose(colSize, rowSize, arr);
+	//}
 
 	//static Matrix3 Convert(const Matrix4& m4);
 	//static Matrix4 Convert(const Matrix3& m3);
@@ -82,8 +82,8 @@ struct Matrix3
 	uint16_t colSize = 3;
 
 	void Identity() { MatrixHelper::Identity(colSize, rowSize, matrix); }
-	void Transpose() { MatrixHelper::Transpose(colSize, rowSize, matrix); }
-	Matrix3 GetTranspose() { return Matrix3(MatrixHelper::GetTranspose(colSize, rowSize, matrix)); }
+	void Transpose() { *this = GetTranspose(); }
+	Matrix3 GetTranspose();// { return Matrix3(MatrixHelper::GetTranspose(colSize, rowSize, matrix)); }
 	void Inverse();
 
 	double& operator()(const uint16_t row, const uint16_t column)
@@ -116,8 +116,8 @@ public:
 	uint16_t colSize = 4;
 
 	void Identity() { MatrixHelper::Identity(colSize, rowSize, matrix); }
-	void Transpose() { MatrixHelper::Transpose(colSize, rowSize, matrix); }
-	Matrix4 GetTranspose() { return Matrix4(MatrixHelper::GetTranspose(colSize, rowSize, matrix)); }
+	void Transpose() { *this = GetTranspose(); }
+	Matrix4 GetTranspose();// { return Matrix4(MatrixHelper::GetTranspose(colSize, rowSize, matrix)); }
 	void Inverse();
 
 	double& operator()(const uint16_t row, const uint16_t column)

@@ -136,19 +136,19 @@ void MatrixHelper::Identity(const uint16_t colSize, const uint16_t rowSize, doub
 	}
 }
 
-double* MatrixHelper::GetTranspose(const uint16_t colSize, const uint16_t rowSize, double* arr)
-{
-	double* transpose = new double[rowSize * colSize];
-
-	for (uint16_t r = 0; r < rowSize; r++)
-	{
-		for (uint16_t c = 0; c < colSize; c++)
-		{
-			transpose[(r * colSize) + c] = arr[(c * rowSize) + r];
-		}
-	}
-	return transpose;
-}
+//double* MatrixHelper::GetTranspose(const uint16_t colSize, const uint16_t rowSize, double* arr)
+//{
+//	double* transpose = new double[rowSize * colSize];
+//
+//	for (uint16_t r = 0; r < rowSize; r++)
+//	{
+//		for (uint16_t c = 0; c < colSize; c++)
+//		{
+//			transpose[(r * colSize) + c] = arr[(c * rowSize) + r];
+//		}
+//	}
+//	return transpose;
+//}
 
 /*Matrix3 MatrixHelper::Convert(const Matrix4& m4)
 {
@@ -273,6 +273,19 @@ Matrix3::Matrix3(double matrixValues[9])
 	matrix[6] = matrixValues[6];
 	matrix[7] = matrixValues[7];
 	matrix[8] = matrixValues[8];
+}
+
+Matrix3 Matrix3::GetTranspose()
+{
+	Matrix3 transpose;
+	for (uint16_t r = 0; r < 3; r++)
+	{
+		for (uint16_t c = 0; c < 3; c++)
+		{
+			transpose.matrix[(r * colSize) + c] = this->matrix[(c * rowSize) + r];
+		}
+	}
+	return transpose;
 }
 
 void Matrix3::Inverse()
@@ -411,6 +424,19 @@ Matrix4::Matrix4(double matrixValues[16])
 	matrix[13] = matrixValues[13];
 	matrix[14] = matrixValues[14];
 	matrix[15] = matrixValues[15];
+}
+
+Matrix4 Matrix4::GetTranspose()
+{
+	Matrix4 transpose;
+	for (uint16_t r = 0; r < 4; r++)
+	{
+		for (uint16_t c = 0; c < 4; c++)
+		{
+			transpose.matrix[(r * colSize) + c] = this->matrix[(c * rowSize) + r];
+		}
+	}
+	return transpose;
 }
 
 void Matrix4::Inverse()

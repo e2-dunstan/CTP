@@ -5,71 +5,6 @@
 
 using namespace Shapes;
 
-/*void PrimitiveManager::Create(PrimitiveType type, 
-	const Vector3& scale, const Vector3& translation, const Vector3& rotation, 
-	float radius, float straight)
-{
-	//default shape
-	Primitive* newObj;// = new Primitive();
-
-	Quaternion orientation = Mathe::VectorToQuaternion(rotation);
-
-	switch (type)
-	{
-	case PrimitiveType::BOX:
-		newObj = new Box(ShapeVertices::GetCubeVertices());
-		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::BOX, translation, 0, scale, orientation, Vector3());
-		newObj->rigidbody.bounciness = 0.1f;
-		break;
-
-	case PrimitiveType::PLANE:
-		newObj = new Primitive(ShapeVertices::GetPlaneVertices());
-		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::PLANE, translation, 0, scale, orientation, Vector3(0,1,0));
-		newObj->rigidbody.useGravity = false;
-		newObj->rigidbody.isKinematic = true;
-		newObj->rigidbody.SetAwake(false);
-		newObj->rigidbody.EnableSleep(true);
-		break;
-
-	case PrimitiveType::SPHERE:
-		newObj = new Primitive(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
-		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::SPHERE, translation, radius, scale, orientation, Vector3());
-		newObj->rigidbody.bounciness = 0.8f;
-		break;
-
-	case PrimitiveType::CAPSULE:
-		newObj = new Primitive(ShapeVertices::GetCapsuleVertices(radius, straight, Colours::green, 12, 9), radius);
-		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::CAPSULE, translation, radius, scale, orientation, Vector3(), straight);
-		break;
-
-	case PrimitiveType::CYLINDER:
-		newObj = new Primitive(ShapeVertices::GetCylinderVertices(radius, straight, Colours::magenta, 12), radius);
-		newObj->collisionVolume.Create(CollisionVolume::PrimitiveType::CYLINDER, translation, radius, scale, orientation, Vector3(), straight);
-		break;
-
-	case PrimitiveType::COMPLEX:
-		break;
-
-	default:
-		newObj = new Box(ShapeVertices::GetCubeVertices());
-		break;
-	}
-	newObj->type = type;
-
-	newObj->scale = scale;
-	newObj->translation = translation;
-	newObj->orientation = orientation;
-
-	//newObj->Start();
-	newObj->UpdateTransform();
-	//newObj->SetTweenOrigin();
-
-	primitives.push_back(*newObj);
-
-	//if (newObj->type != PrimitiveType::PLANE) octTree->Insert(*newObj, *octTree->root);
-	//delete newObj;
-}*/
-
 void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation)
 {
 	Plane plane = Plane(ShapeVertices::GetPlaneVertices());
@@ -91,7 +26,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 {
 	Box box = Box(ShapeVertices::GetCubeVertices());
 	box.collisionVolume.Create(translation, scale);
-	box.rigidbody.bounciness = 0.1f;
+	box.rigidbody.bounciness = 0.01f;
 
 	box.type = PrimitiveType::BOX;
 	box.scale = scale;
@@ -104,7 +39,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 8), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 10, 10), radius);
 	sphere.collisionVolume.Create(translation);
 	sphere.rigidbody.bounciness = 0.8f;
 

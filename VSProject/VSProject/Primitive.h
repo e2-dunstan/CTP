@@ -25,6 +25,7 @@ public:
 
 	//Physics data.
 	RigidBody rigidbody = RigidBody();
+	Vector3 startingVelocity = Vector3();
 
 	//Transform data.
 	Vector3 translation = Vector3();

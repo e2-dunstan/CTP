@@ -217,18 +217,19 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v)
 
 void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians)
 {
-	Vector3 rad = v;
+	Vector3 rad = v * scale;
 	if (toRadians) 
 		rad = Vector3(Mathe::ToRadians(v.x), Mathe::ToRadians(v.y), Mathe::ToRadians(v.z));
 
-	Quaternion newq(0, rad.x * scale, rad.y * scale, rad.z * scale);
+	Quaternion newq(0, rad.x, rad.y, rad.z);
 	newq *= q;
 	q.r += newq.r * 0.5;
 	q.i += newq.i * 0.5;
 	q.j += newq.j * 0.5;
 	q.k += newq.k * 0.5;
+	//q *= newq;
 
-	q.Normalise();
+	//q.Normalise();
 }
 
 void Mathe::TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& tensorLocal, const Matrix3& rot)

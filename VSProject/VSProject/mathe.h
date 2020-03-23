@@ -4,6 +4,7 @@
 #include "Vector.h"
 #include "Matrix.h"
 #include "Quaternion.h"
+#include "Jacobian.h"
 
 //Custom maths library by Ellie Dunstan
 namespace Mathe

@@ -1,9 +1,9 @@
 #include "RigidBody.h"
 
-void RigidBody::Start()
+void RigidBody::Start(Vector3 startingVelocity)
 {
-	//AddImpulse(Vector3(1, 0, 0), 0.5);
 	//acceleration *= Global::deltaTime;
+	AddVelocityChange(startingVelocity);
 	SetAwake(true);
 }
 
@@ -11,8 +11,8 @@ bool RigidBody::PhysicsUpdate()
 {
 	if (!isAwake || isKinematic)
 	{
-		//velocity = Vector3();
-		//angularVelocity = Vector3();
+		velocity = Vector3();
+		angularVelocity = Vector3();
 		return false;
 	}
 
@@ -70,9 +70,7 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 
 	if (canSleep && colliding)
 	{
-		double currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
-		double contingency = pow(0.5, Global::deltaTime);
-		motion = contingency * motion + (1 - contingency) * currentMotion;
+		motion = GetMotion();
 		//std::cout << motion << std::endl;
 		if (motion < sleepThreshold)
 		{
@@ -148,6 +146,13 @@ void RigidBody::EnableSleep(const bool _canSleep)
 Vector3 RigidBody::GetPreviousVelocity()
 {
 	return prevVelocity;
+}
+
+double RigidBody::GetMotion()
+{
+	double currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
+	double contingency = pow(0.5, Global::deltaTime);
+	return contingency * motion + (1 - contingency) * currentMotion;
 }
 
 //Vector3 RigidBody::GetPreviousAcceleration()

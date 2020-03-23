@@ -3,23 +3,25 @@
 void Box::Start()
 {
 	drawType = GL_QUADS;
-	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 3.0);
+	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 100.0);
 	CalculateInertiaTensor();
-	rigidbody.Start();
+	rigidbody.Start(startingVelocity);
 }
 
 void Sphere::Start()
 {
-	drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / (radius * 3.0);
+	drawType = GL_TRIANGLE_STRIP;
+	rigidbody.inverseMass = 1.0f / (radius * 100.0);
 	CalculateInertiaTensor();
-	rigidbody.Start();
+	rigidbody.Start(startingVelocity);
 }
 
 void Primitive::Update()
 {	
 	previousPosition = translation;
 
+	if (!rigidbody.isAwake && !colliding && !rigidbody.isKinematic)
+		rigidbody.SetAwake(true);
 	if (rigidbody.PhysicsUpdate())
 	{
 		translation += rigidbody.velocity * Global::deltaTime;

@@ -49,6 +49,12 @@
     <Filter Include="Header Files\Primitives\Bounding Volume Hierarchy">
       <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Collision\Detection">
+      <UniqueIdentifier>{40ed5758-c4ab-4b00-99a0-089330ce8c15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Collision\Detection">
+      <UniqueIdentifier>{58ade2b8-def2-4cb6-aae2-cea8ee6279c5}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -72,17 +78,11 @@
     <ClCompile Include="Collisions.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionFine.cpp">
-      <Filter>Source Files\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Files\Primitives</Filter>
     </ClCompile>
     <ClCompile Include="RigidBody.cpp">
       <Filter>Source Files\Primitives</Filter>
-    </ClCompile>
-    <ClCompile Include="CollisionCoarse.cpp">
-      <Filter>Source Files\Collision</Filter>
     </ClCompile>
     <ClCompile Include="PrimitiveManager.cpp">
       <Filter>Source Files</Filter>
@@ -111,10 +111,19 @@
     <ClCompile Include="Global.cpp">
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
-    <ClCompile Include="SeparatingAxisTheorem.cpp">
+    <ClCompile Include="RayCast.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="RayCast.cpp">
+    <ClCompile Include="CollisionCoarse.cpp">
+      <Filter>Source Files\Collision\Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionFine.cpp">
+      <Filter>Source Files\Collision\Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="SeparatingAxisTheorem.cpp">
+      <Filter>Source Files\Collision\Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionResolution3.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>
   </ItemGroup>
@@ -143,13 +152,7 @@
     <ClInclude Include="RigidBody.h">
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionFine.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="CollisionData.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionCoarse.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
     <ClInclude Include="PrimitiveManager.h">
@@ -182,7 +185,19 @@
     <ClInclude Include="RayCast.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
+    <ClInclude Include="CollisionCoarse.h">
+      <Filter>Header Files\Collision\Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionFine.h">
+      <Filter>Header Files\Collision\Detection</Filter>
+    </ClInclude>
     <ClInclude Include="SeparatingAxisTheorem.h">
+      <Filter>Header Files\Collision\Detection</Filter>
+    </ClInclude>
+    <ClInclude Include="Jacobian.h">
+      <Filter>Header Files\Mathe</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionResolution3.h">
       <Filter>Header Files\Collision</Filter>
     </ClInclude>
   </ItemGroup>

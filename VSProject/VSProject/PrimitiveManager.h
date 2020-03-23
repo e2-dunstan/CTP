@@ -32,14 +32,14 @@ private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 	std::unique_ptr<RayCast> rayCast = std::make_unique<RayCast>();
 
-	bool drawContacts = false;
+	bool drawContacts = true;
 
 	std::vector<std::unique_ptr<Primitive>> primitives;
 
 	Ray rayToTest;
 	bool drawRay = false;
 
-	GLenum GetDrawType(PrimitiveType objectType);
+	//GLenum GetDrawType(PrimitiveType objectType);
 
 	double timeSinceCollisionDebug = 0;
 
