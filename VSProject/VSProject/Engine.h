@@ -28,5 +28,7 @@ protected:
 	void SpawnSphere();
 	void SpawnBox();
 
+	void SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing);
+
 	void ThrowSphere();
 };

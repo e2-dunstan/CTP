@@ -137,7 +137,7 @@
     <ClCompile Include="BoundingVolume.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CollisionCoarse.cpp" />
-    <ClCompile Include="CollisionData.cpp" />
+    <ClCompile Include="Contact.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
     <ClCompile Include="CollisionResolution2.cpp" />
     <ClCompile Include="CollisionResolution3.cpp" />
@@ -169,6 +169,7 @@
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="ConsoleControls.h" />
+    <ClInclude Include="Contact.h" />
     <ClInclude Include="Global.h" />
     <ClInclude Include="Jacobian.h" />
     <ClInclude Include="PrimitiveManager.h" />

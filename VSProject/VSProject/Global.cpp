@@ -4,7 +4,7 @@ namespace Global
 {
 	//time
 	double deltaTime = 0;
-	const double fixedDeltaTime = 1000.0 / 60.0; //basically number of physics updates per second
+	const double fixedDeltaTime = 1000.0 / 100.0; //basically number of physics updates per second
 
 	//physics
 	const Vector3 gravity(0, -9.81, 0);
@@ -12,6 +12,8 @@ namespace Global
 	const double airDensity = 1.225;
 
 	bool shouldUpdate = true;
+
+	bool writeContactDataToFile = false;
 }
 
 //double Global::GetDeltaTime()

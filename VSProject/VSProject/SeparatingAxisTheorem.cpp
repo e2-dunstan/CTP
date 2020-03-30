@@ -174,10 +174,6 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	//could get box2 on box1 axis using inverse but inversing a matrix is
 	//expensive so convert to dir and work with it like the normal
 
-	//Vector3 box2Pos = toCentre;
-	//box2Pos = box2Pos.Normalise();
-	//Mathe::TransformTranspose(box2Pos, box1->collisionVolume.axisMat);
-
 	Vector3 incidentNormal = Vector3();
 	float smallestFace = 1000.0f;
 	for (unsigned f = 0; f < 6; f++)
@@ -189,16 +185,9 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			incidentNormal = box2->collisionVolume.normals[f];
 		}
 	}
-	//if (incidentNormal.ScalarProduct(toCentre) > 0)
-	//{
-	//	incidentNormal *= -1.0;
-	//}
 	
 	Vector3 referenceVertices[4] = { Vector3() };
 	if (!SetReferenceVertices(referenceNormal, referenceVertices, box1->collisionVolume.halfSize)) return;
-	//Vector3 referenceMin = Vector3(1000, 1000, 1000);
-	//Vector3 referenceMax = Vector3();
-	//SetReferenceMinMax(referenceNormal, box1->collisionVolume.halfSize, referenceMin, referenceMax);
 
 	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
 
@@ -213,8 +202,8 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	for (unsigned v = 0; v < 4; v++)
 	{
 		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
-		incidentVertices[v] += incidentNormal * box2->collisionVolume.halfSize;//box1->collisionVolume.centre / box1->collisionVolume.halfSize) * referenceNormal;
-		incidentVertices[v] -= box1->collisionVolume.centre;// *(localIncidentNormal.SumComponents() < 0 ? -1.0 : 1.0);
+		incidentVertices[v] += incidentNormal * box2->collisionVolume.halfSize;
+		incidentVertices[v] -= box1->collisionVolume.centre;
 	}
 
 	std::vector<Vector3> clippedVertices;
@@ -225,12 +214,13 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	Vector3 contactPoint = Vector3();
 	unsigned numContactPoints = 0;
 
-	bool mergeContacts = true;
+	bool mergeContacts = false;
 	normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
 
 	//only keep vertices below the reference plane
 	float relBox = abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal));
 	float pen = 0;
+
 	for (unsigned v = 0; v < clippedVertices.size(); v++)
 	{
 		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
@@ -242,7 +232,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			{
 				Contact contact(box1, box2);
 				contact.normal = normal;
-				contact.penetrationDepth = (box1Above2 ? clipped : (relBox - clipped));// clippedVertices[v].ScalarProduct(normal);
+				contact.penetrationDepth = box1Above2 ? clipped : (relBox - clipped);
 				contact.point = clippedVertices[v];
 				contacts.push_back(contact);
 			}
@@ -250,13 +240,16 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			{
 				pen += (box1Above2 ? clipped : (relBox - clipped));
 				contactPoint += clippedVertices[v];
-				numContactPoints++;
 			}
+			numContactPoints++;
 		}
 	}
-	if (!mergeContacts) return;
 
-	//Previous implementation using only one contact point
+
+	if (!mergeContacts)
+	{
+		return;
+	}
 
 	if (numContactPoints != 0)
 	{
@@ -273,13 +266,11 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			clippedVertices[i].DebugOutput();
 		}
 	}
-	//Mathe::Transform(contactPoint, box1->collisionVolume.axisMat);
-	//contactPoint += box1->collisionVolume.centre;
 
 	Contact contact(box1, box2);
-	contact.penetrationDepth = pen;
 	contact.normal = normal;
-	contact.point = contactPoint;// +box1->collisionVolume.centre;// +(contact.normal * box1->collisionVolume.halfSize * (box1Above2 ? 1.0 : -1.0));
+	contact.penetrationDepth = pen;
+	contact.point = contactPoint;
 	contacts.push_back(contact);
 
 	//Order of finding all collision points:

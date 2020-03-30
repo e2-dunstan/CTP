@@ -14,6 +14,9 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 	plane.rigidbody.SetAwake(false);
 	plane.rigidbody.EnableSleep(true);
 
+	plane.rigidbody.bounciness = 0.0;
+	plane.rigidbody.friction = 1.0;
+
 	plane.type = PrimitiveType::PLANE;
 	plane.scale = scale;
 	plane.translation = translation;

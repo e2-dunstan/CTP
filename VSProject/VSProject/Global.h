@@ -15,4 +15,6 @@ namespace Global
 	extern const double airDensity;
 
 	extern bool shouldUpdate;
+
+	extern bool writeContactDataToFile;
 }

@@ -6,6 +6,13 @@
 
 //class OctTree;
 
+// Update Order:
+// 1. Apply forces
+// 2. Update positions and velocities
+// 3. Detect collisions
+// 4. Solve sonstraints
+// 5. Draw
+
 class PrimitiveManager
 {
 public:
@@ -32,7 +39,7 @@ private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 	std::unique_ptr<RayCast> rayCast = std::make_unique<RayCast>();
 
-	bool drawContacts = true;
+	bool drawContacts = false;
 
 	std::vector<std::unique_ptr<Primitive>> primitives;
 

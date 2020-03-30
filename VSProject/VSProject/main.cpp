@@ -58,6 +58,7 @@ void ReleaseKey(unsigned char key, int x, int y)
 	consoleControls->OnKeyRelease(key, engine.get());
 
 	if (key == 'p') Global::shouldUpdate = !Global::shouldUpdate;
+	if (key == 'c') Global::writeContactDataToFile = true;
 }
 void MouseMove(int x, int y)
 {
@@ -184,13 +185,13 @@ void timer(int)
 }
 
 //displays number of update calls per frame
-void physicsUpdateCounter(int)
+/*void physicsUpdateCounter(int)
 {
 	glutPostRedisplay();
 	std::cout << "Number of physics updates: " << numPhysicsUpdatesPerSecond << std::endl;
 	numPhysicsUpdatesPerSecond = 0;
 	glutTimerFunc(1000, physicsUpdateCounter, 0);
-} 
+} */
 
 
 int main(int argc, char* argv[]) {

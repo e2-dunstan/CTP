@@ -1,23 +1,23 @@
 #include "CollisionResolution2.h"
 
-
 void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
-	//return;
 
-	for (unsigned i = 0; i < numContacts; i++)
+	if (Global::writeContactDataToFile) CreateCSVFile();
+
+	for (unsigned i = 0; i < numContacts * penetrationIterations; i++)
 	{
 		unsigned contactIndex = i % numContacts; //to allow for multiple iterations
 
-		contacts[contactIndex].ResolveContactPenetration();
+		if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, i / numContacts);
 
-		//continue;
+		contacts[contactIndex].ResolvePenetration();
+
 		Vector3 deltaPosition;
 		//Check other contacts for effects from previous resolution
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			if (i == contactIndex) continue;
 			if (contacts[i].body1->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
@@ -30,7 +30,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[1]
 						+ contacts[contactIndex].angularChange[1].VectorProduct(contacts[i].relContactPos1);
-					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 			}
 			if (contacts[i].body2->type != PrimitiveType::PLANE)
@@ -39,7 +39,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 				{
 					deltaPosition = contacts[contactIndex].linearChange[0]
 						+ contacts[contactIndex].angularChange[0].VectorProduct(contacts[i].relContactPos2);
-					contacts[i].penetrationDepth -= (float)deltaPosition.ScalarProduct(contacts[i].normal);
+					contacts[i].penetrationDepth += (float)deltaPosition.ScalarProduct(contacts[i].normal);
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
@@ -50,17 +50,23 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 			}
 		}
 	}
+
+	if (Global::writeContactDataToFile)
+	{
+		file.close();
+		Global::writeContactDataToFile = false;
+	}
 }
 
 void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 {
 	numContacts = contacts.size();
 
-	for (unsigned i = 0; i < numContacts; i++)
+	for (unsigned i = 0; i < numContacts * velocityIterations; i++)
 	{
 		unsigned contactIndex = i % numContacts;
 
-		contacts[contactIndex].ResolveContactVelocity();
+		contacts[contactIndex].ResolveVelocity();
 
 		//Match RB awake states
 		if (contacts[contactIndex].body2->type != PrimitiveType::PLANE
@@ -70,59 +76,47 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			contacts[contactIndex].MatchRigidbodyAwakeStates();
 		}
 
-		continue;//better results WITHOUT checking other contacts
+		//continue;
 
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			//if (i == contactIndex) continue;
 			if (contacts[i].body1->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
 					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos1, true);
-					//deltaVelocity = contacts[contactIndex].velocityChange[0]
-					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos1);
-					////Vector3 additionalVel = deltaVelocity;
-					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					//contacts[i].closingVelocity += deltaVelocity;
-					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
 					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos1, true);
-					//deltaVelocity = contacts[contactIndex].velocityChange[1]
-					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos1);
-					////Vector3 additionalVel = deltaVelocity;
-					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					//contacts[i].closingVelocity += deltaVelocity;
-					//contacts[i].CalculateDesiredDeltaVelocity();
 				}
 			}
 			if (contacts[i].body2->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2, true);
-					//deltaVelocity = contacts[contactIndex].velocityChange[0]
-					//	+ contacts[contactIndex].rotationChange[0].VectorProduct(contacts[i].relContactPos2);
-					////Vector3 additionalVel = deltaVelocity;
-					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					//contacts[i].closingVelocity += deltaVelocity;
-					//contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2, false);
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2, true);
-					//deltaVelocity = contacts[contactIndex].velocityChange[1]
-					//	+ contacts[contactIndex].rotationChange[1].VectorProduct(contacts[i].relContactPos2);
-					////Vector3 additionalVel = deltaVelocity;
-					//Mathe::Transform(deltaVelocity, contacts[i].worldToContact);
-					//contacts[i].closingVelocity += deltaVelocity;
-					//contacts[i].CalculateDesiredDeltaVelocity();
+					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2, false);
 				}
 			}
 		}		
 	}
+}
+
+void CollisionResolution2::CreateCSVFile()
+{
+	file.open("penetration.csv");
+	file.clear();
+	file << "Contact,Iteration,Value\n";
+	std::cout << "Created CSV file" << std::endl;
+}
+
+void CollisionResolution2::WriteToFile(float value, unsigned int obj, unsigned int iter)
+{
+	file << std::to_string(obj) << "," + std::to_string(iter) << "," << std::to_string(value) << "\n";
 }
 
 void CollisionResolution2::AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp, bool sign)

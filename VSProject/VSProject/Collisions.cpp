@@ -43,6 +43,8 @@ void Collisions::Resolution()
 
 		data->contacts[i].PrepareResolution();
 	}
+	//resolution3->Update(data->contacts);
+
 	data->SortContactsByPenetration();
 	resolution2->PenetrationResolution(data->contacts);
 	data->SortContactsByVelocityMag();

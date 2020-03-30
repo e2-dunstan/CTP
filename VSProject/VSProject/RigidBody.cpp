@@ -2,7 +2,6 @@
 
 void RigidBody::Start(Vector3 startingVelocity)
 {
-	//acceleration *= Global::deltaTime;
 	AddVelocityChange(startingVelocity);
 	SetAwake(true);
 }
@@ -15,24 +14,19 @@ bool RigidBody::PhysicsUpdate()
 		angularVelocity = Vector3();
 		return false;
 	}
-
-	prevAcceleration = acceleration;
-	prevAcceleration += forceAccumulation * inverseMass;
 	
 	prevVelocity = velocity;
+	velocity += Global::gravity * Global::deltaTime;
 
-	angularAcceleration = torqueAccumulation;
-	//angularAcceleration = Vector3(Mathe::ToRadians(angularAcceleration.x), Mathe::ToRadians(angularAcceleration.y), Mathe::ToRadians(angularAcceleration.z));
-	Mathe::Transform(angularAcceleration, inverseInertiaTensorWorld);
-
-	velocity += prevAcceleration * Global::deltaTime;
-	angularVelocity += angularAcceleration * Global::deltaTime;
+	//Clamp velocities
+	velocity = velocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
+	angularVelocity = angularVelocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
 
 	//Drag
 	if (linearDrag != 0)
-		velocity *= 1.0f - linearDrag * Global::deltaTime;//pow(1.0f - linearDrag, Global::deltaTime);
+		velocity *= 1.0f - linearDrag * Global::deltaTime;
 	if (angularDrag != 0)
-		angularVelocity *= 1.0f - linearDrag * Global::deltaTime;//pow(1.0f - angularDrag, Global::deltaTime);
+		angularVelocity *= 1.0f - angularDrag * Global::deltaTime;
 
 	return true;
 
@@ -65,13 +59,9 @@ bool RigidBody::PhysicsUpdate()
 
 void RigidBody::EndPhysicsUpdate(bool colliding = false)
 {
-	forceAccumulation = Vector3();
-	torqueAccumulation = Vector3();
-
 	if (canSleep && colliding)
 	{
 		motion = GetMotion();
-		//std::cout << motion << std::endl;
 		if (motion < sleepThreshold)
 		{
 			timeMotionBelowSleepThreshold += Global::deltaTime;
@@ -79,6 +69,7 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 			{
 				timeMotionBelowSleepThreshold = 0;
 				SetAwake(false);
+				std::cout << "Sleeping... " << motion << std::endl;
 			}
 		}
 		else if (motion > sleepThreshold * 2.0)
@@ -89,22 +80,16 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 	}
 }
 
-void RigidBody::AddImpulse(Vector3 dir, double force)
-{
-	velocity += dir * (1 / inverseMass) * velocity.Magnitude() * force * Global::deltaTime;
-}
-
 void RigidBody::AddVelocityChange(const Vector3& velChange)
 {
 	if (Mathe::IsVectorNAN(velChange)) return;
-	velocity += velChange;// *Global::deltaTime;
+	velocity += velChange;
 }
 
 void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
 	if (Mathe::IsVectorNAN(rotChange)) return;
-	//Vector3 rotChangeRad = Vector3(Mathe::ToRadians(rotChange.x), Mathe::ToRadians(rotChange.y), Mathe::ToRadians(rotChange.z));
-	angularVelocity += rotChange;// *Global::deltaTime;
+	angularVelocity += rotChange;
 }
 
 void RigidBody::SetTerminalSpeed()
@@ -135,14 +120,6 @@ void RigidBody::EnableSleep(const bool _canSleep)
 	if (!canSleep && !isAwake) SetAwake(true);
 }
 
-//bool RigidBody::IsAtRest()
-//{
-//	if (velocity.Magnitude() + angularVelocity.Magnitude() < 0.001)
-//		return true;
-//	else
-//		return false;
-//}
-
 Vector3 RigidBody::GetPreviousVelocity()
 {
 	return prevVelocity;
@@ -154,8 +131,3 @@ double RigidBody::GetMotion()
 	double contingency = pow(0.5, Global::deltaTime);
 	return contingency * motion + (1 - contingency) * currentMotion;
 }
-
-//Vector3 RigidBody::GetPreviousAcceleration()
-//{
-//	return prevAcceleration;
-//}

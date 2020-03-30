@@ -3,7 +3,7 @@
 void Box::Start()
 {
 	drawType = GL_QUADS;
-	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 100.0);
+	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 10.0);
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
@@ -26,12 +26,14 @@ void Primitive::Update()
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
 		Mathe::AddScaledVector(orientation, rigidbody.angularVelocity, Global::deltaTime, false);
-		//UpdateTransform();
+
 		updateTransform = true;
 
 		rigidbody.EndPhysicsUpdate(colliding);
 	}
 	if (updateTransform) UpdateTransform();
+
+	//rigidbody.CalculateTentativeVelocities();
 }
 
 void Primitive::Draw()
@@ -42,7 +44,7 @@ void Primitive::Draw()
 	//changed. Performance boost. (or is it?)
 	//std::vector<Vertex> verts = vertices;
 	Vector3 position;
-	for (unsigned v = 0; v < vertices.size(); v++)
+	for (uint16_t v = 0; v < vertices.size(); v++)
 	{
 		position = vertices[v].position;
 		Mathe::Transform(position, transform);

@@ -10,9 +10,9 @@ void Engine::Init()
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
 
-	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(0, 5, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2), Vector3(0, 10, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 15, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(5, 5, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(15, 10, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 3, 8),	Vector3(0, 0, 0));
 
 	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
@@ -23,6 +23,8 @@ void Engine::Init()
 	individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
+
+	//SpawnDominoes(3, Vector3(0.5, 1.0, 0.1), 0.9f);
 
 	srand(time(NULL));
 	//SpawnBox();
@@ -112,10 +114,26 @@ void Engine::SpawnBox()
 	primitiveCount++;
 }
 
+void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing)
+{
+	Vector3 pos = Vector3(0, size.y, 0);
+	for (unsigned int i = 0; i < count; i++)
+	{
+		primitiveManager->CreateBox(size, pos, Vector3(0, 0, 0));
+		pos += Vector3(0, 0, spacing);
+
+		individualObjectInitialised.push_back(false);
+		objectsInitialised = false;
+		primitiveCount++;
+
+	}
+}
+
 void Engine::ThrowSphere()
 {
-	primitiveManager->CreateSphere(1.0, Vector3(6, 6, 0));
-	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(-20, 0, 20);
+	//primitiveManager->CreateSphere(0.5, Vector3(0, 2, 0));
+	primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(10, 10, 10));
+	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(0, 0, 15);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;

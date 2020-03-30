@@ -131,17 +131,17 @@ void Mathe::Rotate(Matrix4& m, double x, double y, double z)
 
 void Mathe::Rotate(Matrix4& m, const Quaternion& q)
 {
-	m.matrix[0] = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
-	m.matrix[1] = (2 * q.i * q.j) - (2 * q.r * q.k);
-	m.matrix[2] = (2 * q.i * q.k) + (2 * q.r * q.j);
+	m.matrix[0] = 1.0 - (2.0 * q.j * q.j) - (2.0 * q.k * q.k);
+	m.matrix[1] = (2.0 * q.i * q.j) - (2.0 * q.r * q.k);
+	m.matrix[2] = (2.0 * q.i * q.k) + (2.0 * q.r * q.j);
 
-	m.matrix[4] = (2 * q.i * q.j) + (2 * q.r * q.k);
-	m.matrix[5] = 1 - (2 * q.i * q.i) - (2 * q.k * q.k);
-	m.matrix[6] = (2 * q.j * q.k) - (2 * q.r * q.i);
+	m.matrix[4] = (2.0 * q.i * q.j) + (2.0 * q.r * q.k);
+	m.matrix[5] = 1.0 - (2.0 * q.i * q.i) - (2.0 * q.k * q.k);
+	m.matrix[6] = (2.0 * q.j * q.k) - (2.0 * q.r * q.i);
 
-	m.matrix[8] = (2 * q.i * q.k) - (2 * q.r * q.j);
-	m.matrix[9] = (2 * q.j * q.k) + (2 * q.r * q.i);
-	m.matrix[10] = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
+	m.matrix[8] = (2.0 * q.i * q.k) - (2.0 * q.r * q.j);
+	m.matrix[9] = (2.0 * q.j * q.k) + (2.0 * q.r * q.i);
+	m.matrix[10] = 1.0 - (2.0 * q.i * q.i) - (2.0 * q.j * q.j);
 
 	/*m(0, 0) = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
 	m(0, 1) = (2 * q.i * q.j) - (2 * q.r * q.k);

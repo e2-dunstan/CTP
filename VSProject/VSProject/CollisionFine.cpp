@@ -256,9 +256,9 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 	}
 	else
 	{
+		Contact contact(box, plane);
 		for (uint16_t i = 0; i < numContacts; i++)
 		{
-			Contact contact(box, plane);
 			contact.point = contactPoints[i].point;
 			contact.penetrationDepth = contactPoints[i].penetration;
 			contact.normal = normal;
