@@ -1,22 +1,2 @@
-﻿  Global.cpp
-  Primitive.cpp
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(6,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(14,31): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(52,76): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(52,54): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(52,32): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(65,46): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(65,34): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Primitive.cpp(65,22): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
-  RigidBody.cpp
-  main.cpp
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(28,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(184,24): warning C4244: 'argument': conversion from 'const double' to 'unsigned int', possible loss of data
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.25.28610\include\memory(2064,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
-          with
-          [
-              _Ty=int
-          ]
-D:\Ellie\CTP\VSProject\VSProject\main.cpp(35): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<Camera>> std::make_unique<Camera,int,int,int,float,int,float&,float&,int&,int&,0>(int &&,int &&,int &&,float &&,int &&,float &,float &,int &,int &)' being compiled
-  Generating Code...
+﻿  Contact.cpp
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

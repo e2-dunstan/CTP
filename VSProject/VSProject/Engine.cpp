@@ -10,17 +10,17 @@ void Engine::Init()
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
 
-	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(5, 5, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(15, 10, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 3, 8),	Vector3(0, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(5, 5, 8),	Vector3(0, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(15, 10, 8),	Vector3(0, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 3, 8),	Vector3(0, 0, 0));
 
 	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
 	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 50, -10));
-	individualObjectInitialised.push_back(false);
-	individualObjectInitialised.push_back(false);
-	individualObjectInitialised.push_back(false);
+	//individualObjectInitialised.push_back(false);
+	//individualObjectInitialised.push_back(false);
+	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 
@@ -39,7 +39,7 @@ void Engine::Init()
 	//SpawnSphere();
 	//SpawnSphere();
 
-	primitiveCount += 4;
+	primitiveCount += 1;
 	//primitiveCount++;
 	//skip plane
 	//for (unsigned i = 1; i < primitiveManager->GetPrimitives().size(); i++)

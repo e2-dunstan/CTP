@@ -117,9 +117,6 @@
     <ClCompile Include="SeparatingAxisTheorem.cpp">
       <Filter>Source Files\Collision\Detection</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionResolution3.cpp">
-      <Filter>Source Files\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Contact.cpp">
       <Filter>Source Files\Collision</Filter>
     </ClCompile>

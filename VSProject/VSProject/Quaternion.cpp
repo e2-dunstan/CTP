@@ -54,3 +54,8 @@ void Quaternion::RotateByVector(const Vector3& v)
 	(*this) *= q;
 
 }
+
+void Quaternion::DebugOutput()
+{
+	std::cout << "( " + std::to_string(r) + ", " + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + " )" << std::endl;
+}

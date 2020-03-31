@@ -78,6 +78,8 @@ public:
 
 	Vector3 scale = Vector3();
 	BoxCV collisionVolume;
+
+	float timeSinceOutput = 0;
 };
 
 class Sphere : public Primitive

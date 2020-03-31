@@ -31,6 +31,8 @@ void Contact::PrepareResolution()
 
 	//find friction (using average)
 	friction = (body1->rigidbody.friction + body2->rigidbody.friction) * 0.5f;
+	if (friction < 0.0f) friction = 0.0f;
+	else if (friction > 1.0f) friction = 1.0f;
 
 	CalculateContactBasisMatrices();
 
@@ -89,21 +91,22 @@ void Contact::CalculateClosingVelocities()
 	//Body 1
 	closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 	Mathe::Transform(closingVelocity, worldToContact);
-	Vector3 prevVelocity1 = body1->rigidbody.GetPreviousVelocity();// *Global::deltaTime;
-	Mathe::Transform(prevVelocity1, worldToContact);
+	//global forces
+	Vector3 acc = body1->rigidbody.velocity - body1->rigidbody.GetPreviousVelocity();
+	Mathe::Transform(acc, worldToContact);
 
-	closingVelocity += Vector3(0, prevVelocity1.y, prevVelocity1.z); //not interested in normal dir
+	closingVelocity += Vector3(0, acc.y, acc.z); //not interested in normal dir
 
 	//Body2
 	if (body2->type != PrimitiveType::PLANE)
 	{
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
-		Vector3 prevVelocity2 = body2->rigidbody.GetPreviousVelocity();// *Global::deltaTime;
-		Mathe::Transform(prevVelocity2, worldToContact);
-		prevVelocity2.x = 0; 
+		//global forces
+		Vector3 acc2 = body2->rigidbody.velocity - body2->rigidbody.GetPreviousVelocity();
+		Mathe::Transform(acc2, worldToContact);
 
-		closingVelocity -= (closingVelocity2 + Vector3(0, prevVelocity2.y, prevVelocity2.z));
+		closingVelocity -= (closingVelocity2 + Vector3(0, acc.y, acc.z));
 	}
 }
 
@@ -112,17 +115,17 @@ void Contact::CalculateDesiredDeltaVelocity()
 	double bodiesVelocity = 0;
 	if (body1->rigidbody.isAwake)
 	{
-		bodiesVelocity += abs(body1->rigidbody.GetPreviousVelocity().ScalarProduct(normal));// *Global::deltaTime;
+		bodiesVelocity += body1->rigidbody.GetPreviousVelocity().ScalarProduct(normal);// *Global::deltaTime;
 	}
 	if (body2->type != PrimitiveType::PLANE && body2->rigidbody.isAwake)
 	{
-		bodiesVelocity -= abs(body2->rigidbody.GetPreviousVelocity().ScalarProduct(normal));// *Global::deltaTime;
+		bodiesVelocity -= body2->rigidbody.GetPreviousVelocity().ScalarProduct(normal);// *Global::deltaTime;
 	}
 	float r = restitution;
 	if (abs(closingVelocity.x) < 0.25) 
 		r = 0.0f;
 
-	desiredDeltaVelocity = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
+	desiredDeltaVelocity = ((float)closingVelocity.x * -1.0f) - (r * (float)(closingVelocity.x - bodiesVelocity));
 }
 
 void Contact::ResolvePenetration()
@@ -459,6 +462,7 @@ Vector3 Contact::FrictionlessImpulse()
 
 Vector3 Contact::FrictionImpulse()
 {
+	//Matrix equivalent of cross product
 	double matVals[9] = { 0.0 };
 	matVals[1] = -relContactPos1.z;
 	matVals[2] = relContactPos1.y;
@@ -467,12 +471,14 @@ Vector3 Contact::FrictionImpulse()
 	matVals[6] = -relContactPos1.y;
 	matVals[7] = relContactPos1.x;
 
-	//Should be mat3
 	Matrix3 impulseToTorque = Matrix3(matVals);
 
-	Matrix3 deltaVelWorld = impulseToTorque;
-	deltaVelWorld = (deltaVelWorld * body1->rigidbody.inverseInertiaTensorWorld) * impulseToTorque;
-	deltaVelWorld = deltaVelWorld * -1.0;
+	Matrix3 impulseToVel_W = impulseToTorque;
+	impulseToVel_W = impulseToVel_W * body1->rigidbody.inverseInertiaTensorWorld;
+	impulseToVel_W = impulseToVel_W * impulseToTorque;
+	impulseToVel_W = impulseToVel_W * -1.0;
+
+	float inverseMass = body1->rigidbody.inverseMass;
 	
 	if (body2->type != PrimitiveType::PLANE)
 	{
@@ -483,42 +489,45 @@ Vector3 Contact::FrictionImpulse()
 		impulseToTorque.matrix[6] = -relContactPos2.y;
 		impulseToTorque.matrix[7] = relContactPos2.x;
 
-		Matrix3 deltaVelWorld2 = impulseToTorque;
-		deltaVelWorld2 = (deltaVelWorld2 * body2->rigidbody.inverseInertiaTensorWorld) * impulseToTorque;
-		deltaVelWorld2 = deltaVelWorld2 * -1.0;
+		Matrix3 impulseToVel_W_2 = impulseToTorque;
+		impulseToVel_W_2 = impulseToVel_W_2 * body2->rigidbody.inverseInertiaTensorWorld;
+		impulseToVel_W_2 = impulseToVel_W_2 * impulseToTorque;
+		impulseToVel_W_2 = impulseToVel_W_2 * -1.0;
 
-		deltaVelWorld = deltaVelWorld + deltaVelWorld2;
+		impulseToVel_W = impulseToVel_W + impulseToVel_W_2;
+
+		inverseMass += body2->rigidbody.inverseMass;
 	}
-	Matrix3 deltaVel = worldToContact;
-	deltaVel = (deltaVel * deltaVelWorld) * contactToWorld;
+	Matrix3 impulseToVel_C = worldToContact;
+	impulseToVel_C = impulseToVel_C * impulseToVel_W;
+	impulseToVel_C = impulseToVel_C * contactToWorld;
 
-	deltaVel.matrix[0] += body1->rigidbody.inverseMass;
-	deltaVel.matrix[4] += body1->rigidbody.inverseMass;
-	deltaVel.matrix[8] += body1->rigidbody.inverseMass;
+	impulseToVel_C.matrix[0] += inverseMass;
+	impulseToVel_C.matrix[4] += inverseMass;
+	impulseToVel_C.matrix[8] += inverseMass;
 
-	Matrix3 impulsePerUnitVel = deltaVel;
-	impulsePerUnitVel.Inverse();
+	Matrix3 impulseMat = impulseToVel_C;
+	impulseMat.Inverse();
 
-	Vector3 velToKill = Vector3(desiredDeltaVelocity, -closingVelocity.y, -closingVelocity.z);
-	Vector3 impulseContact = velToKill;
-	Mathe::Transform(impulseContact, impulsePerUnitVel);
+	Vector3 impulseContact = Vector3(desiredDeltaVelocity, -closingVelocity.y, -closingVelocity.z);
+	Mathe::Transform(impulseContact, impulseMat);
 
-	double planarImpulse = sqrt(impulseContact.y * impulseContact.y + impulseContact.z * impulseContact.z);
+	double planarImpulse = sqrt((impulseContact.y * impulseContact.y) + (impulseContact.z * impulseContact.z));
 	//Dynamic friction
 	if (planarImpulse > impulseContact.x * friction)
 	{
 		impulseContact.y /= planarImpulse;
 		impulseContact.z /= planarImpulse;
 
-		impulseContact.x = deltaVel.matrix[0]
-			+ (deltaVel.matrix[1] * friction * impulseContact.y)
-			+ (deltaVel.matrix[2] * friction * impulseContact.z);
+		impulseContact.x = impulseToVel_C.matrix[0]
+			+ (impulseToVel_C.matrix[1] * friction * impulseContact.y)
+			+ (impulseToVel_C.matrix[2] * friction * impulseContact.z);
 		impulseContact.x = desiredDeltaVelocity / impulseContact.x;
 		impulseContact.y *= friction * impulseContact.x;
 		impulseContact.z *= friction * impulseContact.x;
 	}
 
-	return impulseContact;
+	return impulseContact * friction;
 }
 
 void Contact::MatchRigidbodyAwakeStates()

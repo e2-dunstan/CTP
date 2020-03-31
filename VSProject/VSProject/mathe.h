@@ -21,8 +21,8 @@ namespace Mathe
 	void Translate(Matrix4& m, double x, double y, double z);
 
 	void Rotate(Matrix4& m, double x, double y, double z);
-	void Rotate(Matrix4& m, const Quaternion& q);
-	void Rotate(Matrix3& m, const Quaternion& q);
+	void Rotate(Matrix4& m, Quaternion& q);
+	void Rotate(Matrix3& m, Quaternion& q);
 
 	void Scale (Matrix4& m, double x, double y, double z);
 

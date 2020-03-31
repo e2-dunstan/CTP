@@ -129,8 +129,10 @@ void Mathe::Rotate(Matrix4& m, double x, double y, double z)
 	m = m * rot;
 }
 
-void Mathe::Rotate(Matrix4& m, const Quaternion& q)
+void Mathe::Rotate(Matrix4& m, Quaternion& q)
 {
+	q.Normalise();
+
 	m.matrix[0] = 1.0 - (2.0 * q.j * q.j) - (2.0 * q.k * q.k);
 	m.matrix[1] = (2.0 * q.i * q.j) - (2.0 * q.r * q.k);
 	m.matrix[2] = (2.0 * q.i * q.k) + (2.0 * q.r * q.j);
@@ -156,8 +158,10 @@ void Mathe::Rotate(Matrix4& m, const Quaternion& q)
 	m(2, 2) = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);*/
 }
 
-void Mathe::Rotate(Matrix3& m, const Quaternion& q)
+void Mathe::Rotate(Matrix3& m, Quaternion& q)
 {
+	q.Normalise();
+
 	m.matrix[0] = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
 	m.matrix[1] = (2 * q.i * q.j) - (2 * q.r * q.k);
 	m.matrix[2] = (2 * q.i * q.k) + (2 * q.r * q.j);

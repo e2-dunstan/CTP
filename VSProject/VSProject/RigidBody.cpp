@@ -83,6 +83,7 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 void RigidBody::AddVelocityChange(const Vector3& velChange)
 {
 	if (Mathe::IsVectorNAN(velChange)) return;
+
 	velocity += velChange;
 }
 

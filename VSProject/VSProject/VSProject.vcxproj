@@ -140,7 +140,6 @@
     <ClCompile Include="Contact.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
     <ClCompile Include="CollisionResolution2.cpp" />
-    <ClCompile Include="CollisionResolution3.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
     <ClCompile Include="ConsoleControls.cpp" />

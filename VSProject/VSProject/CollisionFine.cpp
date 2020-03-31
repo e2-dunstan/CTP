@@ -226,8 +226,6 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 	//	box->rigidbody.SetAwake(true);
 	//}
 
-	//Merge plane contact points for more realistic resolution
-
 	if (numContacts <= 0) return;
 	else if (numContacts == 1)
 	{
@@ -257,11 +255,11 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 	else
 	{
 		Contact contact(box, plane);
+		contact.normal = normal;
 		for (uint16_t i = 0; i < numContacts; i++)
 		{
 			contact.point = contactPoints[i].point;
 			contact.penetrationDepth = contactPoints[i].penetration;
-			contact.normal = normal;
 			contacts.push_back(contact);
 		}
 	}

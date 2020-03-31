@@ -263,6 +263,14 @@ void Box::UpdateTransform()
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
+	if (timeSinceOutput > 0.5f)
+	{
+		//orientation.DebugOutput();
+		timeSinceOutput = 0;
+	}
+	else timeSinceOutput += Global::deltaTime;
+
+
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
 	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
