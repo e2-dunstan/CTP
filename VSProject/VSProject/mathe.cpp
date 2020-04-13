@@ -194,11 +194,17 @@ Vector3 Mathe::GetAxis(uint16_t i, Matrix3& mat)
 	return Vector3(mat(0, i), mat(1, i), mat(2, i));
 }
 
-Quaternion Mathe::VectorToQuaternion(const Vector3& v)
+Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
 {
-	double x = ToRadians(v.x);
-	double y = ToRadians(v.y);
-	double z = ToRadians(v.z);
+	double x = v.x;
+	double y = v.y;
+	double z = v.z;
+	if (toRadians)
+	{
+		x = ToRadians(v.x);
+		y = ToRadians(v.y);
+		z = ToRadians(v.z);
+	}
 
 	// yaw (y) = z, pitch (p) = y, roll (r) = x
 	double cy = cos(z * 0.5);
@@ -340,5 +346,19 @@ bool Mathe::IsVectorNAN(const Vector3& v)
 {
 	if (isnan(v.x) || isnan(v.y) || isnan(v.z)) return true;
 	else return false;
+}
+
+double Mathe::ClampDouble(double value, double min, double max)
+{
+	if (value < min) return min;
+	else if (value > max) return max;
+	else return value;
+}
+
+float Mathe::ClampFloat(float value, float min, float max)
+{
+	if (value < min) return min;
+	else if (value > max) return max;
+	else return value;
 }
 

@@ -120,6 +120,8 @@ public:
 	Matrix4 GetTranspose();// { return Matrix4(MatrixHelper::GetTranspose(colSize, rowSize, matrix)); }
 	void Inverse();
 
+	Matrix3 ToMatrix3();
+
 	double& operator()(const uint16_t row, const uint16_t column)
 	{
 		return this->matrix[(row * colSize) + column];

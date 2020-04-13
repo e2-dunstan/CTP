@@ -11,7 +11,7 @@ void CollisionResolution2::PenetrationResolution(std::vector<Contact>& contacts)
 		unsigned contactIndex = i % numContacts; //to allow for multiple iterations
 
 		if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, i / numContacts);
-
+			
 		contacts[contactIndex].ResolvePenetration();
 
 		Vector3 deltaPosition;
@@ -76,7 +76,7 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			contacts[contactIndex].MatchRigidbodyAwakeStates();
 		}
 
-		//continue;
+		//Note to self: the signs are correct! Don't touch them!
 
 		for (unsigned i = 0; i < numContacts; i++)
 		{
@@ -84,22 +84,22 @@ void CollisionResolution2::VelocityResolution(std::vector<Contact>& contacts)
 			{
 				if (contacts[i].body1 == contacts[contactIndex].body1)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos1, true);
+					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos1, true);
 				}
 				if (contacts[i].body1 == contacts[contactIndex].body2)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos1, true);
+					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos1, true);
 				}
 			}
 			if (contacts[i].body2->type != PrimitiveType::PLANE)
 			{
 				if (contacts[i].body2 == contacts[contactIndex].body1)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 0, contacts[i].relContactPos2, false);
+					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos2, false);
 				}
 				if (contacts[i].body2 == contacts[contactIndex].body2)
 				{
-					AdjustDeltaVelocity(&contacts[contactIndex], &contacts[i], 1, contacts[i].relContactPos2, false);
+					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos2, false);
 				}
 			}
 		}		
@@ -119,11 +119,11 @@ void CollisionResolution2::WriteToFile(float value, unsigned int obj, unsigned i
 	file << std::to_string(obj) << "," + std::to_string(iter) << "," << std::to_string(value) << "\n";
 }
 
-void CollisionResolution2::AdjustDeltaVelocity(Contact* thisContact, Contact* otherContact, const unsigned int bt, const Vector3& rcp, bool sign)
+void CollisionResolution2::AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign)
 {
-	Vector3 deltaVelocity = thisContact->velocityChange[bt]
-		+ thisContact->rotationChange[bt].VectorProduct(rcp);
-	Mathe::Transform(deltaVelocity, otherContact->worldToContact);
-	otherContact->closingVelocity += deltaVelocity * (sign ? 1.0 : -1.0);
-	otherContact->CalculateDesiredDeltaVelocity();
+	Vector3 deltaVelocity = thisContact.velocityChange[bt]
+		+ thisContact.rotationChange[bt].VectorProduct(rcp);
+	Mathe::Transform(deltaVelocity, otherContact.worldToContact);
+	otherContact.closingVelocity += deltaVelocity * (sign ? 1.0 : -1.0);
+	otherContact.CalculateDesiredDeltaVelocity();
 }

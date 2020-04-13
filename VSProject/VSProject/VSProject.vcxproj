@@ -81,12 +81,12 @@
       <Optimization>Disabled</Optimization>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>D:\CTP-master\Additional files\Glew and Glut\glew-1.11.0\include;D:\CTP-master\Additional files\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\include;D:\Ellie\CTP\Additional files\SFML-2.5.1\include;D:\CTP-master\Additional files\Glew and Glut\glew-1.11.0\include;D:\CTP-master\Additional files\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
-      <AdditionalDependencies>freeglut.lib;glew32.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>D:\CTP-master\Additional files\Glew and Glut\freeglut\lib;D:\CTP-master\Additional files\Glew and Glut\glew-1.11.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;sfml-graphics-d.lib;sfml-window-d.lib;sfml-system-d.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\lib;D:\CTP-master\Additional files\Glew and Glut\freeglut\lib;D:\CTP-master\Additional files\Glew and Glut\glew-1.11.0\lib;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -111,11 +111,14 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>true</SDLCheck>
       <ConformanceMode>true</ConformanceMode>
+      <AdditionalIncludeDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\include;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -151,6 +154,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Primitive.cpp" />
     <ClCompile Include="Quaternion.cpp" />
+    <ClCompile Include="RayCamera.cpp" />
     <ClCompile Include="RayCast.cpp" />
     <ClCompile Include="RigidBody.cpp" />
     <ClCompile Include="SeparatingAxisTheorem.cpp" />
@@ -164,7 +168,6 @@
     <ClInclude Include="CollisionData.h" />
     <ClInclude Include="CollisionFine.h" />
     <ClInclude Include="CollisionResolution2.h" />
-    <ClInclude Include="CollisionResolution3.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="ConsoleControls.h" />
@@ -177,6 +180,7 @@
     <ClInclude Include="Matrix.h" />
     <ClInclude Include="Primitive.h" />
     <ClInclude Include="Quaternion.h" />
+    <ClInclude Include="RayCamera.h" />
     <ClInclude Include="RayCast.h" />
     <ClInclude Include="RigidBody.h" />
     <ClInclude Include="SeparatingAxisTheorem.h" />

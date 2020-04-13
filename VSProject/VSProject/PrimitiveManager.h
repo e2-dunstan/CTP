@@ -1,7 +1,6 @@
 #pragma once
 #include "Primitive.h"
 #include "Collisions.h"
-#include "RayCast.h"
 //#include "OctTree.h"
 
 //class OctTree;
@@ -37,9 +36,8 @@ public:
 
 private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
-	std::unique_ptr<RayCast> rayCast = std::make_unique<RayCast>();
 
-	bool drawContacts = false;
+	bool drawContacts = true;
 
 	std::vector<std::unique_ptr<Primitive>> primitives;
 

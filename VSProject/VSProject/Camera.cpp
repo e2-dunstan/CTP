@@ -16,6 +16,8 @@ Camera::Camera(float p_X, float p_Y, float p_Z, float p_psi, float p_theta, floa
 	Z(p_Z),
 	mouse_x(p_window_width / 2),
 	mouse_y(p_window_height / 2),
+	windowWidth(p_window_width),
+	windowHeight(p_window_height),
 	psi(p_psi),
 	theta(p_theta),
 	rotation_speed(p_rotation_speed),
@@ -28,6 +30,12 @@ Camera::Camera(float p_X, float p_Y, float p_Z, float p_psi, float p_theta, floa
 	//key_map[DIR::RIGHT] = static_cast<int>('d');
 }
 
+Quaternion Camera::GetLookRot()
+{
+	Vector3 rot = GetSight() - GetWorldPos();
+	//rot += GetWorldPos();
+	return Mathe::VectorToQuaternion(rot, false);
+}
 /*
 Computes the new angle values given the mouse direction. The sight's
 only limits are when looking up or down: it is impossible for the user to

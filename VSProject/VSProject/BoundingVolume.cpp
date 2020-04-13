@@ -6,6 +6,11 @@ BoundingVolume::BoundingVolume(const std::vector<Vertex>& _vertices, Matrix4& _t
 	Generate(_vertices, _transform);
 }
 
+BoundingVolume::BoundingVolume(Matrix4& _transform)
+{
+	GenerateForBox(_transform);
+}
+
 void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix4& _transform)
 {
 	min = Vector3(10000, 10000, 10000);
@@ -24,15 +29,41 @@ void BoundingVolume::Generate(const std::vector<Vertex>& _vertices, Matrix4& _tr
 		if (vert.z < min.z) min.z = vert.z;
 		if (vert.z > max.z) max.z = vert.z;
 	}												 
+}
 
-	//halfSize = Vector3((max.x - min.x) / 2.0,
-	//				   (max.y - min.y) / 2.0,
-	//				   (max.z - min.z) / 2.0);
+void BoundingVolume::GenerateForBox(Matrix4& _transform)
+{
+	min = Vector3(10000, 10000, 10000);
+	max = Vector3(-10000, -10000, -10000);
 
-	//centre = Vector3(min.x + halfSize.x,
-	//				 min.y + halfSize.y,
-	//				 min.z + halfSize.z);
+	Vector3 vertices[8] =
+	{
+		Vector3(-1.0, 1.0, 1.0),
+		Vector3(-1.0, 1.0, -1.0),
+		Vector3(-1.0, -1.0, -1.0),
+		Vector3(-1.0, -1.0, 1.0),
+		Vector3(1.0, 1.0, 1.0),	
+		Vector3(1.0, 1.0, -1.0),
+		Vector3(1.0, -1.0, -1.0),
+		Vector3(1.0, -1.0, 1.0),
+	};
+	for (uint16_t v = 0; v < 8; v++)
+	{
+		Mathe::Transform(vertices[v], _transform); 
+		
+		if (vertices[v].x < min.x) min.x = vertices[v].x;
+		if (vertices[v].x > max.x) max.x = vertices[v].x;
+		if (vertices[v].y < min.y) min.y = vertices[v].y;
+		if (vertices[v].y > max.y) max.y = vertices[v].y;
+		if (vertices[v].z < min.z) min.z = vertices[v].z;
+		if (vertices[v].z > max.z) max.z = vertices[v].z;
+	}
+}
 
+void BoundingVolume::UpdateMinMax(const Vector3& minimum, const Vector3& maximum)
+{
+	min = minimum;
+	max = maximum;
 }
 
 void BoundingVolume::Draw()

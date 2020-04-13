@@ -15,11 +15,12 @@ public:
 	virtual ~Primitive() = default;
 
 	PrimitiveType type = PrimitiveType::BOX;
-	GLenum drawType = GL_QUADS;
+	GLenum drawType = GL_TRIANGLES;
 
 	virtual void Start() = 0;
 	void Update();
-	void Draw();
+	virtual void Draw() = 0;
+	void DrawForVertices(std::vector<Vertex> vertices);
 
 	virtual void CalculateInertiaTensor() = 0;
 
@@ -44,8 +45,6 @@ public:
 	void SetOrientation(const Quaternion& _orientation);
 	void SetOrientation(const double r, const double i, const double j, const double k);
 
-	std::vector<Vertex> vertices = std::vector<Vertex>();
-
 	bool enableCollision = true;
 	bool colliding = false;
 
@@ -64,9 +63,9 @@ class Box : public Primitive
 {
 public:
 	Box() = default;
-	Box(std::vector<Vertex> v)
+	Box(std::vector<Tri> t)
 	{ 
-		vertices = v;
+		tris = t;
 		//collisionVolume = std::make_unique<BoxCV>(boxCollisionVolume);
 		initialised = true;
 	}
@@ -75,6 +74,10 @@ public:
 	void Start() override;
 	void CalculateInertiaTensor() override;
 	void UpdateTransform() override;
+
+	void Draw() override;
+
+	std::vector<Tri> tris = std::vector<Tri>();
 
 	Vector3 scale = Vector3();
 	BoxCV collisionVolume;
@@ -99,6 +102,10 @@ public:
 	void CalculateInertiaTensor() override;
 	void UpdateTransform() override;
 
+	void Draw() override { DrawForVertices(vertices); }
+
+	std::vector<Vertex> vertices = std::vector<Vertex>();
+
 	float radius = 0;
 	SphereCV collisionVolume;
 };
@@ -106,19 +113,24 @@ public:
 class Plane : public Primitive
 {
 public:
-	Plane() = default;
-	Plane(std::vector<Vertex> v)
+	Plane() { tris.reserve(2); };
+	Plane(std::vector<Tri> t)
 	{
-		vertices = v;
+		tris.reserve(2);
+		tris = t;
 		//collisionVolume = std::make_unique<PlaneCV>(planeCollisionVolume);
 		initialised = true;
 	}
 	~Plane() = default;
 
 
-	void Start() override { drawType = GL_QUADS; }
+	void Start() override { drawType = GL_TRIANGLES; }
 	void CalculateInertiaTensor() override {}
 	void UpdateTransform() override;
+
+	void Draw() override;
+
+	std::vector<Tri> tris = std::vector<Tri>();
 
 	Vector3 scale = Vector3();
 	PlaneCV collisionVolume;

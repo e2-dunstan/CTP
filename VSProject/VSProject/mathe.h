@@ -29,7 +29,7 @@ namespace Mathe
 	Vector3 GetAxis(uint16_t col, Matrix4& mat);
 	Vector3 GetAxis(uint16_t col, Matrix3& mat);
 
-	Quaternion VectorToQuaternion(const Vector3& v);
+	Quaternion VectorToQuaternion(const Vector3& v, bool toRadians = true);
 	void AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians);
 
 	void TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& tensorLocal, const Matrix3& rot);
@@ -40,4 +40,7 @@ namespace Mathe
 	double ToDegrees(const double rad);
 
 	bool IsVectorNAN(const Vector3& v);
+
+	double ClampDouble(double value, double min, double max);
+	float ClampFloat(float value, float min, float max);
 };

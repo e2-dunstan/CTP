@@ -56,5 +56,5 @@ private:
 	double terminalSpeed = 10000;
 
 protected:
-	const double sleepThreshold = 0.6;
+	const double sleepThreshold = 0.8;
 };

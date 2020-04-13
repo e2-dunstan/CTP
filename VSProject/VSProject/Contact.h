@@ -32,7 +32,7 @@ public:
 
 	Vector3 point;
 	Vector3 normal;
-	float penetrationDepth;
+	float penetrationDepth = 0;
 
 	Primitive* body1;
 	Primitive* body2;
@@ -44,14 +44,8 @@ public:
 protected:
 
 	void ResolvePenetration();
-	//Vector3 pseudoLinearVelocities[2] = { Vector3() };
-	//Vector3 pseudoAngularVelocities[2] = { Vector3() };
-	//float pseudoLambdas[2] = { 0.01f, 0.01f };
 
 	void ResolveVelocity();
-	//Vector3 linearImpulses[2] = { Vector3() };
-	//Vector3 angularImpulses[2] = { Vector3() };
-	//float lambdas[2] = { 0.01f, 0.01f };
 
 	void PrepareResolution();
 
@@ -84,13 +78,4 @@ private:
 	Matrix3 contactToWorld = Matrix3();
 
 	BounceCombineType bounceCombineType = BounceCombineType::AVERAGE;
-
-	uint16_t numIterations = 0;
-	uint16_t maxIterations = 5; //minimum
-
-	bool penetrationResolved = false;
-	double minPenetration = 0.0;
-	float bias = 0.3f;
-
-	float storedNormalImpulseScale = 0.0f;
 };

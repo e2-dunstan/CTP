@@ -16,12 +16,6 @@
     <Filter Include="Header Files\Mathe">
       <UniqueIdentifier>{c64f53a5-f17c-422d-879b-2861620d03b1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Collision">
-      <UniqueIdentifier>{4fd32e55-f20a-42d3-baea-f6e5ab4b8363}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Collision">
-      <UniqueIdentifier>{5ddda8b0-95a3-4152-8636-60685bd559cf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Source Files\Mathe">
       <UniqueIdentifier>{dad40227-a0cd-4d3e-a134-f3c23945f215}</UniqueIdentifier>
     </Filter>
@@ -49,11 +43,29 @@
     <Filter Include="Header Files\Primitives\Bounding Volume Hierarchy">
       <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Collision\Detection">
+    <Filter Include="Header Files\Physics">
+      <UniqueIdentifier>{2bd3267b-26a4-4869-9938-b72e6bfb1546}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics\Collision">
+      <UniqueIdentifier>{5ddda8b0-95a3-4152-8636-60685bd559cf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Physics\Collision\Detection">
+      <UniqueIdentifier>{58ade2b8-def2-4cb6-aae2-cea8ee6279c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics">
+      <UniqueIdentifier>{cce5669f-ebf8-49d5-998c-869291516221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics\Collision">
+      <UniqueIdentifier>{4fd32e55-f20a-42d3-baea-f6e5ab4b8363}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Physics\Collision\Detection">
       <UniqueIdentifier>{40ed5758-c4ab-4b00-99a0-089330ce8c15}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\Collision\Detection">
-      <UniqueIdentifier>{58ade2b8-def2-4cb6-aae2-cea8ee6279c5}</UniqueIdentifier>
+    <Filter Include="Header Files\Graphics">
+      <UniqueIdentifier>{d8d32fb9-a146-406f-a1dd-b83daeb91b86}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Graphics">
+      <UniqueIdentifier>{8754b67e-d3f5-4523-8377-6af9c4fec2fa}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -61,9 +73,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Shapes.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Matrix.cpp">
@@ -76,7 +85,7 @@
       <Filter>Source Files\Mathe</Filter>
     </ClCompile>
     <ClCompile Include="Collisions.cpp">
-      <Filter>Source Files\Collision</Filter>
+      <Filter>Source Files\Physics\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Primitive.cpp">
       <Filter>Source Files\Primitives</Filter>
@@ -94,7 +103,7 @@
       <Filter>Source Files\Primitives\Volumes</Filter>
     </ClCompile>
     <ClCompile Include="CollisionResolution2.cpp">
-      <Filter>Source Files\Collision</Filter>
+      <Filter>Source Files\Physics\Collision</Filter>
     </ClCompile>
     <ClCompile Include="Quaternion.cpp">
       <Filter>Source Files\Mathe</Filter>
@@ -109,19 +118,25 @@
       <Filter>Source Files\Utilities</Filter>
     </ClCompile>
     <ClCompile Include="CollisionCoarse.cpp">
-      <Filter>Source Files\Collision\Detection</Filter>
+      <Filter>Source Files\Physics\Collision\Detection</Filter>
     </ClCompile>
     <ClCompile Include="CollisionFine.cpp">
-      <Filter>Source Files\Collision\Detection</Filter>
+      <Filter>Source Files\Physics\Collision\Detection</Filter>
     </ClCompile>
     <ClCompile Include="SeparatingAxisTheorem.cpp">
-      <Filter>Source Files\Collision\Detection</Filter>
+      <Filter>Source Files\Physics\Collision\Detection</Filter>
     </ClCompile>
     <ClCompile Include="Contact.cpp">
-      <Filter>Source Files\Collision</Filter>
+      <Filter>Source Files\Physics\Collision</Filter>
     </ClCompile>
     <ClCompile Include="RayCast.cpp">
-      <Filter>Source Files\Collision\Detection</Filter>
+      <Filter>Source Files\Physics\Collision\Detection</Filter>
+    </ClCompile>
+    <ClCompile Include="Shapes.cpp">
+      <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="RayCamera.cpp">
+      <Filter>Source Files\Graphics</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -137,11 +152,8 @@
     <ClInclude Include="mathe.h">
       <Filter>Header Files\Mathe</Filter>
     </ClInclude>
-    <ClInclude Include="Shapes.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Collisions.h">
-      <Filter>Header Files\Collision</Filter>
+      <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Primitive.h">
       <Filter>Header Files\Primitives</Filter>
@@ -150,7 +162,7 @@
       <Filter>Header Files\Primitives</Filter>
     </ClInclude>
     <ClInclude Include="CollisionData.h">
-      <Filter>Header Files\Collision</Filter>
+      <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="PrimitiveManager.h">
       <Filter>Header Files</Filter>
@@ -162,7 +174,7 @@
       <Filter>Header Files\Primitives\Volumes</Filter>
     </ClInclude>
     <ClInclude Include="CollisionResolution2.h">
-      <Filter>Header Files\Collision</Filter>
+      <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">
       <Filter>Header Files\Mathe</Filter>
@@ -180,25 +192,28 @@
       <Filter>Header Files\Utilities</Filter>
     </ClInclude>
     <ClInclude Include="CollisionCoarse.h">
-      <Filter>Header Files\Collision\Detection</Filter>
+      <Filter>Header Files\Physics\Collision\Detection</Filter>
     </ClInclude>
     <ClInclude Include="CollisionFine.h">
-      <Filter>Header Files\Collision\Detection</Filter>
+      <Filter>Header Files\Physics\Collision\Detection</Filter>
     </ClInclude>
     <ClInclude Include="SeparatingAxisTheorem.h">
-      <Filter>Header Files\Collision\Detection</Filter>
+      <Filter>Header Files\Physics\Collision\Detection</Filter>
     </ClInclude>
     <ClInclude Include="Jacobian.h">
       <Filter>Header Files\Mathe</Filter>
     </ClInclude>
-    <ClInclude Include="CollisionResolution3.h">
-      <Filter>Header Files\Collision</Filter>
-    </ClInclude>
     <ClInclude Include="Contact.h">
-      <Filter>Header Files\Collision</Filter>
+      <Filter>Header Files\Physics\Collision</Filter>
+    </ClInclude>
+    <ClInclude Include="Shapes.h">
+      <Filter>Header Files\Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="RayCamera.h">
+      <Filter>Header Files\Graphics</Filter>
     </ClInclude>
     <ClInclude Include="RayCast.h">
-      <Filter>Header Files\Collision\Detection</Filter>
+      <Filter>Header Files\Utilities</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

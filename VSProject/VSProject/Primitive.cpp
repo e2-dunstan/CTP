@@ -2,7 +2,7 @@
 
 void Box::Start()
 {
-	drawType = GL_QUADS;
+	drawType = GL_TRIANGLES;
 	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 10.0);
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
@@ -36,13 +36,14 @@ void Primitive::Update()
 	//rigidbody.CalculateTentativeVelocities();
 }
 
-void Primitive::Draw()
+void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 {
 	glBegin(drawType);
 	//Only locally transform the vertices. This makes it so that each draw call
 	//the vertices do not have to be cleared and redefined if their transforms have
 	//changed. Performance boost. (or is it?)
 	//std::vector<Vertex> verts = vertices;
+
 	Vector3 position;
 	for (uint16_t v = 0; v < vertices.size(); v++)
 	{
@@ -65,8 +66,6 @@ void Primitive::Draw()
 		glVertex3f(position.x, position.y, position.z);
 	}
 	glEnd();
-
-	//boundingVolume.Draw();
 }
 
 /*void OldPrimitive::CalculateInertiaTensor()
@@ -273,10 +272,37 @@ void Box::UpdateTransform()
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	boundingVolume.GenerateForBox(transform); //Gets min and max vertices
 	collisionVolume.Update(translation, scale);
 
 	updateTransform = false;
+}
+
+void Box::Draw()
+{
+	glBegin(drawType);
+
+	Vector3 position;
+	for (uint16_t v = 0; v < tris.size(); v++)
+	{
+		for (uint16_t p = 0; p < 3; p++)
+		{
+			position = tris[v].positions[p];
+			Mathe::Transform(position, transform);
+
+			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
+			if (colliding && debugCollision)
+			{
+				glColor3f(1, 0, 0);
+			}
+			else
+			{
+				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
+			}
+			glVertex3f(position.x, position.y, position.z);
+		}
+	}
+	glEnd();
 }
 
 void Sphere::CalculateInertiaTensor()
@@ -334,8 +360,35 @@ void Plane::UpdateTransform()
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	boundingVolume.UpdateMinMax(Vector3(-scale.x, translation.y, -scale.z), Vector3(scale.x, translation.y, scale.z)); //Gets min and max vertices
 	collisionVolume.Update(translation);
 
 	updateTransform = false;
+}
+
+void Plane::Draw()
+{
+	glBegin(drawType);
+
+	Vector3 position;
+	for (uint16_t v = 0; v < tris.size(); v++)
+	{
+		for (uint16_t p = 0; p < 3; p++)
+		{
+			position = tris[v].positions[p];
+			Mathe::Transform(position, transform);
+
+			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
+			if (colliding && debugCollision)
+			{
+				glColor3f(1, 0, 0);
+			}
+			else
+			{
+				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
+			}
+			glVertex3f(position.x, position.y, position.z);
+		}
+	}
+	glEnd();
 }

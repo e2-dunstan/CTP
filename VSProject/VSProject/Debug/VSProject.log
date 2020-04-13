@@ -1,2 +1,34 @@
-﻿  Contact.cpp
+﻿  ConsoleControls.cpp
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(23,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+  Engine.cpp
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(23,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(29,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  RayCamera.cpp
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(23,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(89,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(90,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+  main.cpp
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(23,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(20,49): warning C4305: 'initializing': truncation from 'double' to 'GLfloat'
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(190,24): warning C4244: 'argument': conversion from 'const double' to 'unsigned int', possible loss of data
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.25.28610\include\memory(2064,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(27): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<Camera>> std::make_unique<Camera,int,int,int,double,int,float&,float&,const int&,const int&,0>(int &&,int &&,int &&,double &&,int &&,float &,float &,const int &,const int &)' being compiled
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.25.28610\include\memory(2064,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=double
+          ]
+  Generating Code...
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

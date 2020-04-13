@@ -290,30 +290,23 @@ Matrix3 Matrix3::GetTranspose()
 
 void Matrix3::Inverse()
 {	
-	double t4 = this->matrix[0] * this->matrix[4];
-	double t6 = this->matrix[0] * this->matrix[5];
-	double t8 = this->matrix[1] * this->matrix[3];
-	double t10 = this->matrix[2] * this->matrix[3];
-	double t12 = this->matrix[1] * this->matrix[6];
-	double t14 = this->matrix[2] * this->matrix[6];
+	double det = this->matrix[0] * (this->matrix[4] * this->matrix[8] - this->matrix[7] * this->matrix[5]) -
+				 this->matrix[1] * (this->matrix[3] * this->matrix[8] - this->matrix[5] * this->matrix[6]) +
+				 this->matrix[2] * (this->matrix[3] * this->matrix[7] - this->matrix[4] * this->matrix[6]);
+	det = 1.0 / det;
 
-	//determinant
-	double t16 = (t4 * this->matrix[8]) - (t6 * this->matrix[7])
-		- (t8 * this->matrix[8]) + (t10 * this->matrix[7])
-		+ (t12 * this->matrix[5]) - (t14 * this->matrix[4]);
+	Matrix3 inv;
+	inv.matrix[0] = (this->matrix[4] * this->matrix[8] - this->matrix[7] * this->matrix[5]) * det;
+	inv.matrix[1] = (this->matrix[2] * this->matrix[7] - this->matrix[1] * this->matrix[8]) * det;
+	inv.matrix[2] = (this->matrix[1] * this->matrix[5] - this->matrix[2] * this->matrix[4]) * det;
+	inv.matrix[3] = (this->matrix[5] * this->matrix[6] - this->matrix[3] * this->matrix[8]) * det;
+	inv.matrix[4] = (this->matrix[0] * this->matrix[8] - this->matrix[2] * this->matrix[6]) * det;
+	inv.matrix[5] = (this->matrix[3] * this->matrix[2] - this->matrix[0] * this->matrix[5]) * det;
+	inv.matrix[6] = (this->matrix[3] * this->matrix[7] - this->matrix[6] * this->matrix[4]) * det;
+	inv.matrix[7] = (this->matrix[6] * this->matrix[1] - this->matrix[0] * this->matrix[7]) * det;
+	inv.matrix[8] = (this->matrix[0] * this->matrix[4] - this->matrix[3] * this->matrix[1]) * det;
 
-	if (t16 < 0.01) return;
-	double t17 = 1.0 / t16;
-
-	this->matrix[0] = ((this->matrix[4] * this->matrix[8]) - (this->matrix[5] * this->matrix[7])) * t17;
-	this->matrix[1] = -((this->matrix[1] * this->matrix[8]) - (this->matrix[2] * this->matrix[7])) * t17;
-	this->matrix[2] = ((this->matrix[1] * this->matrix[5]) - (this->matrix[2] * this->matrix[4])) * t17;
-	this->matrix[3] = -((this->matrix[3] * this->matrix[8]) - (this->matrix[5] * this->matrix[6])) * t17;
-	this->matrix[4] = ((this->matrix[0] * this->matrix[8]) - t14) * t17;
-	this->matrix[5] = -(t6 - t10) * t17;
-	this->matrix[6] = ((this->matrix[3] * this->matrix[7]) - (this->matrix[4] * this->matrix[6])) * t17;
-	this->matrix[7] = -((this->matrix[0] * this->matrix[7]) - t12) * t17;
-	this->matrix[8] = (t4 - t8) * t17;
+	*this = inv;
 }
 
 Matrix3 Matrix3::operator*(Matrix3& m)
@@ -466,22 +459,43 @@ void Matrix4::Inverse()
 		- this->matrix[3] * (this->matrix[4] * A1223 - this->matrix[5] * A0223 + this->matrix[6] * A0123);
 	det = 1.0 / det;
 
-	this->matrix[0] = det * (this->matrix[5] * A2323 - this->matrix[6] * A1323 + this->matrix[7]* A1223);
-	this->matrix[1] = det * -(this->matrix[1] * A2323 - this->matrix[2] * A1323 + this->matrix[3] * A1223);
-	this->matrix[2] = det * (this->matrix[1] * A2313 - this->matrix[2] * A1313 + this->matrix[3] * A1213);
-	this->matrix[3] = det * -(this->matrix[1] * A2312 - this->matrix[2] * A1312 + this->matrix[3] * A1212);
-	this->matrix[4] = det * -(this->matrix[4] * A2323 - this->matrix[6] * A0323 + this->matrix[7]* A0223);
-	this->matrix[5] = det * (this->matrix[0] * A2323 - this->matrix[2] * A0323 + this->matrix[3] * A0223);
-	this->matrix[6] = det * -(this->matrix[0] * A2313 - this->matrix[2] * A0313 + this->matrix[3] * A0213);
-	this->matrix[7] = det * (this->matrix[0] * A2312 - this->matrix[2] * A0312 + this->matrix[3] * A0212);
-	this->matrix[8] = det * (this->matrix[4] * A1323 - this->matrix[5] * A0323 + this->matrix[7]* A0123);
-	this->matrix[9] = det * -(this->matrix[0] * A1323 - this->matrix[1] * A0323 + this->matrix[3] * A0123);
-	this->matrix[10] = det * (this->matrix[0] * A1313 - this->matrix[1] * A0313 + this->matrix[3] * A0113);
-	this->matrix[11] = det * -(this->matrix[0] * A1312 - this->matrix[1] * A0312 + this->matrix[3] * A0112);
-	this->matrix[12] = det * -(this->matrix[4] * A1223 - this->matrix[5] * A0223 + this->matrix[6] * A0123);
-	this->matrix[13] = det * (this->matrix[0] * A1223 - this->matrix[1] * A0223 + this->matrix[2] * A0123);
-	this->matrix[14] = det * -(this->matrix[0] * A1213 - this->matrix[1] * A0213 + this->matrix[2] * A0113);
-	this->matrix[15] = det * (this->matrix[0] * A1212 - this->matrix[1] * A0212 + this->matrix[2] * A0112);
+	Matrix4 inv;
+	inv.matrix[0] = det * (this->matrix[5] * A2323 - this->matrix[6] * A1323 + this->matrix[7]* A1223);
+	inv.matrix[1] = det * -(this->matrix[1] * A2323 - this->matrix[2] * A1323 + this->matrix[3] * A1223);
+	inv.matrix[2] = det * (this->matrix[1] * A2313 - this->matrix[2] * A1313 + this->matrix[3] * A1213);
+	inv.matrix[3] = det * -(this->matrix[1] * A2312 - this->matrix[2] * A1312 + this->matrix[3] * A1212);
+	inv.matrix[4] = det * -(this->matrix[4] * A2323 - this->matrix[6] * A0323 + this->matrix[7]* A0223);
+	inv.matrix[5] = det * (this->matrix[0] * A2323 - this->matrix[2] * A0323 + this->matrix[3] * A0223);
+	inv.matrix[6] = det * -(this->matrix[0] * A2313 - this->matrix[2] * A0313 + this->matrix[3] * A0213);
+	inv.matrix[7] = det * (this->matrix[0] * A2312 - this->matrix[2] * A0312 + this->matrix[3] * A0212);
+	inv.matrix[8] = det * (this->matrix[4] * A1323 - this->matrix[5] * A0323 + this->matrix[7]* A0123);
+	inv.matrix[9] = det * -(this->matrix[0] * A1323 - this->matrix[1] * A0323 + this->matrix[3] * A0123);
+	inv.matrix[10] = det * (this->matrix[0] * A1313 - this->matrix[1] * A0313 + this->matrix[3] * A0113);
+	inv.matrix[11] = det * -(this->matrix[0] * A1312 - this->matrix[1] * A0312 + this->matrix[3] * A0112);
+	inv.matrix[12] = det * -(this->matrix[4] * A1223 - this->matrix[5] * A0223 + this->matrix[6] * A0123);
+	inv.matrix[13] = det * (this->matrix[0] * A1223 - this->matrix[1] * A0223 + this->matrix[2] * A0123);
+	inv.matrix[14] = det * -(this->matrix[0] * A1213 - this->matrix[1] * A0213 + this->matrix[2] * A0113);
+	inv.matrix[15] = det * (this->matrix[0] * A1212 - this->matrix[1] * A0212 + this->matrix[2] * A0112);
+
+	*this = inv;
+}
+
+Matrix3 Matrix4::ToMatrix3()
+{
+	double vals[9] = {
+		matrix[0],
+		matrix[1],
+		matrix[2],
+
+		matrix[4],
+		matrix[5],
+		matrix[6],
+
+		matrix[8],
+		matrix[9],
+		matrix[10]
+	};
+	return Matrix3(vals);
 }
 
 Matrix4 Matrix4::operator*(Matrix4& m)

@@ -17,6 +17,8 @@ void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
 
 void Collisions::DetectFine()
 {
+	if (potentialContacts.size() <= 0) return;
+
 	for (unsigned i = 0; i < potentialContacts.size(); i++)
 	{
 		if (potentialContacts[i].prim1->type == PrimitiveType::BOX && potentialContacts[i].prim2->type == PrimitiveType::BOX)
@@ -77,7 +79,8 @@ void Collisions::DrawContacts()
 		glutWireSphere(0.15, 4, 4);
 		glPopMatrix();
 
-		//Global::shouldUpdate = false;
+		//if (i >= 4) Global::shouldUpdate = false;
+
 		glFlush();
 	}
 	

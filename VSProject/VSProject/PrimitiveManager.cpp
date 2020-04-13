@@ -7,7 +7,7 @@ using namespace Shapes;
 
 void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation)
 {
-	Plane plane = Plane(ShapeVertices::GetPlaneVertices());
+	Plane plane = Plane(ShapeVertices::GetPlaneTris());
 	plane.collisionVolume.Create(translation, Vector3(0, 1, 0));
 	plane.rigidbody.useGravity = false;
 	plane.rigidbody.isKinematic = true;
@@ -27,7 +27,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 
 void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation)
 {
-	Box box = Box(ShapeVertices::GetCubeVertices());
+	Box box = Box(ShapeVertices::GetCubeTris(Colours::white));
 	box.collisionVolume.Create(translation, scale);
 	box.rigidbody.bounciness = 0.01f;
 
@@ -42,7 +42,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 10, 10), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 10), radius);
 	sphere.collisionVolume.Create(translation);
 	sphere.rigidbody.bounciness = 0.8f;
 
@@ -76,11 +76,11 @@ void PrimitiveManager::Draw()
 	//raycast test
 	if (drawRay)
 	{
-		rayToTest = Ray(Vector3(0, 0.5, 0), Vector3(-1, 0, 1).Normalise());
+		rayToTest = Ray(Vector3(5, 0.5, 0), Vector3(0, 0, 1).Normalise());
 
 		glBegin(GL_LINES);
 
-		//if (rayCast->Test(&primitives[1], rayToTest)) glColor3f(0, 1, 0);
+		//if (RayCast::Test(primitives[1].get(), rayToTest)) glColor3f(0, 1, 0);
 		//else glColor3f(1, 0, 0);
 		
 		glVertex3f(rayToTest.origin.x, rayToTest.origin.y, rayToTest.origin.z);

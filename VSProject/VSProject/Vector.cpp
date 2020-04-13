@@ -28,7 +28,7 @@ Vector3 Vector3::Normalise()
 
 Vector3 Vector3::Inverse()
 {
-	return Vector3(-x, -y, -z);
+	return Vector3(x * -1.0, y * -1.0, z * -1.0);
 }
 
 Vector3 Vector3::Clamp(double minMag, double maxMag)

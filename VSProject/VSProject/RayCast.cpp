@@ -1,7 +1,7 @@
-#include "RayCast.h"
 #include "Primitive.h"
+#include "Utilities.h"
 
-bool RayCast::Test(Primitive* prim, Ray& ray)
+/*bool RayCast::Test(Primitive* prim, Ray& ray)
 {
 	ray.direction = ray.direction.Normalise();
 
@@ -29,6 +29,46 @@ bool RayCast::Test(Primitive* prim, Ray& ray)
 		return false;
 	}
 	}
+}*/
+
+bool RayCast::TestTriangle(const Tri& tri, Matrix4& transform, Ray& ray)
+{
+	// Möller–Trumbore intersection algorithm
+	
+	const float epsilon = 0.000001f;
+
+	Vector3 v0 = tri.positions[0];
+	Vector3 v1 = tri.positions[1];
+	Vector3 v2 = tri.positions[2];
+	Mathe::Transform(v0, transform);
+	Mathe::Transform(v1, transform);
+	Mathe::Transform(v2, transform);
+
+	Vector3 edge1 = v1 - v0;
+	Vector3 edge2 = v2 - v0;
+	Vector3 h = ray.direction.VectorProduct(edge2);
+	float a = edge1.ScalarProduct(h);
+
+	if (a > -epsilon && a < epsilon) return false; //ray parallel
+
+	float f = 1.0f / a;
+	Vector3 s = ray.origin - v0;
+	float u = f * s.ScalarProduct(h);
+
+	if (u < 0.0f || u > 1.0f) return false;
+
+	Vector3 q = s.VectorProduct(edge1);
+	float v = f * ray.direction.ScalarProduct(q);
+
+	if (v < 0.0f || u + v > 1.0f) return false;
+
+	float t = f * edge2.ScalarProduct(q);
+	if (t > epsilon) //ray intersection
+	{
+		ray.intersection1 = t;
+		return true;
+	}
+	else return false; //line intersection but not ray
 }
 
 bool RayCast::TestPlane(const Vector3& centre, const Vector3& normal, const Vector3& size, Ray& ray)
@@ -183,4 +223,29 @@ bool RayCast::TestBox(const Vector3& scale, const Matrix4& transform, Ray& ray)
 	//ray.intersection2 = 1 / (ray.origin - localIntersection2).ScalarProduct(ray.direction);
 
 	return true;
+}
+
+Vector3 Ray::IntersectionPoint()
+{
+	direction = direction.Normalise();
+
+	if (intersection1 == -1) return origin + (direction * 100.0f);
+
+	Vector3 pointA = origin + (direction * intersection1);
+	if (intersection2 == -1) return pointA;
+
+	Vector3 pointB = origin + (direction * intersection2);
+	return (pointA.Magnitude() < pointB.Magnitude()) ? pointA : pointB;
+}
+
+void Ray::Draw(const Colour& colour)
+{
+	glBegin(GL_LINES);
+
+	glColor3f(colour.r, colour.g, colour.b);
+	glVertex3f(origin.x, origin.y, origin.z);
+	Vector3 point2 = IntersectionPoint();
+	glVertex3f(point2.x, point2.y, point2.z);
+
+	glEnd();
 }

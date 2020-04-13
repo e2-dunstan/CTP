@@ -69,7 +69,7 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 			{
 				timeMotionBelowSleepThreshold = 0;
 				SetAwake(false);
-				std::cout << "Sleeping... " << motion << std::endl;
+				//std::cout << "Sleeping... " << motion << std::endl;
 			}
 		}
 		else if (motion > sleepThreshold * 2.0)

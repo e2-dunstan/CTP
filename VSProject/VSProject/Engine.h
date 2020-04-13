@@ -1,6 +1,7 @@
 #pragma once
 //#include "OctTree.h"
 #include "PrimitiveManager.h"
+#include "RayCamera.h"
 
 class ConsoleControls;
 
@@ -15,9 +16,13 @@ public:
 	void Render();
 
 	friend ConsoleControls;
+	std::unique_ptr<RayCamera> rayCamera = std::make_unique<RayCamera>();
 
 private:
 
+	void UpdateTrisForRayCamera();
+
+	unsigned prevPrimitiveCount = 0;
 	unsigned primitiveCount = 0;
 	std::unique_ptr<PrimitiveManager> primitiveManager = std::make_unique<PrimitiveManager>();
 
@@ -29,6 +34,8 @@ protected:
 	void SpawnBox();
 
 	void SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing);
+
+	void SpawnStack(const Vector3& origin, const unsigned int count, const Vector3& size, const float sizeVariance);
 
 	void ThrowSphere();
 };

@@ -1,28 +1,20 @@
+#pragma once
+
+#include <SFML/Graphics.hpp>
 #include <Windows.h>
+#include <thread>
 
 #include "Engine.h"
 #include "Camera.h"
 #include "ConsoleControls.h"
-
-// [X] AABB before full collision check
-// [X] collision detection visualisation with colour
-// [~] capsules collision detection
-// [~] cylinders collision detection
-// [ ] convex hulls collision detection
-// [X] impulse based response - boxes
-
-
-// week before deadline dev time is over
-// week before that, make it pretty
-
 
 namespace
 {
 	//Camera variables.
 	float rotationSpeed = 0.005f;
 	float translationSpeed = 0.01f;
-	int windowWidth = 1280;
-	int windowHeight = 720;
+	const int windowWidth = 1280;
+	const int windowHeight = 720;
 
 	//GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 	GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
@@ -32,7 +24,7 @@ namespace
 	bool mouseHeld = false;
 
 	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(0, 10, 0, 3.14159265f / 2.0f, 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(0, 10, 0, Mathe::ToRadians(80), 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 	std::unique_ptr<ConsoleControls> consoleControls = std::make_unique<ConsoleControls>(/*engine.get()*/);
 
 	//in miliseconds
@@ -44,7 +36,10 @@ namespace
 
 	int numPhysicsUpdatesPerSecond = 0;
 
-	float playbackSpeed = 1.0f;
+	float playbackSpeed = 0.5f;
+
+	bool sfmlWindow = false;
+	bool openglWindow = true;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -59,7 +54,9 @@ void ReleaseKey(unsigned char key, int x, int y)
 
 	if (key == 'p') Global::shouldUpdate = !Global::shouldUpdate;
 	if (key == 'c') Global::writeContactDataToFile = true;
+	if (key == 'r') engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight, 5);
 }
+
 void MouseMove(int x, int y)
 {
 	if (mouseHeld)
@@ -81,6 +78,15 @@ void MouseButton(int button, int state, int x, int y)
 			mouseHeld = false;
 		}
 	}
+	//Testing
+	/*
+	else if (button == GLUT_LEFT_BUTTON)
+	{
+		if (state == GLUT_UP)
+		{
+			ScreenToWorldSpace(x, y, windowWidth, windowHeight, camera->GetWorldPos(), camera->GetLookRot());
+		}
+	}*/
 }
 
 void Init()
@@ -132,7 +138,7 @@ void changeViewPort(int w, int h)
 	glViewport(0, 0, w, h);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	gluPerspective(80, (double)w / (double)h, 1, 50);
+	gluPerspective(80, (double)w / (double)h, 1, 1000);
 	glMatrixMode(GL_MODELVIEW);
 
 	Global::deltaTime = 0;
@@ -145,7 +151,7 @@ void render()
 	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) * playbackSpeed / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
-	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 2000) //wait 2 seconds before updating
+	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 2 seconds before updating
 		beginUpdate = true;
 	//if (deltaTimeDebug > 0.1)
 	//{
@@ -194,51 +200,81 @@ void timer(int)
 } */
 
 
-int main(int argc, char* argv[]) {
-
-	std::cout << "Initialising GLUT... ";
-
-	// Initialize GLUT
-	glutInit(&argc, argv);
-	// Set up some memory buffers for our display
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
-	// Set the window size
-	glutInitWindowSize(windowWidth, windowHeight);
-
-	glutCreateWindow("Rigidbody Dynamics Engine with an Integrated Path Tracer ");
-
-	glutReshapeFunc(changeViewPort);
-	glutDisplayFunc(render);
-
-	glutTimerFunc(0, timer, 0);
-	//glutTimerFunc(0, physicsUpdateCounter, 0);
-
-	// Very important!  This initializes the entry points in the OpenGL driver so we can 
-	// call all the functions in the API.
-	GLenum err = glewInit();
-	if (GLEW_OK != err) {
-		fprintf(stderr, "GLEW error");
-		return 1;
-	}
-
+void SFMLMainLoop()
+{
+	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML");
 	std::cout << "Successful!" << std::endl;
 
-	Init();
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
 
-	glutKeyboardFunc(PressKey);
-	glutKeyboardUpFunc(ReleaseKey);
+		window.clear();
+		//window.draw(shape);
+		window.display();
+	}
+}
 
-	//press and release
-	//glutPassiveMotionFunc(MouseMove);
-	glutMotionFunc(MouseMove);
-	glutMouseFunc(MouseButton);
+int main(int argc, char* argv[]) 
+{
+	if (sfmlWindow)
+	{
+		std::cout << "Initialising SFML... ";
 
-	engine->Update();
+		SFMLMainLoop();
+		//sf::CircleShape shape(100.f);
+		//shape.setFillColor(sf::Color::Green);
+	}
+	if (openglWindow)
+	{
+		std::cout << "Initialising GLUT... ";
 
-	glutMainLoop();
+		// Initialize GLUT
+		glutInit(&argc, argv);
+		// Set up some memory buffers for our display
+		glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGBA | GLUT_DEPTH);
+		// Set the window size
+		glutInitWindowSize(windowWidth, windowHeight);
 
-	//https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
+		glutCreateWindow("Rigidbody Dynamics Engine with an Integrated Path Tracer ");
 
+		glutReshapeFunc(changeViewPort);
+		glutDisplayFunc(render);
+
+		glutTimerFunc(0, timer, 0);
+		//glutTimerFunc(0, physicsUpdateCounter, 0);
+
+		// Very important!  This initializes the entry points in the OpenGL driver so we can 
+		// call all the functions in the API.
+		GLenum err = glewInit();
+		if (GLEW_OK != err) {
+			fprintf(stderr, "GLEW error");
+			return 1;
+		}
+
+		std::cout << "Successful!" << std::endl;
+
+		Init();
+
+		glutKeyboardFunc(PressKey);
+		glutKeyboardUpFunc(ReleaseKey);
+
+		//press and release
+		//glutPassiveMotionFunc(MouseMove);
+		glutMotionFunc(MouseMove);
+		glutMouseFunc(MouseButton);
+
+		engine->Update();
+
+		glutMainLoop();
+
+		//https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
+	}
 
 	return 0;
 }

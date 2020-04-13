@@ -158,9 +158,10 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 {
 	//convert coord space to box 1 so box 1 pos is 0
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
-	float comparison1 = (box1->collisionVolume.centre + normal).ScalarProduct(box2->collisionVolume.centre);
-	float comparison2 = (box1->collisionVolume.centre - normal).ScalarProduct(box2->collisionVolume.centre);
-	if (comparison1 < comparison2)
+	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(normal) > box2->collisionVolume.centre.ScalarProduct(normal);
+	//float comparison1 = (box1->collisionVolume.centre + normal).ScalarProduct(box2->collisionVolume.centre);
+	//float comparison2 = (box1->collisionVolume.centre - normal).ScalarProduct(box2->collisionVolume.centre);
+	if (box1Above2)
 	{
 		normal *= -1.0;
 	}
@@ -189,8 +190,6 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	Vector3 referenceVertices[4] = { Vector3() };
 	if (!SetReferenceVertices(referenceNormal, referenceVertices, box1->collisionVolume.halfSize)) return;
 
-	bool box1Above2 = box1->collisionVolume.centre.ScalarProduct(referenceNormal) > box2->collisionVolume.centre.ScalarProduct(referenceNormal);
-
 	Vector3 incidentVertices[4] = { Vector3() };
 
 	//Get local incident normal to get vertices in the correct order
@@ -198,12 +197,19 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	localIncidentNormal = localIncidentNormal.Normalise();
 	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
 	if (!SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize)) return;
+
+	Matrix4 box1Inverse = box1->collisionVolume.axisMat;
+	box1Inverse.Inverse();
+
 	//Transform back to box 1 space
 	for (unsigned v = 0; v < 4; v++)
 	{
+		//Transform from local (incident plane) to world space
+		//incidentVertices[v] += localIncidentNormal * box2->collisionVolume.halfSize;
 		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
-		incidentVertices[v] += incidentNormal * box2->collisionVolume.halfSize;
-		incidentVertices[v] -= box1->collisionVolume.centre;
+		//Transform to local (reference plane) space
+		Mathe::Transform(incidentVertices[v], box1Inverse);
+		incidentVertices[v] += box2->collisionVolume.halfSize * localIncidentNormal;
 	}
 
 	std::vector<Vector3> clippedVertices;
@@ -215,30 +221,34 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	unsigned numContactPoints = 0;
 
 	bool mergeContacts = false;
-	normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
+	//normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
 
 	//only keep vertices below the reference plane
-	float relBox = abs((box1->collisionVolume.centre + box1->collisionVolume.halfSize).ScalarProduct(referenceNormal));
+	float relBox = abs((box1->collisionVolume.centre + (box1->collisionVolume.halfSize * normal)).ScalarProduct(normal));
 	float pen = 0;
 
 	for (unsigned v = 0; v < clippedVertices.size(); v++)
 	{
+		//clippedVertices[v] -= box2->collisionVolume.halfSize * localIncidentNormal;
 		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
-		float clipped = abs(clippedVertices[v].ScalarProduct(referenceNormal));
+		float clipped = abs(clippedVertices[v].ScalarProduct(normal));
 
-		if (clipped < relBox + 0.05f) 
+		if ((box1Above2 && clipped > relBox - 0.05f) 
+			|| (!box1Above2 && clipped < relBox + 0.05f))
 		{
 			if (!mergeContacts)
 			{
 				Contact contact(box1, box2);
 				contact.normal = normal;
-				contact.penetrationDepth = box1Above2 ? clipped : (relBox - clipped);
+				contact.penetrationDepth = -1.0f * abs(box1Above2 ? (clipped - relBox) : (relBox - clipped));/*, -penetration * 2.0, penetration * 2.0);*/
+				//if (abs(contact.penetrationDepth) < abs(penetration))
+				//	contact.penetrationDepth = -1.0 * abs(penetration);
 				contact.point = clippedVertices[v];
 				contacts.push_back(contact);
 			}
 			else
 			{
-				pen += (box1Above2 ? clipped : (relBox - clipped));
+				pen += -1.0f * abs(box1Above2 ? (clipped - relBox) : (relBox - clipped));
 				contactPoint += clippedVertices[v];
 			}
 			numContactPoints++;
@@ -495,7 +505,7 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 	const unsigned numEdges = sizeof(clippingVertices);
 	const unsigned polyVertSize = sizeof(polyVertices);
 	unsigned numVertices = polyVertSize;
-	const float epsilon = 0.001f;
+	const float epsilon = 0.01f;
 
 	unsigned axes[2] = { 0, 0 };
 	if (abs(abs(normal.x) - 1.0) < epsilon)
@@ -548,10 +558,10 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 		{
 			Vector3 v1 = newPoints[v];
 			Vector3 v2 = newPoints[(v + 1) % numVertices];
-			if (v1 == v2 ||
-				(v1[axes[0]] != v2[axes[0]]
-				&& (v1[axes[1]] != v2[axes[1]]))) 
-				continue;
+			//if (v1 == v2 ||
+			//	(v1[axes[0]] != v2[axes[0]]
+			//	&& (v1[axes[1]] != v2[axes[1]]))) 
+			//	continue;
 
 			bool insideEdge1 = InsideEdge(v1[axes[0]], v1[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 			bool insideEdge2 = InsideEdge(v2[axes[0]], v2[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
@@ -608,7 +618,7 @@ bool SAT::InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, dou
 {
 	double one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
 	double two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
-	return (one - two) < 0;
+	return (one - two) < 0.01f;
 
 	//return (edgeMaxX - edgeMinX) * (py - edgeMinY) - (edgeMaxY - edgeMinY) * (px - edgeMinX) < 0;
 }

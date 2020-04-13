@@ -1,5 +1,6 @@
 #pragma once
 #include "mathe.h"
+#include "RayCast.h"
 
 namespace Global
 {

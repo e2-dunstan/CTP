@@ -10,9 +10,9 @@ void Engine::Init()
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
 
-	//primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(5, 5, 8),	Vector3(0, 0, 0));
-	//primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(15, 10, 8),	Vector3(0, 0, 0));
-	//primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 3, 8),	Vector3(0, 0, 0));
+	/*primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(-5, 5, 8),	Vector3(0, 0, 0));
+	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(-10, 15, 8),	Vector3(90, 0, 0));
+	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(-15, 10, 8),	Vector3(90, 0, 180));*/
 
 	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
@@ -27,6 +27,12 @@ void Engine::Init()
 	//SpawnDominoes(3, Vector3(0.5, 1.0, 0.1), 0.9f);
 
 	srand(time(NULL));
+
+	SpawnStack(Vector3(0, 0, 8), 2, Vector3(1, 1, 1), 0.2f);
+
+	//SpawnBox();
+	//SpawnBox();
+	//SpawnBox();
 	//SpawnBox();
 	//SpawnBox();
 	//SpawnBox();
@@ -69,11 +75,47 @@ void Engine::Update()
 		//rebuild spatial data structures
 	}*/
 	primitiveManager->Update();
+
+	UpdateTrisForRayCamera();
 }
 
 void Engine::Render()
 {
 	primitiveManager->Draw();
+	rayCamera->DrawLatestRay();
+}
+
+void Engine::UpdateTrisForRayCamera()
+{
+	if (prevPrimitiveCount == primitiveCount) return;
+	prevPrimitiveCount = primitiveCount;
+
+	for (uint16_t i = 0; i < primitiveCount; i++)
+	{
+		Primitive& prim = *primitiveManager->GetPrimitives()[i].get();
+
+		switch (prim.type)
+		{
+		case PrimitiveType::BOX:
+		{
+			rayCamera->AddPrimitive(dynamic_cast<Box*>(&prim)->tris, &prim.transform);
+			break;
+		}
+		case PrimitiveType::PLANE:
+		{
+			rayCamera->AddPrimitive(dynamic_cast<Plane*>(&prim)->tris, &prim.transform);
+			break;
+		}
+		case PrimitiveType::SPHERE:
+		case PrimitiveType::CAPSULE:
+		case PrimitiveType::CYLINDER:
+		case PrimitiveType::COMPLEX:
+		default:
+		{
+			break;
+		}
+		}
+	}
 }
 
 void Engine::SpawnSphere()
@@ -116,7 +158,7 @@ void Engine::SpawnBox()
 
 void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing)
 {
-	Vector3 pos = Vector3(0, size.y, 0);
+	Vector3 pos = Vector3(0, size.y * 2, 0);
 	for (unsigned int i = 0; i < count; i++)
 	{
 		primitiveManager->CreateBox(size, pos, Vector3(0, 0, 0));
@@ -129,10 +171,26 @@ void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const 
 	}
 }
 
+void Engine::SpawnStack(const Vector3& origin, const unsigned int count, const Vector3& size, const float sizeVariance)
+{
+	Vector3 pos = Vector3(origin.x, size.y * 2.0 + 1.0, origin.z);
+	for (unsigned int i = 0; i < count; i++)
+	{
+		float r = ((rand() % (int)(sizeVariance * 20.0f)) / 10.0f) - sizeVariance + 1.0f;
+		std::cout << r << std::endl;
+		primitiveManager->CreateBox(size * (float)r, pos, Vector3(0, i * 0.0f, 0));
+		pos += Vector3(0, size.y * 2.0 + sizeVariance * 2.0f, 0);
+
+		individualObjectInitialised.push_back(false);
+		objectsInitialised = false;
+		primitiveCount++;
+	}
+}
+
 void Engine::ThrowSphere()
 {
-	//primitiveManager->CreateSphere(0.5, Vector3(0, 2, 0));
-	primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(10, 10, 10));
+	//primitiveManager->CreateSphere(0.5, Vector3(0, 2, -5));
+	primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(0, 0, 0));
 	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(0, 0, 15);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
