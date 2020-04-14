@@ -10,11 +10,11 @@ void Engine::Init()
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
 
-	/*primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(-5, 5, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(-10, 15, 8),	Vector3(90, 0, 0));
-	primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(-15, 10, 8),	Vector3(90, 0, 180));*/
+	//primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(-5, 5, 8),	Vector3(0, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1.5, 1.5, 1.5), Vector3(0, 5, 8),	Vector3(-90, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 10, 8),	Vector3(45, 0, 45));
 
-	//primitiveManager->CreateSphere(2, Vector3(5, 20, 5));
+	//primitiveManager->CreateSphere(2, Vector3(0, 10, 8));
 	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
 	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
 	//primitiveManager->CreateSphere(2, Vector3(10, 50, -10));
@@ -24,11 +24,12 @@ void Engine::Init()
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 
+	primitiveCount += 1;
 	//SpawnDominoes(3, Vector3(0.5, 1.0, 0.1), 0.9f);
 
 	srand(time(NULL));
 
-	SpawnStack(Vector3(0, 0, 8), 2, Vector3(1, 1, 1), 0.2f);
+	SpawnStack(Vector3(0, 0, 8), 3, Vector3(1, 1, 1), 0.2f);
 
 	//SpawnBox();
 	//SpawnBox();
@@ -45,7 +46,6 @@ void Engine::Init()
 	//SpawnSphere();
 	//SpawnSphere();
 
-	primitiveCount += 1;
 	//primitiveCount++;
 	//skip plane
 	//for (unsigned i = 1; i < primitiveManager->GetPrimitives().size(); i++)
@@ -107,6 +107,10 @@ void Engine::UpdateTrisForRayCamera()
 			break;
 		}
 		case PrimitiveType::SPHERE:
+		{
+			rayCamera->AddPrimitive(dynamic_cast<Sphere*>(&prim)->tris, &prim.transform);
+			break;
+		}
 		case PrimitiveType::CAPSULE:
 		case PrimitiveType::CYLINDER:
 		case PrimitiveType::COMPLEX:

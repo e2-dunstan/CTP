@@ -21,6 +21,7 @@ public:
 	void Update();
 	virtual void Draw() = 0;
 	void DrawForVertices(std::vector<Vertex> vertices);
+	void DrawForTris(std::vector<Tri> tris);
 
 	virtual void CalculateInertiaTensor() = 0;
 
@@ -57,6 +58,8 @@ protected:
 	Vector3 previousPosition = Vector3();
 	bool debugCollision = false;
 	bool freeze = false;
+
+	bool drawBoundingVolume = false;
 };
 
 class Box : public Primitive
@@ -75,7 +78,7 @@ public:
 	void CalculateInertiaTensor() override;
 	void UpdateTransform() override;
 
-	void Draw() override;
+	void Draw() override { DrawForTris(tris); }
 
 	std::vector<Tri> tris = std::vector<Tri>();
 
@@ -89,9 +92,9 @@ class Sphere : public Primitive
 {
 public:
 	Sphere() = default;
-	Sphere(std::vector<Vertex> v, float r)
+	Sphere(std::vector<Tri> t, float r)
 	{
-		vertices = v;
+		tris = t;
 		radius = r;
 		//collisionVolume = std::make_unique<SphereCV>(sphereCollisionVolume);
 		initialised = true;
@@ -102,9 +105,9 @@ public:
 	void CalculateInertiaTensor() override;
 	void UpdateTransform() override;
 
-	void Draw() override { DrawForVertices(vertices); }
+	void Draw() override { DrawForTris(tris); }
 
-	std::vector<Vertex> vertices = std::vector<Vertex>();
+	std::vector<Tri> tris = std::vector<Tri>();
 
 	float radius = 0;
 	SphereCV collisionVolume;
@@ -128,7 +131,7 @@ public:
 	void CalculateInertiaTensor() override {}
 	void UpdateTransform() override;
 
-	void Draw() override;
+	void Draw() override { DrawForTris(tris); }
 
 	std::vector<Tri> tris = std::vector<Tri>();
 

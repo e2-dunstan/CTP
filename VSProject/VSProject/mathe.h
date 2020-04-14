@@ -26,8 +26,8 @@ namespace Mathe
 
 	void Scale (Matrix4& m, double x, double y, double z);
 
-	Vector3 GetAxis(uint16_t col, Matrix4& mat);
-	Vector3 GetAxis(uint16_t col, Matrix3& mat);
+	Vector3 GetAxis(uint16_t col, Matrix4& matrix);
+	Vector3 GetAxis(uint16_t col, Matrix3& matrix);
 
 	Quaternion VectorToQuaternion(const Vector3& v, bool toRadians = true);
 	void AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians);
@@ -43,4 +43,6 @@ namespace Mathe
 
 	double ClampDouble(double value, double min, double max);
 	float ClampFloat(float value, float min, float max);
+
+	const double PI = 3.141592653589793115997963468544185161590576171875;
 };

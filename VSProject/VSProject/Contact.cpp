@@ -190,8 +190,8 @@ void Contact::ResolvePenetration()
 	{
 		if (abs(linearMove1) > 0.5)
 		{
-			std::cout << "WARNING: large linear change detected: " << linearMove1 << std::endl;
-			//linearMove1 = 1.0;
+			//std::cout << "WARNING: large linear change detected: " << linearMove1 << std::endl;
+			//linearMove1 = 0.5;
 		}
 		linearChange[0] = normal * linearMove1;
 		body1->translation += linearChange[0];
@@ -207,7 +207,7 @@ void Contact::ResolvePenetration()
 	{
 		if (abs(linearMove2) > 0.5)
 		{
-			std::cout << "WARNING: large linear change detected w/ pen depth: " << penetrationDepth << std::endl;
+			//std::cout << "WARNING: large linear change detected w/ pen depth: " << penetrationDepth << std::endl;
 			linearMove2 = 1.0;
 		}
 		linearChange[1] = normal * linearMove2;
@@ -266,7 +266,7 @@ void Contact::ResolveVelocity()
 	if (body2->type != PrimitiveType::PLANE)
 	{
 		//impulse *= -1.0;
-		velocityChange[1] = impulse * body2->rigidbody.inverseMass * -1.0;// normal.SumComponents();
+		velocityChange[1] = impulse * body2->rigidbody.inverseMass *-1.0;// normal.SumComponents();
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
 		//rotationChange[1] = Vector3(Mathe::ToRadians(rotationChange[1].x), Mathe::ToRadians(rotationChange[1].y), Mathe::ToRadians(rotationChange[1].z));
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
@@ -361,7 +361,7 @@ Vector3 Contact::FrictionImpulse()
 		impulseContact.y *= friction * impulseContact.x;
 		impulseContact.z *= friction * impulseContact.x;
 	}
-	else impulseContact *= friction;
+	//else impulseContact *= friction;
 
 	return impulseContact;
 }

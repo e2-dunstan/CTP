@@ -16,7 +16,7 @@ private:
 	const float minPositionChange = 0.01f;
 
 	unsigned int numContacts = 0;
-	const unsigned int penetrationIterations = 20;
+	const unsigned int penetrationIterations = 30;
 	const unsigned int velocityIterations = 1;
 
 	void AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign);

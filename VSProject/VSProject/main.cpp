@@ -11,8 +11,8 @@
 namespace
 {
 	//Camera variables.
-	float rotationSpeed = 0.005f;
-	float translationSpeed = 0.01f;
+	const float rotationSpeed = 0.005f;
+	const float translationSpeed = 0.01f;
 	const int windowWidth = 1280;
 	const int windowHeight = 720;
 
@@ -36,10 +36,10 @@ namespace
 
 	int numPhysicsUpdatesPerSecond = 0;
 
-	float playbackSpeed = 0.5f;
+	const float playbackSpeed = 0.5f;
 
-	bool sfmlWindow = false;
-	bool openglWindow = true;
+	const bool sfmlWindow = false;
+	const bool openglWindow = true;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -54,7 +54,7 @@ void ReleaseKey(unsigned char key, int x, int y)
 
 	if (key == 'p') Global::shouldUpdate = !Global::shouldUpdate;
 	if (key == 'c') Global::writeContactDataToFile = true;
-	if (key == 'r') engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight, 5);
+	if (key == 'r') engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight);
 }
 
 void MouseMove(int x, int y)
@@ -204,7 +204,30 @@ void SFMLMainLoop()
 {
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "SFML");
 	std::cout << "Successful!" << std::endl;
+	
+	unsigned char* pixels = new unsigned char[windowWidth * windowHeight * 3];
+	std::basic_ifstream<unsigned char> file("PixelBuffer.bin");
+	file.read(pixels, windowWidth * windowHeight * 3);
+	file.close();
+	unsigned int pixelIndex = 0;
 
+	sf::Image img;
+	img.create(windowWidth, windowHeight);
+	for (unsigned int w = 0; w < windowWidth; w++)
+	{
+		for (unsigned int h = 0; h < windowHeight; h++)
+		{
+			sf::Uint8 r = pixels[pixelIndex++];
+			sf::Uint8 g = pixels[pixelIndex++];
+			sf::Uint8 b = pixels[pixelIndex++];
+			img.setPixel(w, h, sf::Color(r, g, b, 255));
+		}
+	}
+
+	img.saveToFile("PixelBufferSFML");
+
+	window.close();
+	/*
 	while (window.isOpen())
 	{
 		sf::Event event;
@@ -215,9 +238,9 @@ void SFMLMainLoop()
 		}
 
 		window.clear();
-		//window.draw(shape);
+		//window.draw(img);
 		window.display();
-	}
+	}*/
 }
 
 int main(int argc, char* argv[]) 

@@ -1,7 +1,5 @@
 #include "mathe.h"
 
-#define PI 3.14159265
-
 void Mathe::Transform(Vector3& vector, Matrix4& matrix)
 {
 	if (IsVectorNAN(vector)) return;
@@ -185,13 +183,13 @@ void Mathe::Scale(Matrix4& m, double x, double y, double z)
 	m = m * scale;
 }
 
-Vector3 Mathe::GetAxis(uint16_t i, Matrix4& mat)
+Vector3 Mathe::GetAxis(uint16_t i, Matrix4& matrix)
 {
-	return Vector3(mat(0, i), mat(1, i), mat(2, i));
+	return Vector3(matrix(0, i), matrix(1, i), matrix(2, i));
 }
-Vector3 Mathe::GetAxis(uint16_t i, Matrix3& mat)
+Vector3 Mathe::GetAxis(uint16_t i, Matrix3& matrix)
 {
-	return Vector3(mat(0, i), mat(1, i), mat(2, i));
+	return Vector3(matrix(0, i), matrix(1, i), matrix(2, i));
 }
 
 Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
@@ -357,7 +355,11 @@ double Mathe::ClampDouble(double value, double min, double max)
 
 float Mathe::ClampFloat(float value, float min, float max)
 {
-	if (value < min) return min;
+	if (value < min)
+	{
+		//std::cout << "Value clammped: " << value << std::endl;
+		return min;
+	}
 	else if (value > max) return max;
 	else return value;
 }

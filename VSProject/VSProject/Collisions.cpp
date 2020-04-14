@@ -23,10 +23,10 @@ void Collisions::DetectFine()
 	{
 		if (potentialContacts[i].prim1->type == PrimitiveType::BOX && potentialContacts[i].prim2->type == PrimitiveType::BOX)
 		{
-			if (dynamic_cast<Box*>(potentialContacts[i].prim1)->scale.SquaredMagnitude() >= dynamic_cast<Box*>(potentialContacts[i].prim2)->scale.SquaredMagnitude())
+			//if (dynamic_cast<Box*>(potentialContacts[i].prim1)->scale.SquaredMagnitude() >= dynamic_cast<Box*>(potentialContacts[i].prim2)->scale.SquaredMagnitude())
 				sat->Test(potentialContacts[i].prim1, potentialContacts[i].prim2);
-			else
-				sat->Test(potentialContacts[i].prim2, potentialContacts[i].prim1);
+			//else
+			//	sat->Test(potentialContacts[i].prim2, potentialContacts[i].prim1);
 		}
 		else
 			fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2);

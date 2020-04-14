@@ -1,4 +1,6 @@
+#include <SFML/Graphics.hpp>
 #include "RayCamera.h"
+#include <fstream>
 
 RayCamera::RayCamera()
 {
@@ -14,8 +16,21 @@ void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4* trans)
 		std::cout << "WARNING: Tri vector reserve hit in RayCamera" << std::endl;
 }
 
-void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height, const uint16_t iterationStep)
+void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height)
 {	
+	const unsigned int arrSize = width * height * 3;
+	unsigned char* pixels = new unsigned char[arrSize];
+	if (store)
+	{
+		std::cout << "Initialising pixel array...";
+		for (unsigned int i = 0; i < arrSize; i++)
+		{
+			pixels[i] = (unsigned char)(0);
+		}
+		std::cout << " done." << std::endl;
+	}
+	unsigned int pixelIndex = 0;
+
 	Tri* closestTriangle = nullptr;
 	float closestDistance = 1000.0f;
 
@@ -24,33 +39,47 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 
 	SetModelViewMatrix();
 
-	for (uint16_t w = 0; w < width; w += iterationStep)
+	for (unsigned int col = 0; col < width; col++)
 	{
-		std::cerr << "Progress... " << 100.0 * w / (double)width << "%" << std::endl;
-		for (uint16_t h = 0; h < height; h += iterationStep)
+		if (col % 10 == 0)
+			std::cerr << "Progress... " << 100 * col / width << "%" << ", pixel index: " << pixelIndex << "/" << arrSize << std::endl;
+
+		for (unsigned int row = 0; row < height; row++)
 		{
-			ray = GetRayAt(w, h, width, height, cPosTemp);
-			for (uint16_t p = 0; p < triPrimitives.size(); p++)
+			Vector3 newColour = Vector3();
+			closestDistance = 1000.0f;
+			ray = GetRayAt(col, row, width, height, cPosTemp);
+
+			for (unsigned int p = 0; p < triPrimitives.size(); p++)
 			{
-				for (uint16_t t = 0; t <  triPrimitives[p].tris.size(); t++)
+				for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
 				{
-					if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray))
+					if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray)
+						&& ray.intersection1 < closestDistance)
 					{
-						Vector3 newColour = triPrimitives[p].tris[t].normal;
+						closestDistance = ray.intersection1;
+						closestTriangle = &triPrimitives[p].tris[t];
+
+						newColour = triPrimitives[p].tris[t].normal;
 						Matrix3 normalTransform = triPrimitives[p].transform.ToMatrix3();
 						Mathe::Transform(newColour, normalTransform);
-						triPrimitives[p].tris[t].colour = newColour.Normalise();
+						newColour.Normalise();
+						triPrimitives[p].tris[t].colour = newColour;
 
-						if (ray.intersection1 < closestDistance)
-						{
-							closestDistance = ray.intersection1;
-							closestTriangle = &triPrimitives[p].tris[t];
-						}
 					}
 				}
 			}
+			
+			if (store)
+			{
+				pixels[pixelIndex++] = (unsigned char)(newColour.x * 255);
+				pixels[pixelIndex++] = (unsigned char)(newColour.y * 255);
+				pixels[pixelIndex++] = (unsigned char)(newColour.z * 255);
+			}
 		}
 	}
+
+	if (store) SavePixelsToFile(pixels, arrSize, width, height);
 }
 
 void RayCamera::DrawLatestRay()
@@ -103,9 +132,52 @@ void RayCamera::SetModelViewMatrix()
 	glGetFloatv(GL_MODELVIEW_MATRIX, model);
 
 	//Convert to double array
-	double mat[16];
+	double matrix[16];
 	for (uint16_t i = 0; i < 16; i++)
-		mat[i] = double(model[i]);
+		matrix[i] = double(model[i]);
 
-	modelViewMatrix = Matrix4(mat);
+	modelViewMatrix = Matrix4(matrix);
 }
+
+void RayCamera::SavePixelsToFile(const unsigned char* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height)
+{
+	std::cout << "Saving pixel buffer to file... ";
+	//sf::RenderWindow window(sf::VideoMode(width, height), "SFML");
+
+	unsigned int pixelIndex = 0;
+
+	sf::Image img;
+	img.create(width, height);
+	for (unsigned int col = 0; col < width; col++)
+	{
+		for (unsigned int row = 0; row < height; row++)
+		{
+			sf::Color c;
+			c.r = pixels[pixelIndex++];
+			c.g = pixels[pixelIndex++];
+			c.b = pixels[pixelIndex++];
+			c.a = 255;
+			img.setPixel(col, row, c);
+		}
+	}
+
+	img.saveToFile("PixelBufferSFML.bmp");
+
+	//window.close();
+
+
+
+	/*std::basic_ofstream<unsigned char> file("PixelBuffer.bin");
+	if (!file)
+	{
+		std::cout << "cannot open file!" << std::endl;
+		return;
+	}
+
+	file.clear();
+	file.write(pixels, arrSize);
+
+	file.close();*/
+	std::cout << "done!" << std::endl;
+}
+

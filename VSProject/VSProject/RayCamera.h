@@ -19,7 +19,7 @@ public:
 
 	// -- RAYCAST -- //
 	void AddPrimitive(std::vector<Tri>& tris, Matrix4* trans);
-	void CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height, const uint16_t iterationStep = 1);
+	void CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height);
 	void DrawLatestRay();
 
 private:
@@ -27,9 +27,13 @@ private:
 	Ray GetRayAt(int pX, int pY, const float width, const float height, const Vector3& cameraPos);
 	void SetModelViewMatrix();
 
+	void SavePixelsToFile(const unsigned char* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height);
+
 	std::vector<RayCameraPrimitive> triPrimitives;
 
 	Ray ray = Ray(Vector3(), Vector3());
+
+	bool store = true;
 
 	bool draw = false;
 	Vector3 cPosTemp;

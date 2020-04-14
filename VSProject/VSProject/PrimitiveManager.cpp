@@ -42,7 +42,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 12, 10), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 6, 6), radius);
 	sphere.collisionVolume.Create(translation);
 	sphere.rigidbody.bounciness = 0.8f;
 
@@ -109,7 +109,7 @@ void PrimitiveManager::Update()
 		
 	//octTree->TestCollisions(*octTree->root, *collisions.get());
 
-	for (unsigned i = 0; i < primSize; i++)
+	for (unsigned i = 0; i < primSize - 1; i++)
 	{
 		for (unsigned j = i + 1; j < primSize; j++)
 		{

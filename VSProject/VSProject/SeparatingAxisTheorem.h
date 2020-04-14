@@ -15,12 +15,25 @@ public:
 	void GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex);
 
 private:
+
+	//plane struct here
+	struct SATPlane
+	{
+		Vector3 normal;
+		Vector3 points[4];
+		Matrix4 matrix;
+	};
+
+
 	std::vector<Contact>& contacts;
+
+	bool simpleTest = false;
 
 	double GetPositionOnAxis(const BoxCV* box, const Vector3& axis);
 	bool BoxesOverlapOnAxis(const BoxCV* box1, const BoxCV* box2, const Vector3& toCentre, Vector3 axis,
 		int index, float& smallestPenetration, int& smallestIndex);
 
+	void PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration);
 	void PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration);
 	Vector3 GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 

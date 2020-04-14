@@ -10,7 +10,7 @@ void Box::Start()
 
 void Sphere::Start()
 {
-	drawType = GL_TRIANGLE_STRIP;
+	drawType = GL_TRIANGLES;
 	rigidbody.inverseMass = 1.0f / (radius * 100.0);
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
@@ -66,6 +66,35 @@ void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 		glVertex3f(position.x, position.y, position.z);
 	}
 	glEnd();
+}
+
+void Primitive::DrawForTris(std::vector<Tri> tris)
+{
+	glBegin(drawType);
+
+	Vector3 position;
+	for (uint16_t v = 0; v < tris.size(); v++)
+	{
+		for (uint16_t p = 0; p < 3; p++)
+		{
+			position = tris[v].positions[p];
+			Mathe::Transform(position, transform);
+
+			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
+			if (colliding && debugCollision)
+			{
+				glColor3f(1, 0, 0);
+			}
+			else
+			{
+				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
+			}
+			glVertex3f(position.x, position.y, position.z);
+		}
+	}
+	glEnd();
+
+	if (drawBoundingVolume) boundingVolume.Draw();
 }
 
 /*void OldPrimitive::CalculateInertiaTensor()
@@ -278,33 +307,6 @@ void Box::UpdateTransform()
 	updateTransform = false;
 }
 
-void Box::Draw()
-{
-	glBegin(drawType);
-
-	Vector3 position;
-	for (uint16_t v = 0; v < tris.size(); v++)
-	{
-		for (uint16_t p = 0; p < 3; p++)
-		{
-			position = tris[v].positions[p];
-			Mathe::Transform(position, transform);
-
-			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
-			if (colliding && debugCollision)
-			{
-				glColor3f(1, 0, 0);
-			}
-			else
-			{
-				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
-			}
-			glVertex3f(position.x, position.y, position.z);
-		}
-	}
-	glEnd();
-}
-
 void Sphere::CalculateInertiaTensor()
 {
 	double matVals[9] = { 0.0 };
@@ -334,7 +336,7 @@ void Sphere::UpdateTransform()
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
-	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
+	boundingVolume.UpdateMinMax(translation - Vector3(radius, radius, radius), translation + Vector3(radius, radius, radius)); //Gets min and max vertices
 	collisionVolume.Update(translation);
 
 	updateTransform = false;
@@ -364,31 +366,4 @@ void Plane::UpdateTransform()
 	collisionVolume.Update(translation);
 
 	updateTransform = false;
-}
-
-void Plane::Draw()
-{
-	glBegin(drawType);
-
-	Vector3 position;
-	for (uint16_t v = 0; v < tris.size(); v++)
-	{
-		for (uint16_t p = 0; p < 3; p++)
-		{
-			position = tris[v].positions[p];
-			Mathe::Transform(position, transform);
-
-			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
-			if (colliding && debugCollision)
-			{
-				glColor3f(1, 0, 0);
-			}
-			else
-			{
-				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
-			}
-			glVertex3f(position.x, position.y, position.z);
-		}
-	}
-	glEnd();
 }

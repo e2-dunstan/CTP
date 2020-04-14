@@ -37,7 +37,7 @@ public:
 private:
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 
-	bool drawContacts = true;
+	bool drawContacts = false;
 
 	std::vector<std::unique_ptr<Primitive>> primitives;
 
