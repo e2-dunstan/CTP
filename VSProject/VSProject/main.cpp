@@ -100,7 +100,7 @@ void Init()
 
 	//Initialise OpenGL
 
-	glClearColor(0.0, 0.0, 0.0, 1.0);	//Black window.
+	glClearColor(Global::skyColour.x, Global::skyColour.y, Global::skyColour.z, 1.0);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 1000);

@@ -18,4 +18,6 @@ namespace Global
 	extern bool shouldUpdate;
 
 	extern bool writeContactDataToFile;
+
+	extern const Vector3 skyColour;
 }

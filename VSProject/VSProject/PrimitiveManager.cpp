@@ -29,7 +29,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 
 void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic)
 {
-	Box box = Box(ShapeVertices::GetCubeTris(Colours::white));
+	Box box = Box(ShapeVertices::GetCubeTris(Colour(0.95, 0.95, 0.95)));
 	box.collisionVolume.Create(translation, scale);
 	box.rigidbody.bounciness = 0.01f;
 

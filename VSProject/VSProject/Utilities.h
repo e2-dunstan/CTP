@@ -17,12 +17,13 @@ struct Colour
 	//Colour constructor.
 	Colour(GLfloat _r, GLfloat _g, GLfloat _b, GLfloat _a = 1.0f)
 		: r(_r), g(_g), b(_b), a(_a) {}
+	Colour(const Vector3& _v) { *this = _v; }
 	
 	void operator=(const Vector3& _v)
 	{
-		r = abs(_v.x); 
-		g = abs(_v.y); 
-		b = abs(_v.z);
+		r = (_v.x + 1.0) / 2.0; 
+		g = (_v.y + 1.0) / 2.0; 
+		b = (_v.z + 1.0) / 2.0;
 	}
 
 	bool operator==(const Colour& _c) const { return (r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
@@ -72,18 +73,20 @@ namespace Colours
 	const Colour magenta = Colour(1.0, 0.0, 1.0);
 };
 
-/*static inline Vector3 ScreenToWorldSpace(int x, int y, int width, int height, Vector3 camPos, Quaternion camRot, bool output = false)
+static inline Vector3 RandomInHemisphere(const float u1, const float u2)
 {
-	//Top left = 0, 0
-	//Bottom right = width, height
+	float z = u1;
+	float r = sqrtf(std::max(0.0f, 1.0f - z * z));
+	float phi = 2.0f * Mathe::PI * u2;
+	float x = r * cosf(phi);
+	float y = r * sinf(phi);
+	return Vector3(x, y, z);
+}
 
-	Vector3 screenPos((double)x / (double)width, (double)y / (double)height, 0);
-	Matrix4 camMat;
-	Mathe::Rotate(camMat, camRot);
-	Mathe::Translate(camMat, camPos.x, camPos.y, camPos.z);
-	Mathe::Transform(screenPos, camMat);
-
-	if (output) screenPos.DebugOutput();
-
-	return screenPos;
-}*/
+static inline float RandomFloat(const float min, const float max)
+{
+	float random = (float)rand() / (float)RAND_MAX;
+	float diff = max - min;
+	random *= diff;
+	return min + random;
+}

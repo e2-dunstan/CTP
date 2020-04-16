@@ -24,10 +24,12 @@ public:
 
 private:
 
-	Ray GetRayAt(int pX, int pY, const float width, const float height, const Vector3& cameraPos);
-	void SetModelViewMatrix();
+	Ray GetRayAt(const int pX, const int pY, const float width, const float height, const Vector3& cameraPos);
+	Vector3 ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, Vector3& finalColour_pixel, unsigned int& samples);
 
+	void SetModelViewMatrix();
 	void SavePixelsToFile(const unsigned char* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height);
+
 
 	std::vector<RayCameraPrimitive> triPrimitives;
 
@@ -39,4 +41,7 @@ private:
 	Vector3 cPosTemp;
 
 	Matrix4 modelViewMatrix;
+
+	Matrix3 Z_up;
+	Matrix3 Z_up_inverse;
 };

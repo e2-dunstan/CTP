@@ -14,6 +14,8 @@ namespace Global
 	bool shouldUpdate = true;
 
 	bool writeContactDataToFile = false;
+
+	const Vector3 skyColour = Vector3(0.529, 0.808, 0.922);
 }
 
 //double Global::GetDeltaTime()

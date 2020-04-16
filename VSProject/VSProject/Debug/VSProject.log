@@ -1,6 +1,10 @@
-﻿  Engine.cpp
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(23,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,10): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(28,12): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+﻿  RayCamera.cpp
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(24,20): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(25,20): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(26,20): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\Utilities.h(80,12): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(142,93): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(143,92): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(209,38): warning C4305: 'argument': truncation from 'const double' to 'const float'
+D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(209,108): warning C4305: 'argument': truncation from 'double' to 'const float'
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

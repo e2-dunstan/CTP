@@ -132,11 +132,18 @@ void Contact::ResolvePenetration()
 {
 	// -- Nonlinear Projection -- //
 
-	Vector3 angularInertia_W = relContactPos1.VectorProduct(normal);
-	Mathe::Transform(angularInertia_W, body1->rigidbody.inverseInertiaTensorWorld);
-	angularInertia_W = angularInertia_W.VectorProduct(relContactPos1);
+	//linear impulse = lambda * normal
+	//angular impulse (torque) = lambda * (relative contact position X normal)
 
-	float angularInertia1 = (float)angularInertia_W.ScalarProduct(normal);
+	// -----------
+	// BODY 1 inertia
+	// -----------
+
+	Vector3 angularInertia_world = relContactPos1.VectorProduct(normal);
+	Mathe::Transform(angularInertia_world, body1->rigidbody.inverseInertiaTensorWorld);
+	angularInertia_world = angularInertia_world.VectorProduct(relContactPos1);
+
+	float angularInertia1 = angularInertia_world.ScalarProduct(normal);
 	float linearInertia1 = body1->rigidbody.inverseMass;
 
 	float totalInertia = linearInertia1 + angularInertia1;
@@ -144,14 +151,16 @@ void Contact::ResolvePenetration()
 	float angularInertia2 = 0;
 	float linearInertia2 = 0;
 
-	//inertia for body 2
+	// -----------
+	// BODY 2 inertia
+	// -----------
 	if (!body2->isStatic)
 	{
-		angularInertia_W = relContactPos2.VectorProduct(normal);
-		Mathe::Transform(angularInertia_W, body2->rigidbody.inverseInertiaTensorWorld);
-		angularInertia_W = angularInertia_W.VectorProduct(relContactPos2);
+		angularInertia_world = relContactPos2.VectorProduct(normal);
+		Mathe::Transform(angularInertia_world, body2->rigidbody.inverseInertiaTensorWorld);
+		angularInertia_world = angularInertia_world.VectorProduct(relContactPos2);
 
-		angularInertia2 = (float)angularInertia_W.ScalarProduct(normal);
+		angularInertia2 = (float)angularInertia_world.ScalarProduct(normal);
 		linearInertia2 = body2->rigidbody.inverseMass;
 
 		totalInertia += linearInertia2 + angularInertia2;
@@ -301,7 +310,7 @@ Vector3 Contact::FrictionImpulse()
 	matVals[7] = relContactPos1.x;
 
 	//Transpose helps with the spinning
-	Matrix3 impulseToTorque = Matrix3(matVals).GetTranspose();
+	Matrix3 impulseToTorque = Matrix3(matVals);// .GetTranspose();
 
 	Matrix3 impulseToVel_W = impulseToTorque;
 	impulseToVel_W = (impulseToVel_W * body1->rigidbody.inverseInertiaTensorWorld) * impulseToTorque;
