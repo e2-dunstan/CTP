@@ -29,8 +29,8 @@ void ConsoleControls::OnKeyRelease(const unsigned char key, Engine* engine)
 		case State::SPAWN_OBJ:
 		{
 			if (key == cancel) Init();
-			else if (key == '0') engine->SpawnBox();
-			else if (key == '1') engine->SpawnSphere();
+			//else if (key == '0') engine->scenes.SpawnRandomBox();
+			//else if (key == '1') engine->scenes.SpawnRandomSphere();
 			//else if (key == '2')
 			//else if (key == '3')
 			break;

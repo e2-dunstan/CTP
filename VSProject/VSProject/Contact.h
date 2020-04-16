@@ -3,7 +3,7 @@
 
 
 class Collisions;
-class CollisionResolution2;
+class CollisionResolution;
 class CollisionResolution3;
 
 enum class BounceCombineType
@@ -15,7 +15,7 @@ struct Contact
 {
 	friend struct CollisionData;
 	friend class Collisions;
-	friend class CollisionResolution2;
+	friend class CollisionResolution;
 	friend class CollisionResolution3;
 
 public:

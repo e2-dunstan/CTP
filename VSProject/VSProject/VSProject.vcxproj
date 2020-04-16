@@ -142,7 +142,7 @@
     <ClCompile Include="CollisionCoarse.cpp" />
     <ClCompile Include="Contact.cpp" />
     <ClCompile Include="CollisionFine.cpp" />
-    <ClCompile Include="CollisionResolution2.cpp" />
+    <ClCompile Include="CollisionResolution.cpp" />
     <ClCompile Include="Collisions.cpp" />
     <ClCompile Include="CollisionVolume.cpp" />
     <ClCompile Include="ConsoleControls.cpp" />
@@ -167,7 +167,7 @@
     <ClInclude Include="CollisionCoarse.h" />
     <ClInclude Include="CollisionData.h" />
     <ClInclude Include="CollisionFine.h" />
-    <ClInclude Include="CollisionResolution2.h" />
+    <ClInclude Include="CollisionResolution.h" />
     <ClInclude Include="Collisions.h" />
     <ClInclude Include="CollisionVolume.h" />
     <ClInclude Include="ConsoleControls.h" />

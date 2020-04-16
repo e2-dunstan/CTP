@@ -23,7 +23,7 @@ public:
 
 	//void Create(PrimitiveType type, const Vector3& scale, const Vector3& translation, const Vector3& rotation, float radius = 0, float straight = 0);
 	void CreatePlane(const Vector3& scale, const Vector3& translation);
-	void CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation);
+	void CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic = false);
 	void CreateSphere(float radius, const Vector3& translation);
 	//void CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation = Vector3());
 	//void CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation = Vector3());

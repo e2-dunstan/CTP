@@ -17,7 +17,7 @@ private:
 	struct ContactPoint
 	{
 		Vector3 point = Vector3();
-		double penetration = 0.0;
+		float penetration = 0.0;
 
 		double weighting = 1.0;
 	};

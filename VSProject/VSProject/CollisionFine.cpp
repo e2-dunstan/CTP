@@ -3,6 +3,8 @@
 
 void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 {
+	if (prim1->isStatic && prim2->isStatic) return;
+
 	if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::SPHERE)
 	{
 		Plane* p1 = dynamic_cast<Plane*>(prim1);
@@ -127,7 +129,12 @@ void CollisionFine::SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3&
 	Vector3 normal = midline * 1.0f / size;
 
 	Contact contact(prim1, prim2);
-	contact.normal = normal;
+	contact.normal = normal.Normalise();
+	if (prim1->isStatic)
+	{
+		contact = Contact(prim2, prim1);
+		contact.normal = normal.Normalise().Inverse();
+	}
 	contact.point = position1 + midline * 0.5f;
 	contact.penetrationDepth = radius1 + radius2 - size;
 	contacts.push_back(contact);
@@ -178,6 +185,11 @@ void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePositi
 
 	Contact contact(sphere, box);
 	contact.normal = normal;
+	if (sphere->isStatic)
+	{
+		contact = Contact(box, sphere);
+		contact.normal = normal.Inverse();
+	}
 	contact.point = closestPoint;
 	contact.penetrationDepth = radius - (float)distance;
 	contacts.push_back(contact);	
@@ -202,7 +214,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 
 	ContactPoint contactPoints[4];
 	unsigned numContacts = 0;
-	double totalPenetration = 0.0;
+	float totalPenetration = 0.0;
 
 	for (uint16_t v = 0; v < 8; v++)
 	{

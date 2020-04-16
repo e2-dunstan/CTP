@@ -4,7 +4,7 @@
 //Will be used for collision response.
 struct RigidBody
 {
-	friend class CollisionResolution2;
+	friend class CollisionResolution;
 
 public:
 	RigidBody() = default;

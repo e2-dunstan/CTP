@@ -102,9 +102,6 @@
     <ClCompile Include="BoundingVolume.cpp">
       <Filter>Source Files\Primitives\Volumes</Filter>
     </ClCompile>
-    <ClCompile Include="CollisionResolution2.cpp">
-      <Filter>Source Files\Physics\Collision</Filter>
-    </ClCompile>
     <ClCompile Include="Quaternion.cpp">
       <Filter>Source Files\Mathe</Filter>
     </ClCompile>
@@ -137,6 +134,9 @@
     </ClCompile>
     <ClCompile Include="RayCamera.cpp">
       <Filter>Source Files\Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="CollisionResolution.cpp">
+      <Filter>Source Files\Physics\Collision</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -172,9 +172,6 @@
     </ClInclude>
     <ClInclude Include="CollisionVolume.h">
       <Filter>Header Files\Primitives\Volumes</Filter>
-    </ClInclude>
-    <ClInclude Include="CollisionResolution2.h">
-      <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
     <ClInclude Include="Quaternion.h">
       <Filter>Header Files\Mathe</Filter>
@@ -214,6 +211,9 @@
     </ClInclude>
     <ClInclude Include="RayCast.h">
       <Filter>Header Files\Utilities</Filter>
+    </ClInclude>
+    <ClInclude Include="CollisionResolution.h">
+      <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

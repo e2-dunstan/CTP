@@ -13,6 +13,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 	plane.rigidbody.isKinematic = true;
 	plane.rigidbody.SetAwake(false);
 	plane.rigidbody.EnableSleep(true);
+	plane.isStatic = true;
 
 	plane.rigidbody.bounciness = 0.0;
 	plane.rigidbody.friction = 1.0;
@@ -22,10 +23,11 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 	plane.translation = translation;
 	plane.UpdateTransform();
 
-	primitives.emplace_back(std::make_unique<Plane>(std::move(plane)));
+	//primitives.emplace_back(std::make_unique<Plane>(std::move(plane)));
+	primitives.push_back(std::make_unique<Plane>(std::move(plane)));
 }
 
-void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation)
+void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic)
 {
 	Box box = Box(ShapeVertices::GetCubeTris(Colours::white));
 	box.collisionVolume.Create(translation, scale);
@@ -37,20 +39,31 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 	box.orientation = Mathe::VectorToQuaternion(rotation);
 	box.UpdateTransform();
 
-	primitives.emplace_back(std::make_unique<Box>(std::move(box)));
+	if (isStatic)
+	{
+		box.isStatic = true;
+		box.rigidbody.isKinematic = true;
+		box.rigidbody.useGravity = false;
+		box.rigidbody.SetAwake(false);
+		box.rigidbody.EnableSleep(true);
+	}
+
+	//primitives.emplace_back(std::make_unique<Box>(std::move(box)));
+	primitives.push_back(std::make_unique<Box>(std::move(box)));
 }
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 6, 6), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 10, 10), radius);
 	sphere.collisionVolume.Create(translation);
-	sphere.rigidbody.bounciness = 0.8f;
+	sphere.rigidbody.bounciness = float((rand() % 4) + 4.0f) / 10.0f;
 
 	sphere.type = PrimitiveType::SPHERE;
 	sphere.translation = translation;
 	sphere.UpdateTransform();
 
-	primitives.emplace_back(std::make_unique<Sphere>(std::move(sphere)));
+	//primitives.emplace_back(std::make_unique<Sphere>(std::move(sphere)));
+	primitives.push_back(std::make_unique<Sphere>(std::move(sphere)));
 }
 
 //void PrimitiveManager::CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation)

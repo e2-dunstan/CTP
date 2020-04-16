@@ -148,7 +148,7 @@ void render()
 {
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) * playbackSpeed / 1000.0;
+	Global::deltaTime = (double)(timeSinceStart - oldTimeSinceStart) * (double)playbackSpeed / 1000.0;
 	oldTimeSinceStart = timeSinceStart;
 
 	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 2 seconds before updating
@@ -166,14 +166,14 @@ void render()
 
 	glLoadIdentity();
 
-	//camera->LookAt();amaz
+	//camera->LookAt();
 	camera->translation();
 	gluLookAt(camera->getX(), camera->getY(), camera->getZ(),
 		camera->getSightX(), camera->getSightY(), camera->getSightZ(),
 		0, 1, 0);
 
 	engine->Render();
-
+	
 	glutSwapBuffers();
 }
 
@@ -187,7 +187,7 @@ void timer(int)
 		//numPhysicsUpdatesPerSecond++;
 	}
 
-	glutTimerFunc(Global::fixedDeltaTime, timer, 0);
+	glutTimerFunc(Global::deltaTime, timer, 0);
 }
 
 //displays number of update calls per frame

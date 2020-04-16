@@ -12,10 +12,10 @@ class Primitive
 {
 public:
 	Primitive() = default;
-	virtual ~Primitive() = default;
+	~Primitive() = default;
 
 	PrimitiveType type = PrimitiveType::BOX;
-	GLenum drawType = GL_TRIANGLES;
+	const GLenum drawType = GL_TRIANGLES;
 
 	virtual void Start() = 0;
 	void Update();
@@ -54,6 +54,8 @@ public:
 
 	bool initialised = false;
 
+	bool isStatic = false;
+
 protected:
 	Vector3 previousPosition = Vector3();
 	bool debugCollision = false;
@@ -65,9 +67,10 @@ protected:
 class Box : public Primitive
 {
 public:
-	Box() = default;
+	Box() { tris.reserve(12); };
 	Box(std::vector<Tri> t)
 	{ 
+		tris.reserve(12);
 		tris = t;
 		//collisionVolume = std::make_unique<BoxCV>(boxCollisionVolume);
 		initialised = true;
@@ -127,7 +130,7 @@ public:
 	~Plane() = default;
 
 
-	void Start() override { drawType = GL_TRIANGLES; }
+	void Start() override {};
 	void CalculateInertiaTensor() override {}
 	void UpdateTransform() override;
 

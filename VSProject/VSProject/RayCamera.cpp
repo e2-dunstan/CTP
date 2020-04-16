@@ -4,15 +4,15 @@
 
 RayCamera::RayCamera()
 {
-	//Will probably be a lot more tris later on
-	triPrimitives.reserve(100);
+	//Will probably be a lot more primitives later on
+	triPrimitives.reserve(200);
 }
 
 void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4* trans)
 {
 	triPrimitives.push_back(RayCameraPrimitive(tris, trans));
 
-	if (triPrimitives.size() > 100)
+	if (triPrimitives.size() > 200)
 		std::cout << "WARNING: Tri vector reserve hit in RayCamera" << std::endl;
 }
 

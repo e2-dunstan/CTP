@@ -1,6 +1,6 @@
 #pragma once
 #include "CollisionData.h"
-//#include "Primitive.h"
+#include <fstream>
 
 class CollisionResolution
 {
@@ -8,24 +8,22 @@ public:
 	CollisionResolution() = default;
 	~CollisionResolution() = default;
 
-	void ResolveInterpenetration(const Contact& contact);
-	void ResolveCollision(const Contact& contact);
+	void PenetrationResolution(std::vector<Contact>& contacts);
+	void VelocityResolution(std::vector<Contact>& contacts);
+
+	void SortContactsByPenetration(std::vector<Contact>& contacts);
+	void SortContactsByVelocityMag(std::vector<Contact>& contacts);
 
 private:
-	Matrix CalculateContactBasis(const Contact& contact);
-	float CalculateChangeInVelocity(const Contact& contact);
-	Vector3 CalculateClosingVelocity(const Primitive& prim);
-	float CalculateDesiredChangeInVelocity(const Contact& contact, const Vector3& contactVel);
-	Vector3 CalculateFrictionlessImpulse(const Contact& contact);
-	Vector3 CalculateFrictionImpulse(const Contact& contact);
-	void CalculateVelocityChangesFromImpulse(const Contact& contact, Vector3 impulse);
 
-	void ApplyAngularMoveLimit(float& linear, float& angular, const float objMag);
+	unsigned int numContacts = 0;
+	const unsigned int penetrationIterations = 10;
+	const unsigned int velocityIterations = 1;
 
-	//Transforms
-	Matrix contactToWorld = Matrix();
-	Matrix worldToContact = Matrix();
+	void AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign);
 
-	Vector3 relContactPos1 = Vector3();
-	Vector3 relContactPos2 = Vector3();
+	void CreateCSVFile();
+	void WriteToFile(float value, unsigned int obj, unsigned int iter);
+
+	std::ofstream file;
 };

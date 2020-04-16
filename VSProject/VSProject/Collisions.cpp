@@ -40,17 +40,19 @@ void Collisions::Resolution()
 
 	for (unsigned i = 0; i < data->contacts.size(); i++)
 	{
-		contactDisplays[i].origin = data->contacts[i].point;
-		contactDisplays[i].normal = data->contacts[i].normal;
+		if (data->contacts[i].body2->type != PrimitiveType::PLANE)
+		{
+			contactDisplays[i].origin = data->contacts[i].point;
+			contactDisplays[i].normal = data->contacts[i].normal;
+		}
 
 		data->contacts[i].PrepareResolution();
 	}
-	//resolution3->Update(data->contacts);
 
-	data->SortContactsByPenetration();
-	resolution2->PenetrationResolution(data->contacts);
-	data->SortContactsByVelocityMag();
-	resolution2->VelocityResolution(data->contacts);
+	//data->SortContactsByPenetration();
+	resolution->PenetrationResolution(data->contacts);
+	resolution->SortContactsByVelocityMag(data->contacts);
+	resolution->VelocityResolution(data->contacts);
 
 	data->contacts.clear();
 }
@@ -62,8 +64,6 @@ void Collisions::DrawContacts()
 	for (unsigned i = 0; i < 30; i++)
 	{
 		if (contactDisplays[i].origin == Vector3()) continue;
-
-		//glLoadIdentity();
 
 		glBegin(GL_LINES);
 
@@ -83,5 +83,4 @@ void Collisions::DrawContacts()
 
 		glFlush();
 	}
-	
 }

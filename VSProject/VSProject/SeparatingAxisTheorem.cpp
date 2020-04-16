@@ -4,6 +4,8 @@
 
 void SAT::Test(Primitive* _box1, Primitive* _box2)
 {
+	if (_box1->isStatic && _box2->isStatic) return;
+
 	Box* box1 = dynamic_cast<Box*>(_box1);
 	Box* box2 = dynamic_cast<Box*>(_box2);
 
@@ -122,9 +124,14 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 
 		//GENERATE CONTACT
 		Contact contact(box1, box2);
-		contact.penetrationDepth = smallestPenetration;
 		contact.normal = normal.Normalise();
+		if (box1->isStatic)
+		{
+			contact = Contact(box2, box1);
+			contact.normal = normal.Normalise().Inverse();
+		}
 		contact.point = vertex;
+		contact.penetrationDepth = smallestPenetration;
 		contacts.push_back(contact);
 		return;
 	}
@@ -176,8 +183,13 @@ void SAT::PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre
 		point.z = -point.z;
 
 	Contact contact(box1, box2);
-	contact.point = point;
 	contact.normal = normal;
+	if (box1->isStatic)
+	{
+		contact = Contact(box2, box1);
+		contact.normal = normal.Normalise().Inverse();
+	}
+	contact.point = point;
 	contact.penetrationDepth = penetration;
 	contacts.push_back(contact);
 }
@@ -203,6 +215,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	//--------
 	referencePlane.normal = normal;
 	Mathe::TransformTranspose(referencePlane.normal, referencePlane.matrix);
+	referencePlane.normal = referencePlane.normal.Normalise();
 
 	//--------
 	//check for box2 normal most parallel (scalar product = 1) to the normal
@@ -222,22 +235,24 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	}
 
 	//--------
-	//Transform for the incident plane - CHECK THIS
-	//--------
-	incidentPlane.matrix = box2->collisionVolume.axisMat;
-	Vector3 incidentPlaneOffset = box2->collisionVolume.halfSize * incidentPlane.normal;
-	Mathe::Translate(incidentPlane.matrix, incidentPlaneOffset.x, incidentPlaneOffset.y, incidentPlaneOffset.z);
-
-	//--------
 	//store incident plane normal with respect to box 2
 	//--------
 	Vector3 localIncidentPlaneNormal = incidentPlane.normal;
 	Mathe::TransformTranspose(localIncidentPlaneNormal, box2->collisionVolume.axisMat);
+	localIncidentPlaneNormal = localIncidentPlaneNormal.Normalise();
+
+	//--------
+	//Transform for the incident plane - CHECK THIS
+	//--------
+	incidentPlane.matrix = box2->collisionVolume.axisMat;
+	Vector3 incidentPlaneOffset = box2->collisionVolume.halfSize * localIncidentPlaneNormal;
+	Mathe::Translate(incidentPlane.matrix, incidentPlaneOffset.x, incidentPlaneOffset.y, incidentPlaneOffset.z);
 
 	//--------
 	//transform the incident normal into ref plane space
 	//--------
 	Mathe::TransformTranspose(incidentPlane.normal, referencePlane.matrix);
+	incidentPlane.normal = incidentPlane.normal.Normalise();
 
 	//--------
 	//get the vertices of both planes
@@ -277,6 +292,11 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 
 			Contact contact(box1, box2);
 			contact.normal = normal;
+			if (box1->isStatic)
+			{
+				contact = Contact(box2, box1);
+				contact.normal = normal.Normalise().Inverse();
+			}
 			contact.penetrationDepth = positionOnPlane;
 			contact.point = clippedVertices[v];
 			contacts.push_back(contact);
@@ -647,9 +667,9 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 
 void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
 {
-	const unsigned numEdges = sizeof(clippingVertices);
-	const unsigned polyVertSize = sizeof(polyVertices);
-	unsigned numVertices = polyVertSize;
+	const unsigned int numEdges = sizeof(clippingVertices);
+	const unsigned int polyVertSize = sizeof(polyVertices);
+	unsigned int numVertices = polyVertSize;
 	const float epsilon = 0.01f;
 
 	unsigned axes[2] = { 0, 0 };
@@ -763,7 +783,7 @@ bool SAT::InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, dou
 {
 	double one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
 	double two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
-	return (one - two) < 0.01f;
+	return (one - two) < 0.00001f;
 
 	//return (edgeMaxX - edgeMinX) * (py - edgeMinY) - (edgeMaxY - edgeMinY) * (px - edgeMinX) < 0;
 }

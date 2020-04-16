@@ -2,16 +2,16 @@
 
 void Box::Start()
 {
-	drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 10.0);
+	//drawType = GL_TRIANGLES;
+	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 2.0);
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
 
 void Sphere::Start()
 {
-	drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / (radius * 100.0);
+	//drawType = GL_TRIANGLES;
+	rigidbody.inverseMass = 1.0f / radius;
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
@@ -70,7 +70,7 @@ void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 
 void Primitive::DrawForTris(std::vector<Tri> tris)
 {
-	glBegin(drawType);
+	glBegin(GL_TRIANGLES);
 
 	Vector3 position;
 	for (uint16_t v = 0; v < tris.size(); v++)
@@ -291,12 +291,12 @@ void Box::UpdateTransform()
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
-	if (timeSinceOutput > 0.5f)
-	{
+	//if (timeSinceOutput > 0.5f)
+	//{
 		//orientation.DebugOutput();
-		timeSinceOutput = 0;
-	}
-	else timeSinceOutput += Global::deltaTime;
+	//	timeSinceOutput = 0;
+	//}
+	//else timeSinceOutput += Global::deltaTime;
 
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
