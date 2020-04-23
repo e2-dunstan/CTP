@@ -2,24 +2,30 @@
 
 void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 {
+	const float penetrationEpsilon = 0.00001f;
 	numContacts = contacts.size();
 
 	if (Global::writeContactDataToFile) CreateCSVFile();
 
 	bool iterationsComplete = false;
 
-	for (unsigned iter = 0; iter < penetrationIterations; iter++)
+	for (unsigned iter = 0; iter < maxPenetrationIterations; iter++)
 	{
-		if (iterationsComplete) break; //early out
+		if (iterationsComplete)
+		{
+			//std::cout << "Penetration iterations finished early " << iter << std::endl;
+			break; //early out
+		}
 		iterationsComplete = true;
 
-		SortContactsByPenetration(contacts);
+		//This is good but expensive
+		//SortContactsByPenetration(contacts);
 
 		for (unsigned int i = 0; i < numContacts; i++)
 		{
 			unsigned contactIndex = i;
 
-			if (abs(contacts[contactIndex].penetrationDepth) < 0.00001f) continue;
+			if (contacts[contactIndex].IsPenetrationResolved(penetrationEpsilon)) continue;
 			else iterationsComplete = false;
 
 			if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, i / numContacts);
@@ -73,49 +79,65 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 
 void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 {
+	const float velocityEpsilon = 0.01f;
 	numContacts = contacts.size();
 
-	for (unsigned i = 0; i < numContacts * velocityIterations; i++)
+	bool iterationsComplete = false;
+
+	for (unsigned int iter = 0; iter < maxVelocityIterations; iter++)
 	{
-		unsigned contactIndex = i % numContacts;
-
-		contacts[contactIndex].ResolveVelocity();
-
-		//Match RB awake states
-		if (!contacts[contactIndex].body1->isStatic && !contacts[contactIndex].body2->isStatic
-			&& contacts[contactIndex].body1->rigidbody.GetMotion() > contacts[contactIndex].body1->rigidbody.sleepThreshold
-			&& contacts[contactIndex].body2->rigidbody.GetMotion() > contacts[contactIndex].body2->rigidbody.sleepThreshold)
+		if (iterationsComplete)
 		{
-			contacts[contactIndex].MatchRigidbodyAwakeStates();
+			//std::cout << "Velocity iterations finished early " << iter << std::endl;
+			break; //early out
 		}
-
-		//Note to self: the signs are correct! Don't touch them!
+		iterationsComplete = true;
 
 		for (unsigned i = 0; i < numContacts; i++)
 		{
-			if (!contacts[i].body1->isStatic)
+			unsigned contactIndex = i;
+
+			if (contacts[contactIndex].IsVelocityResolved(velocityEpsilon)) continue;
+			else iterationsComplete = false;
+
+			contacts[contactIndex].ResolveVelocity();
+
+			//Match RB awake states
+			if (!contacts[contactIndex].body1->isStatic && !contacts[contactIndex].body2->isStatic
+				&& contacts[contactIndex].body1->rigidbody.GetMotion() > contacts[contactIndex].body1->rigidbody.sleepThreshold
+				&& contacts[contactIndex].body2->rigidbody.GetMotion() > contacts[contactIndex].body2->rigidbody.sleepThreshold)
 			{
-				if (contacts[i].body1 == contacts[contactIndex].body1)
+				contacts[contactIndex].MatchRigidbodyAwakeStates();
+			}
+
+			//Note to self: the signs are correct! Don't touch them!
+
+			for (unsigned i = 0; i < numContacts; i++)
+			{
+				if (!contacts[i].body1->isStatic)
 				{
-					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos1, true);
+					if (contacts[i].body1 == contacts[contactIndex].body1)
+					{
+						AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos1, true);
+					}
+					if (contacts[i].body1 == contacts[contactIndex].body2)
+					{
+						AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos1, true);
+					}
 				}
-				if (contacts[i].body1 == contacts[contactIndex].body2)
+				if (!contacts[i].body2->isStatic)
 				{
-					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos1, true);
+					if (contacts[i].body2 == contacts[contactIndex].body1)
+					{
+						AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos2, false);
+					}
+					if (contacts[i].body2 == contacts[contactIndex].body2)
+					{
+						AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos2, false);
+					}
 				}
 			}
-			if (!contacts[i].body2->isStatic)
-			{
-				if (contacts[i].body2 == contacts[contactIndex].body1)
-				{
-					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 0, contacts[i].relContactPos2, false);
-				}
-				if (contacts[i].body2 == contacts[contactIndex].body2)
-				{
-					AdjustDeltaVelocity(contacts[contactIndex], contacts[i], 1, contacts[i].relContactPos2, false);
-				}
-			}
-		}		
+		}
 	}
 }
 

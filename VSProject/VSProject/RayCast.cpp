@@ -249,3 +249,12 @@ void Ray::Draw(const Colour& colour)
 
 	glEnd();
 }
+
+void Ray::DebugOutput()
+{
+	std::string str = "Ray origin: (" + 
+		std::to_string(origin.x) + ", " + std::to_string(origin.y) + ", " + std::to_string(origin.z) + ") "
+		+ "direction: " + 
+		std::to_string(direction.x) + ", " + std::to_string(direction.y) + ", " + std::to_string(direction.z) + ") ";
+	std::cout << str << std::endl;
+}

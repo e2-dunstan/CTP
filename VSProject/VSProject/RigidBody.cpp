@@ -15,18 +15,27 @@ bool RigidBody::PhysicsUpdate()
 		return false;
 	}
 	
+	acceleration = Global::gravity;
+	acceleration += forceAccumulation * inverseMass;
+	angularAcceleration = torqueAccumulation;
+	Mathe::Transform(angularAcceleration, inverseInertiaTensorWorld);
+
 	prevVelocity = velocity;
-	velocity += Global::gravity * Global::deltaTime;
+	velocity += acceleration * Global::deltaTime;
+	angularVelocity += angularAcceleration * Global::deltaTime;
 
 	//Clamp velocities
 	velocity = velocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
-	angularVelocity = angularVelocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
+	//angularVelocity = angularVelocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
 
 	//Drag
 	if (linearDrag != 0)
 		velocity *= 1.0f - linearDrag * Global::deltaTime;
 	if (angularDrag != 0)
 		angularVelocity *= 1.0f - angularDrag * Global::deltaTime;
+
+	forceAccumulation = Vector3();
+	torqueAccumulation = Vector3();
 
 	return true;
 
@@ -87,10 +96,17 @@ void RigidBody::AddVelocityChange(const Vector3& velChange)
 	velocity += velChange;
 }
 
-void RigidBody::AddRotationChange(const Vector3& rotChange)
+void RigidBody::AddRotationChange(const Vector3& rotChange, bool convertToRadians)
 {
 	if (Mathe::IsVectorNAN(rotChange)) return;
-	angularVelocity += rotChange;
+
+	if (convertToRadians)
+		angularVelocity += Vector3(
+			Mathe::ToRadians(rotChange.x),
+			Mathe::ToRadians(rotChange.y),
+			Mathe::ToRadians(rotChange.z)
+		);
+	else angularVelocity += rotChange;
 }
 
 void RigidBody::SetTerminalSpeed()

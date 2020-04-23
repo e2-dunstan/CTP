@@ -123,9 +123,9 @@ std::vector<Tri> ShapeVertices::GetPlaneTris(const Colour& _colour)
 	tris.reserve(2);
 
 	tris.push_back(Tri(Vector3(-1.0, 0.0, -1.0), Vector3(-1.0, 0.0, 1.0), Vector3(1.0, 0.0, 1.0),
-						Vector3(0, 1, 0), Colour(0.486f, 0.988f, 0.0f)));
+						Vector3(0, 1, 0), _colour));
 	tris.push_back(Tri(Vector3(1.0, 0.0, 1.0), Vector3(1.0, 0.0, -1.0), Vector3(-1.0, 0.0, -1.0),
-						Vector3(0, 1, 0), Colour(0.486f, 0.988f, 0.0f)));
+						Vector3(0, 1, 0), _colour));
 
 	return tris;
 }

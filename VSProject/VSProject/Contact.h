@@ -4,7 +4,6 @@
 
 class Collisions;
 class CollisionResolution;
-class CollisionResolution3;
 
 enum class BounceCombineType
 {
@@ -38,13 +37,18 @@ public:
 	Primitive* body2;
 
 	float restitution = 0.0f;
-	float friction = 0.0f;
+	float friction_static = 0.0f;
+	float friction_dynamic = 0.0f;
 
 
 protected:
 
-	void ResolvePenetration();
+	//void Resolve();
 
+	bool IsPenetrationResolved(float epsilon) { return abs(penetrationDepth) < epsilon; }
+	bool IsVelocityResolved(float epsilon) { return abs(desiredDeltaVelocity) < epsilon; }
+
+	void ResolvePenetration();
 	void ResolveVelocity();
 
 	void PrepareResolution();
@@ -56,8 +60,6 @@ protected:
 
 	void MatchRigidbodyAwakeStates();
 
-	Matrix3 worldToContact = Matrix3();
-
 	Vector3 closingVelocity = Vector3();
 
 	Vector3 relContactPos1 = Vector3();
@@ -68,6 +70,11 @@ protected:
 
 	Vector3 velocityChange[2] = { Vector3(), Vector3() };
 	Vector3 rotationChange[2] = { Vector3(), Vector3() };
+
+	Matrix3 worldToContact = Matrix3();
+
+	unsigned int iterations = 0;
+	const unsigned int maximumIterations = 30;
 
 private:
 	void CalculateContactBasisMatrices();

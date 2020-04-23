@@ -523,9 +523,9 @@ Matrix4 Matrix4::operator*(Matrix4& m)
 	else
 	{
 		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
-		for (uint16_t r = 0; r < rowSize; r++)
+		for (uint16_t r = 0; r < 4; r++)
 		{
-			for (uint16_t c = 0; c < m.colSize; c++)
+			for (uint16_t c = 0; c < 4; c++)
 			{
 				if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
 				else multiplied[(r * m.colSize) + c] = 0.0;

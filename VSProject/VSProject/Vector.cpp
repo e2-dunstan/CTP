@@ -196,7 +196,7 @@ bool Vector3::operator!=(const Vector3& vec)
 
 bool Vector3::IsRoughlyEqualTo(const Vector3& vec)
 {
-	const double threshold = 0.01f;
+	const double threshold = 0.001f;
 	if (abs(x - vec.x) < threshold
 		&& abs(y - vec.y) < threshold
 		&& abs(z - vec.z) < threshold)

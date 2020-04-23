@@ -1,8 +1,11 @@
 #include "CollisionFine.h"
 #include "Primitive.h"
 
-void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
+void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vector<Contact>& _contacts)
 {
+	contacts = _contacts;
+
+
 	if (prim1->isStatic && prim2->isStatic) return;
 
 	if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::SPHERE)

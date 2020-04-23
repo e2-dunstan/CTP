@@ -7,7 +7,7 @@ using namespace Shapes;
 
 void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation)
 {
-	Plane plane = Plane(ShapeVertices::GetPlaneTris());
+	Plane plane = Plane(ShapeVertices::GetPlaneTris(Colours::offWhite));
 	plane.collisionVolume.Create(translation, Vector3(0, 1, 0));
 	plane.rigidbody.useGravity = false;
 	plane.rigidbody.isKinematic = true;
@@ -16,7 +16,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 	plane.isStatic = true;
 
 	plane.rigidbody.bounciness = 0.0;
-	plane.rigidbody.friction = 1.0;
+	plane.rigidbody.material = Material::CONCRETE;
 
 	plane.type = PrimitiveType::PLANE;
 	plane.scale = scale;
@@ -29,9 +29,9 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 
 void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic)
 {
-	Box box = Box(ShapeVertices::GetCubeTris(Colour(0.95, 0.95, 0.95)));
+	Box box = Box(ShapeVertices::GetCubeTris(Colours::red));
 	box.collisionVolume.Create(translation, scale);
-	box.rigidbody.bounciness = 0.01f;
+	box.rigidbody.bounciness = 0.1f;
 
 	box.type = PrimitiveType::BOX;
 	box.scale = scale;
@@ -54,9 +54,9 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::green, 10, 10), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, Colours::offWhite, 10, 10), radius);
 	sphere.collisionVolume.Create(translation);
-	sphere.rigidbody.bounciness = float((rand() % 4) + 4.0f) / 10.0f;
+	sphere.rigidbody.bounciness = 0.8f;
 
 	sphere.type = PrimitiveType::SPHERE;
 	sphere.translation = translation;

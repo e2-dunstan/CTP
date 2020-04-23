@@ -1,4 +1,3 @@
-#include <SFML/Graphics.hpp>
 #include "RayCamera.h"
 #include <fstream>
 
@@ -6,13 +5,6 @@ RayCamera::RayCamera()
 {
 	//Will probably be a lot more primitives later on
 	triPrimitives.reserve(200);
-
-	//Set Z up matrices
-	Quaternion rotation = Mathe::VectorToQuaternion(Vector3(0, 90, 0));
-	Z_up.Identity();
-	Mathe::Rotate(Z_up, rotation);
-	Z_up_inverse = Z_up;
-	Z_up_inverse.Inverse();
 }
 
 void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4* trans)
@@ -26,14 +18,14 @@ void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4* trans)
 void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height)
 {	
 	const unsigned int arrSize = width * height * 3;
-	unsigned char* pixels = new unsigned char[arrSize];
+	sf::Uint8* pixels = new sf::Uint8[arrSize];
+	Vector3* pixelsVec = new Vector3[width * height];
 	if (store)
 	{
 		std::cout << "Initialising pixel array...";
-		for (unsigned int i = 0; i < arrSize; i++)
-		{
-			pixels[i] = (unsigned char)(0);
-		}
+
+		memset(pixelsVec, 0, width * height * sizeof(Vector3));
+		memset(pixels, 0, width * height * 3 * sizeof(sf::Uint8)); //sizeof return 1
 		std::cout << " done." << std::endl;
 	}
 	unsigned int pixelIndex = 0;
@@ -46,61 +38,47 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
+	unsigned int samples = 1;
+	Vector3 newColour = Vector3();
 	for (unsigned int col = 0; col < width; col++)
 	{
 		if (col % 10 == 0)
-			std::cerr << "Progress... " << 100 * col / width << "%" << ", pixel index: " << pixelIndex << "/" << arrSize << std::endl;
+			std::cerr << "Progress... " << 100 * col / width << "%" << " Latest colour: " << 
+			(int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z <<std::endl;
 
 		for (unsigned int row = 0; row < height; row++)
 		{
 			ray = GetRayAt(col, row, width, height, cPosTemp);
+			int actualIndex = row * width + col;
 
-			Vector3 pathThroughput = Vector3(1, 1, 1);
-			unsigned int samples = 1;
-			Vector3 newColour = Vector3();
+			for (unsigned int s = 0; s < samples; s++)
+			{
+				Vector3 pathThroughput = Vector3(1, 1, 1);
+				newColour = Vector3();
 
-			newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, newColour, samples);
+				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
 
-			//newColour.DebugOutput();
+				//if (newColour.x > 1.0 || newColour.y > 1.0 || newColour.z > 1.0)
+				//	newColour = Vector3(1, 1, 1);
+
+				pixelsVec[actualIndex] += newColour;
+			}
 
 			newColour = Vector3(
-				powf(std::min((float)newColour.x / (float)samples, 1.0f), 1.0f / 2.2f),
-				powf(std::min((float)newColour.y / (float)samples, 1.0f), 1.0f / 2.2f),
-				powf(std::min((float)newColour.z / (float)samples, 1.0f), 1.0f / 2.2f)
-				);
+				powf(std::min(pixelsVec[actualIndex].x / (double)samples, 1.0), 1.0 / 2.2),
+				powf(std::min(pixelsVec[actualIndex].y / (double)samples, 1.0), 1.0 / 2.2),
+				powf(std::min(pixelsVec[actualIndex].z / (double)samples, 1.0), 1.0 / 2.2)
+			);
+			newColour *= 255.0;// Global::skyColour * 255.0;
 
-			//if (Mathe::IsVectorNAN(newColour) || newColour.x > 1 || newColour.y > 1 || newColour.z > 1)
+			//if (Mathe::IsVectorNAN(newColour) || newColour.SumComponents() < 0.0)
 			//	std::cout << std::endl;
-
-			/*
-			closestDistance = 1000.0f;
-
-			for (unsigned int p = 0; p < triPrimitives.size(); p++)
-			{
-				for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
-				{
-					if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray)
-						&& ray.intersection1 < closestDistance)
-					{
-						closestDistance = ray.intersection1;
-						closestTriangle = &triPrimitives[p].tris[t];
-
-						newColour = triPrimitives[p].tris[t].normal;
-						Matrix3 normalTransform = triPrimitives[p].transform.ToMatrix3();
-						Mathe::Transform(newColour, normalTransform);
-						newColour.Normalise();
-						triPrimitives[p].tris[t].colour = newColour;
-						
-
-					}
-				}
-			}*/
 			
 			if (store)
 			{
-				pixels[pixelIndex++] = (unsigned char)(newColour.x * 255);
-				pixels[pixelIndex++] = (unsigned char)(newColour.y * 255);
-				pixels[pixelIndex++] = (unsigned char)(newColour.z * 255);
+				pixels[pixelIndex++] = (sf::Uint8)(newColour.x);
+				pixels[pixelIndex++] = (sf::Uint8)(newColour.y);
+				pixels[pixelIndex++] = (sf::Uint8)(newColour.z);
 			}
 		}
 	}
@@ -165,9 +143,9 @@ void RayCamera::SetModelViewMatrix()
 	modelViewMatrix = Matrix4(matrix);
 }
 
-Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, Vector3& finalColour_pixel, unsigned int& samples)
+Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, unsigned int pathLength)
 {
-	Matrix4* mat = nullptr;
+	Matrix4 mat;
 	Tri* closestTriangle = nullptr;
 	float closestDistance = 1000.0f;
 
@@ -177,50 +155,65 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 		for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
 		{
 			if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray)
-				&& ray.intersection1 < closestDistance)
+				&& ray.intersection1 < closestDistance && ray.intersection1 != -1)
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
 				closestDistance = ray.intersection1;
-				mat = &triPrimitives[p].transform;
+				mat = triPrimitives[p].transform;
 			}
 		}
 	}
 
-	Vector3 mult = Global::skyColour;
-	if (closestTriangle != nullptr)
+	if (closestTriangle == nullptr)
 	{
-		for (unsigned int i = 0; i < 2; i++)
-		{
-			samples++;
-
-			Vector3 randHemisphere = RandomInHemisphere(RandomFloat(0, 1), RandomFloat(0, 1));
-			Mathe::Transform(randHemisphere, Z_up_inverse);
-
-			Vector3 n = closestTriangle->normal;
-			Matrix3 normalTransform = mat->ToMatrix3();
-			Mathe::Transform(n, normalTransform);
-			n = n.Normalise();
-
-			randHemisphere += n;
-			randHemisphere = randHemisphere.Normalise();
-
-			Vector3 col = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b);
-
-			pathThroughput *= (col / Mathe::PI) * abs(n.ScalarProduct(randHemisphere)) / (1.0f / (2.0f * Mathe::PI));
-
-			mult = ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), finalColour_pixel, samples);
-
-			finalColour_pixel += pathThroughput * mult;
-		}
+		return pathThroughput * Global::skyColour;
 	}
 	else
-		finalColour_pixel += pathThroughput * mult;
-	//if (finalColour_pixel != Vector3()) finalColour_pixel.DebugOutput();
+	{
+		//Local space
+		Vector3 n = closestTriangle->normal;
+		//World space
+		Mathe::Transform(n, mat);
+		n = n.Normalise();
 
-	return finalColour_pixel;
+		Vector3 temp(1, 0, 0);
+		if (n.ScalarProduct(temp) > 0.0001f) temp = Vector3(0, 1, 0);
+		//Vector product ensures it's the same space as the normal
+		Vector3 u = n.VectorProduct(temp).Normalise();
+		Vector3 v = n.VectorProduct(u).Normalise();
+
+		//if (u.SumComponents() < 0) u *= -1.0;
+		//if (v.SumComponents() < 0) v *= -1.0;
+
+		//matrix where z is the normal
+		double matVals[9] =
+		{
+			u.x, v.x, n.x,
+			u.y, v.y, n.y,
+			u.z, v.z, n.z
+		};
+		Matrix3 normalMat = Matrix3(matVals);
+
+		//Z up space
+		Vector3 randHemisphere = RandomInHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f));
+		//World space
+		Mathe::Transform(randHemisphere, normalMat);
+		randHemisphere = randHemisphere.Normalise();
+
+		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / Mathe::PI;
+		Vector3 incoming = ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength++);
+		float cosTheta = n.ScalarProduct(randHemisphere);
+		float p = 1.0f / (2.0f * Mathe::PI);
+
+		//return BRDF * incoming * cosTheta / p;
+
+		pathThroughput *= BRDF * cosTheta / p;
+
+		return ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength + 1);
+	}
 }
 
-void RayCamera::SavePixelsToFile(const unsigned char* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height)
+void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height)
 {
 	std::cout << "Saving pixel buffer to file... ";
 	//sf::RenderWindow window(sf::VideoMode(width, height), "SFML");

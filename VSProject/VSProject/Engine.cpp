@@ -9,27 +9,23 @@ void Engine::Init()
 	individualObjectInitialised.push_back(false);
 
 	//primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2),	Vector3(-5, 5, 8),	Vector3(0, 0, 0));
-	primitiveManager->CreateBox(Vector3(1.2, 1.2, 1.2), Vector3(0, 3, 8),	Vector3(90, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(0, 3, 8),	Vector3(0, 0, 0));
 	//primitiveManager->CreateBox(Vector3(1, 1, 1),		Vector3(0, 6, 8),	Vector3(90, 0, 0));
 
-	primitiveCount += 2;
+	primitiveCount += 1;
 
 	//primitiveManager->CreateSphere(2, Vector3(0, 10, 8));
-	//primitiveManager->CreateCapsule(2, 4, Vector3(12, 5, 3), Vector3(90, 0, 0));
-	//primitiveManager->CreateCylinder(2, 5, Vector3(5, 15, 5), Vector3(0, 0, 0));
-	//primitiveManager->CreateSphere(2, Vector3(10, 50, -10));
-	individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
-
-	//scenes->SpawnDominoes(4, Vector3(1, 2.0, 0.2), 2.0f);
+	//individualObjectInitialised.push_back(false);
 
 	srand(time(NULL));
 
-	//scenes.Stacks();
-	//SpheresInBox();
+	//Stacks();
+	//SpawnDominoes(4, Vector3(1, 2.0, 0.2), 2.0f);
+	SpheresInBox();
 }
 
 void Engine::Update()
@@ -97,9 +93,9 @@ void Engine::UpdateTrisForRayCamera()
 
 void Engine::ThrowSphere()
 {
-	//primitiveManager->CreateSphere(0.5, Vector3(0, 2, -5));
-	primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(0, 0, 0));
-	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(0, 0, 15);
+	primitiveManager->CreateSphere(0.5, Vector3(0, 3.5, -5));
+	//primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(0, 0, 0));
+	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(0, 0, 10);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;
@@ -109,10 +105,10 @@ void Engine::ThrowSphere()
 void Engine::Stacks()
 {
 	SpawnStack(Vector3(0, 0, 8), 3, Vector3(1, 1, 1), 0.2f);
-	SpawnStack(Vector3(0, 0, -8), 2, Vector3(1, 1, 1), 0.2f);
+	SpawnStack(Vector3(0, 0, -5), 2, Vector3(1, 1, 1), 0.2f);
 	SpawnStack(Vector3(8, 0, 0), 5, Vector3(1, 1, 1), 0.2f);
 	SpawnStack(Vector3(-8, 0, 0), 4, Vector3(1, 1, 1), 0.2f);
-	SpawnStack(Vector3(0, 0, 0), 8, Vector3(1, 1, 1), 0.2f);
+	//SpawnStack(Vector3(0, 0, 0), 8, Vector3(1, 1, 1), 0.2f);
 }
 
 void Engine::SpheresInBox()
@@ -200,8 +196,7 @@ void Engine::SpawnStack(const Vector3& origin, const unsigned int count, const V
 	for (unsigned int i = 0; i < count; i++)
 	{
 		float r = ((rand() % (int)(sizeVariance * 20.0f)) / 10.0f) - sizeVariance + 1.0f;
-		std::cout << r << std::endl;
-		primitiveManager->CreateBox(size * (float)r, pos, Vector3(0, i * 0.0f, 0));
+		primitiveManager->CreateBox(size * (float)r, pos, Vector3(0, i * 45.0f, 0));
 		pos += Vector3(0, size.y * 2.0 + sizeVariance * 2.0f, 0);
 
 		individualObjectInitialised.push_back(false);

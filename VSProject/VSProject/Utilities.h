@@ -64,9 +64,11 @@ struct Tri
 namespace Colours
 {
 	const Colour white = Colour(1.0, 1.0, 1.0);
+	const Colour offWhite = Colour(0.95, 0.95, 0.95);
 	const Colour black = Colour(0.0, 0.0, 0.0);
 	const Colour red = Colour(1.0, 0.0, 0.0);
 	const Colour green = Colour(0.0, 1.0, 0.0);
+	const Colour grass = Colour(0.486, 0.988, 0.01);
 	const Colour blue = Colour(0.0, 0.0, 1.0);
 	const Colour yellow = Colour(1.0, 1.0, 0.0);
 	const Colour cyan = Colour(0.0, 1.0, 1.0);

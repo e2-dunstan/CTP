@@ -29,7 +29,7 @@ void Collisions::DetectFine()
 			//	sat->Test(potentialContacts[i].prim2, potentialContacts[i].prim1);
 		}
 		else
-			fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2);
+			fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2, data->contacts);
 	}
 	potentialContacts.clear();
 }
@@ -40,7 +40,7 @@ void Collisions::Resolution()
 
 	for (unsigned i = 0; i < data->contacts.size(); i++)
 	{
-		if (data->contacts[i].body2->type != PrimitiveType::PLANE)
+		if (!data->contacts[i].body1->isStatic && !data->contacts[i].body2->isStatic)
 		{
 			contactDisplays[i].origin = data->contacts[i].point;
 			contactDisplays[i].normal = data->contacts[i].normal;
@@ -49,17 +49,31 @@ void Collisions::Resolution()
 		data->contacts[i].PrepareResolution();
 	}
 
-	//data->SortContactsByPenetration();
-	resolution->PenetrationResolution(data->contacts);
-	resolution->SortContactsByVelocityMag(data->contacts);
-	resolution->VelocityResolution(data->contacts);
+	//data->BatchContacts();
 
+	//for (unsigned int i = 0; i < data->batchedContacts.size(); i++)
+	//{
+		resolution->SortContactsByPenetration(data->contacts);
+		resolution->PenetrationResolution(data->contacts);
+		resolution->SortContactsByVelocityMag(data->contacts);
+		resolution->VelocityResolution(data->contacts);
+	//}
+
+	//data->batchedContacts.clear();
+	//for (unsigned i = 0; i < data->contacts.size();)
+	//{
+	//	if (data->contacts[i].IsPenetrationResolved(0.0001f) && data->contacts[i].IsVelocityResolved(0.001f))
+	//	{
+	//		data->contacts.erase(data->contacts.begin() + i);
+	//	}
+	//	else i++;
+	//}
 	data->contacts.clear();
 }
 
 void Collisions::DrawContacts()
 {
-	//if (data->contacts.size() <= 0) return;
+	if (data->contacts.size() <= 0) return;
 
 	for (unsigned i = 0; i < 30; i++)
 	{

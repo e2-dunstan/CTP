@@ -1,5 +1,6 @@
 #pragma once
 #include "CollisionVolume.h"
+#include "Material.h"
 
 //Will be used for collision response.
 struct RigidBody
@@ -13,13 +14,16 @@ public:
 	Vector3 velocity = Vector3();
 	Vector3 angularVelocity = Vector3();
 
-	//Vector3 forceAccumulation = Vector3();
-	//Vector3 torqueAccumulation = Vector3();
+	Vector3 forceAccumulation = Vector3();
+	Vector3 torqueAccumulation = Vector3();
+
+	Vector3 acceleration = Global::gravity;
+	Vector3 angularAcceleration = Vector3();
 
 	float inverseMass = 1.0f / 1.0f;
 	const float linearDrag = 0.75f;
-	const float angularDrag = 0.2f;
-	float friction = 0.2f;
+	const float angularDrag = 0.75f;
+	Material material = Material::WOOD;
 	float bounciness = 0.0f; // 0 = not at all bouncy, 1 = no loss of energy so very bouncy
 
 	bool isKinematic = false;
@@ -33,7 +37,7 @@ public:
 	void EndPhysicsUpdate(bool colliding);
 
 	void AddVelocityChange(const Vector3& velChange);
-	void AddRotationChange(const Vector3& rotChange);
+	void AddRotationChange(const Vector3& rotChange, bool convertToRadians = false);
 
 	void SetTerminalSpeed();
 
@@ -56,5 +60,5 @@ private:
 	double terminalSpeed = 10000;
 
 protected:
-	const double sleepThreshold = 0.8;
+	const double sleepThreshold = 1.0;
 };

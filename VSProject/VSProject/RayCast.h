@@ -20,6 +20,8 @@ struct Ray
 
 	Vector3 IntersectionPoint();
 	void Draw(const Colour& colour);
+
+	void DebugOutput();
 };
 
 struct Tri;

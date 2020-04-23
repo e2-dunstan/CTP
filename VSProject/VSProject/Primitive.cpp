@@ -3,7 +3,7 @@
 void Box::Start()
 {
 	//drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / (scale.SumComponents() * 2.0);
+	rigidbody.inverseMass = 1.0f / scale.SumComponents();
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
@@ -11,7 +11,7 @@ void Box::Start()
 void Sphere::Start()
 {
 	//drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / radius;
+	rigidbody.inverseMass = 5.0f / radius;
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }

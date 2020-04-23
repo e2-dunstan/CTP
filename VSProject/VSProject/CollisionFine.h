@@ -10,7 +10,7 @@ public:
 	CollisionFine(std::vector<Contact>& _contacts) : contacts(_contacts) {};
 	~CollisionFine() = default;
 
-	void DetectContacts(Primitive* prim1, Primitive* prim2);
+	void DetectContacts(Primitive* prim1, Primitive* prim2, std::vector<Contact>& _contacts);
 
 private:
 
@@ -21,6 +21,7 @@ private:
 
 		double weighting = 1.0;
 	};
+
 
 	std::vector<Contact>& contacts;
 

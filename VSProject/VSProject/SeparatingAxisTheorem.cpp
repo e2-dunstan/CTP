@@ -278,7 +278,12 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	std::vector<Vector3> clippedVertices;
 	clippedVertices.reserve(4);
 	SutherlandHodgman(clippedVertices, referencePlane.normal, incidentPlane.points, referencePlane.points);
-	if (clippedVertices.size() <= 0) return;
+	if (clippedVertices.size() <= 0)
+	{
+		//Sometimes can falsely return no clipped vertices, so just do a simple check
+		PointFaceCollisionSimple(box1, box2, toCentre, smallest, penetration);
+		return;
+	}
 
 	for (uint16_t v = 0; v < clippedVertices.size(); v++)
 	{
@@ -297,7 +302,12 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 				contact = Contact(box2, box1);
 				contact.normal = normal.Normalise().Inverse();
 			}
-			contact.penetrationDepth = positionOnPlane;
+			contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
+			//if (abs(contact.penetrationDepth) > 0.2)
+			//{
+			//	Global::shouldUpdate = false;
+			//	std::cout << "WARNING: updates paused; penetration depth large (" << abs(contact.penetrationDepth) << ")" << std::endl;
+			//}
 			contact.point = clippedVertices[v];
 			contacts.push_back(contact);
 		}
@@ -305,148 +315,6 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	//Global::shouldUpdate = false;
 	return;
 
-
-
-
-	/*
-	//convert coord space to box 1 so box 1 pos is 0
-	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
-	bool box1Above2 = abs(box1->collisionVolume.centre.ScalarProduct(normal)) > abs(box2->collisionVolume.centre.ScalarProduct(normal));
-	//float comparison1 = (box1->collisionVolume.centre + normal).ScalarProduct(box2->collisionVolume.centre);
-	//float comparison2 = (box1->collisionVolume.centre - normal).ScalarProduct(box2->collisionVolume.centre);
-	if (box1Above2 && normal.SumComponents() > 0
-		|| !box1Above2 && normal.SumComponents() < 0)
-	{
-		normal *= -1.0;
-	}
-	Vector3 referenceNormal = normal;
-	Mathe::TransformTranspose(referenceNormal, box1->collisionVolume.axisMat);
-	referenceNormal = referenceNormal.Normalise();
-
-	//normal (referenceNormal) should now be something like (0, 1, 0), easier to work with
-	//and position is 0, but plane position is normal * half size
-
-	//could get box2 on box1 axis using inverse but inversing a matrix is
-	//expensive so convert to dir and work with it like the normal
-
-	Vector3 incidentNormal = Vector3();
-	float smallestDist = 1000.0f;
-	float smallestAngle = 1000.0f;
-	for (unsigned f = 0; f < 6; f++)
-	{
-		float angle = abs(referenceNormal.ScalarProduct(box2->collisionVolume.normals[f]));
-		if (angle <= smallestAngle)
-		{
-			smallestAngle = angle;
-			float dist = ((referenceNormal + box1->collisionVolume.centre) - (box2->collisionVolume.normals[f] + box2->collisionVolume.centre)).SquaredMagnitude();
-			if (dist < smallestDist)
-			{
-				smallestDist = dist;
-				incidentNormal = box2->collisionVolume.normals[f];
-			}
-		}
-		//if (dist < smallestFace)
-		//{
-		//	smallestFace = dist;
-		//	incidentNormal = box2->collisionVolume.normals[f];
-		//}
-	}
-	
-	Vector3 referenceVertices[4] = { Vector3() };
-	if (!SetReferenceVertices(referenceNormal, referenceVertices, box1->collisionVolume.halfSize)) return;
-
-	Vector3 incidentVertices[4] = { Vector3() };
-
-	//Get local incident normal to get vertices in the correct order
-	Vector3 localIncidentNormal = incidentNormal;
-	//localIncidentNormal = localIncidentNormal.Normalise();
-	Mathe::TransformTranspose(localIncidentNormal, box2->collisionVolume.axisMat);
-	if (!SetReferenceVertices(localIncidentNormal, incidentVertices, box2->collisionVolume.halfSize)) return;
-
-	Matrix4 box1Inverse = box1->collisionVolume.axisMat;
-	box1Inverse.Inverse();
-
-	//Transform back to box 1 space
-	for (unsigned v = 0; v < 4; v++)
-	{
-		//Transform from local (incident plane) to world space
-		//incidentVertices[v] += localIncidentNormal * box2->collisionVolume.halfSize;
-		Mathe::Transform(incidentVertices[v], box2->collisionVolume.axisMat);
-		//Transform to local (reference plane) space
-		Mathe::Transform(incidentVertices[v], box1Inverse);
-		//incidentVertices[v] += box2->collisionVolume.halfSize * localIncidentNormal;
-	}
-
-	std::vector<Vector3> clippedVertices;
-	//index to ignore is dependent on what ref axis is 0
-	SutherlandHodgman(clippedVertices, referenceNormal, incidentVertices, referenceVertices);
-	if (clippedVertices.size() <= 0) return;
-
-	Vector3 contactPoint = Vector3();
-	unsigned numContactPoints = 0;
-
-	bool mergeContacts = false;
-	//normal = normal * (normal.ScalarProduct(toCentre) > 0 ? -1.0 : 1.0);
-
-	//only keep vertices below the reference plane
-	float relBox = abs(box1->collisionVolume.centre.ScalarProduct(normal)) + box1->collisionVolume.halfSize.ScalarProduct(normal);
-	float pen = 0;
-
-	for (unsigned v = 0; v < clippedVertices.size(); v++)
-	{
-		Mathe::Transform(clippedVertices[v], box1->collisionVolume.axisMat);
-		clippedVertices[v] -= box2->collisionVolume.halfSize * normal;
-		float clipped = clippedVertices[v].ScalarProduct(normal);
-
-		if ((box1Above2 && clipped > relBox) 
-			|| (!box1Above2 && clipped < relBox))
-		{
-			if (!mergeContacts)
-			{
-				Contact contact(box1, box2);
-				contact.normal = normal;
-				contact.penetrationDepth = -1.0f * abs(box1Above2 ? (clipped - relBox) : (relBox - clipped));
-				contact.point = clippedVertices[v];
-				contacts.push_back(contact);
-			}
-			else
-			{
-				pen += -1.0f * abs(box1Above2 ? (clipped - relBox) : (relBox - clipped));
-				contactPoint += clippedVertices[v];
-			}
-			numContactPoints++;
-		}
-	}
-
-	//if (numContactPoints > 0) Global::shouldUpdate = false;
-
-	if (!mergeContacts)
-	{
-		return;
-	}
-
-	if (numContactPoints != 0)
-	{
-		contactPoint.x /= (double)numContactPoints;
-		contactPoint.y /= (double)numContactPoints;
-		contactPoint.z /= (double)numContactPoints;
-		pen /= (float)numContactPoints;
-	}
-	else
-	{
-		std::cout << "ERROR: No contact points found. Clipped vertices:" << std::endl;
-		for (unsigned i = 0; i < clippedVertices.size(); i++)
-		{
-			clippedVertices[i].DebugOutput();
-		}
-	}
-
-	Contact contact(box1, box2);
-	contact.normal = normal;
-	contact.penetrationDepth = pen;
-	contact.point = contactPoint;
-	contacts.push_back(contact);
-	*/
 
 	//Order of finding all collision points:
 	// [x] 1. Get the normal from box1
