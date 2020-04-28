@@ -20,7 +20,6 @@ struct Quaternion
 	void operator*=(const Quaternion& m);
 	Quaternion operator*(const Quaternion& m);
 	
-	//void AddScaledVector(const Vector3& v, double scale);
 	void RotateByVector(const Vector3& v);
 
 	void DebugOutput();

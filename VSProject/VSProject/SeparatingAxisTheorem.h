@@ -7,12 +7,12 @@ class SAT
 {
 public:
 	//SAT() = default;
-	SAT(std::vector<Contact> & _contacts) : contacts(_contacts) {};
+	SAT(std::shared_ptr<CollisionData> d) : data(d) {};
 	~SAT() = default;
 
-	void Test(Primitive* box1, Primitive* box2);
+	void Test(std::shared_ptr<Primitive> box1, std::shared_ptr<Primitive> box2);
 
-	void GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex);
+	void GetContactData(int& smallestIndex, std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex);
 
 private:
 
@@ -25,16 +25,16 @@ private:
 	};
 
 
-	std::vector<Contact>& contacts;
+	std::shared_ptr<CollisionData> data;
 
 	bool simpleTest = false;
 
-	double GetPositionOnAxis(const BoxCV* box, const Vector3& axis);
-	bool BoxesOverlapOnAxis(const BoxCV* box1, const BoxCV* box2, const Vector3& toCentre, Vector3 axis,
+	double GetPositionOnAxis(const BoxCV& box, const Vector3& axis);
+	bool BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3& toCentre, Vector3 axis,
 		int index, float& smallestPenetration, int& smallestIndex);
 
-	void PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration);
-	void PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration);
+	void PointFaceCollisionSimple(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration);
+	void PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration);
 	Vector3 GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgePoint2, Vector3& axisOne, Vector3& axisTwo, float halfSize1, float halfSize2, bool useOneMidpoint);
 
 	bool SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize);

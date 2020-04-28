@@ -58,18 +58,19 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 
 				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
 
-				//if (newColour.x > 1.0 || newColour.y > 1.0 || newColour.z > 1.0)
-				//	newColour = Vector3(1, 1, 1);
+				//if (debugRaysCounter >= 3) return;
+				//if (newColour.x <= 0.0 || newColour.y <= 0.0 || newColour.z <= 0.0)
+				//	std::cout << std::endl;
 
 				pixelsVec[actualIndex] += newColour;
 			}
 
 			newColour = Vector3(
-				powf(std::min(pixelsVec[actualIndex].x / (double)samples, 1.0), 1.0 / 2.2),
-				powf(std::min(pixelsVec[actualIndex].y / (double)samples, 1.0), 1.0 / 2.2),
-				powf(std::min(pixelsVec[actualIndex].z / (double)samples, 1.0), 1.0 / 2.2)
+				powf(std::min((float)pixelsVec[actualIndex].x / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min((float)pixelsVec[actualIndex].y / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min((float)pixelsVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
 			);
-			newColour *= 255.0;// Global::skyColour * 255.0;
+			newColour *= 255.0;
 
 			//if (Mathe::IsVectorNAN(newColour) || newColour.SumComponents() < 0.0)
 			//	std::cout << std::endl;
@@ -88,7 +89,11 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 
 void RayCamera::DrawLatestRay()
 {
-	if (!draw) return;
+	//debugRays[0].Draw(Colours::magenta);
+	//debugRays[1].Draw(Colours::magenta);
+	//debugRays[2].Draw(Colours::magenta);
+	if (!draw)
+		return;
 
 	Ray r1 = GetRayAt(0, 0, 1280, 720, cPosTemp);
 	r1.Draw(Colours::blue);
@@ -102,7 +107,7 @@ void RayCamera::DrawLatestRay()
 	r4.Draw(Colours::blue);
 	Ray r5 = GetRayAt(1280 / 2, 720 / 2, 1280, 720, cPosTemp);
 	r5.Draw(Colours::red);
-	//r5.direction.DebugOutput();
+	r5.direction.DebugOutput();
 
 	glPushMatrix();
 	glTranslated(cPosTemp.x, cPosTemp.y, cPosTemp.z);
@@ -117,8 +122,8 @@ Ray RayCamera::GetRayAt(const int pX, const int pY, const float width, const flo
 
 	float aspectRatio = width / height; //assuming w > h
 
-	float cameraX = (2.0f * (((float)pX + 0.5f) / (float)width) - 1.0f) * tanf(Mathe::ToRadians(80 / 2)) * aspectRatio; //fov = 80
-	float cameraY = (1.0f - 2.0f * ((float)pY + 0.5f) / (float)height) * tanf(Mathe::ToRadians(80 / 2));// *1 / aspectRatio;
+	float cameraX = (2.0f * (((float)pX + 0.5f) / (float)width) - 1.0f) * tanf((float)Mathe::ToRadians(80 / 2)) * aspectRatio; //fov = 80
+	float cameraY = (1.0f - 2.0f * ((float)pY + 0.5f) / (float)height) * tanf((float)Mathe::ToRadians(80 / 2));// *1 / aspectRatio;
 
 	Vector3 rayDir = Vector3(cameraX, cameraY, -1);
 
@@ -147,19 +152,21 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 {
 	Matrix4 mat;
 	Tri* closestTriangle = nullptr;
-	float closestDistance = 1000.0f;
+	Ray bestRay;
+	bestRay.intersection1 = 1000;
 
+	//if (debugRaysCounter < 3) debugRays[debugRaysCounter++] = ray;
 	ray = Ray(point, normal);
 	for (unsigned int p = 0; p < triPrimitives.size(); p++)
 	{
 		for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
 		{
 			if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray)
-				&& ray.intersection1 < closestDistance && ray.intersection1 != -1)
+				&& ray.intersection1 <= bestRay.intersection1)
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
-				closestDistance = ray.intersection1;
-				mat = triPrimitives[p].transform;
+				bestRay = ray;
+				mat = *triPrimitives[p].transform;
 			}
 		}
 	}
@@ -193,30 +200,30 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 			u.z, v.z, n.z
 		};
 		Matrix3 normalMat = Matrix3(matVals);
+		//normalMat.Inverse();
 
+		//srand(0);
 		//Z up space
 		Vector3 randHemisphere = RandomInHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f));
 		//World space
 		Mathe::Transform(randHemisphere, normalMat);
-		randHemisphere = randHemisphere.Normalise();
+		randHemisphere = randHemisphere.Normalise();// .Inverse();
 
-		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / Mathe::PI;
-		Vector3 incoming = ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength++);
-		float cosTheta = n.ScalarProduct(randHemisphere);
-		float p = 1.0f / (2.0f * Mathe::PI);
+		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / (float)Mathe::PI;
+		//Vector3 incoming = ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength++);
+		float cosTheta = (float)abs(n.ScalarProduct(randHemisphere));
+		float p = 1.0f / (2.0f * (float)Mathe::PI);
 
 		//return BRDF * incoming * cosTheta / p;
-
 		pathThroughput *= BRDF * cosTheta / p;
 
-		return ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength + 1);
+		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint(), pathLength++);
 	}
 }
 
 void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height)
 {
 	std::cout << "Saving pixel buffer to file... ";
-	//sf::RenderWindow window(sf::VideoMode(width, height), "SFML");
 
 	unsigned int pixelIndex = 0;
 

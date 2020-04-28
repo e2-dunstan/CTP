@@ -173,7 +173,7 @@ void Mathe::Rotate(Matrix3& m, Quaternion& q)
 	m.matrix[8] = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
 }
 
-void Mathe::Scale(Matrix4& m, double x, double y, double z)
+void Mathe::Scale(Matrix4& m, const double x, const double y, const double z)
 {
 	Matrix4 scale;
 	scale(0, 0) = x;
@@ -183,11 +183,11 @@ void Mathe::Scale(Matrix4& m, double x, double y, double z)
 	m = m * scale;
 }
 
-Vector3 Mathe::GetAxis(uint16_t i, Matrix4& matrix)
+Vector3 Mathe::GetAxis(const uint16_t i, Matrix4& matrix)
 {
 	return Vector3(matrix(0, i), matrix(1, i), matrix(2, i));
 }
-Vector3 Mathe::GetAxis(uint16_t i, Matrix3& matrix)
+Vector3 Mathe::GetAxis(const uint16_t i, Matrix3& matrix)
 {
 	return Vector3(matrix(0, i), matrix(1, i), matrix(2, i));
 }
@@ -223,7 +223,7 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
 	return q;
 }
 
-void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, double scale, bool toRadians)
+void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, const double scale, const bool toRadians)
 {
 	Vector3 rad = v * scale;
 	if (toRadians) 
@@ -316,7 +316,7 @@ void Mathe::TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& t
 		+ t62 * rot.matrix[8];
 }
 
-std::array<float, 2> Mathe::SolveQuadraticFormula(float a, float b, float c, bool twoRealRoots)
+std::array<float, 2> Mathe::SolveQuadraticFormula(const float a, const float b, const float c, const bool twoRealRoots)
 {
 	std::array<float, 2> x = { 0.0f, 0.0f };
 
@@ -346,14 +346,14 @@ bool Mathe::IsVectorNAN(const Vector3& v)
 	else return false;
 }
 
-double Mathe::ClampDouble(double value, double min, double max)
+double Mathe::ClampDouble(const double value, const double min, const double max)
 {
 	if (value < min) return min;
 	else if (value > max) return max;
 	else return value;
 }
 
-float Mathe::ClampFloat(float value, float min, float max)
+float Mathe::ClampFloat(const float value, const float min, const float max)
 {
 	if (value < min)
 	{

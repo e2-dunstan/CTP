@@ -35,6 +35,8 @@ private:
 	std::vector<RayCameraPrimitive> triPrimitives;
 
 	Ray ray = Ray(Vector3(), Vector3());
+	//Ray debugRays[3];
+	//unsigned int debugRaysCounter = 0;
 
 	bool store = true;
 

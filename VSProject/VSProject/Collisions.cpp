@@ -3,15 +3,17 @@
 
 Collisions::Collisions()
 {
-	fine = std::make_unique<CollisionFine>(data->contacts);
-	sat = std::make_unique<SAT>(data->contacts);
+	fine = std::make_unique<CollisionFine>(data);
+	sat = std::make_unique<SAT>(data);
 }
 
-void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
+//Using shared ptr ensures that it's not null
+void Collisions::DetectCoarse(const std::shared_ptr<Primitive> prim1, const std::shared_ptr<Primitive> prim2)
 {
+	if (prim1->freeze && prim2->freeze) return;
 	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
 	{
-		potentialContacts.push_back(PotentialContact(prim1, prim2));
+		potentialContacts.push_back(PotentialContact(std::move(prim1), std::move(prim2)));
 	}
 }
 
@@ -22,14 +24,9 @@ void Collisions::DetectFine()
 	for (unsigned i = 0; i < potentialContacts.size(); i++)
 	{
 		if (potentialContacts[i].prim1->type == PrimitiveType::BOX && potentialContacts[i].prim2->type == PrimitiveType::BOX)
-		{
-			//if (dynamic_cast<Box*>(potentialContacts[i].prim1)->scale.SquaredMagnitude() >= dynamic_cast<Box*>(potentialContacts[i].prim2)->scale.SquaredMagnitude())
-				sat->Test(potentialContacts[i].prim1, potentialContacts[i].prim2);
-			//else
-			//	sat->Test(potentialContacts[i].prim2, potentialContacts[i].prim1);
-		}
+			sat->Test(std::move(potentialContacts[i].prim1), std::move(potentialContacts[i].prim2));
 		else
-			fine->DetectContacts(potentialContacts[i].prim1, potentialContacts[i].prim2, data->contacts);
+			fine->DetectContacts(std::move(potentialContacts[i].prim1), std::move(potentialContacts[i].prim2));
 	}
 	potentialContacts.clear();
 }
@@ -49,16 +46,17 @@ void Collisions::Resolution()
 		data->contacts[i].PrepareResolution();
 	}
 
-	//data->BatchContacts();
+	resolution->SortContactsByPenetration(data->contacts);
+	resolution->PenetrationResolution(data->contacts);
+	resolution->SortContactsByVelocityMag(data->contacts);
+	resolution->VelocityResolution(data->contacts);
 
+	data->contacts.clear();
+
+	//data->BatchContacts();
 	//for (unsigned int i = 0; i < data->batchedContacts.size(); i++)
 	//{
-		resolution->SortContactsByPenetration(data->contacts);
-		resolution->PenetrationResolution(data->contacts);
-		resolution->SortContactsByVelocityMag(data->contacts);
-		resolution->VelocityResolution(data->contacts);
 	//}
-
 	//data->batchedContacts.clear();
 	//for (unsigned i = 0; i < data->contacts.size();)
 	//{
@@ -68,7 +66,6 @@ void Collisions::Resolution()
 	//	}
 	//	else i++;
 	//}
-	data->contacts.clear();
 }
 
 void Collisions::DrawContacts()
@@ -82,9 +79,11 @@ void Collisions::DrawContacts()
 		glBegin(GL_LINES);
 
 		glColor3f(1, 0, 0);
-		glVertex3f(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
+
+		glVertex3f((GLfloat)contactDisplays[i].origin.x, (GLfloat)contactDisplays[i].origin.y, (GLfloat)contactDisplays[i].origin.z);
+
 		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 2.0;
-		glVertex3f(point2.x, point2.y, point2.z);
+		glVertex3f((GLfloat)point2.x, (GLfloat)point2.y, (GLfloat)point2.z);
 
 		glEnd();
 
@@ -92,8 +91,6 @@ void Collisions::DrawContacts()
 		glTranslated(contactDisplays[i].origin.x, contactDisplays[i].origin.y, contactDisplays[i].origin.z);
 		glutWireSphere(0.15, 4, 4);
 		glPopMatrix();
-
-		//if (i >= 4) Global::shouldUpdate = false;
 
 		glFlush();
 	}

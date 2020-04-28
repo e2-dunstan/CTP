@@ -21,9 +21,9 @@ struct Colour
 	
 	void operator=(const Vector3& _v)
 	{
-		r = (_v.x + 1.0) / 2.0; 
-		g = (_v.y + 1.0) / 2.0; 
-		b = (_v.z + 1.0) / 2.0;
+		r = (GLfloat)(_v.x + 1.0) / (GLfloat)2.0; 
+		g = (GLfloat)(_v.y + 1.0) / (GLfloat)2.0; 
+		b = (GLfloat)(_v.z + 1.0) / (GLfloat)2.0;
 	}
 
 	bool operator==(const Colour& _c) const { return (r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
@@ -46,43 +46,53 @@ struct Vertex
 struct Tri
 {
 	Tri() = default;
-	Tri(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 n, Colour c)
+	Tri(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 n, Colour c)//, const float uv[6])
 	{
 		positions[0] = p1;
 		positions[1] = p2;
 		positions[2] = p3;
 		normal = n;
 		colour = c;
+		//for(uint16_t i = 0; i < 6; i++)
+		//	uvs[i] = uv[i];
 	}
 	~Tri() = default;
 
 	Vector3 positions[3];
+	//float uvs[6];
 	Vector3 normal = Vector3();
 	Colour colour = Colour(1, 1, 1);
 };
 
 namespace Colours
 {
-	const Colour white = Colour(1.0, 1.0, 1.0);
-	const Colour offWhite = Colour(0.95, 0.95, 0.95);
-	const Colour black = Colour(0.0, 0.0, 0.0);
-	const Colour red = Colour(1.0, 0.0, 0.0);
-	const Colour green = Colour(0.0, 1.0, 0.0);
-	const Colour grass = Colour(0.486, 0.988, 0.01);
-	const Colour blue = Colour(0.0, 0.0, 1.0);
-	const Colour yellow = Colour(1.0, 1.0, 0.0);
-	const Colour cyan = Colour(0.0, 1.0, 1.0);
-	const Colour magenta = Colour(1.0, 0.0, 1.0);
+	const Colour white = Colour(1.0f, 1.0f, 1.0f);
+	const Colour offWhite = Colour(0.95f, 0.95f, 0.95f);
+	const Colour black = Colour(0.0f, 0.0f, 0.0f);
+	const Colour nearBlack = Colour(0.05f, 0.05f, 0.05f);
+	const Colour red = Colour(1.0f, 0.0f, 0.0f);
+	const Colour green = Colour(0.0f, 1.0f, 0.0f);
+	const Colour grass = Colour(0.486f, 0.988f, 0.01f);
+	const Colour blue = Colour(0.0f, 0.0f, 1.0f);
+	const Colour yellow = Colour(1.0f, 1.0f, 0.0f);
+	const Colour cyan = Colour(0.0f, 1.0f, 1.0f);
+	const Colour lightCyan = Colour(0.65f, 1.0f, 1.0f);
+	const Colour lightestCyan = Colour(0.9f, 1.0f, 1.0f);
+	const Colour magenta = Colour(1.0f, 0.0f, 1.0f);
+	const Colour pink = Colour(1.0f, 0.5f, 0.7f);
+	const Colour grey = Colour(0.7f, 0.7f, 0.7f);
+	const Colour darkGrey = Colour(0.4f, 0.4f, 0.4f);
+	const Colour brown = Colour(0.7f, 0.4f, 0.28f);
 };
 
 static inline Vector3 RandomInHemisphere(const float u1, const float u2)
 {
-	float z = u1;
-	float r = sqrtf(std::max(0.0f, 1.0f - z * z));
-	float phi = 2.0f * Mathe::PI * u2;
-	float x = r * cosf(phi);
-	float y = r * sinf(phi);
-	return Vector3(x, y, z);
+	const float r = sqrt(u1);
+	const float theta = 2.0f * (float)Mathe::PI * u2;
+	const float x = r * cosf(theta);
+	const float y = r * sinf(theta);
+
+	return Vector3(x, y, sqrt(std::max(0.0f, 1.0f - u1)));
 }
 
 static inline float RandomFloat(const float min, const float max)

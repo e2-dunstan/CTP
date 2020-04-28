@@ -63,6 +63,18 @@ std::vector<Tri> Shapes::ShapeVertices::GetCubeTris(const Colour& _colour)
 {
 	// 7 * 6 = 42 vertices for tris
 	// 2 * 6 = 12 tris with shared vertices
+	/*const float uv_left[6] =
+	{
+		0.0f, 1.0f,
+			0.0f, 0.0f,
+			1.0f, 0.0f
+	};
+	const float uv_right[6] =
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
+	};*/
 
 	const Vector3 vertices[8] =
 	{
@@ -81,51 +93,64 @@ std::vector<Tri> Shapes::ShapeVertices::GetCubeTris(const Colour& _colour)
 	//front
 	Colour faceColour = GetColour(Colours::white, _colour);
 	Vector3 normal = Vector3(0, 0, 1);
-	tris.push_back(Tri(vertices[0], vertices[3], vertices[7], normal, faceColour));
-	tris.push_back(Tri(vertices[0], vertices[7], vertices[4], normal, faceColour));
+	tris.push_back(Tri(vertices[0], vertices[3], vertices[7], normal, faceColour));//, uv_left));
+	tris.push_back(Tri(vertices[0], vertices[7], vertices[4], normal, faceColour));//, uv_right));
 
 	//back
 	faceColour = GetColour(Colours::white, _colour);
 	normal = Vector3(0, 0, -1);
-	tris.push_back(Tri(vertices[5], vertices[6], vertices[2], normal, faceColour));
-	tris.push_back(Tri(vertices[5], vertices[2], vertices[1], normal, faceColour));
+	tris.push_back(Tri(vertices[5], vertices[6], vertices[2], normal, faceColour));//uv_left));
+	tris.push_back(Tri(vertices[5], vertices[2], vertices[1], normal, faceColour));//uv_right));
 
 	//right
 	faceColour = GetColour(Colours::white, _colour);
 	normal = Vector3(1, 0, 0);
-	tris.push_back(Tri(vertices[4], vertices[7], vertices[6], normal, faceColour));
-	tris.push_back(Tri(vertices[4], vertices[6], vertices[5], normal, faceColour));
+	tris.push_back(Tri(vertices[4], vertices[7], vertices[6], normal, faceColour));// uv_left));
+	tris.push_back(Tri(vertices[4], vertices[6], vertices[5], normal, faceColour));// uv_right));
 
 	//left
 	faceColour = GetColour(Colours::white, _colour);
 	normal = Vector3(-1, 0, 0);
-	tris.push_back(Tri(vertices[1], vertices[2], vertices[3], normal, faceColour));
-	tris.push_back(Tri(vertices[1], vertices[3], vertices[0], normal, faceColour));
+	tris.push_back(Tri(vertices[1], vertices[2], vertices[3], normal, faceColour));// uv_left));
+	tris.push_back(Tri(vertices[1], vertices[3], vertices[0], normal, faceColour));// uv_right));
 
 	//top
 	faceColour = GetColour(Colours::white, _colour);
 	normal = Vector3(0, 1, 0);
-	tris.push_back(Tri(vertices[1], vertices[0], vertices[4], normal, faceColour));
-	tris.push_back(Tri(vertices[1], vertices[4], vertices[5], normal, faceColour));
+	tris.push_back(Tri(vertices[1], vertices[0], vertices[4], normal, faceColour));// uv_left));
+	tris.push_back(Tri(vertices[1], vertices[4], vertices[5], normal, faceColour));// uv_right));
 
 	//bottom
 	faceColour = GetColour(Colours::white, _colour);
 	normal = Vector3(0, -1, 0);
-	tris.push_back(Tri(vertices[3], vertices[2], vertices[6], normal, faceColour));
-	tris.push_back(Tri(vertices[3], vertices[6], vertices[7], normal, faceColour));
+	tris.push_back(Tri(vertices[3], vertices[2], vertices[6], normal, faceColour));//uv_left));
+	tris.push_back(Tri(vertices[3], vertices[6], vertices[7], normal, faceColour));//uv_right));
 
 	return tris;
 }
 
 std::vector<Tri> ShapeVertices::GetPlaneTris(const Colour& _colour)
 {
+	const float uv_left[6] =
+	{
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f
+	};
+	const float uv_right[6] =
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
+	};
+
 	std::vector<Tri> tris;
 	tris.reserve(2);
 
 	tris.push_back(Tri(Vector3(-1.0, 0.0, -1.0), Vector3(-1.0, 0.0, 1.0), Vector3(1.0, 0.0, 1.0),
-						Vector3(0, 1, 0), _colour));
+						Vector3(0, 1, 0), _colour));// , uv_left));
 	tris.push_back(Tri(Vector3(1.0, 0.0, 1.0), Vector3(1.0, 0.0, -1.0), Vector3(-1.0, 0.0, -1.0),
-						Vector3(0, 1, 0), _colour));
+						Vector3(0, 1, 0), _colour));// , uv_right));
 
 	return tris;
 }
@@ -292,6 +317,19 @@ std::vector<Tri> ShapeVertices::GetPlaneTris(const Colour& _colour)
 
 std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _colour, uint16_t sectorCount, uint16_t stackCount)
 {
+	/*const float uv_left[6] =
+	{
+		0.0f, 1.0f,
+		0.0f, 0.0f,
+		1.0f, 0.0f
+	};
+	const float uv_right[6] =
+	{
+		0.0f, 0.0f,
+		1.0f, 0.0f,
+		1.0f, 1.0f
+	};*/
+
 	Colour sphereColour = Colour(1, 1, 1);
 	if (_colour != Colours::white) sphereColour = _colour;
 
@@ -306,14 +344,14 @@ std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _c
 	float lengthInverse = 1.0f / radius;
 	Vector3 normal = Vector3(lengthInverse, lengthInverse, lengthInverse);
 
-	float sectorStep = 2 * Mathe::PI / sectorCount;
-	float stackStep = Mathe::PI / stackCount;
+	float sectorStep = 2.0f * (float)Mathe::PI / sectorCount;
+	float stackStep = (float)Mathe::PI / stackCount;
 	float sectorAngle;
 	float stackAngle;
 
 	for (uint16_t i = 0; i <= stackCount; ++i)
 	{
-		stackAngle = Mathe::PI / 2 - (i * stackStep);
+		stackAngle = Mathe::PI / 2.0f - ((float)i * stackStep);
 		xy = radius * cosf(stackAngle);
 		pos.z = (double)radius * (double)sin(stackAngle);
 
@@ -344,7 +382,7 @@ std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _c
 			if (i != 0)
 			{
 				Vector3 n = (normals[k1] + normals[k2] + normals[k1 + 1]) / 3.0;
-				vertices.push_back(Tri(positions[k1], positions[k2], positions[k1 + 1], n, sphereColour));
+				vertices.push_back(Tri(positions[k1], positions[k2], positions[k1 + 1], n, sphereColour));// , uv_left));
 				//indices.push_back(k1);
 				//indices.push_back(k2);
 				//indices.push_back(k1 + 1);
@@ -352,7 +390,7 @@ std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _c
 			if (i != (stackCount - 1))
 			{
 				Vector3 n = (normals[k1 + 1] + normals[k2] + normals[k2 + 1]) / 3.0;
-				vertices.push_back(Tri(positions[k1 + 1], positions[k2], positions[k2 + 1], n, sphereColour));
+				vertices.push_back(Tri(positions[k1 + 1], positions[k2], positions[k2 + 1], n, sphereColour));// , uv_right));
 				//indices.push_back(k1 + 1);
 				//indices.push_back(k2);
 				//indices.push_back(k2 + 1);

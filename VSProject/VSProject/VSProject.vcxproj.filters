@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -25,9 +25,6 @@
     <Filter Include="Source Files\Primitives">
       <UniqueIdentifier>{7a7bb220-c2ea-4a5b-bcdd-9527ecd3b40e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Primitives\BoundingVolumeHierarchy">
-      <UniqueIdentifier>{af9262b0-1480-4a4a-9569-fbe564bdcf18}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Header Files\Primitives\Volumes">
       <UniqueIdentifier>{d78d7293-2ea5-4b7a-89e5-244775448329}</UniqueIdentifier>
     </Filter>
@@ -39,9 +36,6 @@
     </Filter>
     <Filter Include="Source Files\Utilities">
       <UniqueIdentifier>{daad5500-6140-4a5a-852e-57ab5d28037b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\Primitives\Bounding Volume Hierarchy">
-      <UniqueIdentifier>{79027110-3928-4274-a43c-3a2e5432db30}</UniqueIdentifier>
     </Filter>
     <Filter Include="Header Files\Physics">
       <UniqueIdentifier>{2bd3267b-26a4-4869-9938-b72e6bfb1546}</UniqueIdentifier>
@@ -220,10 +214,10 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="VertexShader.glsl">
+    <None Include="FragmentShader.glsl">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="FragmentShader.glsl">
+    <None Include="VertexShader.glsl">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

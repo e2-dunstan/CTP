@@ -2,7 +2,7 @@
 
 void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 {
-	const float penetrationEpsilon = 0.00001f;
+	const float penetrationEpsilon = 0.001f;
 	numContacts = contacts.size();
 
 	if (Global::writeContactDataToFile) CreateCSVFile();
@@ -11,6 +11,7 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 
 	for (unsigned iter = 0; iter < maxPenetrationIterations; iter++)
 	{
+		//if (iter == 99) std::cout << "Penetrations not complete" << std::endl;
 		if (iterationsComplete)
 		{
 			//std::cout << "Penetration iterations finished early " << iter << std::endl;
@@ -21,14 +22,12 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 		//This is good but expensive
 		//SortContactsByPenetration(contacts);
 
-		for (unsigned int i = 0; i < numContacts; i++)
+		for (unsigned int contactIndex = 0; contactIndex < numContacts; contactIndex++)
 		{
-			unsigned contactIndex = i;
-
 			if (contacts[contactIndex].IsPenetrationResolved(penetrationEpsilon)) continue;
 			else iterationsComplete = false;
 
-			if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, i / numContacts);
+			if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, contactIndex / numContacts);
 
 			contacts[contactIndex].ResolvePenetration();
 
@@ -88,15 +87,13 @@ void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 	{
 		if (iterationsComplete)
 		{
-			//std::cout << "Velocity iterations finished early " << iter << std::endl;
+			//if (iter > 90) std::cout << "Velocity iterations finished early " << iter << std::endl;
 			break; //early out
 		}
 		iterationsComplete = true;
 
-		for (unsigned i = 0; i < numContacts; i++)
+		for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
 		{
-			unsigned contactIndex = i;
-
 			if (contacts[contactIndex].IsVelocityResolved(velocityEpsilon)) continue;
 			else iterationsComplete = false;
 

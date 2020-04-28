@@ -11,7 +11,7 @@ public:
 	Collisions();
 	~Collisions() = default;
 
-	void DetectCoarse(class Primitive* prim1, class Primitive* prim2);
+	void DetectCoarse(const class std::shared_ptr<Primitive> prim1, const class std::shared_ptr<Primitive> prim2);
 	void DetectFine();
 	void Resolution();
 
@@ -19,10 +19,11 @@ public:
 
 private:
 
-	std::unique_ptr<CollisionData> data = std::make_unique<CollisionData>();
+	std::shared_ptr<CollisionData> data = std::make_shared<CollisionData>();
+
 	std::unique_ptr<CollisionCoarse> coarse = std::make_unique<CollisionCoarse>();
-	std::unique_ptr<CollisionFine> fine = std::make_unique<CollisionFine>(data->contacts);
-	std::unique_ptr<SAT> sat = std::make_unique<SAT>(data->contacts);
+	std::unique_ptr<CollisionFine> fine;
+	std::unique_ptr<SAT> sat;
 	std::unique_ptr<CollisionResolution> resolution = std::make_unique<CollisionResolution>();
 
 	std::vector<PotentialContact> potentialContacts;

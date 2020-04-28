@@ -4,6 +4,8 @@
 
 void Engine::Init()
 {
+	//Materials::ReadFrictionCoefficientsFromFile();
+
 	//If you wish to draw more objects, this is where to define them.
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0));
 	individualObjectInitialised.push_back(false);
@@ -65,27 +67,19 @@ void Engine::UpdateTrisForRayCamera()
 		switch (prim.type)
 		{
 		case PrimitiveType::BOX:
-		{
 			rayCamera->AddPrimitive(dynamic_cast<Box*>(&prim)->tris, &prim.transform);
 			break;
-		}
 		case PrimitiveType::PLANE:
-		{
 			rayCamera->AddPrimitive(dynamic_cast<Plane*>(&prim)->tris, &prim.transform);
 			break;
-		}
 		case PrimitiveType::SPHERE:
-		{
 			rayCamera->AddPrimitive(dynamic_cast<Sphere*>(&prim)->tris, &prim.transform);
 			break;
-		}
 		case PrimitiveType::CAPSULE:
 		case PrimitiveType::CYLINDER:
 		case PrimitiveType::COMPLEX:
 		default:
-		{
 			break;
-		}
 		}
 	}
 	prevPrimitiveCount = primitiveCount;
@@ -93,9 +87,9 @@ void Engine::UpdateTrisForRayCamera()
 
 void Engine::ThrowSphere()
 {
-	primitiveManager->CreateSphere(0.5, Vector3(0, 3.5, -5));
-	//primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(-5, 2, 0), Vector3(0, 0, 0));
-	primitiveManager->GetPrimitives()[primitiveCount].get()->startingVelocity = Vector3(0, 0, 10);
+	primitiveManager->CreateSphere(1.0, Vector3(0, 4.5, -12));
+	//primitiveManager->CreateBox(Vector3(2, 2, 2), Vector3(0, 4, 0), Vector3(0, 0, 0));
+	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(0, 0, 25);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;
@@ -105,33 +99,40 @@ void Engine::ThrowSphere()
 void Engine::Stacks()
 {
 	SpawnStack(Vector3(0, 0, 8), 3, Vector3(1, 1, 1), 0.2f);
-	SpawnStack(Vector3(0, 0, -5), 2, Vector3(1, 1, 1), 0.2f);
-	SpawnStack(Vector3(8, 0, 0), 5, Vector3(1, 1, 1), 0.2f);
-	SpawnStack(Vector3(-8, 0, 0), 4, Vector3(1, 1, 1), 0.2f);
+	SpawnStack(Vector3(0, 0, 4), 2, Vector3(1, 1, 1), 0.2f);
+	SpawnStack(Vector3(0, 0, 0), 5, Vector3(1, 1, 1), 0.2f);
+	SpawnStack(Vector3(0, 0, -4), 4, Vector3(1, 1, 1), 0.2f);
 	//SpawnStack(Vector3(0, 0, 0), 8, Vector3(1, 1, 1), 0.2f);
 }
 
 void Engine::SpheresInBox()
 {
+	//base
+	primitiveManager->CreateBox(Vector3(5.8, 0.1, 6.2), Vector3(0, -0.09, 0), Vector3(), true, Material::WOOD);
 	//surrounding walls
-	primitiveManager->CreateBox(Vector3(0.5, 2, 7), Vector3(-0.5, 2, 6.5), Vector3(), true);
-	primitiveManager->CreateBox(Vector3(0.5, 2, 7), Vector3(14.5, 2, 6.5), Vector3(), true);
-	primitiveManager->CreateBox(Vector3(7, 2, 0.5), Vector3(7, 2, 0), Vector3(), true);
-	primitiveManager->CreateBox(Vector3(7, 2, 0.5), Vector3(7, 2, 13), Vector3(), true);
-	primitiveCount += 4;
+	primitiveManager->CreateBox(Vector3(0.2, 4, 6.2), Vector3(-6, 4, 0), Vector3(), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(0.2, 4, 6.2), Vector3(6, 4, 0), Vector3(), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(5.8, 4, 0.2), Vector3(0, 4, -6), Vector3(), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(5.8, 4, 0.2), Vector3(0, 4, 6), Vector3(), true, Material::WOOD);
+	//flaps - see notebook for maths
+	primitiveManager->CreateBox(Vector3(0.2, 3, 6.2), Vector3(-7.4 - (sin(20) * 1.5), 7.6 - (cos(20) * 1.5), 0), Vector3(0, 0, -70), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(0.2, 3, 6.2), Vector3(7.4 + (sin(20) * 1.5), 7.6 - (cos(20) * 1.5), 0), Vector3(0, 0, 70), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(6.0, 3, 0.2), Vector3(0, 7.6 - (cos(20) * 1.5), -7.4 - (sin(20) * 1.5)), Vector3(70, 0, 0), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(6.0, 3, 0.2), Vector3(0, 7.6 - (cos(20) * 1.5), 7.4 + (sin(20) * 1.5)), Vector3(-70, 0, 0), true, Material::WOOD);
+	
+	primitiveCount += 9;
+	for(uint16_t i = 0; i < 9; i++)
+		individualObjectInitialised.push_back(false);
 
-	for (uint16_t x = 0; x < 8; x++)
+	//Spheres
+	for (uint16_t j = 0; j < 100; j++)
 	{
-		if (x < 4) individualObjectInitialised.push_back(false);
-		for (uint16_t z = 1; z < 8; z++)
-		{
-			float radius = ((rand() % 5) + 1.0f) / 5.0f;
-			float y = ((rand() % 10) + 5.0f) / 2.0f;
-			Vector3 pos = Vector3(rand() % 10 + 2, y, rand() % 10 + 2);
-			primitiveManager->CreateSphere(radius, pos);
-			individualObjectInitialised.push_back(false);
-			primitiveCount++;
-		}
+		float radius = ((rand() % 5) + 1.0f) / 2.0f;
+		float y = ((rand() % 100) / 10.0f) + 10.0f;
+		Vector3 pos = Vector3((rand() % 9 - 5), y, (rand() % 9 - 5));
+		primitiveManager->CreateSphere(radius, pos, Material::CONCRETE);
+		individualObjectInitialised.push_back(false);
+		primitiveCount++;
 	}
 
 	objectsInitialised = false;
@@ -196,8 +197,8 @@ void Engine::SpawnStack(const Vector3& origin, const unsigned int count, const V
 	for (unsigned int i = 0; i < count; i++)
 	{
 		float r = ((rand() % (int)(sizeVariance * 20.0f)) / 10.0f) - sizeVariance + 1.0f;
-		primitiveManager->CreateBox(size * (float)r, pos, Vector3(0, i * 45.0f, 0));
-		pos += Vector3(0, size.y * 2.0 + sizeVariance * 2.0f, 0);
+		primitiveManager->CreateBox(size * (float)r, pos, Vector3(0, i * 45.0, 0));
+		pos += Vector3(0, size.y * 2.0 + sizeVariance * 2.0, 0);
 
 		individualObjectInitialised.push_back(false);
 		objectsInitialised = false;

@@ -16,35 +16,32 @@ class PrimitiveManager
 {
 public:
 
-	//resize vec when more primitives in simulation
 	PrimitiveManager() = default;
-	//PrimitiveManager(OctTree& oTree) : octTree(oTree) {}
 	~PrimitiveManager() = default;
 
-	//void Create(PrimitiveType type, const Vector3& scale, const Vector3& translation, const Vector3& rotation, float radius = 0, float straight = 0);
-	void CreatePlane(const Vector3& scale, const Vector3& translation);
-	void CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic = false);
-	void CreateSphere(float radius, const Vector3& translation);
+	void CreatePlane(const Vector3& scale, const Vector3& translation, const Material mat = Material::CONCRETE);
+	void CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic = false, const Material mat = Material::WOOD);
+	void CreateSphere(float radius, const Vector3& translation, const Material mat = Material::RUBBER);
 	//void CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation = Vector3());
 	//void CreateCylinder(float radius, float length, const Vector3& translation, const Vector3& rotation = Vector3());
 
 	void Draw();
 	void Update();
 
-	std::vector<std::unique_ptr<Primitive>>& GetPrimitives();
-	//std::unique_ptr<OctTree> octTree = std::make_unique<OctTree>();
+	std::vector<std::shared_ptr<Primitive>>& GetPrimitives();
 
 private:
+
+	Colour GetMaterialColour(const Material mat);
+
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
 
 	bool drawContacts = false;
 
-	std::vector<std::unique_ptr<Primitive>> primitives;
+	std::vector<std::shared_ptr<Primitive>> primitives;
 
 	Ray rayToTest;
 	bool drawRay = false;
-
-	//GLenum GetDrawType(PrimitiveType objectType);
 
 	double timeSinceCollisionDebug = 0;
 

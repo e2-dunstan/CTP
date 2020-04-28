@@ -2,17 +2,19 @@
 #include "Contact.h"
 
 
-struct Batch
+/*struct Batch
 {
 	std::vector<Contact> contacts;
-};
+};*/
 
 struct CollisionData
 {
 	CollisionData() = default;
 	~CollisionData() = default;
 	
-	void BatchContacts() 
+	std::vector<Contact> contacts = std::vector<Contact>();
+
+	/*void BatchContacts() 
 	{
 		std::vector<Contact> unsorted = std::vector<Contact>(contacts);
 
@@ -41,20 +43,18 @@ struct CollisionData
 		unsorted.clear();
 		contacts.clear();
 	}
-
 	//Collision response will reference contacts.
-	std::vector<Batch> batchedContacts = std::vector<Batch>();
-	std::vector<Contact> contacts = std::vector<Contact>();
-	float tolerance = 0.5f;
+	//std::vector<Batch> batchedContacts = std::vector<Batch>();*/
+
 };
 
 struct PotentialContact
 {
 	PotentialContact() = default;
-	PotentialContact(Primitive* _p1, Primitive* _p2)
+	PotentialContact(std::shared_ptr<Primitive> _p1, std::shared_ptr<Primitive> _p2)
 		: prim1(_p1), prim2(_p2) {};
 	~PotentialContact() = default;
 
-	Primitive* prim1 = nullptr;
-	Primitive* prim2 = nullptr;
+	std::shared_ptr<Primitive> prim1;
+	std::shared_ptr<Primitive> prim2;
 };

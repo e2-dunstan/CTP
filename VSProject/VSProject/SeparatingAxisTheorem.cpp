@@ -2,66 +2,48 @@
 #include "Primitive.h"
 #include "CollisionData.h"
 
-void SAT::Test(Primitive* _box1, Primitive* _box2)
+void SAT::Test(std::shared_ptr<Primitive> _box1, std::shared_ptr<Primitive> _box2)
 {
 	if (_box1->isStatic && _box2->isStatic) return;
 
-	Box* box1 = dynamic_cast<Box*>(_box1);
-	Box* box2 = dynamic_cast<Box*>(_box2);
+	std::shared_ptr<Box> box1 = std::move(std::dynamic_pointer_cast<Box>(_box1));// dynamic_cast<Box*>(_box1);
+	std::shared_ptr<Box> box2 = std::move(std::dynamic_pointer_cast<Box>(_box2));//dynamic_cast<Box*>(_box2);
 
 	Vector3 toCentre = box2->collisionVolume.centre - box1->collisionVolume.centre;
 	float smallestPenetration = 1000;
 	int smallestIndex = -1;
 
-	BoxCV* cv1 = &box1->collisionVolume;
-	BoxCV* cv2 = &box2->collisionVolume;
+	BoxCV cv1 = box1->collisionVolume;
+	BoxCV cv2 = box2->collisionVolume;
 
 	//Early-outs if any axes are found to be not overlapping.
 	//FACES
 	//Box1 axes
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1->axisMat), 0, smallestPenetration, smallestIndex)) return; //1x
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1->axisMat), 1, smallestPenetration, smallestIndex)) return; //1y
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1->axisMat), 2, smallestPenetration, smallestIndex)) return; //1z
-	//Box2 axes																													 
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv2->axisMat), 3, smallestPenetration, smallestIndex)) return; //2x
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv2->axisMat), 4, smallestPenetration, smallestIndex)) return; //2y
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv2->axisMat), 5, smallestPenetration, smallestIndex)) return; //2z
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1.axisMat), 0, smallestPenetration, smallestIndex)) return; //1x
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1.axisMat), 1, smallestPenetration, smallestIndex)) return; //1y
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1.axisMat), 2, smallestPenetration, smallestIndex)) return; //1z
+	//Box2 axes																												 
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv2.axisMat), 3, smallestPenetration, smallestIndex)) return; //2x
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv2.axisMat), 4, smallestPenetration, smallestIndex)) return; //2y
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv2.axisMat), 5, smallestPenetration, smallestIndex)) return; //2z
 
 	int singleSmallestIndex = smallestIndex;
 	//EDGES
 	//Cross product axes
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1->axisMat).VectorProduct(Mathe::GetAxis(0, cv2->axisMat)), 6, smallestPenetration, smallestIndex)) return; // 1x 2x
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1->axisMat).VectorProduct(Mathe::GetAxis(1, cv2->axisMat)), 7, smallestPenetration, smallestIndex)) return; // 1x 2y
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1->axisMat).VectorProduct(Mathe::GetAxis(2, cv2->axisMat)), 8, smallestPenetration, smallestIndex)) return; // 1x 2z
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1->axisMat).VectorProduct(Mathe::GetAxis(0, cv2->axisMat)), 9, smallestPenetration, smallestIndex)) return; // 1y 2x
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1->axisMat).VectorProduct(Mathe::GetAxis(1, cv2->axisMat)), 10, smallestPenetration, smallestIndex)) return; // 1y 2y
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1->axisMat).VectorProduct(Mathe::GetAxis(2, cv2->axisMat)), 11, smallestPenetration, smallestIndex)) return; // 1y 2z
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1->axisMat).VectorProduct(Mathe::GetAxis(0, cv2->axisMat)), 12, smallestPenetration, smallestIndex)) return; // 1z 2x
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1->axisMat).VectorProduct(Mathe::GetAxis(1, cv2->axisMat)), 13, smallestPenetration, smallestIndex)) return; // 1z 2y
-	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1->axisMat).VectorProduct(Mathe::GetAxis(2, cv2->axisMat)), 14, smallestPenetration, smallestIndex)) return; // 1z 2z
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1.axisMat).VectorProduct(Mathe::GetAxis(0, cv2.axisMat)), 6, smallestPenetration, smallestIndex)) return; // 1x 2x
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1.axisMat).VectorProduct(Mathe::GetAxis(1, cv2.axisMat)), 7, smallestPenetration, smallestIndex)) return; // 1x 2y
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(0, cv1.axisMat).VectorProduct(Mathe::GetAxis(2, cv2.axisMat)), 8, smallestPenetration, smallestIndex)) return; // 1x 2z
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1.axisMat).VectorProduct(Mathe::GetAxis(0, cv2.axisMat)), 9, smallestPenetration, smallestIndex)) return; // 1y 2x
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1.axisMat).VectorProduct(Mathe::GetAxis(1, cv2.axisMat)), 10, smallestPenetration, smallestIndex)) return; // 1y 2y
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(1, cv1.axisMat).VectorProduct(Mathe::GetAxis(2, cv2.axisMat)), 11, smallestPenetration, smallestIndex)) return; // 1y 2z
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1.axisMat).VectorProduct(Mathe::GetAxis(0, cv2.axisMat)), 12, smallestPenetration, smallestIndex)) return; // 1z 2x
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1.axisMat).VectorProduct(Mathe::GetAxis(1, cv2.axisMat)), 13, smallestPenetration, smallestIndex)) return; // 1z 2y
+	if (!BoxesOverlapOnAxis(cv1, cv2, toCentre, Mathe::GetAxis(2, cv1.axisMat).VectorProduct(Mathe::GetAxis(2, cv2.axisMat)), 14, smallestPenetration, smallestIndex)) return; // 1z 2z
 
 	GetContactData(smallestIndex, box1, box2, toCentre, smallestPenetration, singleSmallestIndex);
-
-	//CalculateSmallestAxesAndPenetrations(smallestPenetration);
-	//for (unsigned i = 0; i < penetrations.size(); i++)
-	//{
-	//	GetContactData(minimumAxes[i], box1, box2, toCentre, penetrations[i], singleSmallestIndex);
-	//}
-	//
-	//Contact contact(box1, box2);
-	//for (unsigned i = 0; i < tempContacts.size(); i++)
-	//{
-	//	contact.point += tempContacts[i].point;
-	//	contact.penetrationDepth += tempContacts[i].penetrationDepth;
-	//	contact.normal += tempContacts[i].normal;
-	//}
-	//contact.point /= tempContacts.size();
-	//contact.penetrationDepth /= tempContacts.size();
-	//contact.normal = (contact.normal / tempContacts.size()).Normalise();
-	//contacts.push_back(contact);
 }
 
-void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
+void SAT::GetContactData(int& smallestIndex, std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
 {	   	 
 	//Point-face collision
 	if (smallestIndex < 3)
@@ -96,8 +78,8 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 		if (toCentre.ScalarProduct(normal) > 0)
 			normal *= -1.0f;
 
-		Vector3 ptOnOneEdge = box1->collisionVolume.halfSize;// * 2.0;
-		Vector3 ptOnTwoEdge = box2->collisionVolume.halfSize;// * 2.0;
+		Vector3 ptOnOneEdge = box1->collisionVolume.halfSize;
+		Vector3 ptOnTwoEdge = box2->collisionVolume.halfSize;
 
 		for (int i = 0; i < 3; i++)
 		{
@@ -116,38 +98,45 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 		Mathe::Transform(ptOnTwoEdge, box2->collisionVolume.axisMat);
 
 		bool useOnesMidpoint = singleSmallestIndex > 2;
-		//if (minimumAxes[0] < 6) useOnesMidpoint = true;
 
 		Vector3 vertex = GetEdgeContactPoint(ptOnOneEdge, ptOnTwoEdge, box1Axis, box2Axis,
 			(float)box1->collisionVolume.halfSize[box1AxisIndex], (float)box2->collisionVolume.halfSize[box2AxisIndex],
 			useOnesMidpoint);
 
 		//GENERATE CONTACT
-		Contact contact(box1, box2);
-		contact.normal = normal.Normalise();
 		if (box1->isStatic)
 		{
-			contact = Contact(box2, box1);
+			Contact contact(box2, box1);
 			contact.normal = normal.Normalise().Inverse();
+			contact.point = vertex;
+			contact.penetrationDepth = smallestPenetration;
+			data->contacts.push_back(contact);
 		}
-		contact.point = vertex;
-		contact.penetrationDepth = smallestPenetration;
-		contacts.push_back(contact);
+		else
+		{
+			Contact contact(box1, box2);
+			contact.normal = normal.Normalise();		
+			contact.point = vertex;
+			contact.penetrationDepth = smallestPenetration;
+			data->contacts.push_back(contact);
+
+		}
+
 		return;
 	}
 }
 
-double SAT::GetPositionOnAxis(const BoxCV* box, const Vector3& axis)
+double SAT::GetPositionOnAxis(const BoxCV& box, const Vector3& axis)
 {
-	Matrix4 axisMat = box->axisMat;
+	Matrix4 axisMat = box.axisMat;
 
 	return
-		box->halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))
-		+ box->halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, axisMat)))
-		+ box->halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
+		box.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))
+		+ box.halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, axisMat)))
+		+ box.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
 }
 
-bool SAT::BoxesOverlapOnAxis(const BoxCV* box1, const BoxCV* box2, const Vector3& toCentre, Vector3 axis, int index, float& smallestPenetration, int& smallestIndex)
+bool SAT::BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3& toCentre, Vector3 axis, int index, float& smallestPenetration, int& smallestIndex)
 {
 	if (axis.SquaredMagnitude() < 0.0001) return true;
 	axis = axis.Normalise();
@@ -168,7 +157,7 @@ bool SAT::BoxesOverlapOnAxis(const BoxCV* box1, const BoxCV* box2, const Vector3
 }
 
 //Only finds one contact point
-void SAT::PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration)
+void SAT::PointFaceCollisionSimple(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration)
 {
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
 	if (normal.ScalarProduct(toCentre) > 0)
@@ -182,19 +171,25 @@ void SAT::PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre
 	if (Mathe::GetAxis(2, box2->collisionVolume.axisMat).ScalarProduct(normal) < 0)
 		point.z = -point.z;
 
-	Contact contact(box1, box2);
-	contact.normal = normal;
 	if (box1->isStatic)
 	{
-		contact = Contact(box2, box1);
+		Contact contact(box2, box1);
 		contact.normal = normal.Normalise().Inverse();
+		contact.point = point;
+		contact.penetrationDepth = penetration;
+		data->contacts.push_back(contact);
 	}
-	contact.point = point;
-	contact.penetrationDepth = penetration;
-	contacts.push_back(contact);
+	else
+	{
+		Contact contact(box1, box2);
+		contact.normal = normal;
+		contact.point = point;
+		contact.penetrationDepth = penetration;
+		data->contacts.push_back(contact);
+	}
 }
 
-void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration)
+void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration)
 {
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
 	if (normal.ScalarProduct(toCentre) < 0)
@@ -220,11 +215,11 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	//--------
 	//check for box2 normal most parallel (scalar product = 1) to the normal
 	//--------
-	float largestScalarProduct = 0.0f;
+	double largestScalarProduct = 0.0f;
 	for (uint16_t n = 0; n < 6; n++)
 	{
 		Vector3 currentNormal = box2->collisionVolume.normals[n];
-		float scalarProduct = currentNormal.ScalarProduct(normal);
+		double scalarProduct = currentNormal.ScalarProduct(normal);
 
 		//scalar product should be negative to get the opposite direction vector
 		if (scalarProduct < 0 && scalarProduct < largestScalarProduct)
@@ -242,7 +237,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	localIncidentPlaneNormal = localIncidentPlaneNormal.Normalise();
 
 	//--------
-	//Transform for the incident plane - CHECK THIS
+	//Transform for the incident plane
 	//--------
 	incidentPlane.matrix = box2->collisionVolume.axisMat;
 	Vector3 incidentPlaneOffset = box2->collisionVolume.halfSize * localIncidentPlaneNormal;
@@ -285,9 +280,16 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 		return;
 	}
 
+	const bool mergeContacts = false;
+	std::vector<Vector3> mergedPositions;
+	std::vector<float> mergedPenetrations;
+	float totalPenetration = 0;
+	unsigned int numContacts = 0;
+
+
 	for (uint16_t v = 0; v < clippedVertices.size(); v++)
 	{
-		float positionOnPlane = clippedVertices[v].ScalarProduct(referencePlane.normal);
+		float positionOnPlane = (float)clippedVertices[v].ScalarProduct(referencePlane.normal);
 
 		//below the reference plane
 		if (positionOnPlane < 0)
@@ -295,25 +297,59 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			//transform point back to world space
 			Mathe::Transform(clippedVertices[v], referencePlane.matrix);
 
-			Contact contact(box1, box2);
-			contact.normal = normal;
-			if (box1->isStatic)
+			if (mergeContacts)
 			{
-				contact = Contact(box2, box1);
-				contact.normal = normal.Normalise().Inverse();
+				mergedPenetrations.push_back(-abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration))));
+				mergedPositions.push_back(clippedVertices[v]);
+				totalPenetration += mergedPenetrations[numContacts];
+				numContacts++;
 			}
-			contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
-			//if (abs(contact.penetrationDepth) > 0.2)
-			//{
-			//	Global::shouldUpdate = false;
-			//	std::cout << "WARNING: updates paused; penetration depth large (" << abs(contact.penetrationDepth) << ")" << std::endl;
-			//}
-			contact.point = clippedVertices[v];
-			contacts.push_back(contact);
+			else
+			{
+				if (box1->isStatic)
+				{
+					Contact contact(box2, box1);
+					contact.normal = normal.Inverse();
+					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
+					contact.point = clippedVertices[v];
+					data->contacts.push_back(contact);
+				}
+				else
+				{
+					Contact contact(box1, box2);
+					contact.normal = normal;
+					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
+					contact.point = clippedVertices[v];
+					data->contacts.push_back(contact);
+				}
+			}
 		}
 	}
-	//Global::shouldUpdate = false;
-	return;
+	if (!mergeContacts) return;
+
+	Vector3 mergedPos = Vector3();
+	for (uint16_t i = 0; i < numContacts; i++)
+	{
+		float weighting = mergedPenetrations[i] / totalPenetration;
+		mergedPos += mergedPositions[i] * weighting;
+	}
+
+	if (box1->isStatic)
+	{
+		Contact contact(box2, box1);
+		contact.normal = normal.Inverse();
+		contact.penetrationDepth = totalPenetration / (float)numContacts;
+		contact.point = mergedPos;
+		data->contacts.push_back(contact);
+	}
+	else
+	{
+		Contact contact(box1, box2);
+		contact.normal = normal;
+		contact.penetrationDepth = totalPenetration / (float)numContacts;
+		contact.point = mergedPos;
+		data->contacts.push_back(contact);
+	}
 
 
 	//Order of finding all collision points:
@@ -346,8 +382,8 @@ Vector3 SAT::GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgeP
 		return useOneMidpoint ? edgePoint1 : edgePoint2;
 	}
 
-	float edgeNearestA = (((scaleOneTwo * scaleTwo) - (squareMag2 * scaleOne)) / denominator);// * 2.0f;
-	float edgeNearestB = (((squareMag1 * scaleTwo) - (scaleOneTwo * scaleOne)) / denominator);// * 2.0f;
+	float edgeNearestA = (((scaleOneTwo * scaleTwo) - (squareMag2 * scaleOne)) / denominator);
+	float edgeNearestB = (((squareMag1 * scaleTwo) - (scaleOneTwo * scaleOne)) / denominator);
 
 	if (edgeNearestA > halfSize1 || edgeNearestA < -halfSize1
 		|| edgeNearestB > halfSize2 || edgeNearestB < -halfSize2)
@@ -462,23 +498,6 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 	intersection[axes[0]] = X;
 	intersection[axes[1]] = Y;
 
-	//solve for m or n
-	//double m1 =	(v1[axes[0]] - clippingMin[axes[0]]) * (clippingMin[axes[1]] - clippingMax[axes[1]])
-	//	- (v1[axes[1]] - clippingMin[axes[1]]) * (clippingMin[axes[0]] - clippingMax[axes[0]]);
-	//double m2 = (v1[axes[0]] - v2[axes[0]]) * (clippingMin[axes[1]] - clippingMax[axes[1]])
-	//	- (v1[axes[1]] - v2[axes[1]]) * (clippingMin[axes[0]] - clippingMax[axes[0]]);
-	//double m = m1 / m2;
-	//Vector3 v2v1 = v2 - v1;
-	//Vector3 intersection = v1 + (v2v1 * m);
-	// *(v2v1.SumComponents() < 0 ? -1.0 : 1.0));
-	//if (m < 0)
-	//{
-	//	m1 = (v1[axes[0]] - v1[axes[0]]) * (v1[axes[1]] - clippingMin[axes[1]])
-	//		- (v1[axes[1]] - v2[axes[1]]) * (v1[axes[0]] - clippingMin[axes[0]]);
-	//	m = m1 / m2;
-	//	intersection = clippingMin + ((clippingMax - clippingMin) * m);
-	//}
-
 	//Get the value of the remaining axis
 	double percAcrossLine = 1;
 	if (x2 != 0)
@@ -499,39 +518,6 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 
 	return intersection;
 }
-
-//Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
-//{
-//	//https://en.wikipedia.org/wiki/Line%E2%80%93line_intersection#Given_two_points_on_each_line
-//
-//	double dc[2] = { clippingMin[axes[0]] - clippingMax[axes[0]], clippingMin[axes[1]] - clippingMax[axes[1]] };
-//	double dp[2] = { v1[axes[0]] - v2[axes[0]], v1[axes[1]] - v2[axes[1]] };
-//
-//	double n1 = clippingMin[axes[0]] * clippingMax[axes[1]] - clippingMin[axes[1]] * clippingMax[axes[0]];
-//	double n2 = v1[axes[0]] * v2[axes[1]] - v1[axes[1]] * v2[axes[0]];
-//	double div = dc[0] * dp[1] - dc[1] * dp[0];
-//	double n3 = div == 0 ? 0 : (1.0 / div);
-//	//double n3 = (dc[0] * dp[1] - dc[1] * dp[0]);
-//
-//	Vector3 intersection = Vector3();
-//	intersection[axes[0]] = (n1 * dp[0] - n2 * dc[0]) * n3;
-//	intersection[axes[1]] = (n1 * dp[1] - n2 * dc[1]) * n3;
-//
-//	//Get the value of the remaining axis
-//	double percAcrossLine = (v1[axes[0]] + intersection[axes[0]]) / v2[axes[0]];
-//	unsigned i = 0;
-//	if (axes[0] == 0)
-//	{
-//		if (axes[1] == 1)
-//			i = 2;
-//		else if (axes[1] == 2)
-//			i = 1;
-//	}
-//
-//	intersection[i] = v1[i] + (v2[i] - v1[i]) * percAcrossLine;
-//
-//	return intersection;
-//}
 
 void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
 {
@@ -580,21 +566,11 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 	{
 		Vector3 edgeMin = clippingVertices[edge];
 		Vector3 edgeMax = clippingVertices[(edge + 1) % numEdges];
-		//if (edgeMin.SumComponents() < edgeMax.SumComponents())
-		//{
-		//	Vector3 temp = edgeMin;
-		//	edgeMin = edgeMax;
-		//	edgeMax = temp;
-		//}
 
 		for (unsigned v = 0; v < numVertices; v++) //for each input vertex
 		{
 			Vector3 v1 = newPoints[v];
 			Vector3 v2 = newPoints[(v + 1) % numVertices];
-			//if (v1 == v2 ||
-			//	(v1[axes[0]] != v2[axes[0]]
-			//	&& (v1[axes[1]] != v2[axes[1]]))) 
-			//	continue;
 
 			bool insideEdge1 = InsideEdge(v1[axes[0]], v1[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 			bool insideEdge2 = InsideEdge(v2[axes[0]], v2[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
@@ -602,8 +578,6 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 			if (insideEdge1 && insideEdge2)
 			{
 				VerifyVertex(_clipped, v2, max, min, axes);
-				//newPoints[newSize] = v1;
-				//newSize++;
 				if (std::find(std::begin(newPoints), std::end(newPoints), v2) == std::end(newPoints))
 				{
 					newPoints[newSize] = v2;
@@ -652,8 +626,6 @@ bool SAT::InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, dou
 	double one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
 	double two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
 	return (one - two) < 0.00001f;
-
-	//return (edgeMaxX - edgeMinX) * (py - edgeMinY) - (edgeMaxY - edgeMinY) * (px - edgeMinX) < 0;
 }
 
 void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const unsigned axes[])

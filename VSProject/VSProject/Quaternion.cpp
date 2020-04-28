@@ -38,16 +38,6 @@ Quaternion Quaternion::operator*(const Quaternion& m)
 	return result;
 }
 
-//void Quaternion::AddScaledVector(const Vector3& v, double scale)
-//{
-//	Quaternion q(0, v.x * scale, v.y * scale, v.z * scale);
-//	q *= *this;
-//	r += q.r * (double)0.5;
-//	i += q.i * (double)0.5;
-//	j += q.j * (double)0.5;
-//	k += q.k * (double)0.5;
-//}
-
 void Quaternion::RotateByVector(const Vector3& v)
 {
 	Quaternion q(0, v.x, v.y, v.z);
@@ -57,5 +47,5 @@ void Quaternion::RotateByVector(const Vector3& v)
 
 void Quaternion::DebugOutput()
 {
-	std::cout << "( " + std::to_string(r) + ", " + std::to_string(i) + ", " + std::to_string(j) + ", " + std::to_string(k) + " )" << std::endl;
+	std::cout << "( " + std::to_string(r) + ", " + std::to_string(i) + "i, " + std::to_string(j) + "j, " + std::to_string(k) + " k)" << std::endl;
 }

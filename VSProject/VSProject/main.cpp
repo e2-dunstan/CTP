@@ -16,7 +16,7 @@ namespace
 	const int windowWidth = 1280;
 	const int windowHeight = 720;
 
-	//GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
 	GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
 	//GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
 	GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
@@ -36,7 +36,7 @@ namespace
 
 	int numPhysicsUpdatesPerSecond = 0;
 
-	const float playbackSpeed = 0.2f;
+	const float playbackSpeed = 1.0f;
 
 	const bool sfmlWindow = false;
 	const bool openglWindow = true;
@@ -105,7 +105,7 @@ void Init()
 	glLoadIdentity();
 	gluPerspective(80, (double)windowWidth / (double)windowHeight, 1, 1000);
 
-	//glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_diffuse);
 	//glLightfv(GL_LIGHT0, GL_AMBIENT, light_ambient);
 	//glLightfv(GL_LIGHT0, GL_SPECULAR, light_specular);
 	//Lighting will be fully implemented later.
@@ -146,21 +146,6 @@ void changeViewPort(int w, int h)
 
 void render()
 {
-	//Delta time.
-	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	Global::deltaTime = (double)(timeSinceStart - oldTimeSinceStart) * (double)playbackSpeed / 1000.0;
-	oldTimeSinceStart = timeSinceStart;
-
-	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 2 seconds before updating
-		beginUpdate = true;
-	//if (deltaTimeDebug > 0.1)
-	//{
-	//	deltaTimeDebug = 0;
-	//	std::cout << "Delta Time: " << Global::deltaTime << ", FPS: " << 1.0 / Global::deltaTime << std::endl;
-	//}
-	//else deltaTimeDebug += Global::deltaTime;
-
-
 	//Clear the buffers.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -179,25 +164,24 @@ void render()
 
 void timer(int)
 {
+	//Delta time.
+	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
+	Global::deltaTime = (double)(timeSinceStart - oldTimeSinceStart) * (double)playbackSpeed / 1000.0;
+	oldTimeSinceStart = timeSinceStart;
+
+	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 3 seconds before updating
+		beginUpdate = true;
+
 	glutPostRedisplay();
 
 	if (beginUpdate && Global::shouldUpdate)
 	{
 		engine->Update();
-		//numPhysicsUpdatesPerSecond++;
 	}
+	//else std::cout << engine->primitiveManager->GetPrimitives().size() << std::endl;
 
-	glutTimerFunc(Global::deltaTime, timer, 0);
+	glutTimerFunc(0, timer, 0);
 }
-
-//displays number of update calls per frame
-/*void physicsUpdateCounter(int)
-{
-	glutPostRedisplay();
-	std::cout << "Number of physics updates: " << numPhysicsUpdatesPerSecond << std::endl;
-	numPhysicsUpdatesPerSecond = 0;
-	glutTimerFunc(1000, physicsUpdateCounter, 0);
-} */
 
 
 void SFMLMainLoop()

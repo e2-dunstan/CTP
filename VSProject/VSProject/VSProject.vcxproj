@@ -75,6 +75,10 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <IncludePath>D:\Ellie\CTP\Additional files\Glew and Glut\glew-1.11.0\include;D:\Ellie\CTP\Additional files\Glew and Glut\freeglut\include;$(IncludePath)</IncludePath>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <IncludePath>D:\Ellie\CTP\Additional files\Glew and Glut\glew-1.11.0\include;D:\Ellie\CTP\Additional files\Glew and Glut\freeglut\include;$(IncludePath)</IncludePath>
+    <LibraryPath>D:\Ellie\CTP\Additional files\Glew and Glut\glew-1.11.0\lib;D:\Ellie\CTP\Additional files\Glew and Glut\freeglut\lib;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -117,7 +121,7 @@
       <SubSystem>Console</SubSystem>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
-      <AdditionalDependencies>sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;sfml-graphics.lib;sfml-window.lib;sfml-system.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\lib;</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -173,7 +177,6 @@
     <ClInclude Include="ConsoleControls.h" />
     <ClInclude Include="Contact.h" />
     <ClInclude Include="Global.h" />
-    <ClInclude Include="Jacobian.h" />
     <ClInclude Include="Material.h" />
     <ClInclude Include="PrimitiveManager.h" />
     <ClInclude Include="Engine.h" />

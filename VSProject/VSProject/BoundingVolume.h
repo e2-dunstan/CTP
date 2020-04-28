@@ -17,8 +17,6 @@ public:
 
 	void Draw();
 
-
-
 	Vector3 min = Vector3();
 	Vector3 max = Vector3();
 };

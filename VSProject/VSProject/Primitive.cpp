@@ -2,26 +2,24 @@
 
 void Box::Start()
 {
-	//drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 1.0f / scale.SumComponents();
+	rigidbody.inverseMass = 1.0f / (float)scale.Magnitude();
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
 
 void Sphere::Start()
 {
-	//drawType = GL_TRIANGLES;
-	rigidbody.inverseMass = 5.0f / radius;
+	rigidbody.inverseMass = 1.0f / (radius * 3.0f);
 	CalculateInertiaTensor();
 	rigidbody.Start(startingVelocity);
 }
 
 void Primitive::Update()
 {	
-	previousPosition = translation;
+	if (freeze) return;
 
-	if (!rigidbody.isAwake && !colliding && !rigidbody.isKinematic)
-		rigidbody.SetAwake(true);
+	if (!rigidbody.isAwake && !colliding && !rigidbody.isKinematic) rigidbody.SetAwake(true);
+
 	if (rigidbody.PhysicsUpdate())
 	{
 		translation += rigidbody.velocity * Global::deltaTime;
@@ -31,18 +29,13 @@ void Primitive::Update()
 
 		rigidbody.EndPhysicsUpdate(colliding);
 	}
-	if (updateTransform) UpdateTransform();
 
-	//rigidbody.CalculateTentativeVelocities();
+	if (updateTransform) UpdateTransform();
 }
 
 void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 {
 	glBegin(drawType);
-	//Only locally transform the vertices. This makes it so that each draw call
-	//the vertices do not have to be cleared and redefined if their transforms have
-	//changed. Performance boost. (or is it?)
-	//std::vector<Vertex> verts = vertices;
 
 	Vector3 position;
 	for (uint16_t v = 0; v < vertices.size(); v++)
@@ -50,20 +43,17 @@ void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 		position = vertices[v].position;
 		Mathe::Transform(position, transform);
 
-		glNormal3f(vertices[v].normal.x, vertices[v].normal.y, vertices[v].normal.z);
+		glNormal3f((GLfloat)vertices[v].normal.x, (GLfloat)vertices[v].normal.y, (GLfloat)vertices[v].normal.z);
 
-		//For future shader use.
-		//GLfloat colour[] = { objects[i].vertices[v].colour.r, objects[i].vertices[v].colour.g, objects[i].vertices[v].colour.b,  objects[i].vertices[v].colour.a};
-		//glMaterialfv(GL_FRONT, GL_DIFFUSE, colour);
 		if (colliding && debugCollision)
 		{
-			glColor3f(1, 0, 0);
+			glColor3f(1.0f, 0.0f, 0.0f);
 		}
 		else
 		{
-			glColor3f(vertices[v].colour.r, vertices[v].colour.g, vertices[v].colour.b);
+			glColor3f((GLfloat)vertices[v].colour.r, (GLfloat)vertices[v].colour.g, (GLfloat)vertices[v].colour.b);
 		}
-		glVertex3f(position.x, position.y, position.z);
+		glVertex3f((GLfloat)position.x, (GLfloat)position.y, (GLfloat)position.z);
 	}
 	glEnd();
 }
@@ -71,6 +61,8 @@ void Primitive::DrawForVertices(std::vector<Vertex> vertices)
 void Primitive::DrawForTris(std::vector<Tri> tris)
 {
 	glBegin(GL_TRIANGLES);
+
+	//Materials::BindTexture((int)rigidbody.material);
 
 	Vector3 position;
 	for (uint16_t v = 0; v < tris.size(); v++)
@@ -80,16 +72,18 @@ void Primitive::DrawForTris(std::vector<Tri> tris)
 			position = tris[v].positions[p];
 			Mathe::Transform(position, transform);
 
-			glNormal3f(tris[v].normal.x, tris[v].normal.y, tris[v].normal.z);
+			//glTexCoord2f(tris[v].uvs[p * 2], tris[v].uvs[(p * 2) + 1]);
+			//glMateriali(GL_FRONT, GL_DIFFUSE, Materials::textures[0].textureID);
+			glNormal3f((GLfloat)tris[v].normal.x, (GLfloat)tris[v].normal.y, (GLfloat)tris[v].normal.z);
 			if (colliding && debugCollision)
 			{
-				glColor3f(1, 0, 0);
+				glColor3f(1.0f, 0.0f, 0.0f);
 			}
 			else
 			{
-				glColor3f(tris[v].colour.r, tris[v].colour.g, tris[v].colour.b);
+				glColor3f((GLfloat)tris[v].colour.r, (GLfloat)tris[v].colour.g, (GLfloat)tris[v].colour.b);
 			}
-			glVertex3f(position.x, position.y, position.z);
+			glVertex3f((GLfloat)position.x, (GLfloat)position.y, (GLfloat)position.z);
 		}
 	}
 	glEnd();
@@ -97,130 +91,18 @@ void Primitive::DrawForTris(std::vector<Tri> tris)
 	if (drawBoundingVolume) boundingVolume.Draw();
 }
 
-/*void OldPrimitive::CalculateInertiaTensor()
-{
-	double matVals[9] = { 0.0 };
-	switch (type)
-	{
-	case PrimitiveType::BOX:
-	{
-		matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
-		matVals[4] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
-		matVals[8] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
-		break;
-	}
-	case PrimitiveType::SPHERE:
-	{
-		matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		matVals[4] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		matVals[8] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		break;
-	}
-	case PrimitiveType::CAPSULE: //ASSUMED SAME AS CYLINDER FOR NOW
-	case PrimitiveType::CYLINDER:
-	{
-		matVals[0] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
-			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
-		matVals[4] = ((1.0 / (12.0 * rigidbody.inverseMass)) * ((double)collisionVolume.length * (double)collisionVolume.length))
-			+ ((1.0 / (4.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius));
-		matVals[8] = (1.0 / (2.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-		break;
-	}
-	case PrimitiveType::COMPLEX:
-	case PrimitiveType::PLANE:
-	default:
-		return;
-	}
-
-	rigidbody.inverseInertiaTensor = Matrix3(matVals);
-	rigidbody.inverseInertiaTensor.Inverse();
-}
-
-void OldPrimitive::Tween(float speed, const Vector3& direction, float approxDistance)
-{
-	if (/*!initialised || !rigidbody.isKinematic) return;
-
-	if (!tweenMaxSet)
-	{
-		tweenMax = tweenOrigin + (direction * approxDistance);
-		tweenMaxSet = true;
-	}
-
-	translation += (direction * (float)(Global::deltaTime * speed)) * (moveTowards ? 1.0f : -1.0f);
-
-	//Reverse movement
-	if ((moveTowards && translation.Distance(tweenMax) < 0.2)
-		|| (!moveTowards && translation.Distance(tweenOrigin) < 0.2))
-	{
-		moveTowards = !moveTowards;
-	}
-
-	updateTransform = true;
-}
-
-void OldPrimitive::SetTweenOrigin()
-{
-	tweenOrigin = translation;
-}*/
-
-/*void Primitive::UpdateTransform()
-{
-	if (freeze) return;
-	if (translation.y < -25.0)
-	{
-		std::cout << "WARNING: object fallen below ground plane." << std::endl;
-		freeze = true;
-	}
-
-	transform.Identity();
-
-	//Update the transform matrix4x4 with the new transform vectors.
-	Mathe::Translate(transform, translation.x, translation.y, translation.z);
-	Mathe::Rotate(transform, orientation);
-
-	collisionVolume.axisMat = transform;
-	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
-
-	Mathe::Scale(transform, scale.x, scale.y, scale.z);
-
-	if (type == PrimitiveType::CAPSULE || type == PrimitiveType::CYLINDER)
-	{
-		upDirMat.Identity();
-		//Mathe::Rotate(upDirMat, rotation.x, rotation.y, rotation.z);
-		Mathe::Rotate(upDirMat, orientation);
-		upDir = Vector3(0, 1, 0);
-		Mathe::Transform(upDir, upDirMat);
-		upDir = upDir.Normalise();
-	}
-
-	boundingVolume.Generate(vertices, transform); //Gets min and max vertices
-	collisionVolume.Update(translation, radius, scale, orientation);
-
-	updateTransform = false;
-}*/
-
 void Primitive::GetOrientation(Quaternion* _orientation) const
 {
 	*_orientation = orientation;
 }
 
-Quaternion Primitive::GetOrientation() const
-{
-	return orientation;
-}
-
 Matrix3 Primitive::GetOrientation(Matrix4 _matrix)
-{
-	return GetOrientation(_matrix.matrix);
-}
-
-Matrix3 Primitive::GetOrientation(double _matrix[16])
 {
 	double matVals[9] =
 	{
-		_matrix[0], _matrix[1], _matrix[2],
-		_matrix[4], _matrix[5], _matrix[6],
-		_matrix[8], _matrix[9], _matrix[10]
+		_matrix.matrix[0], _matrix.matrix[1], _matrix.matrix[2],
+		_matrix.matrix[4], _matrix.matrix[5], _matrix.matrix[6],
+		_matrix.matrix[8], _matrix.matrix[9], _matrix.matrix[10]
 	};
 
 	return Matrix3(matVals);
@@ -241,27 +123,6 @@ void Primitive::SetOrientation(const double r, const double i, const double j, c
 	orientation.Normalise();
 }
 
-//GLenum OldPrimitive::GetDrawType(PrimitiveType objectType)
-//{
-//	switch (objectType)
-//	{
-//	case PrimitiveType::CYLINDER:
-//	{
-//		return GL_TRIANGLE_STRIP;
-//	}
-//	case PrimitiveType::CAPSULE:
-//	case PrimitiveType::SPHERE:
-//	{
-//		return GL_TRIANGLES;
-//	}
-//	case PrimitiveType::BOX:
-//	default:
-//	{
-//		return GL_QUADS;
-//	}
-//	}
-//}
-
 void Box::CalculateInertiaTensor()
 {
 	double matVals[9] = { 0.0 };
@@ -276,11 +137,7 @@ void Box::CalculateInertiaTensor()
 void Box::UpdateTransform()
 {
 	if (freeze) return;
-	if (translation.y < -25.0)
-	{
-		std::cout << "WARNING: object fallen below ground plane." << std::endl;
-		freeze = true;
-	}
+	if (translation.y < -25.0) freeze = true;
 
 	transform.Identity();
 
@@ -291,17 +148,9 @@ void Box::UpdateTransform()
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
-	//if (timeSinceOutput > 0.5f)
-	//{
-		//orientation.DebugOutput();
-	//	timeSinceOutput = 0;
-	//}
-	//else timeSinceOutput += Global::deltaTime;
-
-
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	boundingVolume.GenerateForBox(transform); //Gets min and max vertices
+	boundingVolume.GenerateForBox(transform); //Sets min and max vertices
 	collisionVolume.Update(translation, scale);
 
 	updateTransform = false;
@@ -321,22 +170,17 @@ void Sphere::CalculateInertiaTensor()
 void Sphere::UpdateTransform()
 {
 	if (freeze) return;
-	if (translation.y < -25.0)
-	{
-		std::cout << "WARNING: object fallen below ground plane." << std::endl;
-		freeze = true;
-	}
+	if (translation.y < -25.0) freeze = true;
 
 	transform.Identity();
 
-	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
 	Mathe::Rotate(transform, orientation);
 
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
-	boundingVolume.UpdateMinMax(translation - Vector3(radius, radius, radius), translation + Vector3(radius, radius, radius)); //Gets min and max vertices
+	boundingVolume.UpdateMinMax(translation - Vector3(radius, radius, radius), translation + Vector3(radius, radius, radius));
 	collisionVolume.Update(translation);
 
 	updateTransform = false;
@@ -345,15 +189,9 @@ void Sphere::UpdateTransform()
 void Plane::UpdateTransform()
 {
 	if (freeze) return;
-	if (translation.y < -25.0)
-	{
-		std::cout << "WARNING: object fallen below ground plane." << std::endl;
-		freeze = true;
-	}
 
 	transform.Identity();
 
-	//Update the transform matrix4x4 with the new transform vectors.
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
 	Mathe::Rotate(transform, orientation);
 
@@ -362,7 +200,7 @@ void Plane::UpdateTransform()
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
 
-	boundingVolume.UpdateMinMax(Vector3(-scale.x, translation.y, -scale.z), Vector3(scale.x, translation.y, scale.z)); //Gets min and max vertices
+	boundingVolume.UpdateMinMax(Vector3(-scale.x, translation.y, -scale.z), Vector3(scale.x, translation.y, scale.z));
 	collisionVolume.Update(translation);
 
 	updateTransform = false;

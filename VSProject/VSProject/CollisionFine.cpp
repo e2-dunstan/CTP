@@ -1,25 +1,23 @@
 #include "CollisionFine.h"
 #include "Primitive.h"
 
-void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vector<Contact>& _contacts)
+void CollisionFine::DetectContacts(std::shared_ptr<Primitive> prim1, std::shared_ptr<Primitive> prim2)
 {
-	contacts = _contacts;
-
-
-	if (prim1->isStatic && prim2->isStatic) return;
+	if ((prim1->isStatic && prim2->isStatic)
+		|| (prim1->freeze && prim2->freeze)) return;
 
 	if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::SPHERE)
 	{
-		Plane* p1 = dynamic_cast<Plane*>(prim1);
-		Sphere* p2 = dynamic_cast<Sphere*>(prim2);
+		std::shared_ptr<Plane> p1 = std::move(std::dynamic_pointer_cast<Plane>(prim1));
+		std::shared_ptr<Sphere> p2 = std::move(std::dynamic_pointer_cast<Sphere>(prim2));
 		SphereAndPlane(p2, p1,
 			p2->collisionVolume.centre, p2->radius,
 			p1->collisionVolume.centre, p1->collisionVolume.normal);
 	}
 	else if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::BOX)
 	{
-		Plane* p1 = dynamic_cast<Plane*>(prim1);
-		Box* p2 = dynamic_cast<Box*>(prim2);
+		std::shared_ptr<Plane> p1 = std::move(std::dynamic_pointer_cast<Plane>(prim1));
+		std::shared_ptr<Box> p2 = std::move(std::dynamic_pointer_cast<Box>(prim2));
 		BoxAndPlane(p2, p1, p1->collisionVolume.centre, p1->collisionVolume.normal);
 	}
 	else if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::CYLINDER)
@@ -32,8 +30,8 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vect
 	}
 	else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::SPHERE)
 	{
-		Sphere* p1 = dynamic_cast<Sphere*>(prim1);
-		Sphere* p2 = dynamic_cast<Sphere*>(prim2);
+		std::shared_ptr<Sphere> p1 = std::move(std::dynamic_pointer_cast<Sphere>(prim1)); 
+		std::shared_ptr<Sphere> p2 = std::move(std::dynamic_pointer_cast<Sphere>(prim2));
 		SphereAndSphere(p1, p2,
 			p1->collisionVolume.centre, p1->radius,
 			p2->collisionVolume.centre, p2->radius);
@@ -46,8 +44,8 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vect
 	//}
 	else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::BOX)
 	{
-		Sphere* p1 = dynamic_cast<Sphere*>(prim1);
-		Box* p2 = dynamic_cast<Box*>(prim2);
+		std::shared_ptr<Sphere> p1 = std::move(std::dynamic_pointer_cast<Sphere>(prim1));
+		std::shared_ptr<Box> p2 = std::move(std::dynamic_pointer_cast<Box>(prim2));
 		SphereAndBox(p1, p2, p1->collisionVolume.centre, p1->radius);
 	}
 	else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::CYLINDER)
@@ -64,8 +62,8 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vect
 	//}
 	else if (prim1->type == PrimitiveType::BOX && prim2->type == PrimitiveType::SPHERE)
 	{
-		Sphere* p2 = dynamic_cast<Sphere*>(prim2);
-		Box* p1 = dynamic_cast<Box*>(prim1);
+		std::shared_ptr<Sphere> p2 = std::move(std::dynamic_pointer_cast<Sphere>(prim2));
+		std::shared_ptr<Box> p1 = std::move(std::dynamic_pointer_cast<Box>(prim1));
 		SphereAndBox(p2, p1, p2->collisionVolume.centre, p2->radius);
 	}
 	//else if (prim1->type == PrimitiveType::BOX && prim2->type == PrimitiveType::BOX)
@@ -122,7 +120,7 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2, std::vect
 	}
 }
 
-void CollisionFine::SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2)
+void CollisionFine::SphereAndSphere(const std::shared_ptr<Sphere>& prim1, const std::shared_ptr<Sphere>& prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2)
 {
 	Vector3 midline = position1 - position2;
 	float size = (float)midline.Magnitude();
@@ -131,19 +129,25 @@ void CollisionFine::SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3&
 
 	Vector3 normal = midline * 1.0f / size;
 
-	Contact contact(prim1, prim2);
-	contact.normal = normal.Normalise();
 	if (prim1->isStatic)
 	{
-		contact = Contact(prim2, prim1);
+		Contact contact(prim2, prim1);
 		contact.normal = normal.Normalise().Inverse();
+		contact.point = position1 + midline * 0.5f;
+		contact.penetrationDepth = radius1 + radius2 - size;
+		data->contacts.push_back(contact);
 	}
-	contact.point = position1 + midline * 0.5f;
-	contact.penetrationDepth = radius1 + radius2 - size;
-	contacts.push_back(contact);
+	else
+	{
+		Contact contact(prim1, prim2);
+		contact.normal = normal.Normalise();
+		contact.point = position1 + midline * 0.5f;
+		contact.penetrationDepth = radius1 + radius2 - size;
+		data->contacts.push_back(contact);
+	}
 }
 
-void CollisionFine::SphereAndPlane(Sphere* sphere, Plane* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal)
+void CollisionFine::SphereAndPlane(const std::shared_ptr<Sphere>& sphere, const std::shared_ptr<Plane>& plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal)
 {
 	float distance = (float)normal.ScalarProduct(spherePosition) - radius - (float)normal.ScalarProduct(planePosition);
 
@@ -153,10 +157,10 @@ void CollisionFine::SphereAndPlane(Sphere* sphere, Plane* plane, const Vector3& 
 	contact.normal = normal;
 	contact.penetrationDepth = -distance;
 	contact.point = spherePosition - normal * (distance + radius);
-	contacts.push_back(contact);
+	data->contacts.push_back(contact);
 }
 
-void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePosition, float radius)
+void CollisionFine::SphereAndBox(const std::shared_ptr<Sphere>& sphere, const std::shared_ptr<Box>& box, Vector3& spherePosition, float radius)
 {
 	Vector3 halfSize = box->collisionVolume.halfSize;
 	Vector3 relCentre = Mathe::MatrixInverse(box->collisionVolume.axisMat, spherePosition);
@@ -183,22 +187,27 @@ void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePositi
 	Mathe::Transform(closestPoint, box->collisionVolume.axisMat);
 
 	Vector3 normal = (spherePosition - closestPoint).Normalise();
-	//if (spherePosition.ScalarProduct(normal) > box->collisionVolume.centre.ScalarProduct(normal))
-	//	normal *= -1.0;
+	if (Mathe::IsVectorNAN(normal) || normal == Vector3()) return;
 
-	Contact contact(sphere, box);
-	contact.normal = normal;
 	if (sphere->isStatic)
 	{
-		contact = Contact(box, sphere);
+		Contact contact(box, sphere);
 		contact.normal = normal.Inverse();
+		contact.point = closestPoint;
+		contact.penetrationDepth = radius - (float)distance;
+		data->contacts.push_back(contact);
 	}
-	contact.point = closestPoint;
-	contact.penetrationDepth = radius - (float)distance;
-	contacts.push_back(contact);	
+	else
+	{
+		Contact contact(sphere, box);
+		contact.normal = normal;
+		contact.point = closestPoint;
+		contact.penetrationDepth = radius - (float)distance;
+		data->contacts.push_back(contact);
+	}
 }
 
-double CollisionFine::PositionOnAxis(const Box* box, const Vector3& axis)
+double CollisionFine::PositionOnAxis(const std::shared_ptr<Box>& box, const Vector3& axis)
 {
 	Matrix4 axisMat = box->collisionVolume.axisMat;
 
@@ -208,7 +217,7 @@ double CollisionFine::PositionOnAxis(const Box* box, const Vector3& axis)
 		+ box->collisionVolume.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
 }
 
-void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosition, const Vector3& normal)
+void CollisionFine::BoxAndPlane(const std::shared_ptr<Box>& box, const std::shared_ptr<Plane>& plane, const Vector3& planePosition, const Vector3& normal)
 {
 	float boxDistance = (float)(normal * box->collisionVolume.centre).Magnitude() - (float)PositionOnAxis(box, normal);
 	float planeOffset = (float)planePosition.ScalarProduct(normal);
@@ -229,17 +238,13 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 			contactPoints[numContacts].point = normal;
 			contactPoints[numContacts].point *= distance - (float)(planePosition * normal).Magnitude();
 			contactPoints[numContacts].point += box->collisionVolume.vertices[v];
-			contactPoints[numContacts].penetration = abs((float)(planePosition * normal).Magnitude() - distance) + 0.01f;// / 2.0f;
+			contactPoints[numContacts].penetration = abs((float)(planePosition * normal).Magnitude() - distance) + 0.01f;
 			totalPenetration += contactPoints[numContacts].penetration;
 			
 			numContacts++;
 			if (numContacts == 4) break;
 		}
 	}
-	//if (numContacts < 4)
-	//{
-	//	box->rigidbody.SetAwake(true);
-	//}
 
 	if (numContacts <= 0) return;
 	else if (numContacts == 1)
@@ -248,7 +253,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 		c.point = contactPoints[0].point;
 		c.penetrationDepth = contactPoints[0].penetration;
 		c.normal = normal;
-		contacts.push_back(c);
+		data->contacts.push_back(c);
 		return;
 	}
 
@@ -265,7 +270,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 			mergedContact.penetrationDepth += contactPoints[i].penetration;
 		}
 		mergedContact.penetrationDepth /= (float)numContacts;
-		contacts.push_back(mergedContact);
+		data->contacts.push_back(mergedContact);
 	}
 	else
 	{
@@ -275,7 +280,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 		{
 			contact.point = contactPoints[i].point;
 			contact.penetrationDepth = contactPoints[i].penetration;
-			contacts.push_back(contact);
+			data->contacts.push_back(contact);
 		}
 	}
 }
@@ -326,13 +331,13 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			contact.normal = plane->collisionVolume.normal;
 //
 //			contact.point = centre + Vector3((double)cyl->radius * (double)cos(0), 0, (double)cyl->radius * (double)sin(0));
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //			contact.point = centre + Vector3((double)cyl->radius * (double)cos((2.0f * PI) / 3.0f), 0, (double)cyl->radius * (double)sin((2.0f * PI) / 3.0f));
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //			contact.point = centre + Vector3((double)cyl->radius * (double)cos(-(2.0f * PI) / 3.0f), 0, (double)cyl->radius * (double)sin(-(2.0f * PI) / 3.0f));
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //			return;
 //		}
@@ -354,7 +359,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			contact.point = points[closestIndex1];
 //			contact.penetrationDepth = smallestDistance1;
 //			contact.normal = plane->collisionVolume.normal;
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //
 //			//PARALLEL (rolling)
@@ -376,7 +381,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //				contact.point = points[closestIndex2];
 //				contact.penetrationDepth = smallestDistance2;
 //				contact.normal = plane->collisionVolume.normal;
-//				contacts.push_back(contact);
+//				data->contacts.push_back(contact);
 //			}
 //
 //		}
@@ -442,7 +447,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //				contact.point = contactPoint;
 //				contact.normal = normal;
 //				contact.penetrationDepth = 0;
-//				contacts.push_back(contact);
+//				data->contacts.push_back(contact);
 //				return;
 //			}
 //			else
@@ -453,7 +458,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //				contact.point = contactPoint;
 //				contact.normal = cyl->upDir;
 //				contact.penetrationDepth = 0;
-//				contacts.push_back(contact);
+//				data->contacts.push_back(contact);
 //				return;
 //			}
 //		}
@@ -512,7 +517,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			contact.penetrationDepth = 0.00000001f;
 //			contact.normal = plane->collisionVolume.normal;
 //			contact.point = centre;
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //			return;
 //		}
@@ -534,7 +539,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			contact.point = points[closestIndex1];
 //			contact.penetrationDepth = smallestDistance1;
 //			contact.normal = plane->collisionVolume.normal;
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //
 //			float smallestDistance2 = 1000;
 //			int closestIndex2 = 0;
@@ -550,7 +555,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			}
 //			contact.point = points[closestIndex2];
 //			contact.penetrationDepth = smallestDistance2;
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //		}
 //		else
 //		{
@@ -562,7 +567,7 @@ void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosi
 //			contact.point = closestPoint;
 //			contact.normal = plane->collisionVolume.normal;
 //			contact.penetrationDepth = 0.000001f;
-//			contacts.push_back(contact);
+//			data->contacts.push_back(contact);
 //		}
 //	}
 //	else

@@ -33,7 +33,6 @@ struct Vector3
 	// -- INDEX GETTER/SETTER -- //
 	double& operator[](const int i);
 	const double& operator[](const int i) const;
-	//double& operator[](const int i);
 
 	// -- SCALAR -- //
 	void operator*=(const float value);
