@@ -12,7 +12,7 @@ struct Contact
 	friend class CollisionResolution;
 
 public:
-	Contact(std::shared_ptr<Primitive> prim1, std::shared_ptr<Primitive> prim2)
+	Contact(Primitive* prim1, Primitive* prim2)
 		: body1(prim1), body2(prim2)
 	{
 		if (body1->type != PrimitiveType::PLANE) body1->colliding = true;
@@ -24,8 +24,8 @@ public:
 	Vector3 normal;
 	float penetrationDepth = 0;
 
-	std::shared_ptr<Primitive> body1;
-	std::shared_ptr<Primitive> body2;
+	Primitive* body1;
+	Primitive* body2;
 
 protected:
 

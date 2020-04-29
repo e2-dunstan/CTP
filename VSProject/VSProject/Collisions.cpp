@@ -3,17 +3,17 @@
 
 Collisions::Collisions()
 {
-	fine = std::make_unique<CollisionFine>(data);
-	sat = std::make_unique<SAT>(data);
+	fine = std::make_unique<CollisionFine>(data->contacts);
+	sat = std::make_unique<SAT>(data->contacts);
 }
 
 //Using shared ptr ensures that it's not null
-void Collisions::DetectCoarse(const std::shared_ptr<Primitive> prim1, const std::shared_ptr<Primitive> prim2)
+void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
 {
 	if (prim1->freeze && prim2->freeze) return;
 	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
 	{
-		potentialContacts.push_back(PotentialContact(std::move(prim1), std::move(prim2)));
+		potentialContacts.push_back(PotentialContact(prim1, prim2));
 	}
 }
 

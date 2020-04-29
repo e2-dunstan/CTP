@@ -51,10 +51,10 @@ struct CollisionData
 struct PotentialContact
 {
 	PotentialContact() = default;
-	PotentialContact(std::shared_ptr<Primitive> _p1, std::shared_ptr<Primitive> _p2)
+	PotentialContact(Primitive* _p1, Primitive* _p2)
 		: prim1(_p1), prim2(_p2) {};
 	~PotentialContact() = default;
 
-	std::shared_ptr<Primitive> prim1;
-	std::shared_ptr<Primitive> prim2;
+	Primitive* prim1 = nullptr;
+	Primitive* prim2 = nullptr;
 };

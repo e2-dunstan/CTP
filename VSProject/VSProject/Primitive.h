@@ -59,7 +59,7 @@ protected:
 	bool drawBoundingVolume = false;
 };
 
-class Box : virtual public Primitive
+class Box : public Primitive
 {
 public:
 	Box() { tris.reserve(12); };
@@ -85,7 +85,7 @@ public:
 	float timeSinceOutput = 0;
 };
 
-class Sphere : virtual public Primitive
+class Sphere : public Primitive
 {
 public:
 	Sphere() = default;
@@ -109,7 +109,7 @@ public:
 	SphereCV collisionVolume;
 };
 
-class Plane : virtual public Primitive
+class Plane : public Primitive
 {
 public:
 	Plane() { tris.reserve(2); };

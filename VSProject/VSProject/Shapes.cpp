@@ -131,19 +131,6 @@ std::vector<Tri> Shapes::ShapeVertices::GetCubeTris(const Colour& _colour)
 
 std::vector<Tri> ShapeVertices::GetPlaneTris(const Colour& _colour)
 {
-	const float uv_left[6] =
-	{
-		0.0f, 1.0f,
-		0.0f, 0.0f,
-		1.0f, 0.0f
-	};
-	const float uv_right[6] =
-	{
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f
-	};
-
 	std::vector<Tri> tris;
 	tris.reserve(2);
 
@@ -317,19 +304,6 @@ std::vector<Tri> ShapeVertices::GetPlaneTris(const Colour& _colour)
 
 std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _colour, uint16_t sectorCount, uint16_t stackCount)
 {
-	/*const float uv_left[6] =
-	{
-		0.0f, 1.0f,
-		0.0f, 0.0f,
-		1.0f, 0.0f
-	};
-	const float uv_right[6] =
-	{
-		0.0f, 0.0f,
-		1.0f, 0.0f,
-		1.0f, 1.0f
-	};*/
-
 	Colour sphereColour = Colour(1, 1, 1);
 	if (_colour != Colours::white) sphereColour = _colour;
 

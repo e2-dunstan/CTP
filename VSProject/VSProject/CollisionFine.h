@@ -6,10 +6,10 @@
 class CollisionFine
 {
 public:
-	CollisionFine(std::shared_ptr<CollisionData> d) : data(d) {};
+	CollisionFine(std::vector<Contact>& _contacts) : contacts(_contacts) {};
 	~CollisionFine() = default;
 
-	void DetectContacts(std::shared_ptr<Primitive> prim1, std::shared_ptr<Primitive> prim2);
+	void DetectContacts(Primitive* prim1, Primitive* prim2);
 
 private:
 
@@ -22,9 +22,9 @@ private:
 	};
 
 
-	std::shared_ptr<CollisionData> data;
+	std::vector<Contact>& contacts;
 
-	double PositionOnAxis(const std::shared_ptr<Box>& box, const Vector3& axis);
+	double PositionOnAxis(const Box* box, const Vector3& axis);
 
 	//PrimitiveType checks
 	/* TYPE CHECKS: (total of 24 if statements)
@@ -44,11 +44,11 @@ private:
 	//Capsule and capsule
 	*/
 
-	void SphereAndSphere(const std::shared_ptr<Sphere>& prim1, const std::shared_ptr<Sphere>& prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);
-	void SphereAndPlane(const std::shared_ptr<Sphere>& sphere, const std::shared_ptr<Plane>& plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal);
-	void SphereAndBox(const std::shared_ptr<Sphere>& sphere, const std::shared_ptr<Box>& box, Vector3& spherePosition, float radius);
+	void SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2);
+	void SphereAndPlane(Sphere* sphere, Plane* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal);
+	void SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePosition, float radius);
 	
-	void BoxAndPlane(const std::shared_ptr<Box>& box, const std::shared_ptr<Plane>& plane, const Vector3& planePosition, const Vector3& normal);
+	void BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosition, const Vector3& normal);
 	
 	//void CylinderAndCylinder(Primitive* prim1, Primitive* prim2); //TOO COMPLEX AT THE MOMENT
 	//void CylinderAndCapsule(Primitive* cyl, Primitive* cap);

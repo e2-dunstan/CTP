@@ -23,7 +23,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 	plane.translation = translation;
 	plane.UpdateTransform();
 
-	primitives.push_back(std::make_shared<Plane>(std::move(plane)));
+	primitives.push_back(std::make_unique<Plane>(std::move(plane)));
 }
 
 void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic, const Material mat)
@@ -48,7 +48,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 		box.rigidbody.EnableSleep(true);
 	}
 
-	primitives.push_back(std::make_shared<Box>(std::move(box)));
+	primitives.push_back(std::make_unique<Box>(std::move(box)));
 }
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation, const Material mat)
@@ -62,7 +62,7 @@ void PrimitiveManager::CreateSphere(float radius, const Vector3& translation, co
 	sphere.translation = translation;
 	sphere.UpdateTransform();
 
-	primitives.push_back(std::make_shared<Sphere>(std::move(sphere)));
+	primitives.push_back(std::make_unique<Sphere>(std::move(sphere)));
 }
 
 //void PrimitiveManager::CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation)
@@ -117,7 +117,7 @@ void PrimitiveManager::Update()
 	{
 		for (unsigned j = i + 1; j < primSize; j++)
 		{
-			collisions->DetectCoarse(primitives[i], primitives[j]);
+			collisions->DetectCoarse(primitives[i].get(), primitives[j].get());
 		}
 	}
 
@@ -125,7 +125,7 @@ void PrimitiveManager::Update()
 	collisions->Resolution();
 }
 
-std::vector<std::shared_ptr<Primitive>>& PrimitiveManager::GetPrimitives()
+std::vector<std::unique_ptr<Primitive>>& PrimitiveManager::GetPrimitives()
 {
 	return primitives;
 }

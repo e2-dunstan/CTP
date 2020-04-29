@@ -166,7 +166,7 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
 				bestRay = ray;
-				mat = *triPrimitives[p].transform;
+				mat = triPrimitives[p].transform;
 			}
 		}
 	}

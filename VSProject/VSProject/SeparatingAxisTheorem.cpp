@@ -2,12 +2,12 @@
 #include "Primitive.h"
 #include "CollisionData.h"
 
-void SAT::Test(std::shared_ptr<Primitive> _box1, std::shared_ptr<Primitive> _box2)
+void SAT::Test(Primitive* _box1, Primitive* _box2)
 {
 	if (_box1->isStatic && _box2->isStatic) return;
 
-	std::shared_ptr<Box> box1 = std::move(std::dynamic_pointer_cast<Box>(_box1));// dynamic_cast<Box*>(_box1);
-	std::shared_ptr<Box> box2 = std::move(std::dynamic_pointer_cast<Box>(_box2));//dynamic_cast<Box*>(_box2);
+	Box* box1 = dynamic_cast<Box*>(_box1);
+	Box* box2 = dynamic_cast<Box*>(_box2);
 
 	Vector3 toCentre = box2->collisionVolume.centre - box1->collisionVolume.centre;
 	float smallestPenetration = 1000;
@@ -43,7 +43,7 @@ void SAT::Test(std::shared_ptr<Primitive> _box1, std::shared_ptr<Primitive> _box
 	GetContactData(smallestIndex, box1, box2, toCentre, smallestPenetration, singleSmallestIndex);
 }
 
-void SAT::GetContactData(int& smallestIndex, std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
+void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3& toCentre, float smallestPenetration, int singleSmallestIndex)
 {	   	 
 	//Point-face collision
 	if (smallestIndex < 3)
@@ -110,7 +110,7 @@ void SAT::GetContactData(int& smallestIndex, std::shared_ptr<Box>& box1, std::sh
 			contact.normal = normal.Normalise().Inverse();
 			contact.point = vertex;
 			contact.penetrationDepth = smallestPenetration;
-			data->contacts.push_back(contact);
+			contacts.push_back(contact);
 		}
 		else
 		{
@@ -118,7 +118,7 @@ void SAT::GetContactData(int& smallestIndex, std::shared_ptr<Box>& box1, std::sh
 			contact.normal = normal.Normalise();		
 			contact.point = vertex;
 			contact.penetrationDepth = smallestPenetration;
-			data->contacts.push_back(contact);
+			contacts.push_back(contact);
 
 		}
 
@@ -157,7 +157,7 @@ bool SAT::BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3
 }
 
 //Only finds one contact point
-void SAT::PointFaceCollisionSimple(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration)
+void SAT::PointFaceCollisionSimple(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration)
 {
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
 	if (normal.ScalarProduct(toCentre) > 0)
@@ -177,7 +177,7 @@ void SAT::PointFaceCollisionSimple(std::shared_ptr<Box>& box1, std::shared_ptr<B
 		contact.normal = normal.Normalise().Inverse();
 		contact.point = point;
 		contact.penetrationDepth = penetration;
-		data->contacts.push_back(contact);
+		contacts.push_back(contact);
 	}
 	else
 	{
@@ -185,11 +185,11 @@ void SAT::PointFaceCollisionSimple(std::shared_ptr<Box>& box1, std::shared_ptr<B
 		contact.normal = normal;
 		contact.point = point;
 		contact.penetrationDepth = penetration;
-		data->contacts.push_back(contact);
+		contacts.push_back(contact);
 	}
 }
 
-void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& box2, const Vector3& toCentre, int smallest, float penetration)
+void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int smallest, float penetration)
 {
 	Vector3 normal = Mathe::GetAxis(smallest, box1->collisionVolume.axisMat);
 	if (normal.ScalarProduct(toCentre) < 0)
@@ -312,7 +312,7 @@ void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& b
 					contact.normal = normal.Inverse();
 					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
 					contact.point = clippedVertices[v];
-					data->contacts.push_back(contact);
+					contacts.push_back(contact);
 				}
 				else
 				{
@@ -320,7 +320,7 @@ void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& b
 					contact.normal = normal;
 					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
 					contact.point = clippedVertices[v];
-					data->contacts.push_back(contact);
+					contacts.push_back(contact);
 				}
 			}
 		}
@@ -340,7 +340,7 @@ void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& b
 		contact.normal = normal.Inverse();
 		contact.penetrationDepth = totalPenetration / (float)numContacts;
 		contact.point = mergedPos;
-		data->contacts.push_back(contact);
+		contacts.push_back(contact);
 	}
 	else
 	{
@@ -348,7 +348,7 @@ void SAT::PointFaceCollision(std::shared_ptr<Box>& box1, std::shared_ptr<Box>& b
 		contact.normal = normal;
 		contact.penetrationDepth = totalPenetration / (float)numContacts;
 		contact.point = mergedPos;
-		data->contacts.push_back(contact);
+		contacts.push_back(contact);
 	}
 
 

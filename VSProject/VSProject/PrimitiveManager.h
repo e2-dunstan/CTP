@@ -28,7 +28,7 @@ public:
 	void Draw();
 	void Update();
 
-	std::vector<std::shared_ptr<Primitive>>& GetPrimitives();
+	std::vector<std::unique_ptr<Primitive>>& GetPrimitives();
 
 private:
 
@@ -38,7 +38,7 @@ private:
 
 	bool drawContacts = false;
 
-	std::vector<std::shared_ptr<Primitive>> primitives;
+	std::vector<std::unique_ptr<Primitive>> primitives;
 
 	Ray rayToTest;
 	bool drawRay = false;

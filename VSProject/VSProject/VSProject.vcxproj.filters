@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="Source Files">
@@ -191,9 +191,6 @@
     <ClInclude Include="SeparatingAxisTheorem.h">
       <Filter>Header Files\Physics\Collision\Detection</Filter>
     </ClInclude>
-    <ClInclude Include="Jacobian.h">
-      <Filter>Header Files\Mathe</Filter>
-    </ClInclude>
     <ClInclude Include="Contact.h">
       <Filter>Header Files\Physics\Collision</Filter>
     </ClInclude>
@@ -212,13 +209,5 @@
     <ClInclude Include="Material.h">
       <Filter>Header Files\Physics</Filter>
     </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="FragmentShader.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="VertexShader.glsl">
-      <Filter>Resource Files</Filter>
-    </None>
   </ItemGroup>
 </Project>
