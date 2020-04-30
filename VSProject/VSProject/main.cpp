@@ -1,4 +1,7 @@
 #pragma once
+#define _CRTDBG_MAP_ALLOC
+#include <stdlib.h>
+#include <crtdbg.h>
 
 #include <SFML/Graphics.hpp>
 #include <Windows.h>
@@ -239,6 +242,8 @@ int main(int argc, char* argv[])
 	}
 	if (openglWindow)
 	{
+		_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+
 		std::cout << "Initialising GLUT... ";
 
 		// Initialize GLUT
@@ -283,5 +288,6 @@ int main(int argc, char* argv[])
 		//https://www.opengl.org/sdk/docs/tutorials/ClockworkCoders/loading.php
 	}
 
+	_CrtDumpMemoryLeaks();
 	return 0;
 }
