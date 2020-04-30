@@ -151,6 +151,8 @@ namespace Materials
 
 	static BounceCombineType GetBounceCombineType(Material m1, Material m2)
 	{
+		return BounceCombineType::AVERAGE;
+
 		if ((int)m1 > (int)m2)
 			std::swap(m1, m2);
 

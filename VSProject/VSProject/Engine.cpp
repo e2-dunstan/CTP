@@ -25,9 +25,10 @@ void Engine::Init()
 
 	srand(time(NULL));
 
-	//Stacks();
-	//SpawnDominoes(4, Vector3(1, 2.0, 0.2), 2.0f);
-	SpheresInBox();
+	//SpawnDominoes(8, Vector3(1.0, 2.0, 0.2), Vector3(), Vector3(1, 0, 0), 2.0f, true);
+	Scene_Dominoes();
+	//Scene_Stacks();
+	//Scene_SpheresInBox();
 }
 
 void Engine::Update()
@@ -87,16 +88,16 @@ void Engine::UpdateTrisForRayCamera()
 
 void Engine::ThrowSphere()
 {
-	primitiveManager->CreateSphere(1.0, Vector3(0, 4.5, -12));
-	//primitiveManager->CreateBox(Vector3(2, 2, 2), Vector3(0, 4, 0), Vector3(0, 0, 0));
-	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(0, 0, 25);
+	primitiveManager->CreateSphere(1.0, Vector3(0, 4.5, -5), Material::RUBBER);
+	//primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(0, 4, -2), Vector3(0, 0, 0), false, Material::WOOD);
+	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(0, 0, 10);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;
 }
 
 
-void Engine::Stacks()
+void Engine::Scene_Stacks()
 {
 	SpawnStack(Vector3(0, 0, 8), 3, Vector3(1, 1, 1), 0.2f);
 	SpawnStack(Vector3(0, 0, 4), 2, Vector3(1, 1, 1), 0.2f);
@@ -105,7 +106,7 @@ void Engine::Stacks()
 	//SpawnStack(Vector3(0, 0, 0), 8, Vector3(1, 1, 1), 0.2f);
 }
 
-void Engine::SpheresInBox()
+void Engine::Scene_SpheresInBox()
 {
 	//base
 	primitiveManager->CreateBox(Vector3(5.8, 0.1, 6.2), Vector3(0, -0.09, 0), Vector3(), true, Material::WOOD);
@@ -127,15 +128,23 @@ void Engine::SpheresInBox()
 	//Spheres
 	for (uint16_t j = 0; j < 100; j++)
 	{
-		float radius = ((rand() % 5) + 1.0f) / 2.0f;
+		float radius = ((rand() % 5) + 1.0f) / 4.0f;
 		float y = ((rand() % 100) / 10.0f) + 10.0f;
 		Vector3 pos = Vector3((rand() % 9 - 5), y, (rand() % 9 - 5));
-		primitiveManager->CreateSphere(radius, pos, Material::CONCRETE);
+		primitiveManager->CreateSphere(radius, pos, Material::GLASS);
 		individualObjectInitialised.push_back(false);
 		primitiveCount++;
 	}
 
 	objectsInitialised = false;
+}
+
+void Engine::Scene_Dominoes()
+{
+	Vector3 dir = Vector3(0, 0, -1);
+	SpawnDominoes(8, Vector3(1.0, 2.0, 0.2), Vector3(), dir, 2.0f, true);
+
+
 }
 
 void Engine::SpawnRandomSphere()
@@ -176,18 +185,28 @@ void Engine::SpawnRandomBox()
 	primitiveCount++;
 }
 
-void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing)
+void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const Vector3& origin, Vector3& dir, const float spacing, const bool startTilted)
 {
-	Vector3 pos = Vector3(0, size.y * 2, 0);
+	//position with y offset
+	Vector3 pos = origin + Vector3(0, size.y * 2.0, 0);
+
+	Vector3 tilt = Vector3();
+	if (startTilted)
+	{
+		if (dir.IsRoughlyEqualTo(Vector3(1, 0, 0))) tilt = Vector3(0, 0, -10);
+		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, 1))) tilt = Vector3(10, 0, 0);
+		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, -1))) tilt = Vector3(-10, 0, 0);
+		else if (dir.IsRoughlyEqualTo(Vector3(-1, 0, 0))) tilt = Vector3(0, 0, 10);
+	}
+
 	for (unsigned int i = 0; i < count; i++)
 	{
-		primitiveManager->CreateBox(size, pos, Vector3(0, 0, 0));
-		pos += Vector3(0, 0, spacing);
+		primitiveManager->CreateBox(size, pos, (i == 0 && startTilted) ? tilt : Vector3(0, 0, 0));
+		pos += dir * spacing;
 
 		individualObjectInitialised.push_back(false);
 		objectsInitialised = false;
 		primitiveCount++;
-
 	}
 }
 

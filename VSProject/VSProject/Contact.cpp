@@ -130,13 +130,6 @@ void Contact::CalculateDesiredDeltaVelocity()
 		r = 0.0f;
 
 	desiredDeltaVelocity = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
-	/*if (desiredDeltaVelocity > 100)
-	{
-		body1->rigidbody.GetTrueAccelerationLastFrame().DebugOutput();
-		body2->rigidbody.GetTrueAccelerationLastFrame().DebugOutput();
-		normal.DebugOutput();
-		std::cout << bodiesVelocity << ", " << desiredDeltaVelocity  << ", " << Global::deltaTime << std::endl;
-	}*/
 }
 
 
@@ -272,9 +265,6 @@ void Contact::ResolvePenetration()
 		body1->GetOrientation(&q);
 		Mathe::AddScaledVector(q, angularChange[0], 1.0, true);
 		body1->SetOrientation(q);
-
-		//if (angularChange[0].SumComponents() > 5)
-		//	angularChange[0].DebugOutput();
 	}
 	if (abs(angularMove2) > 0 && !body2->isStatic)
 	{
@@ -286,9 +276,6 @@ void Contact::ResolvePenetration()
 		body2->GetOrientation(&q);
 		Mathe::AddScaledVector(q, angularChange[1], 1.0, true);
 		body2->SetOrientation(q);
-
-		//if (angularChange[1].SumComponents() > 5)
-		//	angularChange[1].DebugOutput();
 	}
 
 	body1->updateTransform = true;
@@ -447,17 +434,17 @@ Vector3 Contact::FrictionImpulse()
 		impulseContact.y *= (friction_dynamic * impulseContact.x);
 		impulseContact.z *= (friction_dynamic * impulseContact.x);
 
-		if (!body2->isStatic)
-		{
-			const float threshold = 0.1f;
-			const float sum = impulseContact.y + impulseContact.z;
-			if (abs(sum) < threshold)
-			{
-				//impulseContact.x += sum;
-				impulseContact.y = 0;
-				impulseContact.z = 0;
-			}
-		}
+		//if (!body2->isStatic)
+		//{
+		//	const float threshold = 0.1f;
+		//	const float sum = impulseContact.y + impulseContact.z;
+		//	if (abs(sum) < threshold)
+		//	{
+		//		//impulseContact.x += sum;
+		//		impulseContact.y = 0;
+		//		impulseContact.z = 0;
+		//	}
+		//}
 	}
 	return impulseContact;
 }

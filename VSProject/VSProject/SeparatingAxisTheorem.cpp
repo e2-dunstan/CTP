@@ -292,7 +292,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 		float positionOnPlane = (float)clippedVertices[v].ScalarProduct(referencePlane.normal);
 
 		//below the reference plane
-		if (positionOnPlane < 0)
+		if (positionOnPlane < 0.0001f && positionOnPlane > -0.5f) //maximum penetration depth
 		{
 			//transform point back to world space
 			Mathe::Transform(clippedVertices[v], referencePlane.matrix);
@@ -325,6 +325,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 			}
 		}
 	}
+	//Global::shouldUpdate = false;
 	if (!mergeContacts) return;
 
 	Vector3 mergedPos = Vector3();

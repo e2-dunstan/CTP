@@ -17,13 +17,14 @@ public:
 	void Update();
 	void Render();
 
-	void Stacks();
-	void SpheresInBox();
+	void Scene_Stacks();
+	void Scene_SpheresInBox();
+	void Scene_Dominoes();
 
 	void SpawnRandomSphere();
 	void SpawnRandomBox();
 
-	void SpawnDominoes(const unsigned int count, const Vector3& size, const float spacing);
+	void SpawnDominoes(const unsigned int count, const Vector3& size, const Vector3& origin, Vector3& dir, const float spacing, const bool startTilted = false);
 	void SpawnStack(const Vector3& origin, const unsigned int count, const Vector3& size, const float sizeVariance);
 
 

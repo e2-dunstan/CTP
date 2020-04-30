@@ -37,7 +37,8 @@ void Collisions::Resolution()
 
 	for (unsigned i = 0; i < data->contacts.size(); i++)
 	{
-		if (!data->contacts[i].body1->isStatic && !data->contacts[i].body2->isStatic)
+		if (!data->contacts[i].body1->isStatic && !data->contacts[i].body2->isStatic
+			&& i < 30)
 		{
 			contactDisplays[i].origin = data->contacts[i].point;
 			contactDisplays[i].normal = data->contacts[i].normal;
@@ -70,8 +71,6 @@ void Collisions::Resolution()
 
 void Collisions::DrawContacts()
 {
-	if (data->contacts.size() <= 0) return;
-
 	for (unsigned i = 0; i < 30; i++)
 	{
 		if (contactDisplays[i].origin == Vector3()) continue;
