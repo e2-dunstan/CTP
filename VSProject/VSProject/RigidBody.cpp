@@ -19,8 +19,8 @@ bool RigidBody::PhysicsUpdate()
 	velocity += Global::gravity * Global::deltaTime;
 
 	//Clamp velocities
-	velocity = velocity.Clamp(terminalSpeed * -1.0, terminalSpeed);
-	angularVelocity = angularVelocity.Clamp(terminalSpeedAngular * -1.0, terminalSpeedAngular);
+	velocity = velocity.Clamp(terminalSpeed * -1.0f, terminalSpeed);
+	angularVelocity = angularVelocity.Clamp(terminalSpeedAngular * -1.0f, terminalSpeedAngular);
 
 	//Drag
 	if (linearDrag != 0)
@@ -49,9 +49,10 @@ void RigidBody::EndPhysicsUpdate(bool colliding = false)
 		else if (motion > sleepThreshold * 2.0)
 		{
 			timeMotionBelowSleepThreshold = 0;
-			motion = sleepThreshold * 2.0;
+			motion = sleepThreshold * 2.0f;
 		}
 	}
+	else timeMotionBelowSleepThreshold = 0;
 }
 
 void RigidBody::AddVelocityChange(const Vector3& velChange)
@@ -81,7 +82,7 @@ Vector3 RigidBody::GetTrueAccelerationLastFrame()
 void RigidBody::SetTerminalSpeed()
 {
 	//Approximation assuming area = 1
-	terminalSpeed = sqrt((Global::gravityMag) / (inverseMass * Global::airDensity * linearDrag));
+	terminalSpeed = sqrtf((Global::gravityMag) / (inverseMass * Global::airDensity * linearDrag));
 	terminalSpeedAngular = Mathe::ToRadians(terminalSpeed);
 }
 
@@ -90,7 +91,7 @@ void RigidBody::SetAwake(const bool awake)
 	if (awake)
 	{
 		isAwake = true;
-		motion = sleepThreshold * 2.0;
+		motion = sleepThreshold * 2.0f;
 		//add motion here
 	}
 	else
@@ -107,9 +108,12 @@ void RigidBody::EnableSleep(const bool _canSleep)
 	if (!canSleep && !isAwake) SetAwake(true);
 }
 
-double RigidBody::GetMotion()
+float RigidBody::GetMotion()
 {
-	double currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
-	double contingency = pow(0.5, Global::deltaTime);
-	return contingency * motion + (1 - contingency) * currentMotion;
+	float currentMotion = velocity.ScalarProduct(velocity) + angularVelocity.ScalarProduct(angularVelocity);
+	//float contingency = powf(0.5f, Global::deltaTime);
+	//float m = contingency * motion + (1 - contingency) * currentMotion;
+	//if (currentMotion > 1.5f)
+	//std::cout << currentMotion << ", " << m << std::endl;
+	return currentMotion;
 }

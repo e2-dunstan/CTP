@@ -9,9 +9,8 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 
 	bool iterationsComplete = false;
 
-	for (unsigned iter = 0; iter < maxPenetrationIterations; iter++)
+	for (uint16_t iter = 0; iter < maxPenetrationIterations; iter++)
 	{
-		//if (iter == 99) std::cout << "Penetrations not complete" << std::endl;
 		if (iterationsComplete)
 		{
 			//std::cout << "Penetration iterations finished early " << iter << std::endl;
@@ -19,10 +18,10 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 		}
 		iterationsComplete = true;
 
-		//This is good but expensive
-		//SortContactsByPenetration(contacts);
+		//This is good but expensive to do every iteration
+		if (iter % 10 == 0 && iter != 0) SortContactsByPenetration(contacts);
 
-		for (unsigned int contactIndex = 0; contactIndex < numContacts; contactIndex++)
+		for (uint16_t contactIndex = 0; contactIndex < numContacts; contactIndex++)
 		{
 			if (contacts[contactIndex].IsPenetrationResolved(penetrationEpsilon)) continue;
 			else iterationsComplete = false;
@@ -33,7 +32,7 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 
 			Vector3 deltaPosition;
 			//Check other contacts for effects from previous resolution
-			for (unsigned i = 0; i < numContacts; i++)
+			for (uint16_t i = 0; i < numContacts; i++)
 			{
 				if (!contacts[i].body1->isStatic)
 				{
@@ -83,16 +82,16 @@ void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 
 	bool iterationsComplete = false;
 
-	for (unsigned int iter = 0; iter < maxVelocityIterations; iter++)
+	for (uint16_t iter = 0; iter < maxVelocityIterations; iter++)
 	{
 		if (iterationsComplete)
 		{
-			//if (iter > 90) std::cout << "Velocity iterations finished early " << iter << std::endl;
+			//std::cout << "Velocity iterations finished early " << iter << std::endl;
 			break; //early out
 		}
 		iterationsComplete = true;
 
-		for (unsigned contactIndex = 0; contactIndex < numContacts; contactIndex++)
+		for (uint16_t contactIndex = 0; contactIndex < numContacts; contactIndex++)
 		{
 			if (contacts[contactIndex].IsVelocityResolved(velocityEpsilon)) continue;
 			else iterationsComplete = false;
@@ -101,15 +100,15 @@ void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 
 			//Match RB awake states
 			if (!contacts[contactIndex].body1->isStatic && !contacts[contactIndex].body2->isStatic
-				&& contacts[contactIndex].body1->rigidbody.GetMotion() > contacts[contactIndex].body1->rigidbody.sleepThreshold
-				&& contacts[contactIndex].body2->rigidbody.GetMotion() > contacts[contactIndex].body2->rigidbody.sleepThreshold)
+				&& (contacts[contactIndex].body1->rigidbody.GetMotion() > contacts[contactIndex].body1->rigidbody.sleepThreshold
+				|| contacts[contactIndex].body2->rigidbody.GetMotion() > contacts[contactIndex].body2->rigidbody.sleepThreshold))
 			{
 				contacts[contactIndex].MatchRigidbodyAwakeStates();
 			}
 
 			//Note to self: the signs are correct! Don't touch them!
 
-			for (unsigned i = 0; i < numContacts; i++)
+			for (uint16_t i = 0; i < numContacts; i++)
 			{
 				if (!contacts[i].body1->isStatic)
 				{
@@ -151,12 +150,13 @@ void CollisionResolution::WriteToFile(float value, unsigned int obj, unsigned in
 	file << std::to_string(obj) << "," + std::to_string(iter) << "," << std::to_string(value) << "\n";
 }
 
+
 void CollisionResolution::AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign)
 {
 	Vector3 deltaVelocity = thisContact.velocityChange[bt]
 		+ thisContact.rotationChange[bt].VectorProduct(rcp);
 	Mathe::Transform(deltaVelocity, otherContact.worldToContact);
-	otherContact.closingVelocity += deltaVelocity * (sign ? 1.0 : -1.0);
+	otherContact.closingVelocity += deltaVelocity * (sign ? 1.0f : -1.0f);
 	otherContact.CalculateDesiredDeltaVelocity();
 }
 

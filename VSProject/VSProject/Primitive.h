@@ -41,7 +41,7 @@ public:
 	Matrix3 GetOrientation(Matrix4 _matrix);
 
 	void SetOrientation(const Quaternion& _orientation);
-	void SetOrientation(const double r, const double i, const double j, const double k);
+	void SetOrientation(const float r, const float i, const float j, const float k);
 
 	bool enableCollision = true;
 	bool colliding = false;
@@ -53,7 +53,9 @@ public:
 	bool freeze = false;
 	bool isStatic = false;
 
+	std::vector<Tri> tris = std::vector<Tri>();
 protected:
+
 	bool debugCollision = false;
 
 	bool drawBoundingVolume = false;
@@ -76,8 +78,6 @@ public:
 	void UpdateTransform() override;
 
 	void Draw() override { DrawForTris(tris); }
-
-	std::vector<Tri> tris = std::vector<Tri>();
 
 	Vector3 scale = Vector3();
 	BoxCV collisionVolume;
@@ -103,8 +103,6 @@ public:
 
 	void Draw() override { DrawForTris(tris); }
 
-	std::vector<Tri> tris = std::vector<Tri>();
-
 	float radius = 0;
 	SphereCV collisionVolume;
 };
@@ -121,15 +119,13 @@ public:
 	}
 	~Plane() = default;
 
-
-	void Start() override {};
+	void Start() override {}
 	void CalculateInertiaTensor() override {}
 	void UpdateTransform() override;
 
 	void Draw() override { DrawForTris(tris); }
 
-	std::vector<Tri> tris = std::vector<Tri>();
-
 	Vector3 scale = Vector3();
+	Vector3 normal = Vector3(0, 1, 0);
 	PlaneCV collisionVolume;
 };

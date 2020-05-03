@@ -28,7 +28,7 @@ private:
 
 	bool simpleTest = false;
 
-	double GetPositionOnAxis(const BoxCV& box, const Vector3& axis);
+	float GetPositionOnAxis(const BoxCV& box, const Vector3& axis);
 	bool BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3& toCentre, Vector3 axis,
 		int index, float& smallestPenetration, int& smallestIndex);
 
@@ -39,11 +39,11 @@ private:
 	bool SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize);
 	void SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vector3& min, Vector3& max);
 
-	Vector3 CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax);
+	Vector3 CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint16_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax);
 
 	void SutherlandHodgman(std::vector<Vector3>& clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices);
-	bool InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, double edgeMinX, double edgeMinY);
-	void VerifyVertex(std::vector<Vector3>& _clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const unsigned axes[]);
+	bool InsideEdge(float px, float py, float edgeMaxX, float edgeMaxY, float edgeMinX, float edgeMinY);
+	void VerifyVertex(std::vector<Vector3>& _clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint16_t axes[]);
 };
 
 //Types of box collision:

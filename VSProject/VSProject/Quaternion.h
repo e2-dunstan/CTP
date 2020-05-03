@@ -4,16 +4,16 @@ struct Vector3;
 
 struct Quaternion
 {
-	Quaternion(double _r, double _i, double _j, double _k)
+	Quaternion(float _r, float _i, float _j, float _k)
 		: r(_r), i(_i), j(_j), k(_k) {}
 	Quaternion() = default;
 	~Quaternion() = default;
 
 	//real and three complex components
-	double r = 1;
-	double i = 0;
-	double j = 0;
-	double k = 0;
+	float r = 1;
+	float i = 0;
+	float j = 0;
+	float k = 0;
 
 	void Normalise();
 
@@ -21,6 +21,8 @@ struct Quaternion
 	Quaternion operator*(const Quaternion& m);
 	
 	void RotateByVector(const Vector3& v);
+
+	bool NoRotation() { return i == 0 && j == 0 && k == 0; }
 
 	void DebugOutput();
 };

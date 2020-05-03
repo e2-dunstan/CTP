@@ -6,41 +6,39 @@ struct Vector3
 {
 	//Defaults to (0,0,0)
 	Vector3() : x(0), y(0), z(0) {}
-	Vector3(double _x, double _y, double _z)
+	Vector3(float _x, float _y, float _z)
 		: x(_x), y(_y), z(_z) {}
 
 	~Vector3() = default;
 
-	double x;
-	double y;
-	double z;
+	float x;
+	float y;
+	float z;
 
-	double Distance(const Vector3& vec) const;
+	float Distance(const Vector3& vec) const;
 
-	double SquaredMagnitude();
-	double Magnitude();
+	float SquaredMagnitude();
+	float Magnitude();
 	Vector3 Normalise();
 	Vector3 Inverse();
 
-	Vector3 Clamp(double minMag, double maxMag);
+	Vector3 Clamp(float minMag, float maxMag);
 
 	Vector3 ComponentProduct(const Vector3& vec) const;
-	double ScalarProduct(const Vector3& vec) const;
+	float ScalarProduct(const Vector3& vec) const;
 	Vector3 VectorProduct(const Vector3& vec) const;
 
-	double SumComponents() const;
+	float SumComponents() const;
 
 	// -- INDEX GETTER/SETTER -- //
-	double& operator[](const int i);
-	const double& operator[](const int i) const;
+	float& operator[](const int i);
+	const float& operator[](const int i) const;
 
 	// -- SCALAR -- //
 	void operator*=(const float value);
-	void operator*=(const double value);
 	void operator*=(const Vector3& vec);
 
 	Vector3 operator*(const float value) const;
-	Vector3 operator*(const double value) const;
 	Vector3 operator*(const Vector3& vec) const;
 
 	void operator/=(const float value);

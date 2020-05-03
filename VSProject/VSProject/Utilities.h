@@ -3,6 +3,7 @@
 #include <GL\freeglut.h>
 #include <stdio.h>
 #include <vector>
+#include <ctime>
 
 #include "Global.h"
 using namespace Mathe;
@@ -39,7 +40,7 @@ struct Vertex
 
 	//Vertex constructor.
 	Vertex() = default;
-	Vertex(double _x, double _y, double _z, Colour _c, Vector3 _n)
+	Vertex(float _x, float _y, float _z, Colour _c, Vector3 _n)
 		: position(_x, _y, _z), colour(_c.r, _c.g, _c.b), normal(_n) {}
 	~Vertex() = default;
 };
@@ -85,20 +86,42 @@ namespace Colours
 	const Colour brown = Colour(0.7f, 0.4f, 0.28f);
 };
 
-static inline Vector3 RandomInHemisphere(const float u1, const float u2)
+static inline Vector3 UniformSampleHemisphere(const float u1, const float u2)
 {
 	const float r = sqrt(u1);
-	const float theta = 2.0f * (float)Mathe::PI * u2;
-	const float x = r * cosf(theta);
-	const float y = r * sinf(theta);
+	const float theta = 2 * Mathe::PI * u2;
 
-	return Vector3(x, y, sqrt(std::max(0.0f, 1.0f - u1)));
+	const float x = r * cos(theta);
+	const float y = r * sin(theta);
+
+	return Vector3(x, y, sqrt(1.0f - u1));
+
+
+	//float z = u1;
+	//float r = sqrtf(std::max(0.0f, 1.0f - z * z));
+	//float phi = 2.0f * Mathe::PI * u2;
+	//float x = r * cosf(phi);
+	//float y = r * sinf(phi);
+
+	//return Vector3(x, y, z);
 }
 
 static inline float RandomFloat(const float min, const float max)
 {
-	float random = (float)rand() / (float)RAND_MAX;
+	//Have to do it twice to avoid rand returning 0
+	float random = (float)(std::rand() + std::rand()) / (float)(RAND_MAX * 2.0f);
+
+	//if (random == 0)
+	//{
+	//	random = (float)std::rand() / (float)RAND_MAX;
+	//	if (random == 0)
+	//	{
+	//		std::cout << std::endl;
+	//	}
+	//}
+
 	float diff = max - min;
 	random *= diff;
+
 	return min + random;
 }

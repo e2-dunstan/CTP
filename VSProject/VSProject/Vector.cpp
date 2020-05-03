@@ -1,37 +1,37 @@
 #include "Vector.h"
 
-double Vector3::Distance(const Vector3& vec) const
+float Vector3::Distance(const Vector3& vec) const
 {
 	Vector3 dir = Vector3(vec.x - x, vec.y - y, vec.z - z);
 	return dir.Magnitude();
 }
 
-double Vector3::SquaredMagnitude()
+float Vector3::SquaredMagnitude()
 {
 	return (x * x) + (y * y) + (z * z);
 }
 
-double Vector3::Magnitude()
+float Vector3::Magnitude()
 {
 	return sqrt((x * x) + (y * y) + (z * z));
 }
 
 Vector3 Vector3::Normalise()
 {
-	double mag = Magnitude();
+	float mag = Magnitude();
 	Vector3 norm = Vector3(x / mag, y / mag, z / mag);
-	if (abs(norm.x) < 0.0001) norm.x = 0;
-	if (abs(norm.y) < 0.0001) norm.y = 0;
-	if (abs(norm.z) < 0.0001) norm.z = 0;
+	//if (abs(norm.x) < 0.0001) norm.x = 0;
+	//if (abs(norm.y) < 0.0001) norm.y = 0;
+	//if (abs(norm.z) < 0.0001) norm.z = 0;
 	return norm;
 }
 
 Vector3 Vector3::Inverse()
 {
-	return Vector3(x * -1.0, y * -1.0, z * -1.0);
+	return Vector3(x * -1.0f, y * -1.0f, z * -1.0f);
 }
 
-Vector3 Vector3::Clamp(double minMag, double maxMag)
+Vector3 Vector3::Clamp(float minMag, float maxMag)
 {
 	if (this->Magnitude() > maxMag)
 	{
@@ -52,26 +52,26 @@ Vector3 Vector3::ComponentProduct(const Vector3& vec) const
 	return Vector3(x * vec.x, y * vec.y, z * vec.z);
 }
 
-double Vector3::ScalarProduct(const Vector3& vec) const
+float Vector3::ScalarProduct(const Vector3& vec) const
 {
 	return (x * vec.x) + (y * vec.y) + (z * vec.z);
 }
 
 Vector3 Vector3::VectorProduct(const Vector3& vec) const
 {
-	double _x = (y * vec.z) - (z * vec.y);
-	double _y = (z * vec.x) - (x * vec.z);
-	double _z = (x * vec.y) - (y * vec.x);
+	float _x = (y * vec.z) - (z * vec.y);
+	float _y = (z * vec.x) - (x * vec.z);
+	float _z = (x * vec.y) - (y * vec.x);
 
 	return Vector3(_x, _y, _z);
 }
 
-double Vector3::SumComponents() const
+float Vector3::SumComponents() const
 {
 	return x + y + z;
 }
 
-double& Vector3::operator[](const int i)
+float& Vector3::operator[](const int i)
 {
 	if (i < 0 || i > 3) std::cout << "ERROR: index " << i << " does not exist in Vector3" << std::endl;
 
@@ -81,7 +81,7 @@ double& Vector3::operator[](const int i)
 	else return x;
 }
 
-const double& Vector3::operator[](const int i) const
+const float& Vector3::operator[](const int i) const
 {
 	if (i < 0 || i > 3) std::cout << "ERROR: index " << i << " does not exist in Vector3" << std::endl;
 
@@ -98,13 +98,6 @@ void Vector3::operator*=(const float value)
 	z *= value;
 }
 
-void Vector3::operator*=(const double value)
-{
-	x *= value;
-	y *= value;
-	z *= value;
-}
-
 void Vector3::operator*=(const Vector3& vec)
 {
 	x *= vec.x;
@@ -113,11 +106,6 @@ void Vector3::operator*=(const Vector3& vec)
 }
 
 Vector3 Vector3::operator*(const float value) const
-{
-	return Vector3(x * value, y * value, z * value);
-}
-
-Vector3 Vector3::operator*(const double value) const
 {
 	return Vector3(x * value, y * value, z * value);
 }

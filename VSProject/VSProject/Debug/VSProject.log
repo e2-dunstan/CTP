@@ -1,1 +1,24 @@
-﻿  VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe
+﻿  CollisionCoarse.cpp
+  CollisionFine.cpp
+  CollisionResolution.cpp
+  Collisions.cpp
+  ConsoleControls.cpp
+  Contact.cpp
+  Engine.cpp
+D:\Ellie\CTP\VSProject\VSProject\Engine.cpp(15,17): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  Primitive.cpp
+  PrimitiveManager.cpp
+  RayCast.cpp
+  RigidBody.cpp
+  SeparatingAxisTheorem.cpp
+  main.cpp
+C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.25.28610\include\memory(2064,56): warning C4244: 'argument': conversion from '_Ty' to 'float', possible loss of data
+          with
+          [
+              _Ty=int
+          ]
+D:\Ellie\CTP\VSProject\VSProject\main.cpp(30): message : see reference to function template instantiation 'std::unique_ptr<Camera,std::default_delete<Camera>> std::make_unique<Camera,int,int,int,float,int,const float&,const float&,const int&,const int&,0>(int &&,int &&,int &&,float &&,int &&,const float &,const float &,const int &,const int &)' being compiled
+  Generating Code...
+LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
+  LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
+  VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

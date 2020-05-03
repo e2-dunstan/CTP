@@ -4,7 +4,7 @@
 
 void Quaternion::Normalise()
 {
-	double length = r * r + i * i + j * j + k * k;
+	float length = r * r + i * i + j * j + k * k;
 
 	if (length == 0)
 	{
@@ -12,7 +12,7 @@ void Quaternion::Normalise()
 		return;
 	}
 
-	length = (double)1.0 / sqrt(length);
+	length = 1.0f / sqrtf(length);
 	r *= length;
 	i *= length;
 	j *= length;

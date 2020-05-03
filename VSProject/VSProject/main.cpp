@@ -19,10 +19,10 @@ namespace
 	const int windowWidth = 1280;
 	const int windowHeight = 720;
 
-	GLfloat light_diffuse[] = { 0.8, 0.8, 0.8, 1.0 };
-	GLfloat light_ambient[] = { 0.8, 0.8, 0.8, 1.0 };
+	GLfloat light_diffuse[] = { 0.8f, 0.8f, 0.8f, 1.0f };
+	GLfloat light_ambient[] = { 0.8f, 0.8f, 0.8f, 1.0f };
 	//GLfloat light_specular[] = { 0.5, 0.5, 0.9, 1.0 };
-	GLfloat light_position[] = { 0.0, 10.0, 0.0, 1.0 };
+	GLfloat light_position[] = { 0.0f, 10.0f, 0.0f, 1.0f };
 
 	bool mouseHeld = false;
 
@@ -94,11 +94,11 @@ void MouseButton(int button, int state, int x, int y)
 
 void Init()
 {
-	std::cout << "Calling Init functions... " << std::endl;
+	std::cout << "Calling Init functions... ";
 
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0;
+	Global::deltaTime = (timeSinceStart - oldTimeSinceStart) / 1000.0f;
 	oldTimeSinceStart = timeSinceStart;
 
 	//Initialise OpenGL
@@ -169,7 +169,7 @@ void timer(int)
 {
 	//Delta time.
 	timeSinceStart = glutGet(GLUT_ELAPSED_TIME);
-	Global::deltaTime = (double)(timeSinceStart - oldTimeSinceStart) * (double)playbackSpeed / 1000.0;
+	Global::deltaTime = (float)(timeSinceStart - oldTimeSinceStart) * playbackSpeed / 1000.0f;
 	oldTimeSinceStart = timeSinceStart;
 
 	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 3 seconds before updating

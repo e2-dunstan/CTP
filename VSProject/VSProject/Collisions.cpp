@@ -11,6 +11,7 @@ Collisions::Collisions()
 void Collisions::DetectCoarse(Primitive* prim1, Primitive* prim2)
 {
 	if (prim1->freeze && prim2->freeze) return;
+
 	if (coarse->Overlapping(prim1->boundingVolume, prim2->boundingVolume))
 	{
 		potentialContacts.push_back(PotentialContact(prim1, prim2));

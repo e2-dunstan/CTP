@@ -68,8 +68,8 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 	else
 	{
 		smallestIndex -= 6;
-		unsigned box1AxisIndex = smallestIndex / 3;
-		unsigned box2AxisIndex = smallestIndex % 3;
+		uint16_t box1AxisIndex = smallestIndex / 3;
+		uint16_t box2AxisIndex = smallestIndex % 3;
 		Vector3 box1Axis = Mathe::GetAxis(box1AxisIndex, box1->collisionVolume.axisMat);
 		Vector3 box2Axis = Mathe::GetAxis(box2AxisIndex, box2->collisionVolume.axisMat);
 		Vector3 normal = box1Axis.VectorProduct(box2Axis);
@@ -81,7 +81,7 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 		Vector3 ptOnOneEdge = box1->collisionVolume.halfSize;
 		Vector3 ptOnTwoEdge = box2->collisionVolume.halfSize;
 
-		for (int i = 0; i < 3; i++)
+		for (uint16_t i = 0; i < 3; i++)
 		{
 			if (box1AxisIndex == i)
 				ptOnOneEdge[i] = 0;
@@ -100,7 +100,7 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 		bool useOnesMidpoint = singleSmallestIndex > 2;
 
 		Vector3 vertex = GetEdgeContactPoint(ptOnOneEdge, ptOnTwoEdge, box1Axis, box2Axis,
-			(float)box1->collisionVolume.halfSize[box1AxisIndex], (float)box2->collisionVolume.halfSize[box2AxisIndex],
+			box1->collisionVolume.halfSize[box1AxisIndex], box2->collisionVolume.halfSize[box2AxisIndex],
 			useOnesMidpoint);
 
 		//GENERATE CONTACT
@@ -126,14 +126,15 @@ void SAT::GetContactData(int& smallestIndex, Box* box1, Box* box2, const Vector3
 	}
 }
 
-double SAT::GetPositionOnAxis(const BoxCV& box, const Vector3& axis)
+float SAT::GetPositionOnAxis(const BoxCV& box, const Vector3& axis)
 {
 	Matrix4 axisMat = box.axisMat;
 
-	return
-		box.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)))
-		+ box.halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, axisMat)))
-		+ box.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
+	float ret = box.halfSize.x * abs(axis.ScalarProduct(Mathe::GetAxis(0, axisMat)));
+	ret += box.halfSize.y * abs(axis.ScalarProduct(Mathe::GetAxis(1, axisMat)));
+	ret += box.halfSize.z * abs(axis.ScalarProduct(Mathe::GetAxis(2, axisMat)));
+
+	return ret;
 }
 
 bool SAT::BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3& toCentre, Vector3 axis, int index, float& smallestPenetration, int& smallestIndex)
@@ -141,10 +142,10 @@ bool SAT::BoxesOverlapOnAxis(const BoxCV& box1, const BoxCV& box2, const Vector3
 	if (axis.SquaredMagnitude() < 0.0001) return true;
 	axis = axis.Normalise();
 
-	float box1AxisPos = (float)GetPositionOnAxis(box1, axis);
-	float box2AxisPos = (float)GetPositionOnAxis(box2, axis);
+	float box1AxisPos = GetPositionOnAxis(box1, axis);
+	float box2AxisPos = GetPositionOnAxis(box2, axis);
 
-	float distance = (float)abs(toCentre.ScalarProduct(axis));
+	float distance = abs(toCentre.ScalarProduct(axis));
 
 	float penetration = box1AxisPos + box2AxisPos - distance;
 	if (penetration < 0) return false;
@@ -215,11 +216,11 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 	//--------
 	//check for box2 normal most parallel (scalar product = 1) to the normal
 	//--------
-	double largestScalarProduct = 0.0f;
+	float largestScalarProduct = 0.0f;
 	for (uint16_t n = 0; n < 6; n++)
 	{
 		Vector3 currentNormal = box2->collisionVolume.normals[n];
-		double scalarProduct = currentNormal.ScalarProduct(normal);
+		float scalarProduct = currentNormal.ScalarProduct(normal);
 
 		//scalar product should be negative to get the opposite direction vector
 		if (scalarProduct < 0 && scalarProduct < largestScalarProduct)
@@ -289,17 +290,18 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 
 	for (uint16_t v = 0; v < clippedVertices.size(); v++)
 	{
-		float positionOnPlane = (float)clippedVertices[v].ScalarProduct(referencePlane.normal);
+		float positionOnPlane = clippedVertices[v].ScalarProduct(referencePlane.normal);
 
 		//below the reference plane
-		if (positionOnPlane < 0.0001f && positionOnPlane > -0.5f) //maximum penetration depth
+		//allow vertices which aren't quite in contact
+		if (positionOnPlane < 0.1f && positionOnPlane > -0.5f) //maximum penetration depth
 		{
 			//transform point back to world space
 			Mathe::Transform(clippedVertices[v], referencePlane.matrix);
 
 			if (mergeContacts)
 			{
-				mergedPenetrations.push_back(-abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration))));
+				mergedPenetrations.push_back(-abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration * 2.0f), abs(penetration * 2.0f))));
 				mergedPositions.push_back(clippedVertices[v]);
 				totalPenetration += mergedPenetrations[numContacts];
 				numContacts++;
@@ -310,7 +312,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 				{
 					Contact contact(box2, box1);
 					contact.normal = normal.Inverse();
-					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
+					contact.penetrationDepth = positionOnPlane;// -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration * 2.0f), abs(penetration * 2.0f)));
 					contact.point = clippedVertices[v];
 					contacts.push_back(contact);
 				}
@@ -318,7 +320,7 @@ void SAT::PointFaceCollision(Box* box1, Box* box2, const Vector3& toCentre, int 
 				{
 					Contact contact(box1, box2);
 					contact.normal = normal;
-					contact.penetrationDepth = -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration), abs(penetration)));
+					contact.penetrationDepth = positionOnPlane;// -abs(Mathe::ClampFloat(positionOnPlane, -abs(penetration * 2.0f), abs(penetration * 2.0f)));
 					contact.point = clippedVertices[v];
 					contacts.push_back(contact);
 				}
@@ -367,13 +369,13 @@ Vector3 SAT::GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgeP
 {
 	Vector3 contact1, contact2;
 
-	float squareMag1 = (float)axisOne.SquaredMagnitude();
-	float squareMag2 = (float)axisTwo.SquaredMagnitude();
-	float scaleOneTwo = (float)axisTwo.ScalarProduct(axisOne);
+	float squareMag1 = axisOne.SquaredMagnitude();
+	float squareMag2 = axisTwo.SquaredMagnitude();
+	float scaleOneTwo = axisTwo.ScalarProduct(axisOne);
 
 	Vector3 toStart = edgePoint1 - edgePoint2;
-	float scaleOne = (float)axisOne.ScalarProduct(toStart);
-	float scaleTwo = (float)axisTwo.ScalarProduct(toStart);
+	float scaleOne = axisOne.ScalarProduct(toStart);
+	float scaleTwo = axisTwo.ScalarProduct(toStart);
 
 	float denominator = (squareMag1 * squareMag2) - (scaleOne * scaleTwo);
 
@@ -395,27 +397,27 @@ Vector3 SAT::GetEdgeContactPoint(const Vector3& edgePoint1, const Vector3& edgeP
 	{
 		contact1 = edgePoint1 + (axisOne * edgeNearestA);
 		contact2 = edgePoint2 + (axisTwo * edgeNearestB);
-		return (contact1 + contact2) * 0.5;
+		return (contact1 + contact2) * 0.5f;
 	}
 }
 
 bool SAT::SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize)
 {
-	if (abs(abs(normal.x) - 1.0) < 0.01)
+	if (abs(abs(normal.x) - 1.0f) < 0.01f)
 	{
 		planes[0] = Vector3(0, 1, 1) * halfSize;
 		planes[1] = Vector3(0, 1, -1) * halfSize;
 		planes[2] = Vector3(0, -1, -1) * halfSize;
 		planes[3] = Vector3(0, -1, 1) * halfSize;
 	}
-	else if (abs(abs(normal.y) - 1.0) < 0.01)
+	else if (abs(abs(normal.y) - 1.0f) < 0.01f)
 	{
 		planes[0] = Vector3(1, 0, 1) * halfSize;
 		planes[1] = Vector3(1, 0, -1) * halfSize;
 		planes[2] = Vector3(-1, 0, -1) * halfSize;
 		planes[3] = Vector3(-1, 0, 1) * halfSize;
 	}
-	else if (abs(abs(normal.z) - 1.0) < 0.01)
+	else if (abs(abs(normal.z) - 1.0f) < 0.01f)
 	{
 		planes[0] = Vector3(1, 1, 0) * halfSize;
 		planes[1] = Vector3(1, -1, 0) * halfSize;
@@ -458,7 +460,7 @@ void SAT::SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vec
 		planes[3] = Vector3(0, -1, 0).VectorProduct(halfSize);
 	}
 
-	for (unsigned v = 0; v < 4; v++)
+	for (uint16_t v = 0; v < 4; v++)
 	{
 		if (max.SumComponents() < planes[v].SumComponents())
 		{
@@ -471,42 +473,42 @@ void SAT::SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vec
 	}
 }
 
-Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const unsigned axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
+Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint16_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
 {
 	//intersection = (v1 + m(v2 - v1)) = (clippingMin + n(clippingMax - clippingMin))
 	//ix = (v1x + m(v2x - v1x)) = (clippingMinx + n(clippingMaxx - clippingMinx))
 
-	double x1 = clippingMin[axes[0]];
-	double x2 = clippingMax[axes[0]];
-	double x3 = v1[axes[0]];
-	double x4 = v2[axes[0]];
-	double y1 = clippingMin[axes[1]];
-	double y2 = clippingMax[axes[1]];
-	double y3 = v1[axes[1]];
-	double y4 = v2[axes[1]];
+	float x1 = clippingMin[axes[0]];
+	float x2 = clippingMax[axes[0]];
+	float x3 = v1[axes[0]];
+	float x4 = v2[axes[0]];
+	float y1 = clippingMin[axes[1]];
+	float y2 = clippingMax[axes[1]];
+	float y3 = v1[axes[1]];
+	float y4 = v2[axes[1]];
 
 	//x intersect
-	double num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
-	double den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	double X = num / den;
+	float num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
+	float den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
+	float X = num / den;
 
 	//y intersect
 	num = (x1 * y2 - y1 * x2) * (y3 - y4) -	(y1 - y2) * (x3 * y4 - y3 * x4);
 	den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
-	double Y = num / den;
+	float Y = num / den;
 
 	Vector3 intersection;
 	intersection[axes[0]] = X;
 	intersection[axes[1]] = Y;
 
 	//Get the value of the remaining axis
-	double percAcrossLine = 1;
+	float percAcrossLine = 1;
 	if (x2 != 0)
 		percAcrossLine = (x1 + X) / x2;
 	else if (y2 != 0)
 		percAcrossLine = (y1 + Y) / y2;
 
-	unsigned i = 0;
+	unsigned int i = 0;
 	if (axes[0] == 0)
 	{
 		if (axes[1] == 1)
@@ -522,23 +524,23 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 
 void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
 {
-	const unsigned int numEdges = sizeof(clippingVertices);
-	const unsigned int polyVertSize = sizeof(polyVertices);
-	unsigned int numVertices = polyVertSize;
+	const uint16_t numEdges = sizeof(clippingVertices);
+	const uint16_t polyVertSize = sizeof(polyVertices);
+	uint16_t numVertices = polyVertSize;
 	const float epsilon = 0.01f;
 
-	unsigned axes[2] = { 0, 0 };
-	if (abs(abs(normal.x) - 1.0) < epsilon)
+	uint16_t axes[2] = { 0, 0 };
+	if (abs(abs(normal.x) - 1.0f) < epsilon)
 	{
 		axes[0] = 1;
 		axes[1] = 2;
 	}
-	else if (abs(abs(normal.y) - 1.0) < epsilon)
+	else if (abs(abs(normal.y) - 1.0f) < epsilon)
 	{
 		axes[0] = 0;
 		axes[1] = 2;
 	}
-	else if (abs(abs(normal.z) - 1.0) < epsilon)
+	else if (abs(abs(normal.z) - 1.0f) < epsilon)
 	{
 		axes[0] = 0;
 		axes[1] = 1;
@@ -546,7 +548,7 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 
 	Vector3 min = clippingVertices[0];
 	Vector3 max = clippingVertices[1];
-	for (unsigned i = 0; i < numVertices; i++)
+	for (uint16_t i = 0; i < numVertices; i++)
 	{
 		double sum = clippingVertices[i].SumComponents();
 		if (min.SumComponents() > sum)
@@ -555,20 +557,20 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 			max = clippingVertices[i];
 	}
 
-	const unsigned maxPoints = polyVertSize * polyVertSize * 2;
+	const uint16_t maxPoints = polyVertSize * polyVertSize * 2;
 	Vector3 newPoints[maxPoints];
-	for (unsigned i = 0; i < numVertices; i++)
+	for (uint16_t i = 0; i < numVertices; i++)
 	{
 		newPoints[i] = polyVertices[i];
 	}
-	unsigned newSize = 4;
+	uint16_t newSize = 4;
 
-	for (unsigned edge = 0; edge < numEdges; edge++) //for each clipping edge
+	for (uint16_t edge = 0; edge < numEdges; edge++) //for each clipping edge
 	{
 		Vector3 edgeMin = clippingVertices[edge];
 		Vector3 edgeMax = clippingVertices[(edge + 1) % numEdges];
 
-		for (unsigned v = 0; v < numVertices; v++) //for each input vertex
+		for (uint16_t v = 0; v < numVertices; v++) //for each input vertex
 		{
 			Vector3 v1 = newPoints[v];
 			Vector3 v2 = newPoints[(v + 1) % numVertices];
@@ -622,14 +624,14 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 	}
 }
 
-bool SAT::InsideEdge(double px, double py, double edgeMaxX, double edgeMaxY, double edgeMinX, double edgeMinY)
+bool SAT::InsideEdge(float px, float py, float edgeMaxX, float edgeMaxY, float edgeMinX, float edgeMinY)
 {
-	double one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
-	double two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
+	float one = (edgeMaxX - edgeMinX) * (py - edgeMinY);
+	float two = (edgeMaxY - edgeMinY) * (px - edgeMinX);
 	return (one - two) < 0.00001f;
 }
 
-void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const unsigned axes[])
+void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint16_t axes[])
 {
 	if (vec[axes[0]] <= max[axes[0]] && vec[axes[0]] >= min[axes[0]]
 		&& vec[axes[1]] <= max[axes[1]] && vec[axes[1]] >= min[axes[1]])

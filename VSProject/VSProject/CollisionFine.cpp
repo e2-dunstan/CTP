@@ -20,6 +20,12 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 		Box* p2 = dynamic_cast<Box*>(prim2);
 		BoxAndPlane(p2, p1, p1->collisionVolume.centre, p1->collisionVolume.normal);
 	}
+	else if (prim1->type == PrimitiveType::BOX && prim2->type == PrimitiveType::PLANE)
+	{
+		Box* p1 = dynamic_cast<Box*>(prim1);
+		Plane* p2 = dynamic_cast<Plane*>(prim2);
+		BoxAndPlane(p1, p2, p2->collisionVolume.centre, p2->collisionVolume.normal);
+	}
 	else if (prim1->type == PrimitiveType::PLANE && prim2->type == PrimitiveType::CYLINDER)
 	{
 		//CylinderAndPlane(prim2, prim1);
@@ -118,12 +124,16 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 	{
 		//CapsuleAndSphere(prim1, prim2);
 	}
+	else
+	{
+		std::cout << "WARNING: Types not found: " << (int)prim1->type << " & " << (int)prim2->type << std::endl;
+	}
 }
 
 void CollisionFine::SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3& position1, float radius1, const Vector3& position2, float radius2)
 {
 	Vector3 midline = position1 - position2;
-	float size = (float)midline.Magnitude();
+	float size = midline.Magnitude();
 
 	if (size <= 0.0f || size >= radius1 + radius2) return;
 
@@ -149,7 +159,7 @@ void CollisionFine::SphereAndSphere(Sphere* prim1, Sphere* prim2, const Vector3&
 
 void CollisionFine::SphereAndPlane(Sphere* sphere, Plane* plane, const Vector3& spherePosition, float radius, const Vector3& planePosition, const Vector3& normal)
 {
-	float distance = (float)normal.ScalarProduct(spherePosition) - radius - (float)normal.ScalarProduct(planePosition);
+	float distance = normal.ScalarProduct(spherePosition) - radius - normal.ScalarProduct(planePosition);
 
 	if (distance >= 0) return;
 
@@ -165,24 +175,24 @@ void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePositi
 	Vector3 halfSize = box->collisionVolume.halfSize;
 	Vector3 relCentre = Mathe::MatrixInverse(box->collisionVolume.axisMat, spherePosition);
 
-	if (abs(relCentre.x) - radius > (float)halfSize.x
-		|| abs(relCentre.y) - radius > (float)halfSize.y
-		|| abs(relCentre.z) - radius > (float)halfSize.z)
+	if (abs(relCentre.x) - radius > halfSize.x
+		|| abs(relCentre.y) - radius > halfSize.y
+		|| abs(relCentre.z) - radius > halfSize.z)
 		return; //not in contact
 
 	Vector3 closestPoint;
-	double distance;
+	float distance;
 
 	for (unsigned i = 0; i < 3; i++)
 	{
 		distance = relCentre[i];
-		if (distance > halfSize[i]) distance = (float)halfSize[i];
-		if (distance < -halfSize[i]) distance = (float)-halfSize[i];
+		if (distance > halfSize[i]) distance = halfSize[i];
+		if (distance < -halfSize[i]) distance = -halfSize[i];
 		closestPoint[i] = distance;
 	}
 
 	distance = (closestPoint - relCentre).Magnitude();
-	if (distance > (double)radius * (double)radius) return;	//not in contact
+	if (distance > radius * radius) return;	//not in contact
 	
 	Mathe::Transform(closestPoint, box->collisionVolume.axisMat);
 
@@ -194,7 +204,7 @@ void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePositi
 		Contact contact(box, sphere);
 		contact.normal = normal.Inverse();
 		contact.point = closestPoint;
-		contact.penetrationDepth = radius - (float)distance;
+		contact.penetrationDepth = radius - distance;
 		contacts.push_back(contact);
 	}
 	else
@@ -202,12 +212,12 @@ void CollisionFine::SphereAndBox(Sphere* sphere, Box* box, Vector3& spherePositi
 		Contact contact(sphere, box);
 		contact.normal = normal;
 		contact.point = closestPoint;
-		contact.penetrationDepth = radius - (float)distance;
+		contact.penetrationDepth = radius - distance;
 		contacts.push_back(contact);
 	}
 }
 
-double CollisionFine::PositionOnAxis(const Box* box, const Vector3& axis)
+float CollisionFine::PositionOnAxis(const Box* box, const Vector3& axis)
 {
 	Matrix4 axisMat = box->collisionVolume.axisMat;
 
@@ -219,26 +229,29 @@ double CollisionFine::PositionOnAxis(const Box* box, const Vector3& axis)
 
 void CollisionFine::BoxAndPlane(Box* box, Plane* plane, const Vector3& planePosition, const Vector3& normal)
 {
-	float boxDistance = (float)(normal * box->collisionVolume.centre).Magnitude() - (float)PositionOnAxis(box, normal);
-	float planeOffset = (float)planePosition.ScalarProduct(normal);
+	float boxDistance = (normal * box->collisionVolume.centre).Magnitude() - PositionOnAxis(box, normal);
+	if (normal.y != 1)
+		boxDistance = normal.ScalarProduct(box->collisionVolume.centre) - PositionOnAxis(box, normal);
+
+	float planeOffset = planePosition.ScalarProduct(normal);
 
 	if (boxDistance > planeOffset) return;
 
 	ContactPoint contactPoints[4];
 	unsigned numContacts = 0;
-	float totalPenetration = 0.0;
+	float totalPenetration = 0.0f;
 
 	for (uint16_t v = 0; v < 8; v++)
 	{
 		//distance from vertex to plane
-		float distance = (float)box->collisionVolume.vertices[v].ScalarProduct(normal);
+		float distance = box->collisionVolume.vertices[v].ScalarProduct(normal);
 
 		if (distance <= planeOffset + 0.01f)
 		{
 			contactPoints[numContacts].point = normal;
-			contactPoints[numContacts].point *= distance - (float)(planePosition * normal).Magnitude();
+			contactPoints[numContacts].point *= distance - (normal.y == 1 ? (planePosition * normal).Magnitude() : planeOffset);
 			contactPoints[numContacts].point += box->collisionVolume.vertices[v];
-			contactPoints[numContacts].penetration = abs((float)(planePosition * normal).Magnitude() - distance) + 0.01f;
+			contactPoints[numContacts].penetration = abs((normal.y == 1 ? (planePosition * normal).Magnitude() : planeOffset) - distance) + 0.01f;
 			totalPenetration += contactPoints[numContacts].penetration;
 			
 			numContacts++;

@@ -5,7 +5,7 @@
 #include <algorithm>
 
 
-void MatrixHelper::Identity(const uint16_t colSize, const uint16_t rowSize, double* arr)
+void MatrixHelper::Identity(const uint16_t colSize, const uint16_t rowSize, float* arr)
 {
 	for (uint16_t c = 0; c < colSize; c++)
 	{
@@ -17,7 +17,7 @@ void MatrixHelper::Identity(const uint16_t colSize, const uint16_t rowSize, doub
 	}
 }
 
-Matrix3::Matrix3(double matrixValues[9])
+Matrix3::Matrix3(float matrixValues[9])
 {
 	matrix[0] = matrixValues[0];
 	matrix[1] = matrixValues[1];
@@ -45,10 +45,10 @@ Matrix3 Matrix3::GetTranspose()
 
 void Matrix3::Inverse()
 {	
-	double det = this->matrix[0] * (this->matrix[4] * this->matrix[8] - this->matrix[7] * this->matrix[5]) -
+	float det = this->matrix[0] * (this->matrix[4] * this->matrix[8] - this->matrix[7] * this->matrix[5]) -
 				 this->matrix[1] * (this->matrix[3] * this->matrix[8] - this->matrix[5] * this->matrix[6]) +
 				 this->matrix[2] * (this->matrix[3] * this->matrix[7] - this->matrix[4] * this->matrix[6]);
-	det = 1.0 / det;
+	det = 1.0f / det;
 
 	Matrix3 inv;
 	inv.matrix[0] = (this->matrix[4] * this->matrix[8] - this->matrix[7] * this->matrix[5]) * det;
@@ -66,11 +66,11 @@ void Matrix3::Inverse()
 
 Matrix3 Matrix3::operator*(Matrix3& m)
 {
-	double multiplied[9];
+	float multiplied[9];
 
 	if (colSize == m.rowSize)
 	{
-		double temp = 0.0;
+		float temp = 0.0;
 
 		for (uint16_t r = 0; r < rowSize; r++)
 		{
@@ -101,12 +101,12 @@ Matrix3 Matrix3::operator*(Matrix3& m)
 	}
 }
 
-Matrix3 Matrix3::operator*(double scalar)
+Matrix3 Matrix3::operator*(float scalar)
 {
 	Matrix3 result;
-	for (unsigned r = 0; r < rowSize; r++)
+	for (uint16_t r = 0; r < rowSize; r++)
 	{
-		for (unsigned c = 0; c < colSize; c++)
+		for (uint16_t c = 0; c < colSize; c++)
 		{
 			result(r, c) = this->matrix[(r * colSize) + c] * scalar;
 		}
@@ -117,9 +117,9 @@ Matrix3 Matrix3::operator*(double scalar)
 Matrix3 Matrix3::operator+(Matrix3& m)
 {
 	Matrix3 sum;
-	for (unsigned r = 0; r < rowSize; r++)
+	for (uint16_t r = 0; r < rowSize; r++)
 	{
-		for (unsigned c = 0; c < colSize; c++)
+		for (uint16_t c = 0; c < colSize; c++)
 		{
 			sum(r, c) = this->matrix[(r * colSize) + c] + m(r, c);
 		}
@@ -154,7 +154,7 @@ void Matrix3::DebugOutput()
 	std::cout << str << std::endl;
 }
 
-Matrix4::Matrix4(double matrixValues[16])
+Matrix4::Matrix4(float matrixValues[16])
 {
 	matrix[0] = matrixValues[0];
 	matrix[1] = matrixValues[1];
@@ -189,30 +189,30 @@ Matrix4 Matrix4::GetTranspose()
 
 void Matrix4::Inverse()
 {
-	double A2323 = this->matrix[10] * this->matrix[15] - this->matrix[11] * this->matrix[14];
-	double A1323 = this->matrix[9] * this->matrix[15] - this->matrix[11] * this->matrix[13];
-	double A1223 = this->matrix[9] * this->matrix[14] - this->matrix[10] * this->matrix[13];
-	double A0323 = this->matrix[8] * this->matrix[15] - this->matrix[11] * this->matrix[12];
-	double A0223 = this->matrix[8] * this->matrix[14] - this->matrix[10] * this->matrix[12];
-	double A0123 = this->matrix[8] * this->matrix[13] - this->matrix[9] * this->matrix[12];
-	double A2313 = this->matrix[6] * this->matrix[15] - this->matrix[7] * this->matrix[14];
-	double A1313 = this->matrix[5] * this->matrix[15] - this->matrix[7] * this->matrix[13];
-	double A1213 = this->matrix[5] * this->matrix[14] - this->matrix[6] * this->matrix[13];
-	double A2312 = this->matrix[6] * this->matrix[11] - this->matrix[7] * this->matrix[10];
-	double A1312 = this->matrix[5] * this->matrix[11] - this->matrix[7] * this->matrix[9];
-	double A1212 = this->matrix[5] * this->matrix[10] - this->matrix[6] * this->matrix[9];
-	double A0313 = this->matrix[4] * this->matrix[15] - this->matrix[7] * this->matrix[12];
-	double A0213 = this->matrix[4] * this->matrix[14] - this->matrix[6] * this->matrix[12];
-	double A0312 = this->matrix[4] * this->matrix[11] - this->matrix[7] * this->matrix[8];
-	double A0212 = this->matrix[4] * this->matrix[10] - this->matrix[6] * this->matrix[8];
-	double A0113 = this->matrix[4] * this->matrix[13] - this->matrix[5] * this->matrix[12];
-	double A0112 = this->matrix[4] * this->matrix[9] - this->matrix[5] * this->matrix[8];
+	float A2323 = this->matrix[10] * this->matrix[15] - this->matrix[11] * this->matrix[14];
+	float A1323 = this->matrix[9] * this->matrix[15] - this->matrix[11] * this->matrix[13];
+	float A1223 = this->matrix[9] * this->matrix[14] - this->matrix[10] * this->matrix[13];
+	float A0323 = this->matrix[8] * this->matrix[15] - this->matrix[11] * this->matrix[12];
+	float A0223 = this->matrix[8] * this->matrix[14] - this->matrix[10] * this->matrix[12];
+	float A0123 = this->matrix[8] * this->matrix[13] - this->matrix[9] * this->matrix[12];
+	float A2313 = this->matrix[6] * this->matrix[15] - this->matrix[7] * this->matrix[14];
+	float A1313 = this->matrix[5] * this->matrix[15] - this->matrix[7] * this->matrix[13];
+	float A1213 = this->matrix[5] * this->matrix[14] - this->matrix[6] * this->matrix[13];
+	float A2312 = this->matrix[6] * this->matrix[11] - this->matrix[7] * this->matrix[10];
+	float A1312 = this->matrix[5] * this->matrix[11] - this->matrix[7] * this->matrix[9];
+	float A1212 = this->matrix[5] * this->matrix[10] - this->matrix[6] * this->matrix[9];
+	float A0313 = this->matrix[4] * this->matrix[15] - this->matrix[7] * this->matrix[12];
+	float A0213 = this->matrix[4] * this->matrix[14] - this->matrix[6] * this->matrix[12];
+	float A0312 = this->matrix[4] * this->matrix[11] - this->matrix[7] * this->matrix[8];
+	float A0212 = this->matrix[4] * this->matrix[10] - this->matrix[6] * this->matrix[8];
+	float A0113 = this->matrix[4] * this->matrix[13] - this->matrix[5] * this->matrix[12];
+	float A0112 = this->matrix[4] * this->matrix[9] - this->matrix[5] * this->matrix[8];
 
-	double det = this->matrix[0] * (this->matrix[5] * A2323 - this->matrix[6] * A1323 + this->matrix[7] * A1223)
+	float det = this->matrix[0] * (this->matrix[5] * A2323 - this->matrix[6] * A1323 + this->matrix[7] * A1223)
 		- this->matrix[1] * (this->matrix[4] * A2323 - this->matrix[6] * A0323 + this->matrix[7] * A0223)
 		+ this->matrix[2] * (this->matrix[4] * A1323 - this->matrix[5] * A0323 + this->matrix[7] * A0123)
 		- this->matrix[3] * (this->matrix[4] * A1223 - this->matrix[5] * A0223 + this->matrix[6] * A0123);
-	det = 1.0 / det;
+	det = 1.0f / det;
 
 	Matrix4 inv;
 	inv.matrix[0] = det * (this->matrix[5] * A2323 - this->matrix[6] * A1323 + this->matrix[7]* A1223);
@@ -237,7 +237,7 @@ void Matrix4::Inverse()
 
 Matrix3 Matrix4::ToMatrix3()
 {
-	double vals[9] = {
+	float vals[9] = {
 		matrix[0],
 		matrix[1],
 		matrix[2],
@@ -255,11 +255,11 @@ Matrix3 Matrix4::ToMatrix3()
 
 Matrix4 Matrix4::operator*(Matrix4& m)
 {
-	double multiplied[16];
+	float multiplied[16];
 
 	if (colSize == m.rowSize)
 	{
-		double temp = 0.0;
+		float temp = 0.0;
 
 		for (uint16_t r = 0; r < rowSize; r++)
 		{
@@ -290,12 +290,12 @@ Matrix4 Matrix4::operator*(Matrix4& m)
 	}
 }
 
-Matrix4 Matrix4::operator*(double scalar)
+Matrix4 Matrix4::operator*(float scalar)
 {
 	Matrix4 result;
-	for (unsigned r = 0; r < rowSize; r++)
+	for (uint16_t r = 0; r < rowSize; r++)
 	{
-		for (unsigned c = 0; c < colSize; c++)
+		for (uint16_t c = 0; c < colSize; c++)
 		{
 			result(r, c) = this->matrix[(r * colSize) + c] * scalar;
 		}
@@ -306,9 +306,9 @@ Matrix4 Matrix4::operator*(double scalar)
 Matrix4 Matrix4::operator+(Matrix4& m)
 {
 	Matrix4 sum;
-	for (unsigned r = 0; r < rowSize; r++)
+	for (uint16_t r = 0; r < rowSize; r++)
 	{
-		for (unsigned c = 0; c < colSize; c++)
+		for (uint16_t c = 0; c < colSize; c++)
 		{
 			sum(r, c) = this->matrix[(r * colSize) + c] + m(r, c);
 		}

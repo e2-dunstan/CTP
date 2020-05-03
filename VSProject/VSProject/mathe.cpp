@@ -92,7 +92,7 @@ Vector3 Mathe::MatrixInverse(Matrix4& m, Vector3& v)
 	return ret;
 }
 
-void Mathe::Translate(Matrix4& m, double x, double y, double z)
+void Mathe::Translate(Matrix4& m, float x, float y, float z)
 {
 	Matrix4 translation;
 	translation(0, 3) = x;
@@ -103,25 +103,25 @@ void Mathe::Translate(Matrix4& m, double x, double y, double z)
 }
 
 //pitch, yaw, roll
-void Mathe::Rotate(Matrix4& m, double x, double y, double z)
+void Mathe::Rotate(Matrix4& m, float x, float y, float z)
 {
 	Matrix4 xMatrix;
-	xMatrix(1, 1) = cos(x == 0 ? 0 : ToRadians(x));
-	xMatrix(1, 2) = -sin(x == 0 ? 0 : ToRadians(x));
-	xMatrix(2, 1) = sin(x == 0 ? 0 : ToRadians(x));
-	xMatrix(2, 2) = cos(x == 0 ? 0 : ToRadians(x));
+	xMatrix(1, 1) = cosf(x == 0 ? 0 : ToRadians(x));
+	xMatrix(1, 2) = -sinf(x == 0 ? 0 : ToRadians(x));
+	xMatrix(2, 1) = sinf(x == 0 ? 0 : ToRadians(x));
+	xMatrix(2, 2) = cosf(x == 0 ? 0 : ToRadians(x));
 
 	Matrix4 yMatrix;
-	yMatrix(0, 0) = cos(y == 0 ? 0 : ToRadians(y));
-	yMatrix(0, 2) = sin(y == 0 ? 0 : ToRadians(y));
-	yMatrix(2, 0) = -sin(y == 0 ? 0 : ToRadians(y));
-	yMatrix(2, 2) = cos(y == 0 ? 0 : ToRadians(y));
+	yMatrix(0, 0) = cosf(y == 0 ? 0 : ToRadians(y));
+	yMatrix(0, 2) = sinf(y == 0 ? 0 : ToRadians(y));
+	yMatrix(2, 0) = -sinf(y == 0 ? 0 : ToRadians(y));
+	yMatrix(2, 2) = cosf(y == 0 ? 0 : ToRadians(y));
 
 	Matrix4 zMatrix;
-	zMatrix(0, 0) = cos(z == 0 ? 0 : ToRadians(z));
-	zMatrix(1, 0) = -sin(z == 0 ? 0 : ToRadians(z));
-	zMatrix(0, 1) = sin(z == 0 ? 0 : ToRadians(z));
-	zMatrix(1, 1) = cos(z == 0 ? 0 : ToRadians(z));
+	zMatrix(0, 0) = cosf(z == 0 ? 0 : ToRadians(z));
+	zMatrix(1, 0) = -sinf(z == 0 ? 0 : ToRadians(z));
+	zMatrix(0, 1) = sinf(z == 0 ? 0 : ToRadians(z));
+	zMatrix(1, 1) = cosf(z == 0 ? 0 : ToRadians(z));
 
 	Matrix4 rot = xMatrix * yMatrix * zMatrix;
 	m = m * rot;
@@ -131,17 +131,17 @@ void Mathe::Rotate(Matrix4& m, Quaternion& q)
 {
 	q.Normalise();
 
-	m.matrix[0] = 1.0 - (2.0 * q.j * q.j) - (2.0 * q.k * q.k);
-	m.matrix[1] = (2.0 * q.i * q.j) - (2.0 * q.r * q.k);
-	m.matrix[2] = (2.0 * q.i * q.k) + (2.0 * q.r * q.j);
+	m.matrix[0] = 1.0f - (2.0f * q.j * q.j) - (2.0f * q.k * q.k);
+	m.matrix[1] = (2.0f * q.i * q.j) - (2.0f * q.r * q.k);
+	m.matrix[2] = (2.0f * q.i * q.k) + (2.0f * q.r * q.j);
 
-	m.matrix[4] = (2.0 * q.i * q.j) + (2.0 * q.r * q.k);
-	m.matrix[5] = 1.0 - (2.0 * q.i * q.i) - (2.0 * q.k * q.k);
-	m.matrix[6] = (2.0 * q.j * q.k) - (2.0 * q.r * q.i);
+	m.matrix[4] = (2.0f * q.i * q.j) + (2.0f * q.r * q.k);
+	m.matrix[5] = 1.0f - (2.0f * q.i * q.i) - (2.0f * q.k * q.k);
+	m.matrix[6] = (2.0f * q.j * q.k) - (2.0f * q.r * q.i);
 
-	m.matrix[8] = (2.0 * q.i * q.k) - (2.0 * q.r * q.j);
-	m.matrix[9] = (2.0 * q.j * q.k) + (2.0 * q.r * q.i);
-	m.matrix[10] = 1.0 - (2.0 * q.i * q.i) - (2.0 * q.j * q.j);
+	m.matrix[8] = (2.0f * q.i * q.k) - (2.0f * q.r * q.j);
+	m.matrix[9] = (2.0f * q.j * q.k) + (2.0f * q.r * q.i);
+	m.matrix[10] = 1.0f - (2.0f * q.i * q.i) - (2.0f * q.j * q.j);
 
 	/*m(0, 0) = 1 - (2 * q.j * q.j) - (2 * q.k * q.k);
 	m(0, 1) = (2 * q.i * q.j) - (2 * q.r * q.k);
@@ -173,7 +173,7 @@ void Mathe::Rotate(Matrix3& m, Quaternion& q)
 	m.matrix[8] = 1 - (2 * q.i * q.i) - (2 * q.j * q.j);
 }
 
-void Mathe::Scale(Matrix4& m, const double x, const double y, const double z)
+void Mathe::Scale(Matrix4& m, const float x, const float y, const float z)
 {
 	Matrix4 scale;
 	scale(0, 0) = x;
@@ -194,9 +194,9 @@ Vector3 Mathe::GetAxis(const uint16_t i, Matrix3& matrix)
 
 Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
 {
-	double x = v.x;
-	double y = v.y;
-	double z = v.z;
+	float x = v.x;
+	float y = v.y;
+	float z = v.z;
 	if (toRadians)
 	{
 		x = ToRadians(v.x);
@@ -205,12 +205,12 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
 	}
 
 	// yaw (y) = z, pitch (p) = y, roll (r) = x
-	double cy = cos(z * 0.5);
-	double cp = cos(y * 0.5);
-	double cr = cos(x * 0.5);
-	double sy = sin(z * 0.5);
-	double sp = sin(y * 0.5);
-	double sr = sin(x * 0.5);
+	float cy = cosf(z * 0.5f);
+	float cp = cosf(y * 0.5f);
+	float cr = cosf(x * 0.5f);
+	float sy = sinf(z * 0.5f);
+	float sp = sinf(y * 0.5f);
+	float sr = sinf(x * 0.5f);
 
 	Quaternion q;    
 	q.r = cy * cp * cr + sy * sp * sr;
@@ -223,7 +223,7 @@ Quaternion Mathe::VectorToQuaternion(const Vector3& v, bool toRadians)
 	return q;
 }
 
-void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, const double scale, const bool toRadians)
+void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, const float scale, const bool toRadians)
 {
 	Vector3 rad = v * scale;
 	if (toRadians) 
@@ -231,10 +231,10 @@ void Mathe::AddScaledVector(Quaternion& q, const Vector3& v, const double scale,
 
 	Quaternion newq(0, rad.x, rad.y, rad.z);
 	newq *= q;
-	q.r += newq.r * 0.5;
-	q.i += newq.i * 0.5;
-	q.j += newq.j * 0.5;
-	q.k += newq.k * 0.5;
+	q.r += newq.r * 0.5f;
+	q.i += newq.i * 0.5f;
+	q.j += newq.j * 0.5f;
+	q.k += newq.k * 0.5f;
 	//q *= newq;
 
 	//q.Normalise();
@@ -244,33 +244,33 @@ void Mathe::TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& t
 {
 	//treating rot as a Mat4 and tensor mats as Mat3
 
-	double t4 = rot.matrix[0] * tensorLocal.matrix[0]
+	float t4 = rot.matrix[0] * tensorLocal.matrix[0]
 		+ rot.matrix[1] * tensorLocal.matrix[3]
 		+ rot.matrix[2] * tensorLocal.matrix[6];
-	double t9 = rot.matrix[0] * tensorLocal.matrix[1]
+	float t9 = rot.matrix[0] * tensorLocal.matrix[1]
 		+ rot.matrix[1] * tensorLocal.matrix[4]
 		+ rot.matrix[2] * tensorLocal.matrix[7];
-	double t14 = rot.matrix[0] * tensorLocal.matrix[2]
+	float t14 = rot.matrix[0] * tensorLocal.matrix[2]
 		+ rot.matrix[1] * tensorLocal.matrix[5]
 		+ rot.matrix[2] * tensorLocal.matrix[8];
 
-	double t28 = rot.matrix[3] * tensorLocal.matrix[0]
+	float t28 = rot.matrix[3] * tensorLocal.matrix[0]
 		+ rot.matrix[4] * tensorLocal.matrix[3]
 		+ rot.matrix[5] * tensorLocal.matrix[6];
-	double t33 = rot.matrix[3] * tensorLocal.matrix[1]
+	float t33 = rot.matrix[3] * tensorLocal.matrix[1]
 		+ rot.matrix[4] * tensorLocal.matrix[4]
 		+ rot.matrix[5] * tensorLocal.matrix[7];
-	double t38 = rot.matrix[3] * tensorLocal.matrix[2]
+	float t38 = rot.matrix[3] * tensorLocal.matrix[2]
 		+ rot.matrix[4] * tensorLocal.matrix[5]
 		+ rot.matrix[5] * tensorLocal.matrix[8];
 
-	double t52 = rot.matrix[6] * tensorLocal.matrix[0]
+	float t52 = rot.matrix[6] * tensorLocal.matrix[0]
 		+ rot.matrix[7] * tensorLocal.matrix[3]
 		+ rot.matrix[8] * tensorLocal.matrix[6];
-	double t57 = rot.matrix[6] * tensorLocal.matrix[1]
+	float t57 = rot.matrix[6] * tensorLocal.matrix[1]
 		+ rot.matrix[7] * tensorLocal.matrix[4]
 		+ rot.matrix[8] * tensorLocal.matrix[7];
-	double t62 = rot.matrix[6] * tensorLocal.matrix[2]
+	float t62 = rot.matrix[6] * tensorLocal.matrix[2]
 		+ rot.matrix[7] * tensorLocal.matrix[5]
 		+ rot.matrix[8] * tensorLocal.matrix[8];
 
@@ -330,14 +330,19 @@ std::array<float, 2> Mathe::SolveQuadraticFormula(const float a, const float b, 
 	return x;
 }
 
-double Mathe::ToRadians(const double deg)
+float Mathe::ToRadians(const float deg)
 {
-	return deg * PI / 180.0;
+	return (deg * PI) / 180.0f;
 }
 
-double Mathe::ToDegrees(const double rad)
+Vector3 Mathe::ToRadians(const Vector3& vec)
 {
-	return rad * 180.0 / PI;
+	return Vector3(Mathe::ToRadians(vec.x), Mathe::ToRadians(vec.y), Mathe::ToRadians(vec.z));
+}
+
+float Mathe::ToDegrees(const float rad)
+{
+	return (rad * 180.0f) / PI;
 }
 
 bool Mathe::IsVectorNAN(const Vector3& v)

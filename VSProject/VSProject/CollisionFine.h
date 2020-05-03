@@ -18,13 +18,13 @@ private:
 		Vector3 point = Vector3();
 		float penetration = 0.0;
 
-		double weighting = 1.0;
+		float weighting = 1.0;
 	};
 
 
 	std::vector<Contact>& contacts;
 
-	double PositionOnAxis(const Box* box, const Vector3& axis);
+	float PositionOnAxis(const Box* box, const Vector3& axis);
 
 	//PrimitiveType checks
 	/* TYPE CHECKS: (total of 24 if statements)

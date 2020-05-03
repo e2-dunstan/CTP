@@ -120,9 +120,6 @@
     <ClCompile Include="Contact.cpp">
       <Filter>Source Files\Physics\Collision</Filter>
     </ClCompile>
-    <ClCompile Include="RayCast.cpp">
-      <Filter>Source Files\Physics\Collision\Detection</Filter>
-    </ClCompile>
     <ClCompile Include="RayCamera.cpp">
       <Filter>Source Files\Graphics</Filter>
     </ClCompile>
@@ -131,6 +128,9 @@
     </ClCompile>
     <ClCompile Include="Shapes.cpp">
       <Filter>Source Files\Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="RayCast.cpp">
+      <Filter>Source Files\Utilities</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

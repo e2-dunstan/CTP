@@ -76,7 +76,7 @@ void Contact::CalculateContactBasisMatrices()
 		contactTangents[1].y = -normal.x * normal.z;
 		contactTangents[1].z = normal.x * contactTangents[0].y;
 	}
-	double matVals[9] = { normal.x, contactTangents[0].x, contactTangents[1].x,
+	float matVals[9] = { normal.x, contactTangents[0].x, contactTangents[1].x,
 					normal.y, contactTangents[0].y, contactTangents[1].y,
 					normal.z, contactTangents[0].z, contactTangents[1].z };
 
@@ -89,7 +89,7 @@ void Contact::CalculateClosingVelocities()
 {
 	closingVelocity = Vector3();
 	//Body 1
-	if (body1->rigidbody.isAwake)
+	if (!body1->isStatic && body1->rigidbody.isAwake)
 	{
 		closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 		Mathe::Transform(closingVelocity, worldToContact);
@@ -115,9 +115,9 @@ void Contact::CalculateClosingVelocities()
 void Contact::CalculateDesiredDeltaVelocity()
 {
 	//reduces ground vibration but can cause other issues
-	double bodiesVelocity = 0;
+	float bodiesVelocity = 0;
 
-	if (body1->rigidbody.isAwake)
+	if (!body1->isStatic && body1->rigidbody.isAwake)
 	{
 		bodiesVelocity += body1->rigidbody.GetTrueAccelerationLastFrame().ScalarProduct(normal) * Global::deltaTime;
 	}
@@ -129,7 +129,7 @@ void Contact::CalculateDesiredDeltaVelocity()
 	if (abs(closingVelocity.SumComponents()) < 0.25) 
 		r = 0.0f;
 
-	desiredDeltaVelocity = -(float)closingVelocity.x - r * (float)(closingVelocity.x - bodiesVelocity);
+	desiredDeltaVelocity = -closingVelocity.x - r * (closingVelocity.x - bodiesVelocity);
 }
 
 
@@ -213,13 +213,13 @@ void Contact::ResolvePenetration()
 	Mathe::Transform(angularInertia_world, body1->rigidbody.inverseInertiaTensorWorld);
 	angularInertia_world = angularInertia_world.VectorProduct(relContactPos1);
 
-	double angularInertia1 = angularInertia_world.ScalarProduct(normal);
-	double linearInertia1 = body1->rigidbody.inverseMass;
+	float angularInertia1 = angularInertia_world.ScalarProduct(normal);
+	float linearInertia1 = body1->rigidbody.inverseMass;
 
-	double totalInertia = linearInertia1 + angularInertia1;
+	float totalInertia = linearInertia1 + angularInertia1;
 
-	double angularInertia2 = 0;
-	double linearInertia2 = 0;
+	float angularInertia2 = 0;
+	float linearInertia2 = 0;
 
 	// -----------
 	// BODY 2 inertia
@@ -230,7 +230,7 @@ void Contact::ResolvePenetration()
 		Mathe::Transform(angularInertia_world, body2->rigidbody.inverseInertiaTensorWorld);
 		angularInertia_world = angularInertia_world.VectorProduct(relContactPos2);
 
-		angularInertia2 = (float)angularInertia_world.ScalarProduct(normal);
+		angularInertia2 = angularInertia_world.ScalarProduct(normal);
 		linearInertia2 = body2->rigidbody.inverseMass;
 
 		totalInertia += linearInertia2 + angularInertia2;
@@ -241,16 +241,22 @@ void Contact::ResolvePenetration()
 	// -----------
 	linearChange[0] = normal * (penetrationDepth * (linearInertia1 / totalInertia));
 	linearChange[1] = normal * (-penetrationDepth * (linearInertia2 / totalInertia));
-	double angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
-	double angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
+	float angularMove1 = penetrationDepth * (angularInertia1 / totalInertia);
+	float angularMove2 = -penetrationDepth * (angularInertia2 / totalInertia);
 
 	// -----------
 	// Apply linear changes
 	// -----------
 	if (abs(linearChange[0].SumComponents()) > 0)
-		body1->translation += linearChange[0].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
-	if (abs(linearChange[1].SumComponents()) > 0)
-		body2->translation += linearChange[1].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
+	{
+		//linearChange[0] = linearChange[0].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
+		body1->translation += linearChange[0];
+	}
+	if (abs(linearChange[1].SumComponents()) > 0 && !body1->isStatic)
+	{
+		//linearChange[1] = linearChange[1].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
+		body2->translation += linearChange[1];
+	}
 
 	// -----------
 	// Apply angular changes
@@ -309,14 +315,17 @@ void Contact::ResolveVelocity()
 
 	Mathe::Transform(impulse, contactToWorld);
 
+	//No velocity to resolve
+	if (impulse.Magnitude() < 0.0001f)
+		return;
+
 	//v = impulse * mass
 	velocityChange[0] = impulse * body1->rigidbody.inverseMass;
 	//w = inertia tensor * (rel pos X impulse)
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 
-	body1->rigidbody.AddVelocityChange(velocityChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity)));
-	body1->rigidbody.AddRotationChange(rotationChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity)));
+	velocityChange[0] = velocityChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
 
 	if (!body2->isStatic)
 	{
@@ -324,19 +333,29 @@ void Contact::ResolveVelocity()
 		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
-		body2->rigidbody.AddVelocityChange(velocityChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity)));
-		body2->rigidbody.AddRotationChange(rotationChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity)));
+		velocityChange[1] = velocityChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
+		//rotationChange[1] /= 2.0f;
+		rotationChange[1] = Mathe::ToRadians(rotationChange[1]);
+
+		body2->rigidbody.AddVelocityChange(velocityChange[1]);
+		body2->rigidbody.AddRotationChange(rotationChange[1]);
+
+		//rotationChange[0] /= 2.0f; 
+		rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
 	}
 
-	/*if (velocityChange[0].SquaredMagnitude() > 3000)
+	body1->rigidbody.AddVelocityChange(velocityChange[0]);
+	body1->rigidbody.AddRotationChange(rotationChange[0]);
+
+	/*if (rotationChange[0].SquaredMagnitude() > 100)
 	{
 		std::cout << "WARNING: large velocity change ";
-		velocityChange[0].DebugOutput();
+		rotationChange[0].DebugOutput();
 	}
-	if (velocityChange[1].SquaredMagnitude() > 3000)
+	if (rotationChange[1].SquaredMagnitude() > 100)
 	{
 		std::cout << "WARNING: large velocity change ";
-		velocityChange[1].DebugOutput();
+		rotationChange[1].DebugOutput();
 	}*/
 }
 
@@ -346,7 +365,7 @@ Vector3 Contact::FrictionlessImpulse()
 	Mathe::Transform(deltaVelocity_W, body1->rigidbody.inverseInertiaTensorWorld);
 	deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos1);
 
-	float deltaSpeed = (float)deltaVelocity_W.ScalarProduct(normal) + body1->rigidbody.inverseMass;
+	float deltaSpeed = deltaVelocity_W.ScalarProduct(normal) + body1->rigidbody.inverseMass;
 
 	if (!body2->isStatic)
 	{
@@ -354,9 +373,9 @@ Vector3 Contact::FrictionlessImpulse()
 		Mathe::Transform(deltaVelocity_W, body2->rigidbody.inverseInertiaTensorWorld);
 		deltaVelocity_W = deltaVelocity_W.VectorProduct(relContactPos2);
 
-		deltaSpeed += (float)deltaVelocity_W.ScalarProduct(normal) + body2->rigidbody.inverseMass;
+		deltaSpeed += deltaVelocity_W.ScalarProduct(normal) + body2->rigidbody.inverseMass;
 	}
-	return Vector3((double)desiredDeltaVelocity / (double)deltaSpeed, 0.0, 0.0);
+	return Vector3(desiredDeltaVelocity / deltaSpeed, 0.0, 0.0);
 }
 
 Vector3 Contact::FrictionImpulse()
@@ -374,7 +393,7 @@ Vector3 Contact::FrictionImpulse()
 	//0 -z  y
 	//z  0 -x
 	//-y x  0
-	double skewMatrixVals[9] = { 0.0 };
+	float skewMatrixVals[9] = { 0.0 };
 	skewMatrixVals[1] = -relContactPos1.z;
 	skewMatrixVals[2] = relContactPos1.y;
 	skewMatrixVals[3] = relContactPos1.z;
@@ -418,7 +437,7 @@ Vector3 Contact::FrictionImpulse()
 	impulseMat.Inverse();
 	Mathe::Transform(impulseContact, impulseMat);
 
-	double impulseInPlane = sqrt((impulseContact.y * impulseContact.y) + (impulseContact.z * impulseContact.z));
+	float impulseInPlane = sqrtf((impulseContact.y * impulseContact.y) + (impulseContact.z * impulseContact.z));
 
 	if (abs(impulseInPlane) > abs(impulseContact.x * friction_static))
 	{
@@ -434,17 +453,14 @@ Vector3 Contact::FrictionImpulse()
 		impulseContact.y *= (friction_dynamic * impulseContact.x);
 		impulseContact.z *= (friction_dynamic * impulseContact.x);
 
-		//if (!body2->isStatic)
-		//{
-		//	const float threshold = 0.1f;
-		//	const float sum = impulseContact.y + impulseContact.z;
-		//	if (abs(sum) < threshold)
-		//	{
-		//		//impulseContact.x += sum;
-		//		impulseContact.y = 0;
-		//		impulseContact.z = 0;
-		//	}
-		//}
+		const float threshold = 0.05f;
+		const float sum = abs(impulseContact.y) + abs(impulseContact.z);
+		if (sum < threshold)
+		{
+			impulseContact.x += sum;
+			impulseContact.y = 0;
+			impulseContact.z = 0;
+		}
 	}
 	return impulseContact;
 }

@@ -41,23 +41,22 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
-	unsigned int samples = 1;
+	uint16_t samples = 1;
 	Vector3 newColour = Vector3();
-	for (unsigned int col = 0; col < width; col++)
+	for (uint16_t col = 0; col < width; col++)
 	{
 		if (col % 10 == 0)
 			std::cerr << "Progress... " << 100 * col / width << "%" << " Latest colour: " << 
 			(int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z <<std::endl;
 
-		for (unsigned int row = 0; row < height; row++)
+		for (uint16_t row = 0; row < height; row++)
 		{
 			ray = GetRayAt(col, row, width, height, cPosTemp);
 			int actualIndex = row * width + col;
 
-			for (unsigned int s = 0; s < samples; s++)
+			for (uint16_t s = 0; s < samples; s++)
 			{
 				Vector3 pathThroughput = Vector3(1, 1, 1);
-				newColour = Vector3();
 
 				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
 
@@ -69,11 +68,11 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 			}
 
 			newColour = Vector3(
-				powf(std::min((float)pixelsVec[actualIndex].x / (float)samples, 1.0f), 1.0f / 2.2f),
-				powf(std::min((float)pixelsVec[actualIndex].y / (float)samples, 1.0f), 1.0f / 2.2f),
-				powf(std::min((float)pixelsVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
+				powf(std::min(pixelsVec[actualIndex].x / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min(pixelsVec[actualIndex].y / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min(pixelsVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
 			);
-			newColour *= 255.0;
+			newColour *= 255.0f;
 
 			//if (Mathe::IsVectorNAN(newColour) || newColour.SumComponents() < 0.0)
 			//	std::cout << std::endl;
@@ -88,6 +87,9 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	}
 
 	if (store) SavePixelsToFile(pixels, arrSize, width, height);
+
+	delete[] pixels;
+	delete[] pixelsVec;
 }
 
 void RayCamera::DrawLatestRay()
@@ -144,9 +146,9 @@ void RayCamera::SetModelViewMatrix()
 	glGetFloatv(GL_MODELVIEW_MATRIX, model);
 
 	//Convert to double array
-	double matrix[16];
+	float matrix[16];
 	for (uint16_t i = 0; i < 16; i++)
-		matrix[i] = double(model[i]);
+		matrix[i] = model[i];
 
 	modelViewMatrix = Matrix4(matrix);
 }
@@ -196,7 +198,7 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 		//if (v.SumComponents() < 0) v *= -1.0;
 
 		//matrix where z is the normal
-		double matVals[9] =
+		float matVals[9] =
 		{
 			u.x, v.x, n.x,
 			u.y, v.y, n.y,
@@ -205,20 +207,21 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 		Matrix3 normalMat = Matrix3(matVals);
 		//normalMat.Inverse();
 
-		//srand(0);
 		//Z up space
-		Vector3 randHemisphere = RandomInHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f));
+		Vector3 randHemisphere = UniformSampleHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f));
 		//World space
 		Mathe::Transform(randHemisphere, normalMat);
+		//randHemisphere += n;
 		randHemisphere = randHemisphere.Normalise();// .Inverse();
 
-		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / (float)Mathe::PI;
-		//Vector3 incoming = ComputeRayHit(pathThroughput, randHemisphere, ray.IntersectionPoint(), pathLength++);
-		float cosTheta = (float)abs(n.ScalarProduct(randHemisphere));
-		float p = 1.0f / (2.0f * (float)Mathe::PI);
+		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / Mathe::PI;
+		float cosTheta = abs(n.ScalarProduct(randHemisphere));
+		float p = 1.0f / (2.0f * Mathe::PI);
 
-		//return BRDF * incoming * cosTheta / p;
 		pathThroughput *= BRDF * cosTheta / p;
+
+		//if (pathThroughput.x <= 0 || pathThroughput.y <= 0 || pathThroughput.z <= 0)
+		//	std::cout << std::endl;
 
 		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint(), pathLength++);
 	}

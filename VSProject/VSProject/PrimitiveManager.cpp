@@ -5,10 +5,18 @@
 
 using namespace Shapes;
 
-void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation, const Material mat)
+void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation, const Vector3& rotation, const Material mat)
 {
-	Plane plane = Plane(ShapeVertices::GetPlaneTris(Colours::grass));
-	plane.collisionVolume.Create(translation, Vector3(0, 1, 0));
+	Plane plane = Plane(ShapeVertices::GetPlaneTris(primitives.size() == 0 ? Colours::grass : GetMaterialColour(mat)));
+
+	plane.normal = Vector3(0, 1, 0);
+	Matrix3 normalRot;
+	plane.orientation = Mathe::VectorToQuaternion(rotation);
+	Mathe::Rotate(normalRot, plane.orientation);
+	Mathe::Transform(plane.normal, normalRot);
+	plane.normal = plane.normal.Normalise();
+
+	plane.collisionVolume.Create(translation, plane.normal);
 	plane.rigidbody.useGravity = false;
 	plane.rigidbody.isKinematic = true;
 	plane.rigidbody.SetAwake(false);
@@ -17,7 +25,7 @@ void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translat
 
 	plane.rigidbody.bounciness = Materials::GetBounciness(mat);
 	plane.rigidbody.material = mat;
-
+	 
 	plane.type = PrimitiveType::PLANE;
 	plane.scale = scale;
 	plane.translation = translation;
@@ -33,12 +41,6 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 	box.rigidbody.bounciness = Materials::GetBounciness(mat);
 	box.rigidbody.material = mat;
 
-	box.type = PrimitiveType::BOX;
-	box.scale = scale;
-	box.translation = translation;
-	box.orientation = Mathe::VectorToQuaternion(rotation);
-	box.UpdateTransform();
-
 	if (isStatic)
 	{
 		box.isStatic = true;
@@ -47,6 +49,12 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 		box.rigidbody.SetAwake(false);
 		box.rigidbody.EnableSleep(true);
 	}
+
+	box.type = PrimitiveType::BOX;
+	box.scale = scale;
+	box.translation = translation;
+	box.orientation = Mathe::VectorToQuaternion(rotation);
+	box.UpdateTransform();
 
 	primitives.push_back(std::make_unique<Box>(std::move(box)));
 }
@@ -123,11 +131,76 @@ void PrimitiveManager::Update()
 
 	collisions->DetectFine();
 	collisions->Resolution();
+
+	CheckAwakeStates();
 }
 
 std::vector<std::unique_ptr<Primitive>>& PrimitiveManager::GetPrimitives()
 {
 	return primitives;
+}
+
+void PrimitiveManager::CheckAwakeStates()
+{
+	Ray ray = Ray(Vector3(), Vector3(0, -1, 0));
+	for (auto& prim : primitives)
+	{
+		if (prim->rigidbody.isAwake || prim->type == PrimitiveType::PLANE) continue;
+
+		ray.origin = prim->translation;
+		float scale = (prim->type == PrimitiveType::SPHERE) ?
+			dynamic_cast<Sphere*>(prim.get())->radius * 2.0f
+			: dynamic_cast<Box*>(prim.get())->scale.Magnitude();
+
+		bool setAwake = true;
+		for (auto& compPrim : primitives)
+		{
+			if (prim == compPrim) continue;
+
+			switch (compPrim->type)
+			{
+			case PrimitiveType::PLANE:
+			{
+				Plane* plane = dynamic_cast<Plane*>(compPrim.get());
+				if (RayCast::TestPlane(plane->translation, plane->normal, plane->scale, ray)
+					&& ray.intersection1 <= scale)
+				{
+					setAwake = false;
+				}
+				break;
+			}
+			case PrimitiveType::SPHERE:
+			{
+				if (RayCast::TestSphere(compPrim->translation, dynamic_cast<Sphere*>(compPrim.get())->radius, ray)
+					&& ray.intersection1 <= scale)
+				{
+					setAwake = false;
+				}
+				break;
+			}
+			case PrimitiveType::BOX:
+			default:
+			{
+				for (auto tri : compPrim->tris)
+				{
+					if (RayCast::TestTriangle(tri, compPrim->transform, ray)
+						&& ray.intersection1 <= scale)
+					{
+						setAwake = false;
+					}
+				}
+				break;
+			}
+			}
+
+			if (!setAwake)
+			{
+				break;
+			}
+		}
+		if (setAwake)
+			prim->rigidbody.SetAwake(true);
+	}
 }
 
 Colour PrimitiveManager::GetMaterialColour(const Material mat)

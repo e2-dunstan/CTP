@@ -5,15 +5,15 @@
 namespace Global
 {
 	//time
-	extern double deltaTime;
+	extern float deltaTime;
 	extern const double fixedDeltaTime;
 	//double GetDeltaTime();
 	//void SetDeltaTime(const double d);
 
 	//physics
 	extern const Vector3 gravity;
-	extern const double gravityMag;
-	extern const double airDensity;
+	extern const float gravityMag;
+	extern const float airDensity;
 
 	extern bool shouldUpdate;
 

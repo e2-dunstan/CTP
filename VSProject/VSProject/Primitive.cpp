@@ -16,9 +16,9 @@ void Sphere::Start()
 
 void Primitive::Update()
 {	
-	if (freeze) return;
+	if (freeze || isStatic) return;
 
-	if (!rigidbody.isAwake && !colliding && !rigidbody.isKinematic) rigidbody.SetAwake(true);
+	//if (!rigidbody.isAwake && !colliding && !rigidbody.isKinematic) rigidbody.SetAwake(true);
 
 	if (rigidbody.PhysicsUpdate())
 	{
@@ -98,7 +98,7 @@ void Primitive::GetOrientation(Quaternion* _orientation) const
 
 Matrix3 Primitive::GetOrientation(Matrix4 _matrix)
 {
-	double matVals[9] =
+	float matVals[9] =
 	{
 		_matrix.matrix[0], _matrix.matrix[1], _matrix.matrix[2],
 		_matrix.matrix[4], _matrix.matrix[5], _matrix.matrix[6],
@@ -114,7 +114,7 @@ void Primitive::SetOrientation(const Quaternion& _orientation)
 	orientation.Normalise();
 }
 
-void Primitive::SetOrientation(const double r, const double i, const double j, const double k)
+void Primitive::SetOrientation(const float r, const float i, const float j, const float k)
 {
 	orientation.r = r;
 	orientation.i = i;
@@ -125,10 +125,10 @@ void Primitive::SetOrientation(const double r, const double i, const double j, c
 
 void Box::CalculateInertiaTensor()
 {
-	double matVals[9] = { 0.0 };
-	matVals[0] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
-	matVals[4] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
-	matVals[8] = (1.0 / (12.0 * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
+	float matVals[9] = { 0.0f };
+	matVals[0] = (1.0f / (12.0f * rigidbody.inverseMass)) * ((scale.y * scale.y) + (scale.z * scale.z));
+	matVals[4] = (1.0f / (12.0f * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.z * scale.z));
+	matVals[8] = (1.0f / (12.0f * rigidbody.inverseMass)) * ((scale.x * scale.x) + (scale.y * scale.y));
 
 	rigidbody.inverseInertiaTensor = Matrix3(matVals);
 	rigidbody.inverseInertiaTensor.Inverse();
@@ -158,10 +158,10 @@ void Box::UpdateTransform()
 
 void Sphere::CalculateInertiaTensor()
 {
-	double matVals[9] = { 0.0 };
-	matVals[0] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-	matVals[4] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
-	matVals[8] = (2.0 / (5.0 * rigidbody.inverseMass)) * ((double)radius * (double)radius);
+	float matVals[9] = { 0.0f };
+	matVals[0] = (2.0f / (5.0f * rigidbody.inverseMass)) * (radius * radius);
+	matVals[4] = (2.0f / (5.0f * rigidbody.inverseMass)) * (radius * radius);
+	matVals[8] = (2.0f / (5.0f * rigidbody.inverseMass)) * (radius * radius);
 
 	rigidbody.inverseInertiaTensor = Matrix3(matVals);
 	rigidbody.inverseInertiaTensor.Inverse();
@@ -188,20 +188,32 @@ void Sphere::UpdateTransform()
 
 void Plane::UpdateTransform()
 {
-	if (freeze) return;
-
 	transform.Identity();
 
 	Mathe::Translate(transform, translation.x, translation.y, translation.z);
 	Mathe::Rotate(transform, orientation);
 
+	Vector3 min = scale * -1.0f;
+	Vector3 max = scale;
+	Mathe::Transform(min, transform);
+	Mathe::Transform(max, transform);
+
+	for (uint16_t i = 0; i < 3; i++)
+		if (min[i] > max[i])
+		{
+			float temp = min[i];
+			min[i] = max[i];
+			max[i] = temp;
+		}
+
 	collisionVolume.axisMat = transform;
 	Mathe::TransformInverseInertiaTensor(rigidbody.inverseInertiaTensorWorld, rigidbody.inverseInertiaTensor, GetOrientation(transform));
 
 	Mathe::Scale(transform, scale.x, scale.y, scale.z);
-
-	boundingVolume.UpdateMinMax(Vector3(-scale.x, translation.y, -scale.z), Vector3(scale.x, translation.y, scale.z));
-	collisionVolume.Update(translation);
+	
+	//boundingVolume.UpdateMinMax(Vector3(-scale.x, translation.y, -scale.z), Vector3(scale.x, translation.y, scale.z));
+	boundingVolume.UpdateMinMax(min, max);
+	collisionVolume.Update(translation, normal);
 
 	updateTransform = false;
 }

@@ -10,18 +10,18 @@ public:
 	MatrixHelper() = default;
 	~MatrixHelper() = default;
 
-	static void Identity(const uint16_t colSize, const uint16_t rowSize, double* arr);
+	static void Identity(const uint16_t colSize, const uint16_t rowSize, float* arr);
 };
 
 struct Matrix3
 {
-	Matrix3(double matrixValues[9]);
+	Matrix3(float matrixValues[9]);
 	Matrix3() = default;
 	~Matrix3() = default;
 
-	double matrix[9] = { 1.0, 0.0, 0.0,
-						0.0, 1.0, 0.0,
-						0.0, 0.0, 1.0 };
+	float matrix[9] = { 1.0f, 0.0f, 0.0f,
+						0.0f, 1.0f, 0.0f,
+						0.0f, 0.0f, 1.0f };
 	uint16_t rowSize = 3;
 	uint16_t colSize = 3;
 
@@ -30,13 +30,13 @@ struct Matrix3
 	Matrix3 GetTranspose();
 	void Inverse();
 
-	double& operator()(const uint16_t row, const uint16_t column)
+	float& operator()(const uint16_t row, const uint16_t column)
 	{
 		return this->matrix[(row * colSize) + column];
 	}
 
 	Matrix3 operator*(Matrix3& m);
-	Matrix3 operator*(double scalar);
+	Matrix3 operator*(float scalar);
 
 	Matrix3 operator+(Matrix3& m);
 		
@@ -46,14 +46,14 @@ struct Matrix3
 struct Matrix4
 {
 public:
-	Matrix4(double matrixValues[16]);
+	Matrix4(float matrixValues[16]);
 	Matrix4() = default;
 	~Matrix4() = default;
 
-	double matrix[16] = { 1.0, 0.0, 0.0, 0.0,
-						  0.0, 1.0, 0.0, 0.0,
-						  0.0, 0.0, 1.0, 0.0,
-						  0.0, 0.0, 0.0, 1.0 };
+	float matrix[16] =	{ 1.0f, 0.0f, 0.0f, 0.0f,
+						  0.0f, 1.0f, 0.0f, 0.0f,
+						  0.0f, 0.0f, 1.0f, 0.0f,
+						  0.0f, 0.0f, 0.0f, 1.0f };
 	uint16_t rowSize = 4;
 	uint16_t colSize = 4;
 
@@ -64,13 +64,13 @@ public:
 
 	Matrix3 ToMatrix3();
 
-	double& operator()(const uint16_t row, const uint16_t column)
+	float& operator()(const uint16_t row, const uint16_t column)
 	{
 		return this->matrix[(row * colSize) + column];
 	}
 
 	Matrix4 operator*(Matrix4& m);
-	Matrix4 operator*(double scalar);
+	Matrix4 operator*(float scalar);
 
 	Matrix4 operator+(Matrix4& m);
 

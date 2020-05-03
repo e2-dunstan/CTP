@@ -318,8 +318,8 @@ std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _c
 	float lengthInverse = 1.0f / radius;
 	Vector3 normal = Vector3(lengthInverse, lengthInverse, lengthInverse);
 
-	float sectorStep = 2.0f * (float)Mathe::PI / sectorCount;
-	float stackStep = (float)Mathe::PI / stackCount;
+	float sectorStep = 2.0f * Mathe::PI / sectorCount;
+	float stackStep = Mathe::PI / stackCount;
 	float sectorAngle;
 	float stackAngle;
 
@@ -327,14 +327,14 @@ std::vector<Tri> ShapeVertices::GetSphereVertices(float radius, const Colour& _c
 	{
 		stackAngle = Mathe::PI / 2.0f - ((float)i * stackStep);
 		xy = radius * cosf(stackAngle);
-		pos.z = (double)radius * (double)sin(stackAngle);
+		pos.z = radius * sinf(stackAngle);
 
 		for (uint16_t j = 0; j <= sectorCount; ++j)
 		{
 			sectorAngle = j * sectorStep;
 
-			pos.x = (double)xy * (double)cos(sectorAngle);
-			pos.y = (double)xy * (double)sin(sectorAngle);
+			pos.x = xy * cosf(sectorAngle);
+			pos.y = xy * sinf(sectorAngle);
 
 			normal = pos * lengthInverse;
 
@@ -395,7 +395,7 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 
 	std::vector<Vector3> positions;
 	std::vector<Vector3> normals;
-	std::vector<unsigned> indices;
+	std::vector<uint16_t> indices;
 
 	Vector3 pos;
 	float xy;
@@ -410,21 +410,21 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 
 	bool topSection = false;
 
-	for (int i = 0; i <= stackCount; ++i)
+	for (uint16_t i = 0; i <= stackCount; ++i)
 	{
 		topSection = i > stackCount / 2;
 		float capsuleOffset = topSection ? -straight / 2 : straight / 2;
 
 		stackAngle = PI / 2 - (i * stackStep);
 		xy = radius * cosf(stackAngle);
-		pos.z = (double)radius * (double)sin(stackAngle) + capsuleOffset;
+		pos.z = radius * sinf(stackAngle) + capsuleOffset;
 
-		for (int j = 0; j <= sectorCount; ++j)
+		for (uint16_t j = 0; j <= sectorCount; ++j)
 		{
 			sectorAngle = j * sectorStep;
 
-			pos.x = (double)xy * (double)cos(sectorAngle);
-			pos.y = (double)xy * (double)sin(sectorAngle);
+			pos.x = xy * cosf(sectorAngle);
+			pos.y = xy * sinf(sectorAngle);
 
 			normal = pos * lengthInverse;
 
@@ -434,14 +434,14 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 		}
 	}
 
-	unsigned index1;
-	unsigned index2;
-	for (unsigned i = 0; i < (unsigned)stackCount; i++)
+	uint16_t index1;
+	uint16_t index2;
+	for (uint16_t i = 0; i < stackCount; i++)
 	{
 		index1 = i * (sectorCount + 1);
 		index2 = index1 + sectorCount + 1;
 
-		for (unsigned j = 0; j < (unsigned)sectorCount; ++j, ++index1, ++index2)
+		for (uint16_t j = 0; j < sectorCount; ++j, ++index1, ++index2)
 		{
 			if (i != 0)
 			{
@@ -458,9 +458,9 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCapsuleVertices(float radius, floa
 		}
 	}
 
-	for (unsigned in = 0; in < indices.size(); in++)
+	for (uint16_t in = 0; in < indices.size(); in++)
 	{
-		unsigned index = indices[in];
+		uint16_t index = indices[in];
 		Vector3 indexPos = positions[index];
 		Vector3 indexNor = normals[index];
 		vertices.push_back(Vertex(indexPos.x, indexPos.y, indexPos.z, capsuleColour, indexNor));
@@ -479,44 +479,44 @@ std::vector<Vertex> Shapes::ShapeVertices::GetCylinderVertices(float radius, flo
 	float halfLength = straight / 2;
 
 	//Top
-	for (int i = 0; i < sectorCount; i++)
+	for (uint16_t i = 0; i < sectorCount; i++)
 	{
 		float theta = ((float)i / sectorCount) * 2 * PI;
 		float nextTheta = ((float)(i + 1) / sectorCount) * 2 * PI;
 
 		vertices.push_back(Vertex(0, halfLength, 0, cylinderColour, Vector3(0, 1, 0)));
-		vertices.push_back(Vertex((double)radius * (double)sin(theta), halfLength, (double)radius * (double)cos(theta),
-			cylinderColour, Vector3(cos(theta), 0.0, sin(theta))));
+		vertices.push_back(Vertex(radius * sinf(theta), halfLength, radius * cosf(theta),
+			cylinderColour, Vector3(cosf(theta), 0.0, sinf(theta))));
 		if (i != sectorCount - 1) vertices.push_back(Vertex(0, halfLength, 0, cylinderColour, Vector3(0, 1, 0)));
-		vertices.push_back(Vertex((double)radius * (double)sin(nextTheta), halfLength, (double)radius * (double)cos(nextTheta),
-			cylinderColour, Vector3(cos(nextTheta), 0.0, sin(nextTheta))));
+		vertices.push_back(Vertex(radius * sinf(nextTheta), halfLength, radius * cosf(nextTheta),
+			cylinderColour, Vector3(cosf(nextTheta), 0.0, sinf(nextTheta))));
 	}
 	//Sides
-	for (int i = 0; i < sectorCount; i++)
+	for (uint16_t i = 0; i < sectorCount; i++)
 	{
 		float theta = ((float)i / sectorCount) * 2 * PI;
 		float nextTheta = ((float)(i + 1) / sectorCount) * 2 * PI;
 
-		vertices.push_back(Vertex((double)radius * (double)sin(theta), -halfLength, (double)radius * (double)cos(theta),
-			cylinderColour, Vector3(-cos(theta), 0.0, -sin(theta))));		
-		vertices.push_back(Vertex((double)radius * (double)sin(theta), halfLength, (double)radius * (double)cos(theta),
-			cylinderColour, Vector3(cos(theta), 0.0, sin(theta))));
-		vertices.push_back(Vertex((double)radius * (double)sin(nextTheta), -halfLength, (double)radius * (double)cos(nextTheta),
-				cylinderColour, Vector3(-cos(nextTheta), 0.0, -sin(nextTheta))));
-		vertices.push_back(Vertex((double)radius * (double)sin(theta), halfLength, (double)radius * (double)cos(theta),
-			cylinderColour, Vector3(cos(theta), 0.0, sin(theta))));
+		vertices.push_back(Vertex(radius * sinf(theta), -halfLength, radius * cosf(theta),
+			cylinderColour, Vector3(-cosf(theta), 0.0, -sinf(theta))));		
+		vertices.push_back(Vertex(radius * sin(theta), halfLength, radius * cosf(theta),
+			cylinderColour, Vector3(cosf(theta), 0.0, sinf(theta))));
+		vertices.push_back(Vertex(radius * sinf(nextTheta), -halfLength, radius * cosf(nextTheta),
+				cylinderColour, Vector3(-cosf(nextTheta), 0.0, -sinf(nextTheta))));
+		vertices.push_back(Vertex(radius * sinf(theta), halfLength, radius * cosf(theta),
+			cylinderColour, Vector3(cosf(theta), 0.0, sinf(theta))));
 	}
 	//Bottom
-	for (int i = 0; i < sectorCount; i++)
+	for (uint16_t i = 0; i < sectorCount; i++)
 	{
 		float theta = ((float)i / sectorCount) * 2 * PI;
 		float nextTheta = ((float)(i + 1) / sectorCount) * 2 * PI;
 
-		vertices.push_back(Vertex((double)radius * (double)sin(theta), -halfLength, (double)radius * (double)cos(theta),
-			cylinderColour, Vector3(cos(theta), 0.0, sin(theta))));
+		vertices.push_back(Vertex(radius * sinf(theta), -halfLength, radius * cosf(theta),
+			cylinderColour, Vector3(cosf(theta), 0.0, sin(theta))));
 		if (i != 0) vertices.push_back(Vertex(0, -halfLength, 0, cylinderColour, Vector3(0, -1, 0)));
-		vertices.push_back(Vertex((double)radius * (double)sin(nextTheta), -halfLength, (double)radius * (double)cos(nextTheta),
-			cylinderColour, Vector3(cos(nextTheta), 0.0, sin(nextTheta))));
+		vertices.push_back(Vertex(radius * sinf(nextTheta), -halfLength, radius * cosf(nextTheta),
+			cylinderColour, Vector3(cosf(nextTheta), 0.0, sinf(nextTheta))));
 		vertices.push_back(Vertex(0, -halfLength, 0, cylinderColour, Vector3(0, -1, 0)));
 	}
 	return vertices;

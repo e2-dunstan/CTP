@@ -22,17 +22,26 @@ enum class Material : int
 namespace Materials
 {
 	//See "FrictionCoefficients - readable.csv" for clearer table
-	//Arr size could be halved with clever indexing
-	const float coefficients[7][14]
+	const float coefficientsButEfficient[56]
+	{
+		0.1f,	0.02f,	0.1f,	0.03f,	0.5f,	0.5f,	0.05f,	0.05f,	0.03f,	0.03f,	0.03f,	0.03f,	0.6f,	0.6f,
+						0.95f,	0.4f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.25f,	0.53f,	0.6f,	0.6f,
+										1.0f,	1.0f,	0.75f,	0.5f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f,
+														0.4f,	0.4f,	0.4f,	0.4f,	0.2f,	0.4f,	0.6f,	0.6f,
+																		0.6f,	0.4f,	0.1f,	0.05f,	0.68f,	0.68f,
+																						0.7f,	0.42f,	0.68f,	0.68f,
+																										1.16f,	1.16f
+	};
+	/*const float coefficients[7][14]
 	{
 		{0.1f,	0.02f,	0.1f,	0.03f,	0.5f,	0.5f,	0.05f,	0.05f,	0.03f,	0.03f,	0.03f,	0.03f,	0.6f,	0.6f},
-		{0.0f,	0.0f,	0.95f,	0.4f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.25f,	0.53f,	0.6f,	0.6f},	//(i),(14 - (i * 2) + j)
+		{0.0f,	0.0f,	0.95f,	0.4f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.25f,	0.53f,	0.6f,	0.6f},
 		{0.0f,	0.0f,	0.0f,	0.0f,	1.0f,	1.0f,	0.5f,	0.4f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f},
 		{0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.4f,	0.4f,	0.4f,	0.4f,	0.2f,	0.4f,	0.6f,	0.6f},
 		{0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.6f,	0.4f,	0.1f,	0.05f,	0.68f,	0.68f},
 		{0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.7f,	0.42f,	0.68f,	0.68f},
 		{0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	0.0f,	1.16f,	1.16f}
-	};
+	};*/
 
 	/*struct Texture
 	{
@@ -54,80 +63,31 @@ namespace Materials
 		Texture("/Textures/metal2.bmp")
 	});*/
 
-	/*static void ReadFrictionCoefficientsFromFile()
-	{
-		std::ifstream file("FrictionCoefficients.csv");
-
-		if (!file.is_open())
-		{
-			std::cout << "ERROR: cannot open file FrictionCoefficients.csv" << std::endl;
-			return;
-		}
-
-		std::string line;
-		float val;
-		int row = 0;
-		while (std::getline(file, line))
-		{
-			std::stringstream ss(line);
-			int col = 0;
-			while (ss >> val)
-			{
-				coefficients[col][row] = val;
-				if (ss.peek() == ',') ss.ignore();
-				col++;
-			}
-			row++;
-		}
-		file.close();
-	}*/
-
-
 	static float GetCombinedStaticFriction(const Material m1, const Material m2)
 	{
-		int one = (int)m1, two = (int)m2;
-		if (one < two)
+		int row = (int)m1, col = (int)m2;
+		if (row > col)
 		{
-			one = (int)m2;
-			two = (int)m1;
+			row = (int)m2;
+			col = (int)m1;
 		}
 
-		return coefficients[two][one * 2];
-
-		/*
-		if (m1 == Material::WOOD && m2 == Material::WOOD)																		return 0.4f;
-		if (m1 == Material::GLASS && m2 == Material::GLASS)																		return 0.95f;
-		if (m1 == Material::METAL && m2 == Material::METAL)																		return 0.6f;
-		if (m1 == Material::RUBBER && m2 == Material::RUBBER)																	return 1.16f;
-
-		if ((m1 == Material::WOOD && m2 == Material::CONCRETE) || (m2 == Material::WOOD && m1 == Material::CONCRETE))			return 0.5f;
-		if ((m1 == Material::WOOD && m2 == Material::ICE) || (m2 == Material::WOOD && m1 == Material::ICE))						return 0.2f;
-		if ((m1 == Material::GLASS && m2 == Material::ICE) || (m2 == Material::GLASS && m1 == Material::ICE))					return 0.1f;
-		if ((m1 == Material::SMOOTH_METAL && m2 == Material::METAL) || (m2 == Material::SMOOTH_METAL && m1 == Material::METAL)) return 0.1f;
-		if ((m1 == Material::RUBBER && m2 == Material::CONCRETE) || (m2 == Material::RUBBER && m1 == Material::CONCRETE))		return 1.0f;*/
+		int index = (row * 14) + ((col - row) * 2) - (row == 0 ? 0 : (2 * (row - 1)));
+		return coefficientsButEfficient[index];
+		//return coefficients[col][row * 2];
 	}
 	static float GetCombinedDynamicFriction(const Material m1, const Material m2)
 	{
-		int one = (int)m1, two = (int)m2;
-		if (one < two)
+		int row = (int)m1, col = (int)m2;
+		if (row < col)
 		{
-			one = (int)m2;
-			two = (int)m1;
+			row = (int)m2;
+			col = (int)m1;
 		}
 
-		return coefficients[two][(one * 2) + 1];
-
-		/*
-		if (m1 == Material::WOOD && m2 == Material::WOOD)																		return 0.4f;
-		if (m1 == Material::GLASS && m2 == Material::GLASS)																		return 0.4f;
-		if (m1 == Material::METAL && m2 == Material::METAL)																		return 0.4f;
-		if (m1 == Material::RUBBER && m2 == Material::RUBBER)																	return 1.16f;
-
-		if ((m1 == Material::WOOD && m2 == Material::CONCRETE) || (m2 == Material::WOOD && m1 == Material::CONCRETE))			return 0.4f;
-		if ((m1 == Material::WOOD && m2 == Material::ICE) || (m2 == Material::WOOD && m1 == Material::ICE))						return 0.1f;
-		if ((m1 == Material::GLASS && m2 == Material::ICE) || (m2 == Material::GLASS && m1 == Material::ICE))					return 0.03f;
-		if ((m1 == Material::SMOOTH_METAL && m2 == Material::METAL) || (m2 == Material::SMOOTH_METAL && m1 == Material::METAL)) return 0.05f;
-		if ((m1 == Material::RUBBER && m2 == Material::CONCRETE) || (m2 == Material::RUBBER && m1 == Material::CONCRETE))		return 0.8f;*/
+		int index = (row * 14) + ((col - row) * 2) - (row <= 1 ? 0 : (2 * (row - 1)));
+		return coefficientsButEfficient[index + 1];
+		//return coefficients[col][(row * 2) + 1];
 	}
 
 	static float GetBounciness(const Material mat)
@@ -135,11 +95,10 @@ namespace Materials
 		switch (mat)
 		{
 		case Material::WOOD:
-			return 0.1f;
-		case Material::SMOOTH_METAL:
 			return 0.05f;
 		case Material::RUBBER:
-			return 0.8f;
+			return 0.5f;
+		case Material::SMOOTH_METAL:
 		case Material::METAL:
 		case Material::GLASS:
 		case Material::ICE:

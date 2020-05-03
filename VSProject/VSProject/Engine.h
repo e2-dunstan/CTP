@@ -18,8 +18,10 @@ public:
 	void Render();
 
 	void Scene_Stacks();
+	void Scene_Castle();
 	void Scene_SpheresInBox();
 	void Scene_Dominoes();
+	void Scene_Slopes();
 
 	void SpawnRandomSphere();
 	void SpawnRandomBox();

@@ -49,16 +49,16 @@ private:
 	const float linearDrag = 0.5f;
 	const float angularDrag = 0.5f;
 
-	double motion = 0;
-	double timeMotionBelowSleepThreshold = 0;
-	double timeToSleep = 0.1;
+	float motion = 0;
+	float timeMotionBelowSleepThreshold = 0;
+	float timeToSleep = 0.0f;
 	bool canSleep = true;
 
-	double terminalSpeed = 10000;
-	double terminalSpeedAngular = 1000;
+	float terminalSpeed = 10000;
+	float terminalSpeedAngular = 1000;
 
 protected:
 
-	double GetMotion();
-	const double sleepThreshold = 1.2;
+	float GetMotion();
+	const float sleepThreshold = 0.05f;
 };

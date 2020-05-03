@@ -19,7 +19,7 @@ public:
 	PrimitiveManager() = default;
 	~PrimitiveManager() = default;
 
-	void CreatePlane(const Vector3& scale, const Vector3& translation, const Material mat = Material::CONCRETE);
+	void CreatePlane(const Vector3& scale, const Vector3& translation, const Vector3& rotation, const Material mat = Material::CONCRETE);
 	void CreateBox(const Vector3& scale, const Vector3& translation, const Vector3& rotation, bool isStatic = false, const Material mat = Material::WOOD);
 	void CreateSphere(float radius, const Vector3& translation, const Material mat = Material::RUBBER);
 	//void CreateCapsule(float radius, float straight, const Vector3& translation, const Vector3& rotation = Vector3());
@@ -32,6 +32,7 @@ public:
 
 private:
 
+	void CheckAwakeStates();
 	Colour GetMaterialColour(const Material mat);
 
 	std::unique_ptr<Collisions> collisions = std::make_unique<Collisions>();
