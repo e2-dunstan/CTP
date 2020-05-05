@@ -31,7 +31,7 @@
 	}
 }*/
 
-bool RayCast::TestTriangle(const Tri& tri, Matrix4& transform, Ray& ray)
+bool RayCast::TestTriangle(const Tri& tri, Ray& ray, Matrix4* transform)
 {
 	// Möller–Trumbore intersection algorithm
 	
@@ -40,10 +40,12 @@ bool RayCast::TestTriangle(const Tri& tri, Matrix4& transform, Ray& ray)
 	Vector3 v0 = tri.positions[0];
 	Vector3 v1 = tri.positions[1];
 	Vector3 v2 = tri.positions[2];
-	Mathe::Transform(v0, transform);
-	Mathe::Transform(v1, transform);
-	Mathe::Transform(v2, transform);
-
+	if (transform != nullptr)
+	{
+		Mathe::Transform(v0, *transform);
+		Mathe::Transform(v1, *transform);
+		Mathe::Transform(v2, *transform);
+	}
 	Vector3 edge1 = v1 - v0;
 	Vector3 edge2 = v2 - v0;
 	Vector3 h = ray.direction.VectorProduct(edge2);

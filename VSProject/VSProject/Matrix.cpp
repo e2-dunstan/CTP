@@ -67,21 +67,23 @@ void Matrix3::Inverse()
 Matrix3 Matrix3::operator*(Matrix3& m)
 {
 	float multiplied[9];
+	const uint16_t mRowSize = m.rowSize;
+	const uint16_t mColSize = m.colSize;
 
-	if (colSize == m.rowSize)
+	if (colSize == mRowSize)
 	{
 		float temp = 0.0;
 
 		for (uint16_t r = 0; r < rowSize; r++)
 		{
-			for (uint16_t c = 0; c < m.colSize; c++)
+			for (uint16_t c = 0; c < mColSize; c++)
 			{
 				temp = 0.0;
 				for (uint16_t k = 0; k < colSize; k++)
 				{
-					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * m.colSize) + c];
+					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * mColSize) + c];
 				}
-				multiplied[(r * m.colSize) + c] = temp;
+				multiplied[(r * mColSize) + c] = temp;
 			}
 		}
 		return Matrix3(multiplied);
@@ -89,14 +91,15 @@ Matrix3 Matrix3::operator*(Matrix3& m)
 	else
 	{
 		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
-		for (uint16_t r = 0; r < rowSize; r++)
-		{
-			for (uint16_t c = 0; c < m.colSize; c++)
-			{
-				if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
-				else multiplied[(r * m.colSize) + c] = 0.0;
-			}
-		}
+		MatrixHelper::Identity(3, 3, multiplied);
+		//for (uint16_t r = 0; r < rowSize; r++)
+		//{
+		//	for (uint16_t c = 0; c < m.colSize; c++)
+		//	{
+		//		if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
+		//		else multiplied[(r * m.colSize) + c] = 0.0;
+		//	}
+		//}
 		return Matrix3(multiplied);
 	}
 }
@@ -256,21 +259,23 @@ Matrix3 Matrix4::ToMatrix3()
 Matrix4 Matrix4::operator*(Matrix4& m)
 {
 	float multiplied[16];
+	const uint16_t mRowSize = m.rowSize;
+	const uint16_t mColSize = m.colSize;
 
-	if (colSize == m.rowSize)
+	if (colSize == mRowSize)
 	{
-		float temp = 0.0;
+		float temp = 0.0f;
 
 		for (uint16_t r = 0; r < rowSize; r++)
 		{
-			for (uint16_t c = 0; c < m.colSize; c++)
+			for (uint16_t c = 0; c < mColSize; c++)
 			{
-				temp = 0.0;
+				temp = 0.0f;
 				for (uint16_t k = 0; k < colSize; k++)
 				{
-					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * m.colSize) + c];
+					temp += this->matrix[(r * colSize) + k] * m.matrix[(k * mColSize) + c];
 				}
-				multiplied[(r * m.colSize) + c] = temp;
+				multiplied[(r * mColSize) + c] = temp;
 			}
 		}
 		return Matrix4(multiplied);
@@ -278,14 +283,15 @@ Matrix4 Matrix4::operator*(Matrix4& m)
 	else
 	{
 		std::cout << "Invalid matrices to multiply! Returning Identity." << std::endl;
-		for (uint16_t r = 0; r < 4; r++)
-		{
-			for (uint16_t c = 0; c < 4; c++)
-			{
-				if (r == c) multiplied[(r * m.colSize) + c] = 1.0;
-				else multiplied[(r * m.colSize) + c] = 0.0;
-			}
-		}
+		MatrixHelper::Identity(3, 3, multiplied);
+		//for (uint16_t r = 0; r < 4; r++)
+		//{
+		//	for (uint16_t c = 0; c < 4; c++)
+		//	{
+		//		if (r == c) multiplied[(r * 4) + c] = 1.0f;
+		//		else multiplied[(r * 4) + c] = 0.0f;
+		//	}
+		//}
 		return Matrix4(multiplied);
 	}
 }

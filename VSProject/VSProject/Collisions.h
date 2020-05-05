@@ -4,6 +4,28 @@
 #include "SeparatingAxisTheorem.h"
 #include "CollisionResolution.h"
 
+
+struct RecordData
+{
+	RecordData();
+	~RecordData();
+
+	const bool resRecordTimes = false;
+	const bool detRecordTimes = false;
+	uint16_t resRecordIndex = 0;
+	uint16_t detRecordIndex = 0;
+
+	long long* detFineTimes = nullptr;
+
+	long long* penTimes = nullptr;
+	long long* velTimes = nullptr;
+	long long* totalTimes = nullptr;
+
+	void StoreDetTimes(long long f);
+	void StoreResTimes(long long p, long long v, long long t);
+};
+
+
 //Base class for all collision related behaviours.
 class Collisions
 {
@@ -35,4 +57,6 @@ private:
 	};
 
 	ContactDisplay contactDisplays[30];
+
+	std::unique_ptr<RecordData> recordData = std::make_unique<RecordData>();
 };

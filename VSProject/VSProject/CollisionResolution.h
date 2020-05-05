@@ -24,8 +24,8 @@ private:
 
 	void AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign);
 
-	void CreateCSVFile();
-	void WriteToFile(float value, unsigned int obj, unsigned int iter);
+	//void CreateCSVFile();
+	//void WriteToFile(float value, unsigned int obj, unsigned int iter);
 
-	std::ofstream file;
+	//std::ofstream file;
 };

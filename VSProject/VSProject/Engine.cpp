@@ -11,14 +11,18 @@ void Engine::Init()
 	//primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(0, 3, 8),	Vector3(0, 0, 0));
 	//individualObjectInitialised.push_back(false);
 	//primitiveCount++;
+	//primitiveManager->CreateSphere(1, Vector3(0, 2, 8));
+	//individualObjectInitialised.push_back(false);
+	//primitiveCount++;
 
 	std::srand(time(0));
 
-	//Scene_Dominoes();
+	Scene_Dominoes();
 	//Scene_Stacks();
-	Scene_Castle();
+	//Scene_Castle();
 	//Scene_SpheresInBox();
 	//Scene_Slopes();
+	//Scene_Cover();
 }
 
 void Engine::Update()
@@ -38,7 +42,7 @@ void Engine::Update()
 
 	primitiveManager->Update();
 
-	UpdateTrisForRayCamera();
+	//UpdateTrisForRayCamera();
 }
 
 void Engine::Render()
@@ -54,24 +58,18 @@ void Engine::UpdateTrisForRayCamera()
 	for (uint16_t i = prevPrimitiveCount; i < primitiveCount; i++)
 	{
 		Primitive& prim = *primitiveManager->GetPrimitives()[i].get();
+		rayCamera->AddPrimitive(primitiveManager->GetPrimitives()[i].get()->tris, 
+			primitiveManager->GetPrimitives()[i].get()->transform);
 
-		switch (prim.type)
-		{
-		case PrimitiveType::BOX:
-			rayCamera->AddPrimitive(dynamic_cast<Box*>(&prim)->tris, &prim.transform);
-			break;
-		case PrimitiveType::PLANE:
-			rayCamera->AddPrimitive(dynamic_cast<Plane*>(&prim)->tris, &prim.transform);
-			break;
-		case PrimitiveType::SPHERE:
-			rayCamera->AddPrimitive(dynamic_cast<Sphere*>(&prim)->tris, &prim.transform);
-			break;
-		case PrimitiveType::CAPSULE:
-		case PrimitiveType::CYLINDER:
-		case PrimitiveType::COMPLEX:
-		default:
-			break;
-		}
+		//switch (prim.type)
+		//{
+		//case PrimitiveType::SPHERE:
+		//	rayCamera->AddPrimitive(prim.tris, prim.transform,
+		//		dynamic_cast<Sphere*>(&prim)->radius);
+		//	break;
+		//default:
+		//	break;
+		//}
 	}
 	prevPrimitiveCount = primitiveCount;
 }
@@ -93,7 +91,6 @@ void Engine::Scene_Stacks()
 	SpawnStack(Vector3(0, 0, 4), 2, Vector3(1, 1, 1), 0.2f);
 	SpawnStack(Vector3(0, 0, 0), 5, Vector3(1, 1, 1), 0.2f);
 	SpawnStack(Vector3(0, 0, -4), 4, Vector3(1, 1, 1), 0.2f);
-	//SpawnStack(Vector3(0, 0, 0), 8, Vector3(1, 1, 1), 0.2f);
 }
 
 void Engine::Scene_Castle()
@@ -223,6 +220,23 @@ void Engine::Scene_Slopes()
 		primitiveCount++;
 		matIndex++;
 	}
+	objectsInitialised = false;
+}
+
+void Engine::Scene_Cover()
+{
+	SpawnStack(Vector3(2, 0, 3), 3, Vector3(1, 1, 1), 0.3f);
+	SpawnStack(Vector3(-2, 0, -4), 2, Vector3(1, 1, 1), 0.3f);
+	SpawnStack(Vector3(0, 0, 0), 5, Vector3(1, 1, 1), 0.3f);
+	SpawnStack(Vector3(2, 0, -2), 4, Vector3(1, 1, 1), 0.5f);
+
+	//primitiveManager->CreateSphere(1.2f, Vector3(-6, 2, 5));
+	//primitiveManager->CreateSphere(1.5f, Vector3(-4, 2, 0));
+	//primitiveManager->CreateSphere(1, Vector3(-1, 2, -3));
+	//primitiveCount += 1;
+	//individualObjectInitialised.push_back(false);
+	//individualObjectInitialised.push_back(false);
+	//individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 }
 

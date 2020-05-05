@@ -72,7 +72,19 @@ namespace Materials
 			col = (int)m1;
 		}
 
-		int index = (row * 14) + ((col - row) * 2) - (row == 0 ? 0 : (2 * (row - 1)));
+		int index = row * (13 - row) + 2 * col;
+
+		//for (int r = 0; r < 7; r++)
+		//{
+		//	for (int c = r; c < 7; c++)
+		//	{
+		//		//index = ((r * 14) + (c * 2)) - (((r - 1) * r) + (r * 2));
+		//		//index *= 2;
+		//		index = r * (13 - r) + 2 * c;
+		//		std::cout << "Row: " << r << ", Col: " << c << ", index: " << index << std::endl;
+		//	}
+		//}
+
 		return coefficientsButEfficient[index];
 		//return coefficients[col][row * 2];
 	}
@@ -85,7 +97,8 @@ namespace Materials
 			col = (int)m1;
 		}
 
-		int index = (row * 14) + ((col - row) * 2) - (row <= 1 ? 0 : (2 * (row - 1)));
+		int index = row * (13 - row) + 2 * col;
+
 		return coefficientsButEfficient[index + 1];
 		//return coefficients[col][(row * 2) + 1];
 	}

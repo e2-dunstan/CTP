@@ -29,7 +29,7 @@ struct Tri;
 namespace RayCast
 {
 	//bool Test(Primitive* prim, Ray& ray);
-	bool TestTriangle(const Tri& tri, Matrix4& transform, Ray& ray);
+	bool TestTriangle(const Tri& tri, Ray& ray, Matrix4* transform = nullptr);
 
 	const float maxRayLength = 500.0f;
 

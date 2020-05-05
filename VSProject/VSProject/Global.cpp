@@ -13,7 +13,7 @@ namespace Global
 
 	bool shouldUpdate = true;
 
-	bool writeContactDataToFile = false;
+	bool writeDataToFile = false;
 
 	const Vector3 skyColour = Vector3(0.529f, 0.808f, 0.922f);
 }

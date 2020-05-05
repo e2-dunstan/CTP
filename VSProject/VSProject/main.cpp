@@ -27,7 +27,7 @@ namespace
 	bool mouseHeld = false;
 
 	std::unique_ptr<Engine> engine = std::make_unique<Engine>();
-	std::unique_ptr<Camera> camera = std::make_unique<Camera>(0, 10, 0, Mathe::ToRadians(80), 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
+	std::unique_ptr<Camera> camera = std::make_unique<Camera>(0, 4, 0, Mathe::ToRadians(80), 0, rotationSpeed, translationSpeed, windowWidth, windowHeight);
 	std::unique_ptr<ConsoleControls> consoleControls = std::make_unique<ConsoleControls>(/*engine.get()*/);
 
 	//in miliseconds
@@ -56,8 +56,12 @@ void ReleaseKey(unsigned char key, int x, int y)
 	consoleControls->OnKeyRelease(key, engine.get());
 
 	if (key == 'p') Global::shouldUpdate = !Global::shouldUpdate;
-	if (key == 'c') Global::writeContactDataToFile = true;
-	if (key == 'r') engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight);
+	if (key == 'c') Global::writeDataToFile = true;
+	if (key == 'r')
+	{
+		engine->UpdateTrisForRayCamera();
+		engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight);
+	}
 }
 
 void MouseMove(int x, int y)

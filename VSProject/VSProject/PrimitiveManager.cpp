@@ -7,7 +7,7 @@ using namespace Shapes;
 
 void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation, const Vector3& rotation, const Material mat)
 {
-	Plane plane = Plane(ShapeVertices::GetPlaneTris(primitives.size() == 0 ? Colours::grass : GetMaterialColour(mat)));
+	Plane plane = Plane(ShapeVertices::GetPlaneTris(primitives.size() == 0 ? Colours::offWhite : GetMaterialColour(mat)));
 
 	plane.normal = Vector3(0, 1, 0);
 	Matrix3 normalRot;
@@ -183,7 +183,7 @@ void PrimitiveManager::CheckAwakeStates()
 			{
 				for (auto tri : compPrim->tris)
 				{
-					if (RayCast::TestTriangle(tri, compPrim->transform, ray)
+					if (RayCast::TestTriangle(tri, ray, &compPrim->transform)
 						&& ray.intersection1 <= scale)
 					{
 						setAwake = false;
@@ -214,7 +214,7 @@ Colour PrimitiveManager::GetMaterialColour(const Material mat)
 	case Material::CONCRETE:
 		return Colours::grey;
 	case Material::WOOD:
-		return Colours::brown;
+		return Colours::deepRed;
 	case Material::METAL:
 		return Colours::darkGrey;
 	case Material::SMOOTH_METAL:

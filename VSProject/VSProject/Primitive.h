@@ -101,7 +101,7 @@ public:
 	void CalculateInertiaTensor() override;
 	void UpdateTransform() override;
 
-	void Draw() override { DrawForTris(tris); }
+	void Draw() override;// { DrawForTris(tris); }
 
 	float radius = 0;
 	SphereCV collisionVolume;

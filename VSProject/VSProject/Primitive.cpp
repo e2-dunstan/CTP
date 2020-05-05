@@ -75,6 +75,7 @@ void Primitive::DrawForTris(std::vector<Tri> tris)
 			//glTexCoord2f(tris[v].uvs[p * 2], tris[v].uvs[(p * 2) + 1]);
 			//glMateriali(GL_FRONT, GL_DIFFUSE, Materials::textures[0].textureID);
 			glNormal3f((GLfloat)tris[v].normal.x, (GLfloat)tris[v].normal.y, (GLfloat)tris[v].normal.z);
+
 			if (colliding && debugCollision)
 			{
 				glColor3f(1.0f, 0.0f, 0.0f);
@@ -184,6 +185,37 @@ void Sphere::UpdateTransform()
 	collisionVolume.Update(translation);
 
 	updateTransform = false;
+}
+
+void Sphere::Draw()
+{
+	glBegin(GL_TRIANGLES);
+
+	Vector3 position;
+	for (uint16_t v = 0; v < tris.size(); v++)
+	{
+		for (uint16_t p = 0; p < 3; p++)
+		{
+			position = tris[v].positions[p];
+			Vector3 n = position * 1.0f / radius;
+			Mathe::Transform(position, transform);
+
+			glNormal3f((GLfloat)n.x, (GLfloat)n.y, (GLfloat)n.z);
+			
+			if (colliding && debugCollision)
+			{
+				glColor3f(1.0f, 0.0f, 0.0f);
+			}
+			else
+			{
+				glColor3f((GLfloat)tris[v].colour.r, (GLfloat)tris[v].colour.g, (GLfloat)tris[v].colour.b);
+			}
+			glVertex3f((GLfloat)position.x, (GLfloat)position.y, (GLfloat)position.z);
+		}
+	}
+	glEnd();
+
+	if (drawBoundingVolume) boundingVolume.Draw();
 }
 
 void Plane::UpdateTransform()

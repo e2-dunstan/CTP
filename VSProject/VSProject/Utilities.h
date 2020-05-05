@@ -22,9 +22,9 @@ struct Colour
 	
 	void operator=(const Vector3& _v)
 	{
-		r = (GLfloat)(_v.x + 1.0) / (GLfloat)2.0; 
-		g = (GLfloat)(_v.y + 1.0) / (GLfloat)2.0; 
-		b = (GLfloat)(_v.z + 1.0) / (GLfloat)2.0;
+		r = (GLfloat)(_v.x + 1.0f) / (GLfloat)2.0f; 
+		g = (GLfloat)(_v.y + 1.0f) / (GLfloat)2.0f; 
+		b = (GLfloat)(_v.z + 1.0f) / (GLfloat)2.0f;
 	}
 
 	bool operator==(const Colour& _c) const { return (r == _c.r && g == _c.g && b == _c.b && a == _c.a); }
@@ -72,6 +72,7 @@ namespace Colours
 	const Colour black = Colour(0.0f, 0.0f, 0.0f);
 	const Colour nearBlack = Colour(0.05f, 0.05f, 0.05f);
 	const Colour red = Colour(1.0f, 0.0f, 0.0f);
+	const Colour deepRed = Colour(0.85f, 0.1f, 0.1f);
 	const Colour green = Colour(0.0f, 1.0f, 0.0f);
 	const Colour grass = Colour(0.486f, 0.988f, 0.01f);
 	const Colour blue = Colour(0.0f, 0.0f, 1.0f);
@@ -86,15 +87,19 @@ namespace Colours
 	const Colour brown = Colour(0.7f, 0.4f, 0.28f);
 };
 
-static inline Vector3 UniformSampleHemisphere(const float u1, const float u2)
+static inline Vector3 CosineSampleHemisphere(const float u1, const float u2, float& pdf)
 {
+	//pdf = probability density function
+
 	const float r = sqrt(u1);
 	const float theta = 2 * Mathe::PI * u2;
 
 	const float x = r * cos(theta);
 	const float y = r * sin(theta);
+	const float z = sqrt(1.0f - u1);
+	pdf = z / Mathe::PI;
 
-	return Vector3(x, y, sqrt(1.0f - u1));
+	return Vector3(x, y, z);
 
 
 	//float z = u1;

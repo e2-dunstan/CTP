@@ -1,25 +1,16 @@
 #include "RayCamera.h"
 #include <fstream>
 
-RayCamera::RayCamera()
+void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4& trans/*, float sphereRadius*/)
 {
-	//Will probably be a lot more primitives later on
-	//triPrimitives.reserve(110);
-}
-
-void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4* trans)
-{
-	//if (triPrimitives.size() >= 110)
-	//{
-	//	std::cout << "WARNING: Tri vector reserve hit in RayCamera" << std::endl;
-	//	return;
-	//}
-
 	triPrimitives.push_back(RayCameraPrimitive(tris, trans));
 }
 
 void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height)
 {	
+	RayCameraPrimitive* primCopy = new RayCameraPrimitive[triPrimitives.size()];
+
+
 	const unsigned int arrSize = width * height * 3;
 	sf::Uint8* pixels = new sf::Uint8[arrSize];
 	Vector3* pixelsVec = new Vector3[width * height];
@@ -41,21 +32,22 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
-	uint16_t samples = 1;
+	uint16_t samples = 150;
 	Vector3 newColour = Vector3();
 	for (uint16_t col = 0; col < width; col++)
 	{
 		if (col % 10 == 0)
 			std::cerr << "Progress... " << 100 * col / width << "%" << " Latest colour: " << 
-			(int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z <<std::endl;
+			(int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z << std::endl;
 
 		for (uint16_t row = 0; row < height; row++)
 		{
-			ray = GetRayAt(col, row, width, height, cPosTemp);
 			int actualIndex = row * width + col;
 
 			for (uint16_t s = 0; s < samples; s++)
 			{
+				//integrating over area of pixel
+				ray = GetRayAt(col + RandomFloat(0.0f, 1.0f), row + RandomFloat(0.0f, 1.0f), width, height, cPosTemp);
 				Vector3 pathThroughput = Vector3(1, 1, 1);
 
 				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
@@ -90,6 +82,7 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 
 	delete[] pixels;
 	delete[] pixelsVec;
+	triPrimitives.clear();
 }
 
 void RayCamera::DrawLatestRay()
@@ -155,47 +148,43 @@ void RayCamera::SetModelViewMatrix()
 
 Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, unsigned int pathLength)
 {
-	Matrix4 mat;
+	//Matrix4 mat;
 	Tri* closestTriangle = nullptr;
 	Ray bestRay;
+	float radius = 0;
 	bestRay.intersection1 = 1000;
 
 	//if (debugRaysCounter < 3) debugRays[debugRaysCounter++] = ray;
 	ray = Ray(point, normal);
 	for (unsigned int p = 0; p < triPrimitives.size(); p++)
-	{
+	{	
 		for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
 		{
-			if (RayCast::TestTriangle(triPrimitives[p].tris[t], triPrimitives[p].transform, ray)
+			if (RayCast::TestTriangle(triPrimitives[p].tris[t], ray, nullptr)
 				&& ray.intersection1 <= bestRay.intersection1)
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
+				radius = triPrimitives[p].radius;
 				bestRay = ray;
-				mat = triPrimitives[p].transform;
+				//mat = triPrimitives[p].transform;
 			}
 		}
 	}
 
 	if (closestTriangle == nullptr)
 	{
-		return pathThroughput * Global::skyColour;
+		return pathThroughput * Vector3(1, 1, 1);
+		//return pathThroughput * Global::skyColour;
 	}
 	else
 	{
-		//Local space
-		Vector3 n = closestTriangle->normal;
-		//World space
-		Mathe::Transform(n, mat);
-		n = n.Normalise();
+		Vector3 n = closestTriangle->normal;//radius == 0 ? closestTriangle->normal : GetSphereNormal(*closestTriangle, radius, bestRay.IntersectionPoint(), &mat);
 
 		Vector3 temp(1, 0, 0);
 		if (n.ScalarProduct(temp) > 0.0001f) temp = Vector3(0, 1, 0);
 		//Vector product ensures it's the same space as the normal
 		Vector3 u = n.VectorProduct(temp).Normalise();
 		Vector3 v = n.VectorProduct(u).Normalise();
-
-		//if (u.SumComponents() < 0) u *= -1.0;
-		//if (v.SumComponents() < 0) v *= -1.0;
 
 		//matrix where z is the normal
 		float matVals[9] =
@@ -207,8 +196,9 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 		Matrix3 normalMat = Matrix3(matVals);
 		//normalMat.Inverse();
 
+		float pdf;
 		//Z up space
-		Vector3 randHemisphere = UniformSampleHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f));
+		Vector3 randHemisphere = CosineSampleHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f), pdf);
 		//World space
 		Mathe::Transform(randHemisphere, normalMat);
 		//randHemisphere += n;
@@ -216,14 +206,14 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 
 		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / Mathe::PI;
 		float cosTheta = abs(n.ScalarProduct(randHemisphere));
-		float p = 1.0f / (2.0f * Mathe::PI);
-
-		pathThroughput *= BRDF * cosTheta / p;
+		//float p = 1.0f / (2.0f * Mathe::PI);
+	
+		pathThroughput *= BRDF * cosTheta / pdf;
 
 		//if (pathThroughput.x <= 0 || pathThroughput.y <= 0 || pathThroughput.z <= 0)
 		//	std::cout << std::endl;
 
-		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint(), pathLength++);
+		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint() + (n * 0.0001f), pathLength++);
 	}
 }
 
@@ -251,4 +241,29 @@ void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize
 	img.saveToFile("PixelBufferSFML.bmp");
 
 	std::cout << "done!" << std::endl;
+}
+
+Vector3 RayCamera::GetSphereNormal(const Tri& tri, const float radius, const Vector3& intersection, Matrix4* trans)
+{
+	if (!smoothSpheres) return tri.normal;
+
+	Vector3 percs;
+	Vector3 worldspacePos[3];
+	for (uint16_t i = 0; i < 3; i++)
+	{
+		worldspacePos[i] = tri.positions[i];
+		Mathe::Transform(worldspacePos[i], *trans);
+
+		percs[i] = abs(worldspacePos[i].ScalarProduct(intersection));
+	}
+	percs = percs.Normalise();
+
+	Vector3 norms[3] =
+	{
+		tri.positions[0] * 1.0f / radius,
+		tri.positions[1] * 1.0f / radius,
+		tri.positions[2] * 1.0f / radius
+	};
+
+	return (norms[0] * percs[0] + norms[1] * percs[1] + norms[2] * percs[2]) / 3;
 }

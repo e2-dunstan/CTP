@@ -1,11 +1,12 @@
 #include "CollisionResolution.h"
 
+
 void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 {
 	const float penetrationEpsilon = 0.001f;
 	numContacts = contacts.size();
 
-	if (Global::writeContactDataToFile) CreateCSVFile();
+	//if (Global::writeContactDataToFile) CreateCSVFile();
 
 	bool iterationsComplete = false;
 
@@ -26,7 +27,7 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 			if (contacts[contactIndex].IsPenetrationResolved(penetrationEpsilon)) continue;
 			else iterationsComplete = false;
 
-			if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, contactIndex / numContacts);
+			//if (Global::writeContactDataToFile) WriteToFile(contacts[contactIndex].penetrationDepth, contactIndex, contactIndex / numContacts);
 
 			contacts[contactIndex].ResolvePenetration();
 
@@ -68,11 +69,11 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 		}
 	}
 
-	if (Global::writeContactDataToFile)
-	{
-		file.close();
-		Global::writeContactDataToFile = false;
-	}
+	//if (Global::writeContactDataToFile)
+	//{
+	//	file.close();
+	//	Global::writeContactDataToFile = false;
+	//}
 }
 
 void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
@@ -137,7 +138,7 @@ void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 	}
 }
 
-void CollisionResolution::CreateCSVFile()
+/*void CollisionResolution::CreateCSVFile()
 {
 	file.open("penetration.csv");
 	file.clear();
@@ -148,7 +149,7 @@ void CollisionResolution::CreateCSVFile()
 void CollisionResolution::WriteToFile(float value, unsigned int obj, unsigned int iter)
 {
 	file << std::to_string(obj) << "," + std::to_string(iter) << "," << std::to_string(value) << "\n";
-}
+}*/
 
 
 void CollisionResolution::AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign)

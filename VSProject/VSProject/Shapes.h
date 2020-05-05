@@ -22,6 +22,7 @@ namespace Shapes
 	private:
 		static Colour GetColour(const Colour& _rainbow, const Colour& _colour);
 
+
 		//Sphere stuff
 		//static void ComputeFaceNormal(const Vector3& v1, const Vector3& v2, const Vector3& v3, Vector3& normal);
 		//static void ComputeHalfVertex(const float v1[3], const float v2[3], float length, float newV[3]);
