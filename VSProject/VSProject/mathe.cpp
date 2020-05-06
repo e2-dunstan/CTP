@@ -316,15 +316,15 @@ void Mathe::TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& t
 		+ t62 * rot.matrix[8];
 }
 
-std::array<float, 2> Mathe::SolveQuadraticFormula(const float a, const float b, const float c, const bool twoRealRoots)
+Mathe::QuadraticFormulaResult Mathe::SolveQuadraticFormula(const float a, const float b, const float c, const bool twoRealRoots)
 {
-	std::array<float, 2> x = { 0.0f, 0.0f };
+	Mathe::QuadraticFormulaResult x(0.0f, 0.0f);
 
-	x[0] = (-b + sqrt(((b * b) - (4 * a * c)))) / (2 * a);
+	x.one = (-b + sqrt(((b * b) - (4 * a * c)))) / (2 * a);
 
 	if (twoRealRoots)
 	{
-		x[1] = (-b - sqrt(((b * b) - (4 * a * c)))) / (2 * a);
+		x.two = (-b - sqrt(((b * b) - (4 * a * c)))) / (2 * a);
 	}
 
 	return x;

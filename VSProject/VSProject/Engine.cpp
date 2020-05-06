@@ -4,6 +4,8 @@
 
 void Engine::Init()
 {
+	std::srand(time(0));
+
 	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0), Vector3());
 	individualObjectInitialised.push_back(false);	
 	primitiveCount++;
@@ -15,14 +17,12 @@ void Engine::Init()
 	//individualObjectInitialised.push_back(false);
 	//primitiveCount++;
 
-	std::srand(time(0));
 
-	Scene_Dominoes();
-	//Scene_Stacks();
+	//Scene_Dominoes();
+	Scene_Stacks();
 	//Scene_Castle();
 	//Scene_SpheresInBox();
 	//Scene_Slopes();
-	//Scene_Cover();
 }
 
 void Engine::Update()
@@ -58,8 +58,16 @@ void Engine::UpdateTrisForRayCamera()
 	for (uint16_t i = prevPrimitiveCount; i < primitiveCount; i++)
 	{
 		Primitive& prim = *primitiveManager->GetPrimitives()[i].get();
-		rayCamera->AddPrimitive(primitiveManager->GetPrimitives()[i].get()->tris, 
-			primitiveManager->GetPrimitives()[i].get()->transform);
+
+		if (prim.type == PrimitiveType::SPHERE)
+		{
+			rayCamera->AddPrimitive(prim.tris, prim.transform, 
+				dynamic_cast<Sphere*>(&prim)->radius, prim.translation);
+		}
+		else
+		{
+			rayCamera->AddPrimitive(prim.tris, prim.transform);
+		}
 
 		//switch (prim.type)
 		//{
@@ -169,7 +177,7 @@ void Engine::Scene_SpheresInBox()
 void Engine::Scene_Dominoes()
 {
 	Vector3 dir = Vector3(0, 0, 1);
-	SpawnDominoes(20, Vector3(1.0f, 2.0f, 0.3f), Vector3(), dir, 2, true);
+	SpawnDominoes(10, Vector3(1.0f, 2.0f, 0.1f), Vector3(), dir, 2, true);
 	
 	///primitiveManager->CreatePlane(Vector3(3, 3, 3), Vector3(0, 0.5f, 0), Material::CONCRETE);
 	//primitiveManager->CreateBox(Vector3(3, 1, 4), Vector3(0, -0.5f, 1), Vector3(0, 0, 0), true, Material::CONCRETE);
@@ -286,10 +294,10 @@ void Engine::SpawnDominoes(const unsigned int count, const Vector3& size, const 
 	Vector3 tilt = Vector3();
 	if (startTilted)
 	{
-		if (dir.IsRoughlyEqualTo(Vector3(1, 0, 0))) tilt = Vector3(0, 0, -10);
-		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, 1))) tilt = Vector3(10, 0, 0);
-		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, -1))) tilt = Vector3(-10, 0, 0);
-		else if (dir.IsRoughlyEqualTo(Vector3(-1, 0, 0))) tilt = Vector3(0, 0, 10);
+		if (dir.IsRoughlyEqualTo(Vector3(1, 0, 0))) tilt = Vector3(0, 0, -25);
+		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, 1))) tilt = Vector3(25, 0, 0);
+		else if (dir.IsRoughlyEqualTo(Vector3(0, 0, -1))) tilt = Vector3(-25, 0, 0);
+		else if (dir.IsRoughlyEqualTo(Vector3(-1, 0, 0))) tilt = Vector3(0, 0, 25);
 	}
 
 	for (unsigned int i = 0; i < count; i++)

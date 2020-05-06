@@ -326,6 +326,8 @@ void Contact::ResolveVelocity()
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 
 	velocityChange[0] = velocityChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
+	rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
+	//rotationChange[0] /= Mathe::PI; 
 
 	if (!body2->isStatic)
 	{
@@ -334,29 +336,27 @@ void Contact::ResolveVelocity()
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
 		velocityChange[1] = velocityChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
-		//rotationChange[1] /= 2.0f;
 		rotationChange[1] = Mathe::ToRadians(rotationChange[1]);
+		//rotationChange[1] /= Mathe::PI;
 
 		body2->rigidbody.AddVelocityChange(velocityChange[1]);
 		body2->rigidbody.AddRotationChange(rotationChange[1]);
 
-		//rotationChange[0] /= 2.0f; 
-		rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
 	}
 
 	body1->rigidbody.AddVelocityChange(velocityChange[0]);
 	body1->rigidbody.AddRotationChange(rotationChange[0]);
 
-	/*if (rotationChange[0].SquaredMagnitude() > 100)
-	{
-		std::cout << "WARNING: large velocity change ";
-		rotationChange[0].DebugOutput();
-	}
-	if (rotationChange[1].SquaredMagnitude() > 100)
-	{
-		std::cout << "WARNING: large velocity change ";
-		rotationChange[1].DebugOutput();
-	}*/
+	//if (abs(velocityChange[0].SumComponents()) > 100)
+	//{
+	//	std::cout << "WARNING: large velocity change ";
+	//	velocityChange[0].DebugOutput();
+	//}
+	//if (abs(velocityChange[1].SumComponents()) > 100)
+	//{
+	//	std::cout << "WARNING: large velocity change ";
+	//	velocityChange[1].DebugOutput();
+	//}
 }
 
 Vector3 Contact::FrictionlessImpulse()

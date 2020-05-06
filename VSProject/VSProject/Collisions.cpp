@@ -74,6 +74,10 @@ void Collisions::Resolution()
 
 	auto totalTime2 = std::chrono::high_resolution_clock::now();
 
+	if (recordData->recordIter)
+	{
+		recordData->StoreIterCount(resolution->numPenIterations, resolution->numVelIterations);
+	}
 	if (recordData->resRecordTimes)
 	{
 		auto penDuration = std::chrono::duration_cast<std::chrono::microseconds>(penTime2 - penTime1).count();
@@ -112,7 +116,7 @@ void Collisions::DrawContacts()
 
 		glVertex3f((GLfloat)contactDisplays[i].origin.x, (GLfloat)contactDisplays[i].origin.y, (GLfloat)contactDisplays[i].origin.z);
 
-		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 2.0;
+		Vector3 point2 = contactDisplays[i].origin + contactDisplays[i].normal * 2.0f;
 		glVertex3f((GLfloat)point2.x, (GLfloat)point2.y, (GLfloat)point2.z);
 
 		glEnd();
@@ -129,6 +133,11 @@ void Collisions::DrawContacts()
 
 RecordData::RecordData()
 {
+	if (recordIter)
+	{
+		pIters = new uint16_t[100];
+		vIters = new uint16_t[100];
+	}
 	if (detRecordTimes)
 	{
 		detFineTimes = new long long[100];
@@ -143,6 +152,11 @@ RecordData::RecordData()
 
 RecordData::~RecordData()
 {
+	if (recordIter)
+	{
+		delete[] pIters;
+		delete[] vIters;
+	}
 	if (detRecordTimes)
 	{
 		delete[] detFineTimes;
@@ -212,6 +226,39 @@ void RecordData::StoreResTimes(long long p, long long v, long long t)
 			for (uint16_t i = 0; i < 100; i++)
 			{
 				file << penTimes[i] << "," << velTimes[i] << "," << totalTimes[i] << "\n";
+			}
+
+			file.close();
+			std::cout << "Done!" << std::endl;
+			Global::writeDataToFile = false;
+		}
+	}
+}
+
+void RecordData::StoreIterCount(uint16_t p, uint16_t v)
+{
+	pIters[iterIndex] = p;
+	vIters[iterIndex] = v;
+
+	//overwrite old values
+	iterIndex++;
+	if (iterIndex >= 100)
+	{
+		iterIndex = 0;
+		std::cout << "100 values gathered, press C to save to file." << std::endl;
+
+		if (Global::writeDataToFile)
+		{
+			//write to file
+			std::ofstream file;
+			file.open("stats_iters.csv");
+			file.clear();
+
+			std::cout << "Writing to file... ";
+
+			for (uint16_t i = 0; i < 100; i++)
+			{
+				file << pIters[i] << "," << vIters[i] << "\n";
 			}
 
 			file.close();

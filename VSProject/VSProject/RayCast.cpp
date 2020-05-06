@@ -99,8 +99,8 @@ bool RayCast::TestPlane(const Vector3& centre, const Vector3& normal, const Vect
 bool RayCast::TestSphere(const Vector3& centre, const float radius, Ray& ray)
 {
 	Vector3 m = ray.origin - centre;
-	float b = 2.0f * (float)(m.ScalarProduct(ray.direction));
-	float c = (float)m.ScalarProduct(m) - (radius * radius);
+	float b = 2.0f * m.ScalarProduct(ray.direction);
+	float c = m.ScalarProduct(m) - (radius * radius);
 	
 	if (c > 0 && b > 0) return false;
 
@@ -109,15 +109,23 @@ bool RayCast::TestSphere(const Vector3& centre, const float radius, Ray& ray)
 	if (discriminant < 0) return false; //no intersection
 	else if (discriminant == 0) //one intersection
 	{
-		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1.0f, b, c, false);
-		ray.intersection1 = i[0];
+		Mathe::QuadraticFormulaResult result = Mathe::SolveQuadraticFormula(1.0f, b, c, false);
+		ray.intersection1 = result.one;
 		return true;
 	}
 	else //two intersections
 	{
-		std::array<float, 2> i = Mathe::SolveQuadraticFormula(1.0f, b, c, true);
-		ray.intersection1 = i[0];
-		ray.intersection2 = i[1];
+		Mathe::QuadraticFormulaResult result = Mathe::SolveQuadraticFormula(1.0f, b, c, true);
+		if (result.one > result.two || result.one < 0)
+		{
+			ray.intersection1 = result.two;
+			ray.intersection2 = result.one;
+		}
+		else
+		{
+			ray.intersection1 = result.one;
+			ray.intersection2 = result.two;
+		}
 		return true;
 	}
 }

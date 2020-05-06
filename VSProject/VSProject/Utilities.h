@@ -74,7 +74,7 @@ namespace Colours
 	const Colour red = Colour(1.0f, 0.0f, 0.0f);
 	const Colour deepRed = Colour(0.85f, 0.1f, 0.1f);
 	const Colour green = Colour(0.0f, 1.0f, 0.0f);
-	const Colour grass = Colour(0.486f, 0.988f, 0.01f);
+	const Colour grass = Colour(0.64f, 0.88f, 0.71f);
 	const Colour blue = Colour(0.0f, 0.0f, 1.0f);
 	const Colour yellow = Colour(1.0f, 1.0f, 0.0f);
 	const Colour cyan = Colour(0.0f, 1.0f, 1.0f);
@@ -100,30 +100,11 @@ static inline Vector3 CosineSampleHemisphere(const float u1, const float u2, flo
 	pdf = z / Mathe::PI;
 
 	return Vector3(x, y, z);
-
-
-	//float z = u1;
-	//float r = sqrtf(std::max(0.0f, 1.0f - z * z));
-	//float phi = 2.0f * Mathe::PI * u2;
-	//float x = r * cosf(phi);
-	//float y = r * sinf(phi);
-
-	//return Vector3(x, y, z);
 }
 
 static inline float RandomFloat(const float min, const float max)
 {
-	//Have to do it twice to avoid rand returning 0
 	float random = (float)(std::rand() + std::rand()) / (float)(RAND_MAX * 2.0f);
-
-	//if (random == 0)
-	//{
-	//	random = (float)std::rand() / (float)RAND_MAX;
-	//	if (random == 0)
-	//	{
-	//		std::cout << std::endl;
-	//	}
-	//}
 
 	float diff = max - min;
 	random *= diff;

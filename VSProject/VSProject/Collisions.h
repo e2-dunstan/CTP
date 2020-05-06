@@ -12,8 +12,13 @@ struct RecordData
 
 	const bool resRecordTimes = false;
 	const bool detRecordTimes = false;
+	const bool recordIter = false;
 	uint16_t resRecordIndex = 0;
 	uint16_t detRecordIndex = 0;
+	uint16_t iterIndex = 0;
+
+	uint16_t* pIters = nullptr;
+	uint16_t* vIters = nullptr;
 
 	long long* detFineTimes = nullptr;
 
@@ -23,6 +28,7 @@ struct RecordData
 
 	void StoreDetTimes(long long f);
 	void StoreResTimes(long long p, long long v, long long t);
+	void StoreIterCount(uint16_t p, uint16_t v);
 };
 
 

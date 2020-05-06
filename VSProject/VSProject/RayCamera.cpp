@@ -1,16 +1,13 @@
 #include "RayCamera.h"
 #include <fstream>
 
-void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4& trans/*, float sphereRadius*/)
+void RayCamera::AddPrimitive(std::vector<Tri>& tris, Matrix4& trans, float sphereRadius, const Vector3& sphereOrigin)
 {
-	triPrimitives.push_back(RayCameraPrimitive(tris, trans));
+	triPrimitives.push_back(RayCameraPrimitive(tris, trans, sphereRadius, sphereOrigin));
 }
 
 void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint16_t height)
 {	
-	RayCameraPrimitive* primCopy = new RayCameraPrimitive[triPrimitives.size()];
-
-
 	const unsigned int arrSize = width * height * 3;
 	sf::Uint8* pixels = new sf::Uint8[arrSize];
 	Vector3* pixelsVec = new Vector3[width * height];
@@ -32,7 +29,7 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
-	uint16_t samples = 150;
+	uint16_t samples = 2;
 	Vector3 newColour = Vector3();
 	for (uint16_t col = 0; col < width; col++)
 	{
@@ -53,8 +50,6 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
 
 				//if (debugRaysCounter >= 3) return;
-				//if (newColour.x <= 0.0 || newColour.y <= 0.0 || newColour.z <= 0.0)
-				//	std::cout << std::endl;
 
 				pixelsVec[actualIndex] += newColour;
 			}
@@ -65,9 +60,6 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 				powf(std::min(pixelsVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
 			);
 			newColour *= 255.0f;
-
-			//if (Mathe::IsVectorNAN(newColour) || newColour.SumComponents() < 0.0)
-			//	std::cout << std::endl;
 			
 			if (store)
 			{
@@ -120,14 +112,13 @@ Ray RayCamera::GetRayAt(const int pX, const int pY, const float width, const flo
 
 	float aspectRatio = width / height; //assuming w > h
 
-	float cameraX = (2.0f * (((float)pX + 0.5f) / (float)width) - 1.0f) * tanf((float)Mathe::ToRadians(80 / 2)) * aspectRatio; //fov = 80
-	float cameraY = (1.0f - 2.0f * ((float)pY + 0.5f) / (float)height) * tanf((float)Mathe::ToRadians(80 / 2));// *1 / aspectRatio;
+	float cameraX = (2.0f * (((float)pX + 0.5f) / (float)width) - 1.0f) * tanf((float)Mathe::ToRadians(80 / 2)) * aspectRatio;
+	float cameraY = (1.0f - 2.0f * ((float)pY + 0.5f) / (float)height) * tanf((float)Mathe::ToRadians(80 / 2));
 
 	Vector3 rayDir = Vector3(cameraX, cameraY, -1);
 
 	Mathe::Transform(rayDir, modelViewMatrix);
 
-	//rayDir -= cameraPos;
 	rayDir = rayDir.Normalise();
 
 	return Ray(cameraPos, rayDir);
@@ -146,25 +137,39 @@ void RayCamera::SetModelViewMatrix()
 	modelViewMatrix = Matrix4(matrix);
 }
 
-Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, unsigned int pathLength)
+Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, uint16_t pathLength)
 {
 	//Matrix4 mat;
 	Tri* closestTriangle = nullptr;
 	Ray bestRay;
-	float radius = 0;
+	//float radius = 0;
+	//Vector3 origin = Vector3();
 	bestRay.intersection1 = 1000;
 
 	//if (debugRaysCounter < 3) debugRays[debugRaysCounter++] = ray;
 	ray = Ray(point, normal);
-	for (unsigned int p = 0; p < triPrimitives.size(); p++)
+	for (uint16_t p = 0; p < triPrimitives.size(); p++)
 	{	
-		for (unsigned int t = 0; t < triPrimitives[p].tris.size(); t++)
+		/*if (triPrimitives[p].radius != 0)
+		{
+			if (RayCast::TestSphere(triPrimitives[p].origin, triPrimitives[p].radius, ray)
+				&& ray.intersection1 <= stackSaver.bestRay.intersection1)
+			{
+				stackSaver.closestTriangle = &triPrimitives[p].tris[0]; //doesnt matter for spheres
+				stackSaver.radius = triPrimitives[p].radius;
+				stackSaver.origin = triPrimitives[p].origin;
+				stackSaver.bestRay = ray;
+			}
+		}
+		else
+		{*/
+		for (uint16_t t = 0; t < triPrimitives[p].tris.size(); t++)
 		{
 			if (RayCast::TestTriangle(triPrimitives[p].tris[t], ray, nullptr)
 				&& ray.intersection1 <= bestRay.intersection1)
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
-				radius = triPrimitives[p].radius;
+				//radius = 0;
 				bestRay = ray;
 				//mat = triPrimitives[p].transform;
 			}
@@ -178,7 +183,7 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 	}
 	else
 	{
-		Vector3 n = closestTriangle->normal;//radius == 0 ? closestTriangle->normal : GetSphereNormal(*closestTriangle, radius, bestRay.IntersectionPoint(), &mat);
+		Vector3 n = closestTriangle->normal;// radius == 0 ? closestTriangle->normal : (bestRay.IntersectionPoint() - origin).Normalise();
 
 		Vector3 temp(1, 0, 0);
 		if (n.ScalarProduct(temp) > 0.0001f) temp = Vector3(0, 1, 0);
@@ -194,24 +199,18 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 			u.z, v.z, n.z
 		};
 		Matrix3 normalMat = Matrix3(matVals);
-		//normalMat.Inverse();
 
 		float pdf;
 		//Z up space
 		Vector3 randHemisphere = CosineSampleHemisphere(RandomFloat(0.0f, 1.0f), RandomFloat(0.0f, 1.0f), pdf);
 		//World space
 		Mathe::Transform(randHemisphere, normalMat);
-		//randHemisphere += n;
-		randHemisphere = randHemisphere.Normalise();// .Inverse();
+		randHemisphere = randHemisphere.Normalise();
 
 		Vector3 BRDF = Vector3(closestTriangle->colour.r, closestTriangle->colour.g, closestTriangle->colour.b) / Mathe::PI;
 		float cosTheta = abs(n.ScalarProduct(randHemisphere));
-		//float p = 1.0f / (2.0f * Mathe::PI);
 	
 		pathThroughput *= BRDF * cosTheta / pdf;
-
-		//if (pathThroughput.x <= 0 || pathThroughput.y <= 0 || pathThroughput.z <= 0)
-		//	std::cout << std::endl;
 
 		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint() + (n * 0.0001f), pathLength++);
 	}
@@ -241,29 +240,4 @@ void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize
 	img.saveToFile("PixelBufferSFML.bmp");
 
 	std::cout << "done!" << std::endl;
-}
-
-Vector3 RayCamera::GetSphereNormal(const Tri& tri, const float radius, const Vector3& intersection, Matrix4* trans)
-{
-	if (!smoothSpheres) return tri.normal;
-
-	Vector3 percs;
-	Vector3 worldspacePos[3];
-	for (uint16_t i = 0; i < 3; i++)
-	{
-		worldspacePos[i] = tri.positions[i];
-		Mathe::Transform(worldspacePos[i], *trans);
-
-		percs[i] = abs(worldspacePos[i].ScalarProduct(intersection));
-	}
-	percs = percs.Normalise();
-
-	Vector3 norms[3] =
-	{
-		tri.positions[0] * 1.0f / radius,
-		tri.positions[1] * 1.0f / radius,
-		tri.positions[2] * 1.0f / radius
-	};
-
-	return (norms[0] * percs[0] + norms[1] * percs[1] + norms[2] * percs[2]) / 3;
 }

@@ -87,6 +87,7 @@
       <AdditionalIncludeDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\include;D:\Ellie\CTP\Additional files\SFML-2.5.1\include;D:\CTP-master\Additional files\Glew and Glut\glew-1.11.0\include;D:\CTP-master\Additional files\Glew and Glut\freeglut\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
       <FunctionLevelLinking>true</FunctionLevelLinking>
+      <CompileAs>Default</CompileAs>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -115,6 +116,8 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>D:\Ellie\CTP\Additional files\SFML-2.5.1\include;</AdditionalIncludeDirectories>
+      <CompileAs>Default</CompileAs>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

@@ -7,7 +7,7 @@ using namespace Shapes;
 
 void PrimitiveManager::CreatePlane(const Vector3& scale, const Vector3& translation, const Vector3& rotation, const Material mat)
 {
-	Plane plane = Plane(ShapeVertices::GetPlaneTris(primitives.size() == 0 ? Colours::offWhite : GetMaterialColour(mat)));
+	Plane plane = Plane(ShapeVertices::GetPlaneTris(primitives.size() == 0 ? Colours::grass : GetMaterialColour(mat)));
 
 	plane.normal = Vector3(0, 1, 0);
 	Matrix3 normalRot;
@@ -61,7 +61,13 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation, const Material mat)
 {
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, GetMaterialColour(mat), 10, 10), radius);
+	uint16_t random = rand() % 3;
+	Colour colour = Colours::offWhite;
+	if (random == 0) colour = Colours::deepRed;
+	else if (random == 1) colour = Colour(0.9f, 0.9f, 0.05f);
+	else if (random == 2) colour = Colour(0.005f, 0.9f, 0.9f);
+
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, colour/*GetMaterialColour(mat)*/, 10, 10), radius);
 	sphere.collisionVolume.Create(translation);
 	sphere.rigidbody.bounciness = Materials::GetBounciness(mat);
 	sphere.rigidbody.material = mat;
@@ -214,7 +220,7 @@ Colour PrimitiveManager::GetMaterialColour(const Material mat)
 	case Material::CONCRETE:
 		return Colours::grey;
 	case Material::WOOD:
-		return Colours::deepRed;
+		return Colours::brown;
 	case Material::METAL:
 		return Colours::darkGrey;
 	case Material::SMOOTH_METAL:

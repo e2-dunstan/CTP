@@ -14,6 +14,7 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 	{
 		if (iterationsComplete)
 		{
+			numPenIterations = iter;
 			//std::cout << "Penetration iterations finished early " << iter << std::endl;
 			break; //early out
 		}
@@ -87,6 +88,7 @@ void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 	{
 		if (iterationsComplete)
 		{
+			numVelIterations = iter;
 			//std::cout << "Velocity iterations finished early " << iter << std::endl;
 			break; //early out
 		}

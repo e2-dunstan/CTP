@@ -4,6 +4,7 @@
 
 class CollisionResolution
 {
+	friend class Collisions;
 public:
 	CollisionResolution() = default;
 	~CollisionResolution() = default;
@@ -16,11 +17,11 @@ public:
 
 private:
 
-	unsigned int numContacts = 0;
+	uint16_t numContacts = 0;
 
 	//Per frame
-	const unsigned int maxPenetrationIterations = 100;
-	const unsigned int maxVelocityIterations = 50;
+	const uint16_t maxPenetrationIterations = 100;
+	const uint16_t maxVelocityIterations = 100;
 
 	void AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign);
 
@@ -28,4 +29,8 @@ private:
 	//void WriteToFile(float value, unsigned int obj, unsigned int iter);
 
 	//std::ofstream file;
+
+protected:
+	uint16_t numPenIterations = 0;
+	uint16_t numVelIterations = 0;
 };

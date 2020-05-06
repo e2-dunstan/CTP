@@ -33,7 +33,13 @@ namespace Mathe
 
 	void TransformInverseInertiaTensor(Matrix3& tensorWorld, const Matrix3& tensorLocal, const Matrix3& rot);
 
-	std::array<float, 2> SolveQuadraticFormula(const float a, const float b, const float c, const bool twoRealRoots = true);
+	struct QuadraticFormulaResult
+	{
+		QuadraticFormulaResult(const float _one, const float _two) : one(_one), two(_two) {}
+		float one = 0;
+		float two = 0;
+	};
+	QuadraticFormulaResult SolveQuadraticFormula(const float a, const float b, const float c, const bool twoRealRoots = true);
 
 	float ToRadians(const float deg);
 	Vector3 ToRadians(const Vector3& vec);
@@ -45,4 +51,5 @@ namespace Mathe
 	float ClampFloat(const float value, const float min, const float max);
 
 	const float PI = 3.1415927410125732421875f;
+
 };
