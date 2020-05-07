@@ -1,6 +1,8 @@
 # Rigidbody Dynamics Engine with an Integrated Path Tracer 
 ### A Creative Technologies Project by Ellie Dunstan
 
+[CLICK HERE FOR BUILDS](https://github.com/e2-dunstan/CTP-Builds)
+
 #### Controls:
 
 - Hold right mouse button to pan the camera, and WASD to move around the scene.
