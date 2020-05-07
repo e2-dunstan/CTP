@@ -29,7 +29,7 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
-	uint16_t samples = 2;
+	uint16_t samples = 50;
 	Vector3 newColour = Vector3();
 	for (uint16_t col = 0; col < width; col++)
 	{

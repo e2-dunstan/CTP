@@ -61,13 +61,7 @@ void PrimitiveManager::CreateBox(const Vector3& scale, const Vector3& translatio
 
 void PrimitiveManager::CreateSphere(float radius, const Vector3& translation, const Material mat)
 {
-	uint16_t random = rand() % 3;
-	Colour colour = Colours::offWhite;
-	if (random == 0) colour = Colours::deepRed;
-	else if (random == 1) colour = Colour(0.9f, 0.9f, 0.05f);
-	else if (random == 2) colour = Colour(0.005f, 0.9f, 0.9f);
-
-	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, colour/*GetMaterialColour(mat)*/, 10, 10), radius);
+	Sphere sphere = Sphere(ShapeVertices::GetSphereVertices(radius, GetMaterialColour(mat), 10, 10), radius);
 	sphere.collisionVolume.Create(translation);
 	sphere.rigidbody.bounciness = Materials::GetBounciness(mat);
 	sphere.rigidbody.material = mat;
@@ -226,7 +220,15 @@ Colour PrimitiveManager::GetMaterialColour(const Material mat)
 	case Material::SMOOTH_METAL:
 		return Colours::darkGrey;
 	case Material::RUBBER:
-		return Colours::pink;
+	{
+		uint16_t random = rand() % 4;
+		Colour colour = Colours::offWhite;
+		if (random == 0) colour = Colours::deepRed;
+		else if (random == 1) colour = Colour(0.9f, 0.9f, 0.05f);
+		else if (random == 2) colour = Colour(0.005f, 0.9f, 0.9f);
+		else colour = Colours::pink;
+		return colour;
+	}
 	default:
 		return Colours::offWhite;
 	}

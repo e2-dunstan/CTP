@@ -110,7 +110,7 @@ namespace Materials
 		case Material::WOOD:
 			return 0.05f;
 		case Material::RUBBER:
-			return 0.5f;
+			return 0.6f;
 		case Material::SMOOTH_METAL:
 		case Material::METAL:
 		case Material::GLASS:

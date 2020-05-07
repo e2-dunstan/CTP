@@ -60,5 +60,5 @@ private:
 protected:
 
 	float GetMotion();
-	const float sleepThreshold = 0.05f;
+	const float sleepThreshold = 0.1f;
 };

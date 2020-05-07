@@ -1,4 +1,4 @@
-﻿#include "Contact.h"
+#include "Contact.h"
 #include <algorithm>
 
 void Contact::PrepareResolution()
@@ -325,9 +325,11 @@ void Contact::ResolveVelocity()
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 
+	//rotationChange[0] = rotationChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
+	//rotationChange[0] /= Mathe::PI; 
 	velocityChange[0] = velocityChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
 	rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
-	//rotationChange[0] /= Mathe::PI; 
+
 
 	if (!body2->isStatic)
 	{
@@ -336,6 +338,7 @@ void Contact::ResolveVelocity()
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
 		velocityChange[1] = velocityChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
+		//rotationChange[1] = rotationChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
 		rotationChange[1] = Mathe::ToRadians(rotationChange[1]);
 		//rotationChange[1] /= Mathe::PI;
 
