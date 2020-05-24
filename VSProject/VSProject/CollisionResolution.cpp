@@ -79,7 +79,7 @@ void CollisionResolution::PenetrationResolution(std::vector<Contact>& contacts)
 
 void CollisionResolution::VelocityResolution(std::vector<Contact>& contacts)
 {
-	const float velocityEpsilon = 0.01f;
+	const float velocityEpsilon = 0.001f;
 	numContacts = contacts.size();
 
 	bool iterationsComplete = false;

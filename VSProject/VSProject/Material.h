@@ -26,7 +26,7 @@ namespace Materials
 	{
 		0.1f,	0.02f,	0.1f,	0.03f,	0.5f,	0.5f,	0.05f,	0.05f,	0.03f,	0.03f,	0.03f,	0.03f,	0.6f,	0.6f,
 						0.95f,	0.4f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.25f,	0.53f,	0.6f,	0.6f,
-										1.0f,	1.0f,	0.75f,	0.5f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f,
+										0.8f,	0.1f,	0.75f,	0.5f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f,
 														0.4f,	0.4f,	0.4f,	0.4f,	0.2f,	0.4f,	0.6f,	0.6f,
 																		0.6f,	0.4f,	0.1f,	0.05f,	0.68f,	0.68f,
 																						0.7f,	0.42f,	0.68f,	0.68f,
@@ -117,7 +117,7 @@ namespace Materials
 		case Material::ICE:
 		case Material::CONCRETE:
 		default:
-			return 0.0f;
+			return 0.01f;
 		}
 	}
 

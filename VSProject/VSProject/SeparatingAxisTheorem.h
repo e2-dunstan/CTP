@@ -39,11 +39,11 @@ private:
 	bool SetReferenceVertices(const Vector3& normal, Vector3* planes, const Vector3& halfSize);
 	void SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vector3& min, Vector3& max);
 
-	Vector3 CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint16_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax);
+	Vector3 CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint8_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax);
 
 	void SutherlandHodgman(std::vector<Vector3>& clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices);
 	bool InsideEdge(float px, float py, float edgeMaxX, float edgeMaxY, float edgeMinX, float edgeMinY);
-	void VerifyVertex(std::vector<Vector3>& _clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint16_t axes[]);
+	void VerifyVertex(std::vector<Vector3>& _clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint8_t axes[]);
 };
 
 //Types of box collision:

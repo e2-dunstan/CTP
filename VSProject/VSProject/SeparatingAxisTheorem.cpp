@@ -473,20 +473,38 @@ void SAT::SetReferenceMinMax(const Vector3& normal, const Vector3& halfSize, Vec
 	}
 }
 
-Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint16_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
+Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const uint8_t axes[2], const Vector3& clippingMin, const Vector3& clippingMax)
 {
 	//intersection = (v1 + m(v2 - v1)) = (clippingMin + n(clippingMax - clippingMin))
 	//ix = (v1x + m(v2x - v1x)) = (clippingMinx + n(clippingMaxx - clippingMinx))
 
 	float x1 = clippingMin[axes[0]];
+	float y1 = clippingMin[axes[1]];
 	float x2 = clippingMax[axes[0]];
+	float y2 = clippingMax[axes[1]];
+
 	float x3 = v1[axes[0]];
 	float x4 = v2[axes[0]];
-	float y1 = clippingMin[axes[1]];
-	float y2 = clippingMax[axes[1]];
 	float y3 = v1[axes[1]];
 	float y4 = v2[axes[1]];
 
+	//a * d - b * c
+	float det1 = x1 * y2 - y1 * x2;
+	float det2 = x3 * y4 - x4 * y3;
+	float x1mx2 = x1 - x2;
+	float x3mx4 = x3 - x4;
+	float y1my2 = y1 - y2;
+	float y3my4 = y3 - y4;
+
+	float xnom = det1 * x3mx4 - x1mx2 * det2;
+	float ynom = det1 * y3my4 - y1my2 * det2;
+	float denom = x1mx2 * y3my4 - y1my2 * x3mx4;
+
+	Vector3 intersection;
+	intersection[axes[0]] = xnom / denom;
+	intersection[axes[1]] = ynom / denom;
+
+	/*
 	//x intersect
 	float num = (x1 * y2 - y1 * x2) * (x3 - x4) - (x1 - x2) * (x3 * y4 - y3 * x4);
 	float den = (x1 - x2) * (y3 - y4) - (y1 - y2) * (x3 - x4);
@@ -501,22 +519,19 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 	intersection[axes[0]] = X;
 	intersection[axes[1]] = Y;
 
-	//Get the value of the remaining axis
+	//Get the value of the remaining axis*/
 	float percAcrossLine = 1;
 	if (x2 != 0)
-		percAcrossLine = (x1 + X) / x2;
+		percAcrossLine = (x1 + intersection[axes[0]]) / x2;
 	else if (y2 != 0)
-		percAcrossLine = (y1 + Y) / y2;
+		percAcrossLine = (y1 + intersection[axes[1]]) / y2;
 
-	unsigned int i = 0;
+	uint8_t i = 0;
 	if (axes[0] == 0)
 	{
-		if (axes[1] == 1)
-			i = 2;
-		else if (axes[1] == 2)
-			i = 1;
+		if (axes[1] == 1) i = 2;
+		else if (axes[1] == 2) i = 1;
 	}
-
 	intersection[i] = v1[i] + (v2[i] - v1[i]) * percAcrossLine;
 
 	return intersection;
@@ -524,12 +539,15 @@ Vector3 SAT::CalculateIntersection(const Vector3& v1, const Vector3& v2, const u
 
 void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& normal, const Vector3* polyVertices, const Vector3* clippingVertices)
 {
-	const uint16_t numEdges = sizeof(clippingVertices);
-	const uint16_t polyVertSize = sizeof(polyVertices);
-	uint16_t numVertices = polyVertSize;
-	const float epsilon = 0.01f;
+	const uint8_t numEdges = sizeof(clippingVertices); //4
+	const uint8_t numVerticesConst = sizeof(polyVertices); //4
+	uint8_t numVertices = numVerticesConst;
+	const float epsilon = 0.001f;
 
-	uint16_t axes[2] = { 0, 0 };
+	//--------
+	//Get the axes we're considering
+	//--------
+	uint8_t axes[2] = { 0, 0 };
 	if (abs(abs(normal.x) - 1.0f) < epsilon)
 	{
 		axes[0] = 1;
@@ -546,6 +564,9 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 		axes[1] = 1;
 	}
 
+	//--------
+	//Init the min and max vertex of the reference plane
+	//--------
 	Vector3 min = clippingVertices[0];
 	Vector3 max = clippingVertices[1];
 	for (uint16_t i = 0; i < numVertices; i++)
@@ -557,20 +578,25 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 			max = clippingVertices[i];
 	}
 
-	const uint16_t maxPoints = polyVertSize * polyVertSize * 2;
+	//--------
+	//Init points found arr
+	//--------
+	//This will need to be a better est for the max points once complex shapes introduced
+	const uint8_t maxPoints = numVerticesConst * numVerticesConst * 2;
 	Vector3 newPoints[maxPoints];
+	//Assign first 4 vertices to new points (checked later)
 	for (uint16_t i = 0; i < numVertices; i++)
 	{
 		newPoints[i] = polyVertices[i];
 	}
-	uint16_t newSize = 4;
+	uint8_t newSize = 0;
 
-	for (uint16_t edge = 0; edge < numEdges; edge++) //for each clipping edge
+	for (uint8_t edge = 0; edge < numEdges; edge++) //for each clipping edge
 	{
 		Vector3 edgeMin = clippingVertices[edge];
 		Vector3 edgeMax = clippingVertices[(edge + 1) % numEdges];
 
-		for (uint16_t v = 0; v < numVertices; v++) //for each input vertex
+		for (uint8_t v = 0; v < numVertices; v++) //for each incident vertex (list can grow)
 		{
 			Vector3 v1 = newPoints[v];
 			Vector3 v2 = newPoints[(v + 1) % numVertices];
@@ -578,7 +604,7 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 			bool insideEdge1 = InsideEdge(v1[axes[0]], v1[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 			bool insideEdge2 = InsideEdge(v2[axes[0]], v2[axes[1]], edgeMax[axes[0]], edgeMax[axes[1]], edgeMin[axes[0]], edgeMin[axes[1]]);
 
-			if (insideEdge1 && insideEdge2)
+			if (insideEdge1 && insideEdge2) //add second point
 			{
 				VerifyVertex(_clipped, v2, max, min, axes);
 				if (std::find(std::begin(newPoints), std::end(newPoints), v2) == std::end(newPoints))
@@ -587,11 +613,11 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 					newSize++;
 				}
 			}
-			else if (!insideEdge1 && insideEdge2)
+			else if (!insideEdge1 && insideEdge2) //add intersection and second point
 			{
-				VerifyVertex(_clipped, CalculateIntersection(v1, v2, axes, edgeMin, edgeMax), max, min, axes);
-				VerifyVertex(_clipped, v2, max, min, axes);
 				Vector3 vec = CalculateIntersection(v1, v2, axes, edgeMin, edgeMax);
+				VerifyVertex(_clipped, vec, max, min, axes);
+				VerifyVertex(_clipped, v2, max, min, axes);
 				if (std::find(std::begin(newPoints), std::end(newPoints), vec) == std::end(newPoints))
 				{
 					newPoints[newSize] = vec;
@@ -603,10 +629,10 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 					newSize++;
 				}
 			}
-			else if (insideEdge1 && !insideEdge2)
+			else if (insideEdge1 && !insideEdge2) //add intersection
 			{
-				VerifyVertex(_clipped, CalculateIntersection(v1, v2, axes, edgeMin, edgeMax), max, min, axes);
 				Vector3 vec = CalculateIntersection(v1, v2, axes, edgeMin, edgeMax);
+				VerifyVertex(_clipped, vec, max, min, axes);
 				if (std::find(std::begin(newPoints), std::end(newPoints), vec) == std::end(newPoints))
 				{
 					newPoints[newSize] = vec;
@@ -617,7 +643,7 @@ void SAT::SutherlandHodgman(std::vector<Vector3>& _clipped, const Vector3& norma
 				break;
 		}
 		numVertices = (newSize < 4) ? 4 : newSize;
-		for (unsigned i = 0; i < numVertices; i++)
+		for (uint8_t i = 0; i < numVertices; i++)
 		{
 			VerifyVertex(_clipped, newPoints[i], max, min, axes);
 		}
@@ -631,7 +657,7 @@ bool SAT::InsideEdge(float px, float py, float edgeMaxX, float edgeMaxY, float e
 	return (one - two) < 0.00001f;
 }
 
-void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint16_t axes[])
+void SAT::VerifyVertex(std::vector<Vector3>& clipped, const Vector3& vec, const Vector3& max, const Vector3& min, const uint8_t axes[])
 {
 	if (vec[axes[0]] <= max[axes[0]] && vec[axes[0]] >= min[axes[0]]
 		&& vec[axes[1]] <= max[axes[1]] && vec[axes[1]] >= min[axes[1]])

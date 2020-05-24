@@ -37,6 +37,11 @@ public:
 	void DrawLatestRay();
 
 private:
+	
+	/*void CastRaysInPixelRange(const uint16_t startRow, const uint16_t startCol, 
+		const uint16_t endRow, const uint16_t endCol, 
+		const uint16_t screenWidth, const uint16_t screenHeight, 
+		Vector3* thisPixels, const uint16_t threadCount);*/
 
 	Ray GetRayAt(const int pX, const int pY, const float width, const float height, const Vector3& cameraPos);
 	Vector3 ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, uint16_t pathLength);

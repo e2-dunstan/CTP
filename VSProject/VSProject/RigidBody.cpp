@@ -2,6 +2,7 @@
 
 void RigidBody::Start(Vector3 startingVelocity)
 {
+	SetTerminalSpeed();
 	AddVelocityChange(startingVelocity);
 	SetAwake(true);
 }

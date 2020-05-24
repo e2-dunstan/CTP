@@ -39,7 +39,7 @@ namespace
 
 	int numPhysicsUpdatesPerSecond = 0;
 
-	const float playbackSpeed = 1.0f;
+	const float playbackSpeed = 0.1f;
 
 	const bool sfmlWindow = false;
 	const bool openglWindow = true;

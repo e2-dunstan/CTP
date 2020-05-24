@@ -1,6 +1,4 @@
-﻿  RayCamera.cpp
-D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(47,55): warning C4244: 'argument': conversion from 'float' to 'const int', possible loss of data
-D:\Ellie\CTP\VSProject\VSProject\RayCamera.cpp(47,24): warning C4244: 'argument': conversion from 'float' to 'const int', possible loss of data
+﻿  Contact.cpp
 LINK : warning LNK4075: ignoring '/INCREMENTAL' due to '/LTCG' specification
   LINK : /LTCG specified but no code generation required; remove /LTCG from the link command line to improve linker performance
   VSProject.vcxproj -> D:\Ellie\CTP\VSProject\Debug\VSProject.exe

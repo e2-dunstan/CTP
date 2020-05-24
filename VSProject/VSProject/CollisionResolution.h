@@ -20,8 +20,8 @@ private:
 	uint16_t numContacts = 0;
 
 	//Per frame
-	const uint16_t maxPenetrationIterations = 100;
-	const uint16_t maxVelocityIterations = 100;
+	const uint16_t maxPenetrationIterations = 10;
+	const uint16_t maxVelocityIterations = 10;
 
 	void AdjustDeltaVelocity(Contact& thisContact, Contact& otherContact, const unsigned int bt, const Vector3& rcp, bool sign);
 
