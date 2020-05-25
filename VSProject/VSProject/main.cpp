@@ -39,10 +39,12 @@ namespace
 
 	int numPhysicsUpdatesPerSecond = 0;
 
-	const float playbackSpeed = 0.1f;
+	const float playbackSpeed = 1.0f;
 
 	const bool sfmlWindow = false;
 	const bool openglWindow = true;
+
+	bool pathTracerActive = false;
 }
 
 void PressKey(unsigned char key, int xx, int yy)
@@ -59,8 +61,8 @@ void ReleaseKey(unsigned char key, int x, int y)
 	if (key == 'c') Global::writeDataToFile = true;
 	if (key == 'r')
 	{
-		engine->UpdateTrisForRayCamera();
-		engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight);
+		pathTracerActive = !pathTracerActive;
+		//if (pathTracerActive) engine->UpdateTrisForRayCamera();
 	}
 }
 
@@ -152,7 +154,7 @@ void changeViewPort(int w, int h)
 }
 
 void render()
-{
+{	
 	//Clear the buffers.
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -179,9 +181,15 @@ void timer(int)
 	if (!beginUpdate && Global::shouldUpdate && timeSinceStart > 3000) //wait 3 seconds before updating
 		beginUpdate = true;
 
+	if (pathTracerActive && engine->rayCamera->ShouldDrawNextFrame())
+	{
+		engine->UpdateTrisForRayCamera();
+		engine->rayCamera->CastRays(camera->GetWorldPos(), windowWidth, windowHeight);
+	}
+
 	glutPostRedisplay();
 
-	if (beginUpdate && Global::shouldUpdate)
+	if (beginUpdate && Global::shouldUpdate && Global::deltaTime < 1.0f)
 	{
 		engine->Update();
 	}

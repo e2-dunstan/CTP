@@ -25,9 +25,9 @@ void Engine::Init()
 	*/
 
 
-	//Scene_Dominoes();
+	Scene_Dominoes();
 	//Scene_Stacks();
-	Scene_Castle();
+	//Scene_Castle();
 	//Scene_SpheresInBox();
 	//Scene_Slopes();
 }
@@ -60,9 +60,9 @@ void Engine::Render()
 
 void Engine::UpdateTrisForRayCamera()
 {
-	if (prevPrimitiveCount == primitiveCount) return;
+	//if (prevPrimitiveCount == primitiveCount) return;
 
-	for (uint16_t i = prevPrimitiveCount; i < primitiveCount; i++)
+	for (uint16_t i = 0/*prevPrimitiveCount*/; i < primitiveCount; i++)
 	{
 		Primitive& prim = *primitiveManager->GetPrimitives()[i].get();
 
@@ -127,9 +127,9 @@ void Engine::Scene_Castle()
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(-1.9f, 1.5f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(4, 1.5f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(-4, 1.5f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(3, 3.6f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(-3, 3.6f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(4.5f, 1, 1), Vector3(0, 5.7f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(3, 5.1f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(-3, 5.1f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(4.5f, 1, 1), Vector3(0, 6.7f, 10 + (i == 1 ? 13 : 0)), Vector3(), false, Material::CONCRETE);
 		primitiveCount += 7;
 		for (uint16_t j = 0; j < 7; j++) individualObjectInitialised.push_back(false);
 	}
@@ -139,9 +139,9 @@ void Engine::Scene_Castle()
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 1.5f, -1.9f + 16.5f), Vector3(), false, Material::CONCRETE);
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 1.5f, 4 + 16.5f), Vector3(), false, Material::CONCRETE);
 		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 1.5f, -4 + 16.5f), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 3.6f, 3 + 16.5f), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 3.6f, -3 + 16.5f), Vector3(), false, Material::CONCRETE);
-		primitiveManager->CreateBox(Vector3(1, 1, 4.5f), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 5.7f, 16.5f), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 5.1f, 3 + 16.5f), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 5.1f, -3 + 16.5f), Vector3(), false, Material::CONCRETE);
+		primitiveManager->CreateBox(Vector3(1, 1, 4.5f), Vector3(6.5f * (i == 1 ? 1.0f : -1.0f), 6.7f, 16.5f), Vector3(), false, Material::CONCRETE);
 		primitiveCount += 7;
 		for (uint16_t j = 0; j < 7; j++) individualObjectInitialised.push_back(false);
 	}
@@ -184,7 +184,7 @@ void Engine::Scene_SpheresInBox()
 void Engine::Scene_Dominoes()
 {
 	Vector3 dir = Vector3(0, 0, 1);
-	SpawnDominoes(20, Vector3(1.0f, 2.0f, 0.1f), Vector3(), dir, 2, true);
+	SpawnDominoes(10, Vector3(1.0f, 2.0f, 0.1f), Vector3(), dir, 2, true);
 	
 	///primitiveManager->CreatePlane(Vector3(3, 3, 3), Vector3(0, 0.5f, 0), Material::CONCRETE);
 	//primitiveManager->CreateBox(Vector3(3, 1, 4), Vector3(0, -0.5f, 1), Vector3(0, 0, 0), true, Material::CONCRETE);

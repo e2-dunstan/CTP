@@ -62,16 +62,10 @@ void RigidBody::AddVelocityChange(const Vector3& velChange)
 	velocity += velChange;
 }
 
-void RigidBody::AddRotationChange(const Vector3& rotChange, bool convertToRadians)
+void RigidBody::AddRotationChange(const Vector3& rotChange)
 {
 	if (Mathe::IsVectorNAN(rotChange)) return;
 
-	if (convertToRadians)
-		angularVelocity += Vector3(
-			Mathe::ToRadians(rotChange.x),
-			Mathe::ToRadians(rotChange.y),
-			Mathe::ToRadians(rotChange.z)
-		);
 	else angularVelocity += rotChange;
 }
 

@@ -94,11 +94,12 @@ void Contact::CalculateClosingVelocities()
 		closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 		Mathe::Transform(closingVelocity, worldToContact);
 		//global forces
-		Vector3 acc = body1->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
-		Mathe::Transform(acc, worldToContact);
-		closingVelocity += Vector3(0, acc.y, acc.z); //not interested in normal dir
-		if (abs(closingVelocity.SumComponents()) > 100)
-			std::cout << std::endl;
+		//Vector3 acc = body1->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
+		//Mathe::Transform(acc, worldToContact);
+		//closingVelocity += Vector3(0, acc.y, acc.z); //not interested in normal dir
+
+		//if (abs(closingVelocity.SumComponents()) > 100)
+		//	std::cout << std::endl;
 	}
 	//Body2
 	if (!body2->isStatic && body2->rigidbody.isAwake)
@@ -106,14 +107,15 @@ void Contact::CalculateClosingVelocities()
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
 		//global forces
-		Vector3 acc = body2->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
-		Mathe::Transform(acc, worldToContact);
-		closingVelocity2 += Vector3(0, acc.y, acc.z);
+		//Vector3 acc = body2->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
+		//Mathe::Transform(acc, worldToContact);
+		//closingVelocity2 += Vector3(0, acc.y, acc.z);
 
 		closingVelocity -= closingVelocity2;
 	}
-	if (abs(closingVelocity.SumComponents()) > 100)
-		std::cout << std::endl;
+	//if (abs(closingVelocity.SumComponents()) > 100)
+	//	std::cout << std::endl;
+	//closingVelocity = closingVelocity.Clamp(-100, 100);
 }
 
 void Contact::CalculateDesiredDeltaVelocity()
@@ -121,22 +123,11 @@ void Contact::CalculateDesiredDeltaVelocity()
 	//reduces ground vibration but can cause other issues
 	float bodiesVelocity = 0;
 
-	if (!body1->isStatic && body1->rigidbody.isAwake)
-	{
-		bodiesVelocity += body1->rigidbody.GetTrueAccelerationLastFrame().ScalarProduct(normal) * Global::deltaTime;
-	}
-	if (!body2->isStatic && body2->rigidbody.isAwake)
-	{
-		bodiesVelocity -= body2->rigidbody.GetTrueAccelerationLastFrame().ScalarProduct(normal) * Global::deltaTime;
-	}
 	float r = restitution;
 	if (abs(closingVelocity.SumComponents()) < 0.25) 
 		r = 0.0f;
 
 	desiredDeltaVelocity = -closingVelocity.x - r * (closingVelocity.x - bodiesVelocity);
-
-	if (abs(desiredDeltaVelocity) > 1000)
-		std::cout << std::endl;
 }
 
 
@@ -256,12 +247,10 @@ void Contact::ResolvePenetration()
 	// -----------
 	if (abs(linearChange[0].SumComponents()) > 0)
 	{
-		//linearChange[0] = linearChange[0].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
 		body1->translation += linearChange[0];
 	}
 	if (abs(linearChange[1].SumComponents()) > 0 && !body1->isStatic)
 	{
-		//linearChange[1] = linearChange[1].Clamp(-abs(penetrationDepth), abs(penetrationDepth));
 		body2->translation += linearChange[1];
 	}
 
@@ -320,7 +309,7 @@ void Contact::ResolveVelocity()
 	if (friction_static == 0.0f) impulse = FrictionlessImpulse();
 	else impulse = FrictionImpulse();
 	//No velocity to resolve
-	if (impulse.Magnitude() < 0.0001f)
+	if (impulse.Magnitude() < 0.00001f)
 		return;
 
 	Mathe::Transform(impulse, contactToWorld);
@@ -331,43 +320,22 @@ void Contact::ResolveVelocity()
 	rotationChange[0] = relContactPos1.VectorProduct(impulse); //impulsive torque
 	Mathe::Transform(rotationChange[0], body1->rigidbody.inverseInertiaTensorWorld);
 
-	//rotationChange[0] = rotationChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
-	//rotationChange[0] /= Mathe::PI; 
-	//rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
-	//velocityChange[0] = velocityChange[0].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
-
-	body1->rigidbody.AddVelocityChange(velocityChange[0]);
-	body1->rigidbody.AddRotationChange(rotationChange[0]);
+	rotationChange[0] = Mathe::ToRadians(rotationChange[0]);
 
 	if (!body2->isStatic)
 	{
 		velocityChange[1] = impulse * -body2->rigidbody.inverseMass;
-		rotationChange[1] = impulse.VectorProduct(relContactPos2) * -1.0f; //impulsive torque
+		rotationChange[1] = impulse.VectorProduct(relContactPos2); //impulsive torque
 		Mathe::Transform(rotationChange[1], body2->rigidbody.inverseInertiaTensorWorld);
 
-		//rotationChange[1] = rotationChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
-		//rotationChange[1] = Mathe::ToRadians(rotationChange[1]);
-		//rotationChange[1] /= Mathe::PI;
-		//velocityChange[1] = velocityChange[1].Clamp(-abs(desiredDeltaVelocity), abs(desiredDeltaVelocity));
+		rotationChange[1] = Mathe::ToRadians(rotationChange[1]);
 
 		body2->rigidbody.AddVelocityChange(velocityChange[1]);
 		body2->rigidbody.AddRotationChange(rotationChange[1]);
 	}
 
-
-	if (abs(velocityChange[0].SumComponents()) > 100
-		|| abs(velocityChange[1].SumComponents()) > 100)
-	{
-		std::cout << "WARNING: large velocity change ";
-		velocityChange[0].DebugOutput();
-		velocityChange[1].DebugOutput();
-		//Global::shouldUpdate = false;
-	}
-	//if (abs(velocityChange[1].SumComponents()) > 100)
-	//{
-	//	std::cout << "WARNING: large velocity change ";
-	//	velocityChange[1].DebugOutput();
-	//}
+	body1->rigidbody.AddVelocityChange(velocityChange[0]);
+	body1->rigidbody.AddRotationChange(rotationChange[0]);
 }
 
 Vector3 Contact::FrictionlessImpulse()
@@ -464,7 +432,7 @@ Vector3 Contact::FrictionImpulse()
 		impulseContact.y *= (friction_dynamic * impulseContact.x);
 		impulseContact.z *= (friction_dynamic * impulseContact.x);
 
-		//const float threshold = 0.1f;
+		//const float threshold = 0.01f;
 		//const float sum = abs(impulseContact.y) + abs(impulseContact.z);
 		//if (sum < threshold)
 		//{

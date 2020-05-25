@@ -29,7 +29,7 @@ public:
 	void EndPhysicsUpdate(bool colliding);
 
 	void AddVelocityChange(const Vector3& velChange);
-	void AddRotationChange(const Vector3& rotChange, bool convertToRadians = false);
+	void AddRotationChange(const Vector3& rotChange);
 
 	void SetAwake(const bool awake);
 	void EnableSleep(const bool _canSleep);
@@ -60,5 +60,5 @@ private:
 protected:
 
 	float GetMotion();
-	const float sleepThreshold = 0.1f;
+	const float sleepThreshold = 0.08f;
 };

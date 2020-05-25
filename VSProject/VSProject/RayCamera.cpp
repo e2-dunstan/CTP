@@ -18,54 +18,54 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	const unsigned int arrSize = width * height * 3;
 	sf::Uint8* pixels = new sf::Uint8[arrSize];
 	Vector3* pixelsVec = new Vector3[width * height];
-	if (store)
-	{
-		std::cout << "Initialising pixel array...";
-		memset(pixelsVec, 0, width * height * sizeof(Vector3));
-		memset(pixels, 0, width * height * 3 * sizeof(sf::Uint8)); //sizeof return 1
-		std::cout << " done." << std::endl;
-	}
+
+	std::cout << "Initialising pixel array...";
+	memset(pixelsVec, 0, width * height * sizeof(Vector3));
+	memset(pixels, 0, width * height * 3 * sizeof(sf::Uint8)); //sizeof return 1
+	std::cout << " done." << std::endl;
 
 	// ---------
 	// Begin threads
 	// ---------
-	//uint16_t supportedThreads = std::thread::hardware_concurrency();
-	//std::cerr << supportedThreads << " supported threads (not definite), using half (" << supportedThreads / 2 << ")" << std::endl;
-	//supportedThreads /= 2; //thread count to use
-	//
-	//std::vector<std::thread> threads;
-	//const uint16_t threadedSize = height / supportedThreads;
-	//for (uint16_t thread = 0; thread < supportedThreads; thread++)
-	//{
-	//	threads.push_back(std::thread(CastRaysInPixelRange,
-	//		thread * threadedSize, 0, (thread + 1) * threadedSize, width,
-	//		width, height, pixelsVec, thread));
-	//	//CastRaysInPixelRange(thread * threadedSize, 0, (thread + 1) * threadedSize, width,
-	//	//	width, height, pixelsVec, thread);
-	//}
-	//unsigned int pixelIndex = 0;
-	//if (store)
-	//{
-	//	for (uint16_t col = 0; col < width; col++)
-	//		for (uint16_t row = 0; row < height; row++)
-	//		{
-	//			int actualIndex = row * width + col;
-	//			pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].x);
-	//			pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].y);
-	//			pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].z);
-	//		}
-	//}
+	/*uint16_t supportedThreads = std::thread::hardware_concurrency();
+	std::cerr << supportedThreads << " physical supported threads (not definite)" << std::endl;
+	
+	std::vector<std::thread> threads;
+	const uint16_t threadedSize = height / supportedThreads;
+	for (uint16_t thread = 0; thread < supportedThreads; thread++)
+	{
+		threads.push_back(std::thread(CastRaysInPixelRange,
+			thread * threadedSize, 0, (thread + 1) * threadedSize, width,
+			width, height, pixelsVec, thread));
+		//CastRaysInPixelRange(thread * threadedSize, 0, (thread + 1) * threadedSize, width,
+		//	width, height, pixelsVec, thread);
+	}
+	unsigned int pixelIndex = 0;
+	if (store)
+	{
+		for (uint16_t col = 0; col < width; col++)
+			for (uint16_t row = 0; row < height; row++)
+			{
+				int actualIndex = row * width + col;
+				pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].x);
+				pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].y);
+				pixels[pixelIndex++] = (sf::Uint8)(pixelsVec[actualIndex].z);
+			}
+	}*/
 
 
 	// ---------
 	// Loop through all pixels
 	// ---------
-	uint16_t samples = 50;
+	uint16_t samples = 16;
 	Vector3 newColour = Vector3();
 	unsigned int pixelIndex = 0;
+
+	Ray ray = Ray(Vector3(), Vector3());
+
 	for (uint16_t col = 0; col < width; col++)
 	{
-		if (col % 10 == 0)
+		if (col % 100 == 0)
 			std::cerr << "Progress... " << 100 * col / width << "%" << " Latest colour: " << 
 			(int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z << std::endl;
 	
@@ -79,7 +79,7 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 				ray = GetRayAt(col + RandomFloat(0.0f, 1.0f), row + RandomFloat(0.0f, 1.0f), width, height, cPosTemp);
 				Vector3 pathThroughput = Vector3(1, 1, 1);
 	
-				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
+				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0, ray);
 	
 				//if (debugRaysCounter >= 3) return;
 	
@@ -92,17 +92,14 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 				powf(std::min(pixelsVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
 			);
 			newColour *= 255.0f;
-			
-			if (store)
-			{
-				pixels[pixelIndex++] = (sf::Uint8)(newColour.x);
-				pixels[pixelIndex++] = (sf::Uint8)(newColour.y);
-				pixels[pixelIndex++] = (sf::Uint8)(newColour.z);
-			}
+	
+			pixels[pixelIndex++] = (sf::Uint8)(newColour.x);
+			pixels[pixelIndex++] = (sf::Uint8)(newColour.y);
+			pixels[pixelIndex++] = (sf::Uint8)(newColour.z);
 		}
 	}
 
-	if (store) SavePixelsToFile(pixels, arrSize, width, height);
+	SavePixelsToFile(pixels, arrSize, width, height);
 
 	delete[] pixels;
 	delete[] pixelsVec;
@@ -139,55 +136,68 @@ void RayCamera::DrawLatestRay()
 	glFlush();
 }
 
-//void RayCamera::CastRaysInPixelRange(const uint16_t startRow, const uint16_t startCol, 
-//	const uint16_t endRow, const uint16_t endCol,
-//	const uint16_t screenWidth, const uint16_t screenHeight, 
-//	Vector3* thisPixelVec, const uint16_t threadCount)
-//{
-//	uint16_t samples = 5;
-//	Vector3 newColour = Vector3();
-//	int actualIndex = 0; 
-//
-//	//Vector3* pixelsVec = new Vector3[(endRow - startRow) * (endCol - startCol)];
-//	//if (store) memset(pixelsVec, 0, (endRow - startRow) * (endCol - startCol) * sizeof(Vector3));
-//
-//	for (uint16_t col = startCol; col < endCol; col++)
-//	{
-//		if (col % 10 == 0)
-//			std::cerr << "Thread " << threadCount << " progress... " << 100 * (col - startCol) / (endCol - startCol) << "%"
-//			<< " Latest colour: " << (int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z << std::endl;
-//
-//		for (uint16_t row = startRow; row < endRow; row++)
-//		{
-//			actualIndex = row * screenWidth + col;
-//			for (uint16_t s = 0; s < samples; s++)
-//			{
-//				//integrating over area of pixel
-//				ray = GetRayAt(col + RandomFloat(0.0f, 1.0f), row + RandomFloat(0.0f, 1.0f), screenWidth, screenHeight, cPosTemp);
-//				Vector3 pathThroughput = Vector3(1, 1, 1);
-//
-//				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0);
-//
-//				thisPixelVec[actualIndex] += newColour;
-//			}
-//
-//			newColour = Vector3(
-//				powf(std::min(thisPixelVec[actualIndex].x / (float)samples, 1.0f), 1.0f / 2.2f),
-//				powf(std::min(thisPixelVec[actualIndex].y / (float)samples, 1.0f), 1.0f / 2.2f),
-//				powf(std::min(thisPixelVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
-//			);
-//			//newColour *= 255.0f;
-//			thisPixelVec[actualIndex] = newColour * 255.0f;
-//			//if (store)
-//			//{
-//			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.x);
-//			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.y);
-//			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.z);
-//			//}
-//		}
-//	}
-//	//delete[] pixelsVec;
-//}
+bool RayCamera::ShouldDrawNextFrame()
+{
+	if (timeElapsed < timeBetweenCaptures)
+	{
+		if (!skipFrame)
+			timeElapsed += Global::deltaTime;
+		else skipFrame = false;
+		return false;
+	}
+	return true;
+}
+
+
+/*void RayCamera::CastRaysInPixelRange(const uint16_t startRow, const uint16_t startCol, 
+	const uint16_t endRow, const uint16_t endCol,
+	const uint16_t screenWidth, const uint16_t screenHeight, 
+	Vector3* thisPixelVec, const uint16_t threadCount, Ray& ray)
+{
+	uint16_t samples = 5;
+	Vector3 newColour = Vector3();
+	int actualIndex = 0; 
+
+	//Vector3* pixelsVec = new Vector3[(endRow - startRow) * (endCol - startCol)];
+	//if (store) memset(pixelsVec, 0, (endRow - startRow) * (endCol - startCol) * sizeof(Vector3));
+
+	for (uint16_t col = startCol; col < endCol; col++)
+	{
+		if (col % 10 == 0)
+			std::cerr << "Thread " << threadCount << " progress... " << 100 * (col - startCol) / (endCol - startCol) << "%"
+			<< " Latest colour: " << (int)newColour.x << ", " << (int)newColour.y << ", " << (int)newColour.z << std::endl;
+
+		for (uint16_t row = startRow; row < endRow; row++)
+		{
+			actualIndex = row * screenWidth + col;
+			for (uint16_t s = 0; s < samples; s++)
+			{
+				//integrating over area of pixel
+				ray = GetRayAt(col + RandomFloat(0.0f, 1.0f), row + RandomFloat(0.0f, 1.0f), screenWidth, screenHeight, cPosTemp);
+				Vector3 pathThroughput = Vector3(1, 1, 1);
+
+				newColour = ComputeRayHit(pathThroughput, ray.direction, ray.origin, 0, ray);
+
+				thisPixelVec[actualIndex] += newColour;
+			}
+
+			newColour = Vector3(
+				powf(std::min(thisPixelVec[actualIndex].x / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min(thisPixelVec[actualIndex].y / (float)samples, 1.0f), 1.0f / 2.2f),
+				powf(std::min(thisPixelVec[actualIndex].z / (float)samples, 1.0f), 1.0f / 2.2f)
+			);
+			//newColour *= 255.0f;
+			thisPixelVec[actualIndex] = newColour * 255.0f;
+			//if (store)
+			//{
+			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.x);
+			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.y);
+			//	thisPixels[pixelIndex++] = (sf::Uint8)(newColour.z);
+			//}
+		}
+	}
+	//delete[] pixelsVec;
+}*/
 
 Ray RayCamera::GetRayAt(const int pX, const int pY, const float width, const float height, const Vector3& cameraPos)
 {
@@ -220,7 +230,7 @@ void RayCamera::SetModelViewMatrix()
 	modelViewMatrix = Matrix4(matrix);
 }
 
-Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, uint16_t pathLength)
+Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal, const Vector3& point, uint16_t pathLength, Ray& ray)
 {
 	//Matrix4 mat;
 	Tri* closestTriangle = nullptr;
@@ -295,13 +305,13 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 	
 		pathThroughput *= BRDF * cosTheta / pdf;
 
-		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint() + (n * 0.0001f), pathLength++);
+		return ComputeRayHit(pathThroughput, randHemisphere, bestRay.IntersectionPoint() + (n * 0.0001f), pathLength++, ray);
 	}
 }
 
 void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height)
 {
-	std::cout << "Saving pixel buffer to file... ";
+	//std::cout << "Saving pixel buffer to file... ";
 
 	unsigned int pixelIndex = 0;
 
@@ -320,7 +330,10 @@ void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize
 		}
 	}
 
-	img.saveToFile("PixelBufferSFML.bmp");
+	img.saveToFile("Captures/Capture" + std::to_string(picCount++) + ".bmp");
 
-	std::cout << "done!" << std::endl;
+	std::cout << "Done!" << std::endl;
+	timeElapsed = 0;
+	skipFrame = true;
+	Global::shouldUpdate = true;
 }
