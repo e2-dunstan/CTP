@@ -57,7 +57,7 @@ void RayCamera::CastRays(const Vector3& camPos, const uint16_t width, const uint
 	// ---------
 	// Loop through all pixels
 	// ---------
-	uint16_t samples = 16;
+	uint16_t samples = 32 * (picCount + 1);
 	Vector3 newColour = Vector3();
 	unsigned int pixelIndex = 0;
 
@@ -235,38 +235,48 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 	//Matrix4 mat;
 	Tri* closestTriangle = nullptr;
 	Ray bestRay;
-	//float radius = 0;
-	//Vector3 origin = Vector3();
+	float radius = 0;
+	Vector3 origin = Vector3();
 	bestRay.intersection1 = 1000;
 
 	//if (debugRaysCounter < 3) debugRays[debugRaysCounter++] = ray;
 	ray = Ray(point, normal);
 	for (uint16_t p = 0; p < triPrimitives.size(); p++)
 	{	
-		/*if (triPrimitives[p].radius != 0)
-		{
-			if (RayCast::TestSphere(triPrimitives[p].origin, triPrimitives[p].radius, ray)
-				&& ray.intersection1 <= stackSaver.bestRay.intersection1)
-			{
-				stackSaver.closestTriangle = &triPrimitives[p].tris[0]; //doesnt matter for spheres
-				stackSaver.radius = triPrimitives[p].radius;
-				stackSaver.origin = triPrimitives[p].origin;
-				stackSaver.bestRay = ray;
-			}
-		}
-		else
-		{*/
+		//if (triPrimitives[p].radius != 0)
+		//{
+		//	if (RayCast::TestSphere(triPrimitives[p].origin, triPrimitives[p].radius, ray)
+		//		&& ray.intersection1 <= bestRay.intersection1)
+		//	{
+		//		closestTriangle = &triPrimitives[p].tris[0]; //doesnt matter for spheres
+		//		radius = triPrimitives[p].radius;
+		//		//origin = triPrimitives[p].origin;
+		//		bestRay = ray;
+		//	}
+		//}
+		//else
+		//{
 		for (uint16_t t = 0; t < triPrimitives[p].tris.size(); t++)
 		{
+			//If the normal is facing the same dir as the ray, it shouldn't hit.
+			//if ((triPrimitives[p].tris[t].normal->ScalarProduct(ray.direction) > 0 && triPrimitives[p].radius == 0)
+			//	|| (triPrimitives[p].tris[t].normal[0].ScalarProduct(ray.direction) > 0
+			//		&& triPrimitives[p].tris[t].normal[1].ScalarProduct(ray.direction) > 0
+			//		&& triPrimitives[p].tris[t].normal[2].ScalarProduct(ray.direction) > 0
+			//		&& triPrimitives[p].radius != 0))
+			//	continue;
+
 			if (RayCast::TestTriangle(triPrimitives[p].tris[t], ray, nullptr)
 				&& ray.intersection1 <= bestRay.intersection1)
 			{
 				closestTriangle = &triPrimitives[p].tris[t];
-				//radius = 0;
+				radius = triPrimitives[p].radius;
+				origin = triPrimitives[p].origin;
 				bestRay = ray;
 				//mat = triPrimitives[p].transform;
 			}
 		}
+		//}
 	}
 
 	if (closestTriangle == nullptr)
@@ -276,7 +286,7 @@ Vector3 RayCamera::ComputeRayHit(Vector3& pathThroughput, const Vector3& normal,
 	}
 	else
 	{
-		Vector3 n = closestTriangle->normal;// radius == 0 ? closestTriangle->normal : (bestRay.IntersectionPoint() - origin).Normalise();
+		Vector3 n = radius == 0 ? closestTriangle->normal : ((bestRay.IntersectionPoint() - origin) / radius);//GetSphereNormal(bestRay.IntersectionPoint(), *closestTriangle);
 
 		Vector3 temp(1, 0, 0);
 		if (n.ScalarProduct(temp) > 0.0001f) temp = Vector3(0, 1, 0);
@@ -332,8 +342,24 @@ void RayCamera::SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize
 
 	img.saveToFile("Captures/Capture" + std::to_string(picCount++) + ".bmp");
 
-	std::cout << "Done!" << std::endl;
+	std::cout << "Done! Samples: " << std::to_string(32 * picCount) << std::endl;
 	timeElapsed = 0;
 	skipFrame = true;
 	Global::shouldUpdate = true;
+}
+
+Vector3 RayCamera::GetSphereNormal(const Vector3& p, const Tri& t)
+{
+	float v0 = (p - t.positions[0]).Magnitude();
+	float v1 = (p - t.positions[1]).Magnitude();
+	float v2 = (p - t.positions[2]).Magnitude();
+	float sum = v0 + v1 + v2;
+
+	v0 /= sum;
+	v1 /= sum;
+	v2 /= sum;
+
+	//Vector3 n = (t.normal[0] * v0) + (t.normal[1] * v1) + (t.normal[2] * v2);
+
+	return Vector3();
 }

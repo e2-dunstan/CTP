@@ -5,7 +5,7 @@
 struct RayCameraPrimitive
 {
 	RayCameraPrimitive(std::vector<Tri> t, Matrix4& trans, float sphereRadius = 0, Vector3 sphereOrigin = Vector3())
-		: tris(t)//, radius(sphereRadius), origin(sphereOrigin)
+		: tris(t), radius(sphereRadius), origin(sphereOrigin)
 	{
 		for (uint16_t i = 0; i < tris.size(); i++)
 		{
@@ -14,14 +14,15 @@ struct RayCameraPrimitive
 			Mathe::Transform(tris[i].positions[2], trans);
 			Mathe::Transform(tris[i].normal, trans);
 			tris[i].normal = tris[i].normal.Normalise();
+
 		}
 	}
 
 	std::vector<Tri> tris;
 	//Matrix4& trans;
 	//only used if sphere
-	//float radius = 0;
-	//Vector3 origin;
+	float radius = 0;
+	Vector3 origin;
 };
 
 class RayCamera
@@ -52,6 +53,8 @@ private:
 	void SetModelViewMatrix();
 	void SavePixelsToFile(const sf::Uint8* pixels, const uint16_t arrSize, const uint16_t width, const uint16_t height);
 
+	Vector3 GetSphereNormal(const Vector3& intersectionPoint, const Tri& triangle);
+
 	std::vector<RayCameraPrimitive> triPrimitives;
 
 	//Ray ray = Ray(Vector3(), Vector3());
@@ -67,6 +70,6 @@ private:
 
 	float timeElapsed = 0;
 	int picCount = 0;
-	const float timeBetweenCaptures = 0.5f;
+	const float timeBetweenCaptures = 0.1f;
 	bool skipFrame = false;
 };

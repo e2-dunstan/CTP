@@ -47,13 +47,14 @@ struct Vertex
 struct Tri
 {
 	Tri() = default;
-	Tri(Vector3 p1, Vector3 p2, Vector3 p3, Vector3 n, Colour c)//, const float uv[6])
+	Tri(Vector3 p1, Vector3 p2, Vector3 p3, Colour c, Vector3 n)//, const float uv[6])
 	{
 		positions[0] = p1;
 		positions[1] = p2;
 		positions[2] = p3;
-		normal = n;
 		colour = c;
+		normal = n;
+
 		//for(uint16_t i = 0; i < 6; i++)
 		//	uvs[i] = uv[i];
 	}

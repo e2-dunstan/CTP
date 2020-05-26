@@ -42,12 +42,14 @@ void CollisionFine::DetectContacts(Primitive* prim1, Primitive* prim2)
 			p1->collisionVolume.centre, p1->radius,
 			p2->collisionVolume.centre, p2->radius);
 	}
-	//else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::PLANE)
-	//{
-	//	SphereAndPlane(prim1, prim2,
-	//		prim1->collisionVolume.centre, prim1->collisionVolume.radius,
-	//		prim2->collisionVolume.centre, prim2->collisionVolume.normal);
-	//}
+	else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::PLANE)
+	{
+		Plane* p1 = dynamic_cast<Plane*>(prim2);
+		Sphere* p2 = dynamic_cast<Sphere*>(prim1);
+		SphereAndPlane(p2, p1,
+			p2->collisionVolume.centre, p2->radius,
+			p1->collisionVolume.centre, p1->collisionVolume.normal);
+	}
 	else if (prim1->type == PrimitiveType::SPHERE && prim2->type == PrimitiveType::BOX)
 	{
 		Sphere* p1 = dynamic_cast<Sphere*>(prim1);

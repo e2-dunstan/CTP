@@ -38,7 +38,7 @@ void Contact::PrepareResolution()
 	relContactPos2 = (point - body2->translation);
 
 	CalculateClosingVelocities();
-	CalculateDesiredDeltaVelocity();
+	CalculateDesiredDeltaVelocity(false);
 }
 
 void Contact::CalculateContactBasisMatrices()
@@ -94,9 +94,9 @@ void Contact::CalculateClosingVelocities()
 		closingVelocity = body1->rigidbody.angularVelocity.VectorProduct(relContactPos1) + body1->rigidbody.velocity;
 		Mathe::Transform(closingVelocity, worldToContact);
 		//global forces
-		//Vector3 acc = body1->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
-		//Mathe::Transform(acc, worldToContact);
-		//closingVelocity += Vector3(0, acc.y, acc.z); //not interested in normal dir
+		Vector3 acc = body1->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
+		Mathe::Transform(acc, worldToContact);
+		closingVelocity += Vector3(0, acc.y, acc.z); //not interested in normal dir
 
 		//if (abs(closingVelocity.SumComponents()) > 100)
 		//	std::cout << std::endl;
@@ -107,9 +107,9 @@ void Contact::CalculateClosingVelocities()
 		Vector3 closingVelocity2 = body2->rigidbody.angularVelocity.VectorProduct(relContactPos2) + body2->rigidbody.velocity;
 		Mathe::Transform(closingVelocity2, worldToContact);
 		//global forces
-		//Vector3 acc = body2->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
-		//Mathe::Transform(acc, worldToContact);
-		//closingVelocity2 += Vector3(0, acc.y, acc.z);
+		Vector3 acc = body2->rigidbody.GetTrueAccelerationLastFrame() * Global::deltaTime;
+		Mathe::Transform(acc, worldToContact);
+		closingVelocity2 += Vector3(0, acc.y, acc.z);
 
 		closingVelocity -= closingVelocity2;
 	}
@@ -118,14 +118,17 @@ void Contact::CalculateClosingVelocities()
 	//closingVelocity = closingVelocity.Clamp(-100, 100);
 }
 
-void Contact::CalculateDesiredDeltaVelocity()
+void Contact::CalculateDesiredDeltaVelocity(bool clampRestitution)
 {
 	//reduces ground vibration but can cause other issues
 	float bodiesVelocity = 0;
 
 	float r = restitution;
-	if (abs(closingVelocity.SumComponents()) < 0.25) 
+	//std::cout << "Restitution: " << r << std::endl;
+	if (clampRestitution && abs(closingVelocity.SumComponents()) < 0.25)
+	{
 		r = 0.0f;
+	}
 
 	desiredDeltaVelocity = -closingVelocity.x - r * (closingVelocity.x - bodiesVelocity);
 }

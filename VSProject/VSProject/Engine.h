@@ -23,6 +23,8 @@ public:
 	void Scene_Dominoes();
 	void Scene_Slopes();
 	void Scene_Cover();
+	void Scene_Spheres();
+	void Scene_Restitution();
 
 	void SpawnRandomSphere();
 	void SpawnRandomBox();

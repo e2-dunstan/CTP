@@ -26,7 +26,7 @@ namespace Materials
 	{
 		0.1f,	0.02f,	0.1f,	0.03f,	0.5f,	0.5f,	0.05f,	0.05f,	0.03f,	0.03f,	0.03f,	0.03f,	0.6f,	0.6f,
 						0.95f,	0.4f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.6f,	0.25f,	0.53f,	0.6f,	0.6f,
-										0.8f,	0.1f,	0.75f,	0.5f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f,
+										0.8f,	0.1f,	0.5f,	0.4f,	1.0f,	1.0f,	0.68f,	0.68f,	1.0f,	0.8f,
 														0.4f,	0.4f,	0.4f,	0.4f,	0.2f,	0.4f,	0.6f,	0.6f,
 																		0.6f,	0.4f,	0.1f,	0.05f,	0.68f,	0.68f,
 																						0.7f,	0.42f,	0.68f,	0.68f,
@@ -74,24 +74,13 @@ namespace Materials
 
 		int index = row * (13 - row) + 2 * col;
 
-		//for (int r = 0; r < 7; r++)
-		//{
-		//	for (int c = r; c < 7; c++)
-		//	{
-		//		//index = ((r * 14) + (c * 2)) - (((r - 1) * r) + (r * 2));
-		//		//index *= 2;
-		//		index = r * (13 - r) + 2 * c;
-		//		std::cout << "Row: " << r << ", Col: " << c << ", index: " << index << std::endl;
-		//	}
-		//}
-
 		return coefficientsButEfficient[index];
 		//return coefficients[col][row * 2];
 	}
 	static float GetCombinedDynamicFriction(const Material m1, const Material m2)
 	{
 		int row = (int)m1, col = (int)m2;
-		if (row < col)
+		if (row > col)
 		{
 			row = (int)m2;
 			col = (int)m1;
@@ -110,7 +99,7 @@ namespace Materials
 		case Material::WOOD:
 			return 0.05f;
 		case Material::RUBBER:
-			return 0.6f;
+			return 0.5f;
 		case Material::SMOOTH_METAL:
 		case Material::METAL:
 		case Material::GLASS:
@@ -125,14 +114,14 @@ namespace Materials
 	{
 		return BounceCombineType::AVERAGE;
 
-		if ((int)m1 > (int)m2)
+		/*if ((int)m1 > (int)m2)
 			std::swap(m1, m2);
 
 		if ((m1 == Material::RUBBER && m2 == Material::CONCRETE)
 			|| (m1 == Material::SMOOTH_METAL && m2 == Material::RUBBER))
 			return BounceCombineType::MAXIMUM;
 		else
-			return BounceCombineType::AVERAGE;
+			return BounceCombineType::AVERAGE;*/
 	}
 
 	/*static void LoadTextures()

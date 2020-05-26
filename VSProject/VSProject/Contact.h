@@ -60,7 +60,7 @@ private:
 	Vector3 FrictionImpulse();
 
 	void CalculateContactBasisMatrices();
-	void CalculateDesiredDeltaVelocity();
+	void CalculateDesiredDeltaVelocity(bool clampRestitution = true);
 	void CalculateClosingVelocities();
 
 	float desiredDeltaVelocity = 0;

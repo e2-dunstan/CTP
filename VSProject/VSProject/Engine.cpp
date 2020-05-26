@@ -6,11 +6,11 @@ void Engine::Init()
 {
 	std::srand(time(0));
 
-	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0), Vector3());
+	primitiveManager->CreatePlane(Vector3(64, 64, 64), Vector3(0, 0, 0), Vector3(), Material::ICE);
 	individualObjectInitialised.push_back(false);	
 	primitiveCount++;
 
-	//primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(0, 3, 8),	Vector3(0, 0, 0));
+	//primitiveManager->CreateBox(Vector3(1, 1, 1), Vector3(5, 3, 10),	Vector3(0, 0, 0), false, Material::ICE);
 	//individualObjectInitialised.push_back(false);
 	//primitiveCount++;
 	//primitiveManager->CreateSphere(1, Vector3(0, 2, 8));
@@ -24,12 +24,13 @@ void Engine::Init()
 	you like.	
 	*/
 
-
-	Scene_Dominoes();
+	//Scene_Dominoes();
 	//Scene_Stacks();
-	//Scene_Castle();
+	Scene_Castle();
 	//Scene_SpheresInBox();
 	//Scene_Slopes();
+	//Scene_Spheres();
+	//Scene_Restitution();
 }
 
 void Engine::Update()
@@ -91,14 +92,13 @@ void Engine::UpdateTrisForRayCamera()
 
 void Engine::ThrowSphere()
 {
-	primitiveManager->CreateSphere(1.0, Vector3(10, 6, 5), Material::RUBBER);
+	primitiveManager->CreateSphere(3, Vector3(20, 5, 20), Material::METAL);
 	//primitiveManager->CreateBox(Vector3(0.5, 0.5, 0.5), Vector3(0, 4, -2), Vector3(0, 0, 0), false, Material::WOOD);
-	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(-20, 0, 20);
+	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(-30, 0, 0);
 	individualObjectInitialised.push_back(false);
 	objectsInitialised = false;
 	primitiveCount++;
 }
-
 
 void Engine::Scene_Stacks()
 {
@@ -153,10 +153,10 @@ void Engine::Scene_SpheresInBox()
 	//base
 	primitiveManager->CreateBox(Vector3(5.8f, 0.1f, 6.2f), Vector3(0, -0.09f, 0), Vector3(), true, Material::WOOD);
 	//surrounding walls
-	primitiveManager->CreateBox(Vector3(0.2f, 4, 6.2f), Vector3(-6, 4, 0), Vector3(), true, Material::WOOD);
-	primitiveManager->CreateBox(Vector3(0.2f, 4, 6.2f), Vector3(6, 4, 0), Vector3(), true, Material::WOOD);
-	primitiveManager->CreateBox(Vector3(5.8f, 4, 0.2f), Vector3(0, 4, -6), Vector3(), true, Material::WOOD);
-	primitiveManager->CreateBox(Vector3(5.8f, 4, 0.2f), Vector3(0, 4, 6), Vector3(), true, Material::WOOD);
+	primitiveManager->CreateBox(Vector3(0.2f, 4, 6.2f), Vector3(-6, 4, 0), Vector3(), true, Material::WOOD);	//right
+	primitiveManager->CreateBox(Vector3(0.2f, 4, 6.2f), Vector3(6, 4, 0), Vector3(), true, Material::WOOD);		//left
+	primitiveManager->CreateBox(Vector3(5.8f, 4, 1.2f), Vector3(0, 4, -7), Vector3(), true, Material::WOOD);	//front
+	primitiveManager->CreateBox(Vector3(5.8f, 4, 0.2f), Vector3(0, 4, 6), Vector3(), true, Material::WOOD);		//back
 	//flaps - see notebook for maths
 	primitiveManager->CreateBox(Vector3(0.2f, 3, 6.2f), Vector3(-7.4f - (sinf(20) * 1.5f), 7.6f - (cosf(20) * 1.5f), 0), Vector3(0, 0, -70), true, Material::WOOD);
 	primitiveManager->CreateBox(Vector3(0.2f, 3, 6.2f), Vector3(7.4f + (sinf(20) * 1.5f), 7.6f - (cosf(20) * 1.5f), 0), Vector3(0, 0, 70), true, Material::WOOD);
@@ -168,7 +168,7 @@ void Engine::Scene_SpheresInBox()
 		individualObjectInitialised.push_back(false);
 
 	//Spheres
-	for (uint16_t j = 0; j < 100; j++)
+	for (uint16_t j = 0; j < 50; j++)
 	{
 		float radius = ((rand() % 5) + 1.0f) / 4.0f;
 		float y = ((rand() % 100) / 10.0f) + 10.0f;
@@ -252,6 +252,39 @@ void Engine::Scene_Cover()
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
 	//individualObjectInitialised.push_back(false);
+	objectsInitialised = false;
+}
+
+void Engine::Scene_Spheres()
+{
+	primitiveManager->CreateSphere(1, Vector3(0, 15, 4));
+	primitiveManager->CreateSphere(2, Vector3(4, 8, 4));
+	primitiveManager->CreateSphere(1.2f, Vector3(4, 12, 0));
+	primitiveManager->CreateSphere(1.5f, Vector3(0, 10, 0));
+
+	for(uint8_t i = 0; i < 4; i++)
+		individualObjectInitialised.push_back(false);
+	primitiveCount += 4;
+
+	objectsInitialised = false;
+}
+
+void Engine::Scene_Restitution()
+{
+	primitiveManager->CreateSphere(1, Vector3(-3, 8, -5), Material::RUBBER);
+	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(0, 0, 20);
+	primitiveCount++;
+	primitiveManager->CreateSphere(1, Vector3(3, 8, -5), Material::METAL);
+	primitiveManager->GetPrimitives()[primitiveCount]->startingVelocity = Vector3(0, 0, 20);
+	primitiveCount++;
+
+	//primitiveManager->CreatePlane(Vector3(15, 5, 5), Vector3(0, 2.5f, 10), Vector3(-90, 0, 0), Material::CONCRETE);
+	primitiveManager->CreateBox(Vector3(15, 5, 5), Vector3(0, 2.5f, 15), Vector3(), true, Material::CONCRETE);
+	primitiveCount++;
+
+	for(uint8_t i = 0; i < 3; i++)
+		individualObjectInitialised.push_back(false);
+
 	objectsInitialised = false;
 }
 
